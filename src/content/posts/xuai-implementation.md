@@ -1,11 +1,10 @@
 ---
-title: "${fm.title}"
-published: "${fm.published}"
-category: "${fm.category}"
-tags: [$tagsStr]
-description: "${fm.description}"
+title: '为我的博客实现AI功能，让博客"活起来"'
+published: 2026-05-30 16:41:00
+description: "从 Cloudflare Worker 到前端 SSE 流式渲染，从三个模型端点到 Swup SPA 兼容，完整记录本博客 AI 问答 + 文章概括功能的实现过程与踩坑经历。"
+tags: ["AI", "博客", "Cloudflare Workers", "折腾"]
+category: "技术"
 ---
-
 本博客目前集成了两套 AI 功能：**XUUAI 问答**（悬浮在文章页面的 AI 聊天面板）和**文章概括**（每篇文章顶部的 AI 摘要卡片）。本文从使用指南、技术栈、架构设计、实现细节、踩坑记录五个维度完整介绍其实现方案。
 
 ** 功能总览**
