@@ -1,6 +1,6 @@
 ---
 title: "Vercel 跑 Docker 意味着什么？全栈平台的最后一块拼图，拼上了 | Vercel Docker | Vercel Sandbox | 云原生 | Serverless"
-published: "2026-06-06 15:00:00"
+published: 2026-06-06 15:00:00
 category: "技术"
 tags: ["Vercel", "Docker", "云原生"]
 description: "Vercel Sandbox 支持 Docker 不仅是功能更新，更是云计算范式转移的信号。深度分析为什么这件事意味着 Serverless 的终点和全栈平台的起点，以及它对开发者的真正价值。"
