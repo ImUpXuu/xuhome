@@ -29,6 +29,7 @@
     "gray-matter": "^4.0.3",
     "katex": "^0.17.0",
     "lucide-react": "^0.546.0",
+    "markdown-it": "^14.1.0",
     "motion": "^12.23.24",
     "react": "^19.0.1",
     "react-dom": "^19.0.1",
@@ -41,6 +42,7 @@
     "rehype-raw": "^7.0.0",
     "remark-gfm": "^4.0.1",
     "remark-math": "^6.0.0",
+    "sanitize-html": "^2.13.0",
     "svelte": "^5.56.2",
     "vite": "^6.2.3"
   },

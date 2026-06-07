@@ -1,11 +1,19 @@
 import rss from '@astrojs/rss';
 import { getCollection } from 'astro:content';
 import { siteConfig } from '../config/site';
+import MarkdownIt from 'markdown-it';
+import sanitizeHtml from 'sanitize-html';
+
+const parser = new MarkdownIt();
 
 function toDate(raw: any): Date {
   if (!raw) return new Date();
   const d = new Date(raw);
   return isNaN(d.getTime()) ? new Date() : d;
+}
+
+function stripInvalidXmlChars(str: string): string {
+  return str.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F\uFDD0-\uFDEF\uFFFE\uFFFF]/g, '');
 }
 
 export async function GET(context: any) {
@@ -18,11 +26,15 @@ export async function GET(context: any) {
     ...rawPosts.map((post: any) => {
       const data = post.data;
       const slug = (data.slug || post.slug || post.id).trim();
+      const body = typeof post.body === 'string' ? post.body : '';
+      const cleaned = stripInvalidXmlChars(body);
+      const html = parser.render(cleaned);
       return {
         title: data.title || '无标题文章',
         pubDate: toDate(data.date || data.published),
         description: data.description || data.summary || '',
         link: `/posts/${slug}`,
+        content: sanitizeHtml(html, { allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img']) }),
       };
     }),
     ...rawTalks.map((talk: any) => {
