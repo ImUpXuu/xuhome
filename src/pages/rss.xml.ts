@@ -2,6 +2,12 @@ import rss from '@astrojs/rss';
 import { getCollection } from 'astro:content';
 import { siteConfig } from '../config/site';
 
+function toDate(raw: any): Date {
+  if (!raw) return new Date();
+  const d = new Date(raw);
+  return isNaN(d.getTime()) ? new Date() : d;
+}
+
 export async function GET(context: any) {
   const rawPosts = await getCollection('posts');
   const rawTalks = await getCollection('talks');
@@ -14,7 +20,7 @@ export async function GET(context: any) {
       const slug = (data.slug || post.slug || post.id).trim();
       return {
         title: data.title || '无标题文章',
-        pubDate: new Date(data.date || data.published),
+        pubDate: toDate(data.date || data.published),
         description: data.description || data.summary || '',
         link: `/posts/${slug}`,
       };
@@ -24,7 +30,7 @@ export async function GET(context: any) {
       const slug = (data.slug || talk.slug || talk.id).trim();
       return {
         title: data.title || '日常动态',
-        pubDate: new Date(data.date),
+        pubDate: toDate(data.date),
         description: (talk.body || '').substring(0, 200).replace(/[#*`_\[\]()\-]/g, '').trim(),
         link: `/talk/${slug}`,
       };
