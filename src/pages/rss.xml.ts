@@ -12,7 +12,7 @@ export async function GET(context: any) {
   const rawPosts = await getCollection('posts');
   const rawTalks = await getCollection('talks');
 
-  const siteUrl = (context.site ? context.site.toString().replace(/\/$/, '') : 'https://upxuu.com');
+  const siteUrl = (context.site ? context.site.toString().replace(/\/$/, '') : siteConfig.url);
 
   const items = [
     ...rawPosts.map((post: any) => {

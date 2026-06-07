@@ -3,7 +3,7 @@
   import type { PostItem } from '../utils/postsFetcher';
   import { onMount } from 'svelte';
   import { flip } from 'svelte/animate';
-  import { fade, fly } from 'svelte/transition';
+  import { fade } from 'svelte/transition';
 
   export let posts: PostItem[] = [];
   export let postsPerPage: number = 10;

@@ -157,10 +157,10 @@
 
   (window as any).copyRssLink = async () => {
     try {
-      await navigator.clipboard.writeText('https://upxuu.com/rss.xml');
+      await navigator.clipboard.writeText(window.location.origin + '/rss.xml');
     } catch {
       const input = document.createElement('input');
-      input.value = 'https://upxuu.com/rss.xml';
+      input.value = window.location.origin + '/rss.xml';
       document.body.appendChild(input);
       input.select();
       document.execCommand('copy');
