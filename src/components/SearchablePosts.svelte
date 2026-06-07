@@ -201,13 +201,7 @@
           </div>
           
           <a href={`/posts/${encodeURIComponent(post.slug)}`} class="w-[100px] sm:w-[130px] md:w-[190px] shrink-0 border-l-4 border-[#0284c7] relative bg-[#fde68a] flex items-center justify-center overflow-hidden">
-            {#if post.img}
-              <img src={post.img} alt={post.title} width="190" height="120" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" referrerpolicy="no-referrer" />
-            {:else}
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 md:w-12 md:h-12 text-[#0284c7] group-hover:translate-x-1.5 md:group-hover:translate-x-3 transition-transform duration-300 stroke-[3]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-              </svg>
-            {/if}
+            <img src={post.img || 'https://bing.img.run/rand.php'} alt={post.title} width="190" height="120" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" referrerpolicy="no-referrer" />
           </a>
         </div>
       </div>
