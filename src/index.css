@@ -1,0 +1,331 @@
+/* @license SPDX-License-Identifier: Apache-2.0 */
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Noto+Sans+SC:wght@300..900&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: "Fredoka", "Noto Sans SC", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 110px; /* offset for navbar */
+}
+
+/* Prevent horizontal overflow on mobile viewports while preserving sticky on desktop */
+@media (max-width: 1023px) {
+  html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+}
+
+/* Ensure math formulas do not break mobile layout */
+.katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 100%;
+}
+
+/* Custom Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #cbd5e1; /* slate-300 */
+  border-radius: 3px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8; /* slate-400 */
+}
+
+/* Custom Hand-Drawn Bold Toy Block Styling */
+.toy-brick-blue {
+  background-color: #0284c7; /* rich bold blue */
+  border: 4px solid #fdfbf7; /* bold contrast wireframe line */
+  border-radius: 4px;
+  box-shadow: 8px 8px 0px 0px #0ea5e9;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.toy-brick-blue:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: 11px 11px 0px 0px #0ea5e9;
+}
+
+.toy-brick-light {
+  background-color: #fdfbf7;
+  border: 4px solid #0284c7;
+  border-radius: 4px;
+  box-shadow: 8px 8px 0px 0px #0284c7;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.toy-brick-light:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: 11px 11px 0px 0px #0284c7;
+}
+
+/* Beige line helper */
+.border-beige-handdrawn {
+  border: 4px solid #0284c7;
+  border-radius: 4px;
+}
+
+/* Custom scrollbars for toy box elements */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #fdfbf7;
+  border-left: 2px solid #0284c7;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #0284c7;
+  border: 2px solid #fdfbf7;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #0ea5e9;
+}
+
+/* Special skewed badge classes as seen in theme specification */
+.badge-skew {
+  transform: skewX(-12deg);
+}
+
+/* Custom Global Hand-Drawn Cursor */
+@keyframes drop-brick {
+  0% { transform: translateY(-60px) scale(1.1) rotate(-15deg); opacity: 0; box-shadow: 0px 0px 0px 0px #0284c7; }
+  50% { opacity: 1; }
+  80% { transform: translateY(5px) scale(0.95) rotate(5deg); box-shadow: 4px 4px 0px 0px #0284c7; }
+  100% { transform: translateY(0) scale(1) rotate(0deg); opacity: 1; box-shadow: 8px 8px 0px 0px #0284c7; }
+}
+
+@keyframes card-entrance {
+  0% { 
+    opacity: 0; 
+    transform: translateY(40px) scale(0.95); 
+    filter: blur(8px);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(-5px) scale(1.02);
+    filter: blur(0);
+  }
+  100% { 
+    opacity: 1; 
+    transform: translateY(0) scale(1); 
+    filter: blur(0);
+  }
+}
+
+.animate-card-entrance {
+  animation: card-entrance 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes slide-out-down {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(20px); }
+}
+
+.animation-delay-200 {
+  animation-delay: 150ms;
+}
+
+.animation-delay-400 {
+  animation-delay: 300ms;
+}
+
+.loader-brick-container {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+.loader-brick {
+  position: absolute;
+  border: 4px solid #0284c7;
+  border-radius: 4px;
+  opacity: 0;
+  animation: drop-brick 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.loader-brick::before, .loader-brick::after {
+  content: '';
+  position: absolute;
+  top: -8px;
+  width: 12px;
+  height: 6px;
+  border: 4px solid #0284c7;
+  border-bottom: none;
+  border-radius: 2px 2px 0 0;
+}
+
+.loader-brick-1 {
+  width: 60px;
+  height: 25px;
+  background-color: #0ea5e9;
+  bottom: 0px;
+  z-index: 10;
+  animation-delay: 0.1s;
+}
+.loader-brick-1::before { left: 8px; background-color: #0ea5e9; }
+.loader-brick-1::after { right: 8px; background-color: #0ea5e9; }
+
+.loader-brick-2 {
+  width: 40px;
+  height: 25px;
+  background-color: #fde68a;
+  bottom: 21px; /* overlapping borders slightly */
+  left: 20px;
+  z-index: 9;
+  animation-delay: 0.4s;
+}
+.loader-brick-2::before { left: 10px; background-color: #fde68a; }
+.loader-brick-2::after { display: none; }
+
+.loader-brick-3 {
+  width: 25px;
+  height: 25px;
+  background-color: #f87171;
+  bottom: 42px;
+  left: 28px;
+  z-index: 8;
+  animation-delay: 0.7s;
+}
+.loader-brick-3::before { left: 3px; background-color: #f87171; }
+.loader-brick-3::after { display: none; }
+
+
+/* Talk Content styles */
+.talk-content {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #2d3748;
+}
+
+.talk-content p {
+  margin-bottom: 12px;
+}
+.talk-content p:last-child {
+  margin-bottom: 0;
+}
+
+.talk-content p:has(img) {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  grid-template-rows: max-content;
+  margin-top: 12px;
+}
+
+.talk-content p img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 4px;
+  border: 2px solid #0284c7;
+  box-shadow: 4px 4px 0px 0px #0ea5e9;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.talk-content p img:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px 0px #f59e0b;
+}
+
+/* Single image override */
+.talk-content p:has(img:only-child) {
+  display: block;
+}
+.talk-content p:has(img:only-child) img {
+  max-width: 60%;
+  aspect-ratio: auto;
+  max-height: 250px;
+}
+
+/* Waline Custom Theme overwrites for Lego Brutalist Style */
+:root {
+  --waline-theme-color: #0284c7 !important;
+  --waline-active-color: #0ea5e9 !important;
+  --waline-color: #2d3748 !important;
+  --waline-bgcolor: #faf8f5 !important;
+  --waline-bgcolor-light: #fff !important;
+  --waline-bgcolor-hover: #fde68a !important;
+  --waline-border-color: #0284c7 !important;
+  --waline-disable-bgcolor: #e2e8f0 !important;
+  --waline-disable-color: #94a3b8 !important;
+  --waline-code-bgcolor: #0284c7 !important;
+  --waline-bq-color: #0284c7 !important;
+  --waline-avatar-radius: 4px !important;
+  --waline-info-bgcolor: #faf8f5 !important;
+  --waline-info-color: #475569 !important;
+  --waline-info-font-size: 0.75rem !important;
+}
+
+.waline-custom-theme .wl-panel {
+  border: 3px solid #0284c7;
+  box-shadow: 4px 4px 0px 0px #f59e0b;
+  border-radius: 4px;
+  background-color: #white;
+}
+
+.waline-custom-theme .wl-btn {
+  border: 2px solid #0284c7;
+  background: #0ea5e9 !important;
+  color: white !important;
+  font-weight: 900;
+  border-radius: 4px;
+  box-shadow: 2px 2px 0px 0px #0284c7;
+  transition: all 0.2s;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.waline-custom-theme .wl-btn:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0px 0px #0284c7;
+  background: #2563eb !important;
+}
+
+.waline-custom-theme .wl-card {
+  border: 2px solid #0284c7;
+  box-shadow: 4px 4px 0px 0px #0284c7;
+  border-radius: 4px;
+  margin-bottom: 24px;
+  padding: 12px;
+  background-color: #fff;
+}
+
+.waline-custom-theme .wl-avatar {
+  border: 2px solid #0284c7;
+  box-shadow: 2px 2px 0px 0px #0284c7;
+}
+
+/* Dark mode Waline overrides */
+.dark {
+  --waline-bgcolor: #1e293b !important;
+  --waline-bgcolor-light: #334155 !important;
+  --waline-color: #e2e8f0 !important;
+  --waline-border-color: #0284c7 !important;
+  --waline-disable-bgcolor: #334155 !important;
+  --waline-disable-color: #64748b !important;
+  --waline-code-bgcolor: #0f172a !important;
+  --waline-bq-color: #0284c7 !important;
+  --waline-info-bgcolor: #1e293b !important;
+  --waline-info-color: #94a3b8 !important;
+}
+

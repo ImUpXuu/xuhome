@@ -1,0 +1,170 @@
+---
+
+---
+
+<script>
+  const VISIT_SESSION_KEY = 'xuhome_visit_flag';
+
+  let hasShownToast = false;
+
+  function createWelcomeToast() {
+    const toast = document.createElement('div');
+    toast.id = 'welcome-toast';
+    toast.setAttribute('data-nosnippet', 'true');
+    toast.setAttribute('aria-hidden', 'true');
+    toast.className = 'fixed bottom-4 left-2 right-2 sm:left-4 sm:right-auto z-[2000] translate-y-[calc(100%+20px)] opacity-0 transition-all duration-500 ease-out';
+    toast.innerHTML = `
+      <div class="bg-[#faf8f5] dark:bg-slate-800 border-2 border-[#0284c7] shadow-[4px_4px_0px_0px_#0284c7] rounded-sm p-2 sm:p-0">
+        <div class="flex flex-wrap items-center gap-x-2 gap-y-1 px-2 sm:px-3 py-1.5 sm:py-0 sm:h-9">
+          <span class="text-xs font-black text-[#0284c7]">👋</span>
+          <span id="welcome-message" class="text-xs font-bold text-slate-700 dark:text-slate-200">加载中...</span>
+          <span class="text-slate-300 dark:text-slate-600 text-xs font-black hidden sm:inline">|</span>
+          <span id="welcome-stats" class="text-xs font-bold text-slate-500 dark:text-slate-400"></span>
+          <div class="flex items-center gap-1.5 ml-auto sm:ml-1 shrink-0">
+            <a href="https://qun.qq.com/universal-share/share?ac=1&authKey=NZ9BP%2BPT44nu34JWAL4Jdz25Bq7ueQoOfOqA4iYPT1JvQKYktml43kgBTMfqTkNl&busi_data=eyJncm91cENvZGUiOiIxMTAzMjMyNDIyIiwidG9rZW4iOiJTZDh2RmhWbXFTL3ZHbVBXeXhJZndQTVcrOUlhNXRSNlczVG1GNUIzQnlQejFZSThWYStSSEVEWUtDcHdHSTM3IiwidWluIjoiMzY5Nzc3MzQxNiJ9&data=HZcezojmJTU_U4qRqv_3ODAb7vm86b6wP8YEp9Stz5b4EzngKNFllXJneyVO7qr4u-plsM84FyvpZl6kkuyZgg&svctype=4&tempid=h5_group_info" target="_blank" rel="noopener noreferrer" class="text-[10px] font-black text-blue-500 hover:text-[#0284c7] dark:hover:text-blue-400 transition-colors shrink-0 uppercase tracking-wider">QQ群</a>
+            <span class="text-slate-300 dark:text-slate-600 text-[10px] font-black">|</span>
+            <a href="https://github.com/ImUpXuu/xuhome/issues" class="text-[10px] font-black text-green-500 hover:text-[#0284c7] dark:hover:text-green-400 transition-colors shrink-0 uppercase tracking-wider">订阅</a>
+            <span class="text-slate-300 dark:text-slate-600 text-[10px] font-black">|</span>
+            <a href="javascript:void(0)" onclick="copyRssLink()" class="text-[10px] font-black text-orange-500 hover:text-[#0284c7] dark:hover:text-orange-400 transition-colors shrink-0 uppercase tracking-wider">RSS</a>
+            <button
+              onclick="closeWelcomeToast()"
+              class="text-slate-400 hover:text-[#0284c7] dark:hover:text-white transition-colors shrink-0 ml-1"
+              aria-label="关闭"
+            >
+              <svg class="w-3 h-3 stroke-[3]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(toast);
+    return toast;
+  }
+
+  function closeWelcomeToast() {
+    const toast = document.getElementById('welcome-toast');
+    if (toast) {
+      toast.classList.remove('translate-y-0', 'opacity-100');
+      toast.classList.add('translate-y-[calc(100%+20px)]', 'opacity-0');
+      setTimeout(() => {
+        toast.remove();
+      }, 500);
+    }
+  }
+
+  async function fetchLocation() {
+    try {
+      const response = await fetch('https://v2.xxapi.cn/api/ip');
+      const data = await response.json();
+
+      if (data.code === 200 && data.data) {
+        const location = data.data;
+        const messageEl = document.getElementById('welcome-message');
+        if (messageEl) {
+          messageEl.textContent = `Hi！来自${location.address}的朋友`;
+        }
+      }
+    } catch {
+      const messageEl = document.getElementById('welcome-message');
+      if (messageEl) {
+        messageEl.textContent = 'Hi！远方的朋友';
+      }
+    }
+  }
+
+  async function fetchStats() {
+    try {
+      const [statsRes, activeRes] = await Promise.allSettled([
+        fetch('https://vapi.upxuu.com/statsapi/alltime'),
+        fetch('https://vapi.upxuu.com/api/active')
+      ]);
+
+      let text = '';
+
+      if (statsRes.status === 'fulfilled') {
+        const data = await statsRes.value.json();
+        if (data) {
+          const pv = typeof data.pageviews === 'object' ? (data.pageviews?.value ?? 0) : (data.pageviews ?? 0);
+          text += `你是第 ${pv.toLocaleString()} 位访客`;
+        }
+      }
+
+      if (activeRes.status === 'fulfilled') {
+        const data = await activeRes.value.json();
+        let active = 0;
+        if (Array.isArray(data)) {
+          active = data.length;
+        } else if (data) {
+          active = data.total ?? data.totals?.visitors?.value ?? data.totals?.pageviews?.value ?? data.sessions?.length ?? 0;
+        }
+        if (active > 0) {
+          text += (text ? ' · ' : '') + `${active} 人在线`;
+        }
+      }
+
+      const statsEl = document.getElementById('welcome-stats');
+      if (statsEl) {
+        statsEl.textContent = text || '';
+      }
+    } catch {
+      const statsEl = document.getElementById('welcome-stats');
+      if (statsEl) statsEl.textContent = '';
+    }
+  }
+
+  async function showWelcomeToast() {
+    if (hasShownToast) return;
+
+    const toast = createWelcomeToast();
+
+    setTimeout(() => {
+      toast.classList.remove('translate-y-[calc(100%+20px)]', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+    }, 100);
+
+    hasShownToast = true;
+
+    await Promise.allSettled([fetchLocation(), fetchStats()]);
+
+    setTimeout(() => {
+      closeWelcomeToast();
+    }, 5000);
+  }
+
+  function shouldShowWelcome() {
+    return !sessionStorage.getItem(VISIT_SESSION_KEY);
+  }
+
+  function markAsVisited() {
+    sessionStorage.setItem(VISIT_SESSION_KEY, 'true');
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (shouldShowWelcome()) {
+        markAsVisited();
+        await showWelcomeToast();
+      }
+    });
+  } else if (shouldShowWelcome()) {
+    markAsVisited();
+    await showWelcomeToast();
+  }
+
+  (window as any).closeWelcomeToast = closeWelcomeToast;
+
+  (window as any).copyRssLink = async () => {
+    try {
+      await navigator.clipboard.writeText('https://upxuu.com/rss.xml');
+    } catch {
+      const input = document.createElement('input');
+      input.value = 'https://upxuu.com/rss.xml';
+      document.body.appendChild(input);
+      input.select();
+      document.execCommand('copy');
+      document.body.removeChild(input);
+    }
+  };
+</script>

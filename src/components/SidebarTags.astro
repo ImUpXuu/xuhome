@@ -1,0 +1,78 @@
+---
+interface Props {
+  tags: { name: string; count: number }[];
+  activeTag: string | null;
+}
+
+const { tags, activeTag } = Astro.props;
+---
+
+{tags.length > 0 && (
+  <div class="bg-white border-2 border-[#0284c7]/30 p-5 rounded-sm w-full animate-card-entrance opacity-0" style="animation-delay: 0.1s">
+    <h3 class="font-black text-[#0284c7] text-lg mb-4 flex items-center gap-2 border-b-2 border-dashed border-[#0284c7]/20 pb-2">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
+      </svg>
+      <span>标签</span>
+    </h3>
+    
+    <div class="flex flex-wrap gap-2" id="sidebar-tags-container">
+      {tags.map((tag, idx) => (
+        <a
+          href={`/tag/${tag.name}`}
+          class={`tag-item text-xs px-2.5 py-1 rounded-sm font-bold transition-all border-2 flex items-center gap-1 border-[#0284c7] ${
+            activeTag === tag.name
+              ? "bg-[#f59e0b] text-white"
+              : "bg-[#faf8f5] text-slate-650 hover:bg-[#fde68a] hover:translate-y-[-1px]"
+          } ${idx >= 18 && !activeTag ? 'hidden' : ''}`}
+        >
+          <span>{tag.name}</span>
+          <span class="text-[9px] opacity-70">({tag.count})</span>
+        </a>
+      ))}
+    </div>
+    
+    {tags.length > 18 && !activeTag && (
+      <button
+        id="toggle-tags-btn"
+        class="w-full mt-4 flex items-center justify-center gap-1 text-xs font-black text-[#0284c7] hover:text-[#0ea5e9] hover:bg-[#fde68a] transition-all py-1.5 bg-[#faf8f5] border-2 border-dashed border-[#0284c7]/20 rounded-sm cursor-pointer"
+      >
+        <span>展开更多...</span>
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor" id="toggle-tags-chevron">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+    )}
+  </div>
+)}
+
+<script is:inline>
+  const toggleBtn = document.getElementById('toggle-tags-btn');
+  const tagsContainer = document.getElementById('sidebar-tags-container');
+  if (toggleBtn && tagsContainer) {
+    let showAll = false;
+    toggleBtn.addEventListener('click', () => {
+      showAll = !showAll;
+      const childs = tagsContainer.querySelectorAll('.tag-item');
+      childs.forEach((child, index) => {
+        if (index >= 18) {
+          if (showAll) {
+            child.classList.remove('hidden');
+          } else {
+            child.classList.add('hidden');
+          }
+        }
+      });
+      
+      const span = toggleBtn.querySelector('span');
+      const chevron = toggleBtn.querySelector('svg');
+      if (showAll) {
+        if (span) span.textContent = '收起';
+        if (chevron) chevron.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />';
+      } else {
+        if (span) span.textContent = '展开更多...';
+        if (chevron) chevron.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />';
+      }
+    });
+  }
+</script>

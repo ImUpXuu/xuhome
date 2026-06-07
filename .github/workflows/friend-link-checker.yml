@@ -1,0 +1,116 @@
+name: Friend Link Checker
+
+on:
+  issues:
+    types: [opened, edited]
+
+jobs:
+  add-friend:
+    if: contains(github.event.issue.title, '友链申请')
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Process friend request
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const { execSync } = require('child_process');
+
+            const body = context.payload.issue.body;
+
+            function extract(key) {
+              const pattern = new RegExp('### ' + key + '\\s*\\n\\s*(.*?)(?=\\n###|\\Z)', 's');
+              const m = body.match(pattern);
+              if (m) {
+                let val = m[1].trim();
+                if (val === 'No response') return '';
+                return val.replace(/^`|`$/g, '').trim();
+              }
+              return '';
+            }
+
+            const name = extract('网站名称');
+            const desc = extract('网站描述');
+            const url = extract('网站链接').replace(/^`|`$/g, '').trim();
+            let avatar = extract('网站头像 URL').replace(/^`|`$/g, '').trim();
+
+            // 自动获取 favicon 作为头像兜底
+            if (!avatar) {
+                try {
+                    const domain = new URL(url).hostname;
+                    avatar = `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
+                } catch {}
+            }
+
+            if (!url) {
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: '## ❌ 友链申请失败\n\n请确保已填写**网站链接**，然后编辑此 Issue 重新触发。'
+              });
+              await github.rest.issues.addLabels({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                labels: ['需处理']
+              });
+              return;
+            }
+
+            const filePath = 'src/config/friends.json';
+            const friends = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+
+            for (const friend of friends) {
+              if (friend.url.replace(/\/$/, '') === url.replace(/\/$/, '')) {
+                await github.rest.issues.createComment({
+                  issue_number: context.issue.number,
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  body: `## ℹ️ 友链已存在\n\n该链接已在友链列表中，无需重复添加。`
+                });
+                await github.rest.issues.update({
+                  issue_number: context.issue.number,
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  state: 'closed'
+                });
+                return;
+              }
+            }
+
+            friends.push({
+              name: name,
+              url: url,
+              avatar: avatar || '',
+              description: desc || ''
+            });
+
+            fs.writeFileSync(filePath, JSON.stringify(friends, null, 2), 'utf-8');
+
+            execSync('git config user.name "github-actions[bot]"');
+            execSync('git config user.email "github-actions[bot]@users.noreply.github.com"');
+            execSync('git add src/config/friends.json');
+            execSync('git commit -m "feat: 添加友链 ' + name + '"');
+            execSync('git push');
+
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## ✅ 友链申请已通过！\n\n感谢申请！友链已成功添加到列表中。\n\n📋 **友链信息**\n- 名称：${name}\n- 链接：${url}\n\n⚡ Vercel 将自动重新部署，几分钟内更新生效。\n\n感谢支持！🎉`
+            });
+            await github.rest.issues.update({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'closed'
+            });

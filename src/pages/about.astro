@@ -1,0 +1,74 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { infoConfig } from '../config/info';
+import { siteConfig } from '../config/site';
+
+const skills = [
+  "React", "TypeScript", "Node.js", "Astro", "Tailwind CSS", 
+  "Next.js", "Vue", "Vite", "Git", "Figma"
+];
+---
+
+<Layout 
+  title="关于我"
+  description="UpXuu的个人介绍、独立开发者履历与前端技术栈栈架构建。"
+  isAboutPage={true}
+>
+  <div class="max-w-[1440px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+    <div class="max-w-4xl mx-auto space-y-8 animate-card-entrance">
+      
+      {/* Profile Header */}
+      <div class="bg-white border-4 border-[#0284c7] p-8 shadow-[8px_8px_0px_0px_#f59e0b] rounded-sm transform -rotate-1 relative">
+        <div class="flex flex-col md:flex-row items-center gap-8">
+          <div class="w-32 h-32 md:w-40 md:h-40 rounded-sm bg-[#0ea5e9] border-4 border-[#0284c7] shadow-[4px_4px_0px_0px_#0284c7] overflow-hidden flex items-center justify-center shrink-0 transform rotate-2 hover:rotate-3 transition-transform">
+            <img src={siteConfig.avatar} alt={siteConfig.author} width="160" height="160" loading="lazy" class="w-full h-full object-cover" />
+          </div>
+          <div class="text-center md:text-left">
+            <h1 class="text-3xl md:text-5xl font-black text-[#0284c7] tracking-wider mb-2">{siteConfig.author}</h1>
+            <p class="text-lg md:text-xl font-bold text-slate-600 mb-4 font-mono select-none">
+              <span class="bg-[#fde68a] px-2 py-0.5 border-2 border-[#0284c7] shadow-[2px_2px_0px_0px_#0284c7] inline-block -rotate-1">前端开发者 / 独立创作者</span>
+            </p>
+            <p class="text-slate-700 leading-relaxed font-medium">
+              你好，世界！我是 {siteConfig.author}。我热爱创造有设计感、高性能的 Web 体验。
+              目前专注于现代前端技术栈的探索与实践。热爱分享，持续折腾。
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {/* Skills */}
+        <div class="bg-white border-4 border-[#0284c7] p-6 shadow-[6px_6px_0px_0px_#10b981] rounded-sm transform rotate-1">
+          <h2 class="text-2xl font-black text-[#0284c7] tracking-wider mb-6 flex items-center gap-2">
+            <span class="text-xl">⚒️</span> 技能栈
+          </h2>
+          <div class="flex flex-wrap gap-3">
+            {skills.map(skill => (
+               <span class="bg-slate-50 border-2 border-[#0284c7] px-3 py-1 font-bold text-slate-700 shadow-[2px_2px_0px_0px_#0284c7] hover:bg-[#0284c7] hover:text-white transition-colors cursor-default text-sm">
+                 {skill}
+               </span>
+            ))}
+          </div>
+        </div>
+
+        {/* Contact/Find Me */}
+        <div class="bg-white border-4 border-[#0284c7] p-6 shadow-[6px_6px_0px_0px_#0ea5e9] rounded-sm transform -rotate-1">
+          <h2 class="text-2xl font-black text-[#0284c7] tracking-wider mb-6 flex items-center gap-2">
+            <span class="text-xl">📫</span> 找到我
+          </h2>
+          <div class="space-y-4">
+            <a href="https://github.com/upxuu" target="_blank" class="flex items-center gap-3 p-3 border-2 border-[#0284c7] hover:bg-[#0ea5e9] hover:text-white transition-colors shadow-[2px_2px_0px_0px_#0284c7] group">
+              <span class="font-black text-lg">GitHub</span>
+              <span class="font-mono text-sm ml-auto opacity-70 group-hover:opacity-100">@upxuu</span>
+            </a>
+            <a href={`mailto:${infoConfig.footer.copyrightText}`} class="flex items-center gap-3 p-3 border-2 border-[#0284c7] hover:bg-[#10b981] hover:text-white transition-colors shadow-[2px_2px_0px_0px_#0284c7] group">
+              <span class="font-black text-lg">Email</span>
+              <span class="font-mono text-sm ml-auto opacity-70 group-hover:opacity-100">联系我</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</Layout>

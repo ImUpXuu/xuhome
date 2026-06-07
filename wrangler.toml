@@ -1,0 +1,7 @@
+name = "xuhome"
+compatibility_date = "2025-04-01"
+main = "src/worker.js"
+
+[assets]
+directory = "./dist"
+binding = "ASSETS"

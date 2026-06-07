@@ -1,0 +1,88 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getProcessedPosts } from '../../utils/postsFetcher';
+import HorizontalCategories from '../../components/HorizontalCategories.astro';
+import SidebarTags from '../../components/SidebarTags.astro';
+import PostsTimelineWidget from '../../components/PostsTimelineWidget.astro';
+import CalendarWidget from '../../components/CalendarWidget.svelte';
+import SearchablePosts from '../../components/SearchablePosts.svelte';
+
+export async function getStaticPaths() {
+  const allPosts = await getProcessedPosts();
+  const categoriesSet = new Set(allPosts.map(p => p.category).filter(Boolean));
+  return Array.from(categoriesSet).map((catName) => {
+    return {
+      params: { categoryName: catName }
+    };
+  });
+}
+
+const { categoryName } = Astro.params;
+const allPosts = await getProcessedPosts();
+
+// Filter posts in this category
+const catPosts = allPosts.filter(p => p.category === categoryName);
+
+// Process global tag and category counts for state layouts
+const catMap: Record<string, number> = {};
+const tagMap: Record<string, number> = {};
+
+allPosts.forEach(post => {
+  if (post.category) {
+    catMap[post.category] = (catMap[post.category] || 0) + 1;
+  }
+  if (post.tags) {
+    post.tags.forEach(tag => {
+      tagMap[tag] = (tagMap[tag] || 0) + 1;
+    });
+  }
+});
+
+const categories = Object.entries(catMap)
+  .map(([name, count]) => ({ name, count }))
+  .sort((a, b) => b.count - a.count);
+  
+const tags = Object.entries(tagMap)
+  .map(([name, count]) => ({ name, count }))
+  .sort((a, b) => b.count - a.count);
+---
+
+<Layout 
+  title={`${categoryName} 分类`}
+  categoryName={categoryName}
+  postsCount={catPosts.length}
+>
+  <HorizontalCategories 
+    categories={categories} 
+    activeCategory={categoryName} 
+  />
+
+  <div class="flex flex-col xl:flex-row gap-4 sm:gap-6 xl:gap-8 items-start justify-center">
+    {/* Left Sidebar */}
+    <div 
+      id="sidebar-left"
+      class="w-full xl:w-[260px] shrink-0 flex flex-col gap-4 sm:gap-6 xl:sticky xl:top-[100px] order-2 xl:order-1"
+      transition:name="sidebar-left"
+    >
+      <div class="hidden xl:block">
+        <CalendarWidget posts={catPosts} client:idle />
+      </div>
+      <SidebarTags tags={tags} activeTag={null} />
+    </div>
+
+    {/* Center Articles Feed */}
+    <div class="w-full xl:flex-1 min-w-0 flex flex-col gap-4 order-1 xl:order-2">
+      <SearchablePosts posts={catPosts} client:load />
+    </div>
+
+    {/* Right Sidebar */}
+    <div 
+      id="sidebar-right"
+      class="w-full xl:w-[260px] shrink-0 flex flex-col gap-4 sm:gap-6 xl:sticky xl:top-[100px] order-3 xl:order-3"
+      transition:name="sidebar-right"
+    >
+
+      <PostsTimelineWidget posts={catPosts} />
+    </div>
+  </div>
+</Layout>

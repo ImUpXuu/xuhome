@@ -1,0 +1,67 @@
+name: 🤝 申请友链
+description: 申请与 UpXuu 的博客交换友链
+title: "[友链申请] "
+labels: ["友链申请"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        # 🤝 友链申请
+
+        请填写以下信息，我们将在收到申请后尽快审核。
+        由于博主实在学业繁忙 action运行失败时可能不能及时手动添加 请见谅
+        ## 申请要求
+        1. 在你的网站添加本站友链
+        2. 内容符合法律法规
+        3. 全球可联通
+
+        ## 友链信息
+        - **名称**: UpXuu's blog
+        - **链接**: `https://upxuu.com`
+        - **头像**: `https://upxuu.com/images/20260214145619.jpg`
+        - **描述**: 逐光而上
+
+  - type: input
+    id: name
+    attributes:
+      label: "网站名称"
+      description: "你的网站名称"
+      placeholder: "例如：My Blog"
+    validations:
+      required: true
+
+  - type: input
+    id: url
+    attributes:
+      label: "网站链接"
+      description: "你的网站 URL（完整的 URL，包含 https://）"
+      placeholder: "https://example.com"
+    validations:
+      required: true
+
+  - type: input
+    id: friend_url
+    attributes:
+      label: "友链页面 URL"
+      description: "你网站上添加本站友链的页面链接"
+      placeholder: "https://example.com/friends"
+    validations:
+      required: true
+
+  - type: input
+    id: description
+    attributes:
+      label: "网站描述"
+      description: "简短描述你的网站（一句话即可）"
+      placeholder: "例如：记录技术与生活的个人博客"
+    validations:
+      required: false
+
+  - type: input
+    id: avatar
+    attributes:
+      label: "网站头像 URL"
+      description: "你的网站头像/Logo 的图片链接（可选）"
+      placeholder: "https://example.com/avatar.png"
+    validations:
+      required: false
