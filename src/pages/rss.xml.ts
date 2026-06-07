@@ -24,27 +24,29 @@ export async function GET(context: any) {
 
   const items = [
     ...rawPosts.map((post: any) => {
-      const data = post.data;
-      const slug = (data.slug || post.slug || post.id).trim();
+      const slug = (post.data.slug || post.slug || post.id).trim();
       const body = typeof post.body === 'string' ? post.body : '';
       const cleaned = stripInvalidXmlChars(body);
       const html = parser.render(cleaned);
       return {
-        title: data.title || '无标题文章',
-        pubDate: toDate(data.date || data.published),
-        description: data.description || data.summary || '',
-        link: `/posts/${slug}`,
+        title: post.data.title || '无标题文章',
+        pubDate: toDate(post.data.date || post.data.published),
+        description: post.data.description || post.data.summary || '',
+        link: `/posts/${slug}/`,
         content: sanitizeHtml(html, { allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img']) }),
       };
     }),
     ...rawTalks.map((talk: any) => {
-      const data = talk.data;
-      const slug = (data.slug || talk.slug || talk.id).trim();
+      const slug = (talk.data.slug || talk.slug || talk.id).trim();
+      const body = typeof talk.body === 'string' ? talk.body : '';
+      const cleaned = stripInvalidXmlChars(body);
+      const html = parser.render(cleaned);
       return {
-        title: data.title || '日常动态',
-        pubDate: toDate(data.date),
-        description: (talk.body || '').substring(0, 200).replace(/[#*`_\[\]()\-]/g, '').trim(),
-        link: `/talk/${slug}`,
+        title: talk.data.title || '日常动态',
+        pubDate: toDate(talk.data.date),
+        description: (body || '').substring(0, 200).replace(/[#*`_\[\]()\-]/g, '').trim(),
+        link: `/talk/${slug}/`,
+        content: sanitizeHtml(html, { allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img']) }),
       };
     }),
   ].sort((a, b) => b.pubDate.getTime() - a.pubDate.getTime());
@@ -54,8 +56,11 @@ export async function GET(context: any) {
     description: siteConfig.subtitle || '',
     site: siteUrl,
     items,
-    trailingSlash: false,
-    xmlns: { atom: 'http://www.w3.org/2005/Atom' },
+    trailingSlash: true,
+    xmlns: {
+      atom: 'http://www.w3.org/2005/Atom',
+      content: 'http://purl.org/rss/1.0/modules/content/',
+    },
     customData: [
       '<language>zh-CN</language>',
       `<atom:link href="${siteUrl}/rss.xml" rel="self" type="application/rss+xml"/>`,
