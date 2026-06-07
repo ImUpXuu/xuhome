@@ -127,7 +127,7 @@ const allTalksData = await getProcessedTalks();
           <AiSummary url={Astro.url.href} toc={toc} client:idle />
 
           {/* Prose Content block */}
-          <div class="prose prose-slate dark:prose-invert prose-lg max-w-none w-full min-w-0 break-words overflow-x-hidden prose-headings:font-black prose-headings:text-[#0284c7] dark:prose-headings:text-[#0ea5e9] prose-a:text-[#0ea5e9] prose-a:font-bold">
+          <div class="prose prose-slate dark:prose-invert prose-lg max-w-none w-full min-w-0 break-words overflow-x-auto prose-headings:font-black prose-headings:text-[#0284c7] dark:prose-headings:text-[#0ea5e9] prose-a:text-[#0ea5e9] prose-a:font-bold">
             <Content />
           </div>
         </article>
