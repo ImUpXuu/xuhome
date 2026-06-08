@@ -6,10 +6,14 @@ import sanitizeHtml from 'sanitize-html';
 
 const parser = new MarkdownIt();
 
+const RSS_ITEM_LIMIT = 20;
+
+const FALLBACK_DATE = new Date('2025-01-01T00:00:00Z');
+
 function toDate(raw: any): Date {
-  if (!raw) return new Date();
+  if (!raw) return FALLBACK_DATE;
   const d = new Date(raw);
-  return isNaN(d.getTime()) ? new Date() : d;
+  return isNaN(d.getTime()) ? FALLBACK_DATE : d;
 }
 
 function stripInvalidXmlChars(str: string): string {
@@ -29,10 +33,10 @@ export async function GET(context: any) {
       const cleaned = stripInvalidXmlChars(body);
       const html = parser.render(cleaned);
       return {
-        title: post.data.title || '无标题文章',
+        title: `【专栏】${post.data.title || '无标题文章'}`,
         pubDate: toDate(post.data.date || post.data.published),
         description: post.data.description || post.data.summary || '',
-        link: `/posts/${slug}/`,
+        link: `/posts/${encodeURIComponent(slug)}/`,
         content: sanitizeHtml(html, { allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img']) }),
       };
     }),
@@ -42,14 +46,17 @@ export async function GET(context: any) {
       const cleaned = stripInvalidXmlChars(body);
       const html = parser.render(cleaned);
       return {
-        title: talk.data.title || '日常动态',
-        pubDate: toDate(talk.data.date),
+        title: `【动态】${talk.data.title || '日常动态'}`,
+        pubDate: toDate(talk.data.date || talk.data.published),
         description: (body || '').substring(0, 200).replace(/[#*`_\[\]()\-]/g, '').trim(),
-        link: `/talk/${slug}/`,
+        link: `/talk/${encodeURIComponent(slug)}/`,
         content: sanitizeHtml(html, { allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img']) }),
       };
     }),
-  ].sort((a, b) => b.pubDate.getTime() - a.pubDate.getTime());
+  ]
+    .filter(item => item.pubDate.getTime() !== FALLBACK_DATE.getTime())
+    .sort((a, b) => b.pubDate.getTime() - a.pubDate.getTime())
+    .slice(0, RSS_ITEM_LIMIT);
 
   return rss({
     title: siteConfig.title,
