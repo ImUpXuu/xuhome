@@ -182,7 +182,7 @@
               {#if post.category}
                 <a 
                   href={`/category/${post.category}`}
-                  class="bg-[#fde68a] border-2 border-[#0284c7] px-2 py-0.5 shadow-[1px_1px_0px_0px_#0284c7] text-[#0284c7] font-bold text-[10px] md:text-xs hover:bg-[#0284c7] hover:text-white transition-colors uppercase cursor-pointer shrink-0"
+                  class="bg-[#fde68a] dark:bg-amber-700/50 border-2 border-[#0284c7] px-2 py-0.5 shadow-[1px_1px_0px_0px_#0284c7] text-[#0284c7] font-bold text-[10px] md:text-xs hover:bg-[#0284c7] hover:text-white transition-colors uppercase cursor-pointer shrink-0"
                 >
                   {post.category}
                 </a>
@@ -249,7 +249,7 @@
           </div>
 
           <!-- Mobile page indicator -->
-          <div class="sm:hidden px-4 h-10 flex items-center justify-center font-black text-sm font-mono text-[#0284c7] bg-[#fde68a] border-3 border-[#0284c7] shadow-[3px_3px_0px_0px_#0284c7] rounded-sm">
+          <div class="sm:hidden px-4 h-10 flex items-center justify-center font-black text-sm font-mono text-[#0284c7] bg-[#fde68a] dark:bg-amber-700/50 border-3 border-[#0284c7] shadow-[3px_3px_0px_0px_#0284c7] rounded-sm">
             {currentPage} / {totalPages}
           </div>
 
@@ -273,7 +273,7 @@
               min="1" 
               max={totalPages}
               placeholder="跳转..."
-              class="w-20 pl-3 pr-2 py-1.5 text-sm font-bold border-3 border-[#0284c7] rounded-sm bg-white focus:outline-none focus:shadow-[2px_2px_0px_0px_#0284c7] transition-all placeholder-slate-400 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              class="w-20 pl-3 pr-2 py-1.5 text-sm font-bold border-3 border-[#0284c7] rounded-sm bg-white dark:bg-slate-700 dark:text-slate-200 focus:outline-none focus:shadow-[2px_2px_0px_0px_#0284c7] transition-all placeholder-slate-400 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               on:keydown={(e) => {
                 if (e.key === 'Enter') {
                   const val = parseInt(e.currentTarget.value);

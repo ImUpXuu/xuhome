@@ -53,14 +53,14 @@
 <div class="max-w-[800px] mx-auto w-full space-y-6">
   <!-- Back button -->
   <div class="mb-6 flex justify-start select-none animate-card-entrance opacity-0">
-     <a href="/talks" class="px-3 py-1.5 border-3 border-[#0284c7] bg-white text-[#0284c7] flex items-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm shadow-[4px_4px_0px_0px_#0284c7] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all font-black uppercase text-xs">
+     <a href="/talks" class="px-3 py-1.5 border-3 border-[#0284c7] bg-white dark:bg-slate-700 text-[#0284c7] dark:text-slate-200 flex items-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm shadow-[4px_4px_0px_0px_#0284c7] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all font-black uppercase text-xs">
         <span>&lsaquo; BACK TO TALKS</span>
      </a>
   </div>
 
   <!-- Main Talk Card -->
   <div 
-    class="bg-white border-4 border-[#0284c7] p-5 md:p-6 shadow-[10px_10px_0px_0px_#f59e0b] rounded-sm relative animate-card-entrance opacity-0"
+    class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] p-5 md:p-6 shadow-[10px_10px_0px_0px_#f59e0b] rounded-sm relative animate-card-entrance opacity-0"
     style="animation-delay: 0.06s"
   >
     <!-- Avatar & Meta Header -->
@@ -86,7 +86,7 @@
     </div>
 
     <!-- Content area -->
-    <div class="talk-content mt-2 pl-0 sm:pl-[64px] text-base text-slate-700">
+    <div class="talk-content mt-2 pl-0 sm:pl-[64px] text-base text-slate-700 dark:text-slate-300">
       {#if talk.title && talk.title !== '日常动态'}
         <div class="flex items-center gap-2 mb-2 select-none">
           <span class="w-2 h-2 bg-[#f59e0b] border border-[#0284c7] inline-block shadow-[1px_1px_0px_0px_#0284c7] skew-x-12"></span>
@@ -95,7 +95,7 @@
       {/if}
       
       {#if textOnly}
-        <div class="prose prose-lg max-w-none text-slate-755 leading-relaxed font-medium">
+        <div class="prose prose-lg max-w-none text-slate-755 dark:text-slate-300 leading-relaxed font-medium">
           {@html formatMarkdown(textOnly)}
         </div>
       {/if}
@@ -117,7 +117,7 @@
 
       <!-- Bottom Metadata: Location, Weather, Device -->
       {#if talk.location || talk.weather || talk.device}
-        <div class="mt-4 flex flex-wrap gap-3 items-center text-xs font-bold text-slate-500 select-none border-t border-dashed border-slate-100 pt-3">
+        <div class="mt-4 flex flex-wrap gap-3 items-center text-xs font-bold text-slate-500 dark:text-slate-400 select-none border-t border-dashed border-slate-100 dark:border-slate-700 pt-3">
           {#if talk.location}
             <span class="flex items-center gap-1 hover:text-[#0284c7] transition-colors"><span>📍</span> {talk.location}</span>
           {/if}
@@ -125,7 +125,7 @@
             <span class="flex items-center gap-1 hover:text-[#0284c7] transition-colors"><span>⛅</span> {talk.weather}</span>
           {/if}
           {#if talk.device}
-            <span class="flex items-center gap-1 hover:text-[#0284c7] transition-colors font-mono"><span class="text-slate-400">📱</span> {talk.device}</span>
+            <span class="flex items-center gap-1 hover:text-[#0284c7] transition-colors font-mono"><span class="text-slate-400 dark:text-slate-500">📱</span> {talk.device}</span>
           {/if}
         </div>
       {/if}
@@ -134,11 +134,11 @@
     <!-- Share footer -->
     <div class="mt-8 border-t-2 border-dashed border-[#0284c7]/20 pt-4 flex justify-between items-center pl-0 sm:pl-[64px]">
        <div class="flex gap-3">
-         <button class="flex items-center gap-1.5 px-3 py-1.5 border-2 border-[#0284c7] bg-white text-[#0284c7] text-xs font-black shadow-[2px_2px_0px_0px_#0284c7] hover:bg-[#0284c7] hover:text-white transition-colors cursor-pointer rounded-sm transform active:translate-y-0.5 active:shadow-[0px_0px_0px_0px_#0284c7]">
+         <button class="flex items-center gap-1.5 px-3 py-1.5 border-2 border-[#0284c7] bg-white dark:bg-slate-700 text-[#0284c7] text-xs font-black shadow-[2px_2px_0px_0px_#0284c7] hover:bg-[#0284c7] hover:text-white transition-colors cursor-pointer rounded-sm transform active:translate-y-0.5 active:shadow-[0px_0px_0px_0px_#0284c7]">
            🤍 LIKE
          </button>
        </div>
-       <div class="text-[10px] uppercase font-mono font-bold text-slate-400 select-none">
+       <div class="text-[10px] uppercase font-mono font-bold text-slate-400 dark:text-slate-500 select-none">
           ID: {talk.id}
        </div>
     </div>
@@ -148,7 +148,7 @@
   <div id="waline-placeholder"></div>
 
   <div class="mt-8 text-center flex justify-center pb-12 select-none">
-      <a href="/talks" class="px-6 py-3 border-4 border-[#0284c7] text-[#0284c7] bg-white font-black hover:bg-[#0284c7] hover:text-white transition-all cursor-pointer rounded-sm shadow-[6px_6px_0px_0px_#0284c7] uppercase tracking-widest text-sm flex items-center justify-center hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none">
+      <a href="/talks" class="px-6 py-3 border-4 border-[#0284c7] text-[#0284c7] bg-white dark:bg-slate-700 font-black hover:bg-[#0284c7] hover:text-white transition-all cursor-pointer rounded-sm shadow-[6px_6px_0px_0px_#0284c7] uppercase tracking-widest text-sm flex items-center justify-center hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none">
         返回列表 / Back to Talks
       </a>
   </div>
@@ -157,7 +157,7 @@
 <!-- Floating share trigger (bottom-right) -->
 <button
   on:click={openShare}
-  class="fixed bottom-[5.5rem] right-6 z-[2000] w-12 h-12 rounded-sm border-3 sm:border-4 border-[#0284c7] bg-[#fde68a] text-[#0284c7] flex items-center justify-center cursor-pointer shadow-[4px_4px_0px_0px_#0284c7] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#0284c7] active:translate-y-0 active:shadow-none transition-all duration-150"
+  class="fixed bottom-[5.5rem] right-6 z-[2000] w-12 h-12 rounded-sm border-3 sm:border-4 border-[#0284c7] bg-[#fde68a] dark:bg-amber-700/50 text-[#0284c7] flex items-center justify-center cursor-pointer shadow-[4px_4px_0px_0px_#0284c7] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#0284c7] active:translate-y-0 active:shadow-none transition-all duration-150"
   aria-label="分享"
 >
   <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 sm:w-6 sm:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">

@@ -8,7 +8,7 @@ const { tags, activeTag } = Astro.props;
 ---
 
 {tags.length > 0 && (
-  <div class="bg-white border-2 border-[#0284c7]/30 p-5 rounded-sm w-full animate-card-entrance opacity-0" style="animation-delay: 0.1s">
+  <div class="bg-white dark:bg-slate-800 border-2 border-[#0284c7]/30 p-5 rounded-sm w-full animate-card-entrance opacity-0" style="animation-delay: 0.1s">
     <h3 class="font-black text-[#0284c7] text-lg mb-4 flex items-center gap-2 border-b-2 border-dashed border-[#0284c7]/20 pb-2">
       <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
@@ -23,7 +23,7 @@ const { tags, activeTag } = Astro.props;
           class={`tag-item text-xs px-2.5 py-1 rounded-sm font-bold transition-all border-2 flex items-center gap-1 border-[#0284c7] ${
             activeTag === tag.name
               ? "bg-[#f59e0b] text-white"
-              : "bg-[#faf8f5] text-slate-650 hover:bg-[#fde68a] hover:translate-y-[-1px]"
+              : "bg-[#faf8f5] dark:bg-slate-700 text-slate-650 dark:text-slate-200 hover:bg-[#fde68a] hover:translate-y-[-1px]"
           } ${idx >= 18 && !activeTag ? 'hidden' : ''}`}
         >
           <span>{tag.name}</span>
@@ -35,7 +35,7 @@ const { tags, activeTag } = Astro.props;
     {tags.length > 18 && !activeTag && (
       <button
         id="toggle-tags-btn"
-        class="w-full mt-4 flex items-center justify-center gap-1 text-xs font-black text-[#0284c7] hover:text-[#0ea5e9] hover:bg-[#fde68a] transition-all py-1.5 bg-[#faf8f5] border-2 border-dashed border-[#0284c7]/20 rounded-sm cursor-pointer"
+        class="w-full mt-4 flex items-center justify-center gap-1 text-xs font-black text-[#0284c7] hover:text-[#0ea5e9] hover:bg-[#fde68a] transition-all py-1.5 bg-[#faf8f5] dark:bg-slate-700 border-2 border-dashed border-[#0284c7]/20 rounded-sm cursor-pointer"
       >
         <span>展开更多...</span>
         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor" id="toggle-tags-chevron">

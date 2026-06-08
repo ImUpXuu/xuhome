@@ -175,7 +175,7 @@
       {#each allTags as tag}
         <button
           on:click={() => handleTagSelect(tag)}
-          class="text-xs px-2.5 py-1 rounded-sm font-bold transition-all border-2 border-[#0284c7] shadow-[2px_2px_0px_0px_#0284c7] cursor-pointer flex items-center gap-1 {selectedTag === tag ? 'bg-[#f59e0b] text-white' : 'bg-[#faf8f5] text-slate-700 hover:bg-[#fde68a] hover:translate-y-[-1px]'}"
+          class="text-xs px-2.5 py-1 rounded-sm font-bold transition-all border-2 border-[#0284c7] shadow-[2px_2px_0px_0px_#0284c7] cursor-pointer flex items-center gap-1 {selectedTag === tag ? 'bg-[#f59e0b] text-white' : 'bg-[#faf8f5] dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-[#fde68a] hover:translate-y-[-1px]'}"
         >
           <span>#{tag}</span>
         </button>
@@ -183,7 +183,7 @@
       {#if selectedTag}
         <button
           on:click={() => handleTagSelect(null)}
-          class="text-xs px-2.5 py-1 rounded-sm font-bold transition-all border-2 border-red-400 shadow-[2px_2px_0px_0px_red-400] cursor-pointer bg-red-50 text-red-600 hover:bg-red-100"
+          class="text-xs px-2.5 py-1 rounded-sm font-bold transition-all border-2 border-red-400 shadow-[2px_2px_0px_0px_red-400] cursor-pointer bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/50"
         >
           清除筛选
         </button>
@@ -191,7 +191,7 @@
     </div>
   {/if}
     {#if displayedTalks.length === 0}
-      <div class="bg-white border-4 border-[#0284c7] p-12 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm text-center">
+      <div class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] p-12 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm text-center">
         <p class="text-[#0284c7] font-black tracking-widest uppercase">哎呀，没有找到相关的说说</p>
       </div>
     {/if}
@@ -204,14 +204,14 @@
       <!-- svelte-ignore a11y-no-static-element-interactions -->
       <div 
         id={`talk-${talk.id}`}
-        class="bg-white border-4 border-[#0284c7] p-5 md:p-6 shadow-[8px_8px_0px_0px_#0284c7] hover:shadow-[10px_10px_0px_0px_#f59e0b] hover:-translate-y-1 transition-all rounded-sm relative group cursor-pointer animate-card-entrance opacity-0"
+        class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] p-5 md:p-6 shadow-[8px_8px_0px_0px_#0284c7] hover:shadow-[10px_10px_0px_0px_#f59e0b] hover:-translate-y-1 transition-all rounded-sm relative group cursor-pointer animate-card-entrance opacity-0"
         style="animation-delay: {0.2 + (i % 12) * 0.05}s"
         on:click={() => window.location.href = `/talk/${talk.slug}`}
       >
         <!-- Share Button -->
         <button
           on:click={(e) => openShare(talk, e)}
-          class="absolute top-4 right-4 p-1.5 sm:p-2 border-2 border-[#0284c7] text-xs font-black rounded-sm transition-all cursor-pointer z-10 flex items-center justify-center gap-1 shadow-[2px_2px_0px_0px_#0284c7] h-8 sm:h-9 bg-[#faf8f5] text-[#0284c7] hover:bg-[#fde68a] hover:-translate-y-0.5 active:translate-y-0 active:shadow-none"
+          class="absolute top-4 right-4 p-1.5 sm:p-2 border-2 border-[#0284c7] text-xs font-black rounded-sm transition-all cursor-pointer z-10 flex items-center justify-center gap-1 shadow-[2px_2px_0px_0px_#0284c7] h-8 sm:h-9 bg-[#faf8f5] dark:bg-slate-700 text-[#0284c7] hover:bg-[#fde68a] hover:-translate-y-0.5 active:translate-y-0 active:shadow-none"
           title="分享 / Share"
         >
           <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 stroke-[3]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -240,7 +240,7 @@
         </div>
 
         <!-- Content area -->
-        <div class="talk-content mt-2 pl-1 sm:pl-[56px] text-sm text-slate-700">
+        <div class="talk-content mt-2 pl-1 sm:pl-[56px] text-sm text-slate-700 dark:text-slate-300">
           {#if talk.title && talk.title !== '日常动态'}
             <div class="flex items-center gap-2 mb-2 select-none">
               <span class="w-2 h-2 bg-[#f59e0b] border border-[#0284c7] inline-block shadow-[1px_1px_0px_0px_#0284c7] skew-x-12"></span>
@@ -250,7 +250,7 @@
           
           {#if textOnly}
             <div class="talk-fold-wrap">
-              <div class="prose max-w-none text-slate-755 leading-relaxed font-medium">
+              <div class="prose max-w-none text-slate-755 dark:text-slate-300 leading-relaxed font-medium">
                 {@html formatMarkdown(textOnly)}
               </div>
             </div>
@@ -273,7 +273,7 @@
 
           <!-- Bottom Metadata: Location, Weather, Device -->
           {#if talk.location || talk.weather || talk.device}
-            <div class="mt-4 flex flex-wrap gap-3 items-center text-[10px] sm:text-xs font-bold text-slate-500 select-none border-t border-dashed border-slate-100 pt-2.5">
+            <div class="mt-4 flex flex-wrap gap-3 items-center text-[10px] sm:text-xs font-bold text-slate-500 dark:text-slate-400 select-none border-t border-dashed border-slate-100 dark:border-slate-700 pt-2.5">
               {#if talk.location}
                 <span class="flex items-center gap-1 hover:text-[#0284c7] transition-colors"><span>📍</span> {talk.location}</span>
               {/if}
@@ -294,13 +294,13 @@
         <button
           on:click={prevPage}
           disabled={currentPage === 1}
-          class="w-10 h-10 flex items-center justify-center bg-white border-3 border-[#0284c7] rounded-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer shadow-[4px_4px_0px_0px_#0284c7] disabled:shadow-none"
+          class="w-10 h-10 flex items-center justify-center bg-white dark:bg-slate-700 border-3 border-[#0284c7] rounded-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer shadow-[4px_4px_0px_0px_#0284c7] disabled:shadow-none"
         >
           <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 stroke-[3]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
           </svg>
         </button>
-        <div class="h-10 px-4 flex items-center justify-center font-black font-mono text-[#0284c7] bg-[#fde68a] border-3 border-[#0284c7] shadow-[4px_4px_0px_0px_#0284c7] rounded-sm select-none">
+        <div class="h-10 px-4 flex items-center justify-center font-black font-mono text-[#0284c7] bg-[#fde68a] dark:bg-amber-700/50 border-3 border-[#0284c7] shadow-[4px_4px_0px_0px_#0284c7] rounded-sm select-none">
           {currentPage} / {totalPages}
         </div>
         <button
