@@ -54,16 +54,36 @@
     }
   }
 
-  async function fetchLocation() {
+  async function fetchLocationAndWeather() {
     try {
-      const response = await fetch('https://v2.xxapi.cn/api/ip');
+      const response = await fetch('https://uapis.cn/api/v1/misc/weather');
       const data = await response.json();
 
-      if (data.code === 200 && data.data) {
-        const location = data.data;
-        const messageEl = document.getElementById('welcome-message');
-        if (messageEl) {
-          messageEl.textContent = `Hi！来自${location.address}的朋友`;
+      const messageEl = document.getElementById('welcome-message');
+      if (!messageEl) return;
+
+      const city = data.city || '';
+      const district = data.district || '';
+      const weather = data.weather || '';
+      const temp = data.temperature ?? '';
+
+      const loc = district ? `${city}${district}` : city;
+      const weatherText = weather && temp !== '' ? `${weather} ${temp}°C` : '';
+      const parts = [`Hi！来自${loc || '远方'}的朋友`];
+      if (weatherText) parts.push(weatherText);
+      messageEl.textContent = parts.join(' · ');
+
+      if (data.alerts && data.alerts.length > 0) {
+        const toastInner = messageEl.closest('[class*="bg-"]');
+        if (toastInner) {
+          const btn = document.createElement('button');
+          btn.className = 'text-[10px] font-black text-red-500 hover:text-red-600 transition-colors shrink-0 ml-1';
+          btn.textContent = `⚠${data.alerts.length}条预警`;
+          btn.onclick = () => {
+            const info = data.alerts[0];
+            window.alert(`${info.title}\n\n${info.text}`);
+          };
+          toastInner.querySelector('.flex-wrap')?.appendChild(btn);
         }
       }
     } catch {
@@ -126,7 +146,7 @@
 
     hasShownToast = true;
 
-    await Promise.allSettled([fetchLocation(), fetchStats()]);
+    await Promise.allSettled([fetchLocationAndWeather(), fetchStats()]);
 
     setTimeout(() => {
       closeWelcomeToast();
