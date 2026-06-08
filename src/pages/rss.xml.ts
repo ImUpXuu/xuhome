@@ -6,8 +6,6 @@ import sanitizeHtml from 'sanitize-html';
 
 const parser = new MarkdownIt();
 
-const RSS_ITEM_LIMIT = 20;
-
 const FALLBACK_DATE = new Date('2025-01-01T00:00:00Z');
 
 function toDate(raw: any): Date {
@@ -55,8 +53,7 @@ export async function GET(context: any) {
     }),
   ]
     .filter(item => item.pubDate.getTime() !== FALLBACK_DATE.getTime())
-    .sort((a, b) => b.pubDate.getTime() - a.pubDate.getTime())
-    .slice(0, RSS_ITEM_LIMIT);
+    .sort((a, b) => b.pubDate.getTime() - a.pubDate.getTime());
 
   return rss({
     title: siteConfig.title,
