@@ -23,5 +23,5 @@ const { talk } = Astro.props;
   description={talk.content.substring(0, 150)}
 >
   <SvelteTalkDetail talk={talk} client:load />
-  <WalineComment path={`/talk/${talk.slug}`} client:idle />
+  <WalineComment client:idle />
 </Layout>

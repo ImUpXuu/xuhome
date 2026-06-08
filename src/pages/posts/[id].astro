@@ -236,7 +236,7 @@ const allTalksData = await getProcessedTalks();
 
         {/* Talk ticker and Waline integration */}
         <TalkTicker talks={allTalksData} client:only="react" />
-        <WalineComment path={`/posts/${post.slug}`} client:idle />
+        <WalineComment client:idle />
       </div>
 
       {/* Right Desktop Sticky TOC Side Menu */}

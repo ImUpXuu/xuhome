@@ -2,11 +2,7 @@ import { useEffect, useRef } from 'react';
 import { init } from '@waline/client';
 import '@waline/client/waline.css';
 
-interface WalineCommentProps {
-  path?: string;
-}
-
-export function WalineComment({ path }: WalineCommentProps) {
+export function WalineComment() {
   const containerRef = useRef<HTMLDivElement>(null);
   const walineInstanceConfig = useRef<any>(null);
 
@@ -20,20 +16,11 @@ export function WalineComment({ path }: WalineCommentProps) {
     };
     window.addEventListener('unhandledrejection', handleRejection);
 
-    let activePath = path || window.location.pathname;
-    if (!activePath.endsWith('/')) {
-      activePath += '/';
-    }
-
     if (containerRef.current) {
       walineInstanceConfig.current = init({
         el: containerRef.current,
         serverURL: 'https://com4.upxuu.com',
-        path: activePath,
         dark: 'html.dark',
-        emoji: [
-          'https://emoji.upxuu.com/bilibili'
-        ],
         search: false,
         imageUploader: false,
       });
@@ -43,7 +30,7 @@ export function WalineComment({ path }: WalineCommentProps) {
       walineInstanceConfig.current?.destroy();
       window.removeEventListener('unhandledrejection', handleRejection);
     };
-  }, [path]);
+  }, []);
 
   return (
     <div className="waline-custom-theme bg-white dark:bg-slate-800 border-4 border-[#0284c7] p-3 sm:p-5 shadow-[6px_6px_0px_0px_#0284c7] sm:shadow-[8px_8px_0px_0px_#0284c7] rounded-sm mt-8">
