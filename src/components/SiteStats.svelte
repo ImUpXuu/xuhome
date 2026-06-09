@@ -30,7 +30,7 @@
         if (Array.isArray(data)) {
           active = data.length;
         } else if (data) {
-          active = data.total ?? data.totals?.visitors?.value ?? data.totals?.pageviews?.value ?? data.sessions?.length ?? 0;
+          active = data.total ?? data.visitors ?? data.totals?.visitors?.value ?? data.totals?.pageviews?.value ?? data.sessions?.length ?? 0;
         }
       }
     } catch {}
