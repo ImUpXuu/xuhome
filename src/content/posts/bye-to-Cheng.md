@@ -2,10 +2,12 @@
 title: "中考前一周，提前和生物老师再见..."
 date: "2026-06-12"
 description: "谨以本文予吾程老师"
-img: ""
+img: "https://edit.upxuu.com/img/2026/6/12/20260612222321_404.png"
 tags: ["生活"]
 category: "生活"
 ---
+
+![image_1a3831da.png](https://edit.upxuu.com/img/2026/6/12/20260612222321_404.png)
 
 这学期刚一开学，我们就发现程的肚子有些大，当时还在想不会真的在中考前休假想不到竟真的成真了...
 
