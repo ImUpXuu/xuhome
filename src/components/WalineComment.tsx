@@ -17,9 +17,12 @@ export function WalineComment() {
     window.addEventListener('unhandledrejection', handleRejection);
 
     if (containerRef.current) {
+      let p = window.location.pathname;
+      if (!p.endsWith('/')) p += '/';
       walineInstanceConfig.current = init({
         el: containerRef.current,
         serverURL: 'https://com4.upxuu.com',
+        path: p,
         dark: 'html.dark',
         search: false,
         imageUploader: false,
