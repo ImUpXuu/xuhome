@@ -3,64 +3,66 @@ import { getCollection } from 'astro:content';
 import { siteConfig } from '../config/site';
 import MarkdownIt from 'markdown-it';
 import sanitizeHtml from 'sanitize-html';
+import type { APIContext } from 'astro';
 
 const parser = new MarkdownIt();
 
-const FALLBACK_DATE = new Date('2025-01-01T00:00:00Z');
-
-function toDate(raw: any): Date {
-  if (!raw) return FALLBACK_DATE;
-  const d = new Date(raw);
-  return isNaN(d.getTime()) ? FALLBACK_DATE : d;
-}
-
 function stripInvalidXmlChars(str: string): string {
-  return str.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F\uFDD0-\uFDEF\uFFFE\uFFFF]/g, '');
+  return str.replace(
+    /[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F\uFDD0-\uFDEF\uFFFE\uFFFF]/g,
+    '',
+  );
 }
 
-export async function GET(context: any) {
-  const rawPosts = await getCollection('posts');
-  const rawTalks = await getCollection('talks');
+export async function GET(context: APIContext) {
+  const [posts, talks] = await Promise.all([
+    getCollection('posts'),
+    getCollection('talks'),
+  ]);
 
-  const siteUrl = (context.site ? context.site.toString().replace(/\/$/, '') : siteConfig.url);
+  const siteUrl = (context.site ?? new URL(siteConfig.url)).toString().replace(/\/$/, '');
 
   const items = [
-    ...rawPosts.map((post: any) => {
-      const slug = (post.data.slug || post.slug || post.id).trim();
+    ...posts.map((post) => {
       const body = typeof post.body === 'string' ? post.body : '';
       const cleaned = stripInvalidXmlChars(body);
-      const html = parser.render(cleaned);
+      const slug = (post.data.slug || post.slug || post.id || '').trim();
       return {
-        title: `【专栏】${post.data.title || '无标题文章'}`,
-        pubDate: toDate(post.data.date || post.data.published),
-        description: post.data.description || post.data.summary || '',
-        link: `/posts/${encodeURIComponent(slug)}/`,
-        content: sanitizeHtml(html, { allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img']) }),
+        title: post.data.title,
+        pubDate: post.data.published || post.data.date,
+        description: post.data.description || '',
+        link: `${siteUrl}/posts/${slug}/`,
+        content: sanitizeHtml(parser.render(cleaned), {
+          allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img']),
+        }),
       };
     }),
-    ...rawTalks.map((talk: any) => {
-      const slug = (talk.data.slug || talk.slug || talk.id).trim();
+    ...talks.map((talk) => {
       const body = typeof talk.body === 'string' ? talk.body : '';
       const cleaned = stripInvalidXmlChars(body);
-      const html = parser.render(cleaned);
+      const slug = (talk.data.slug || talk.slug || talk.id || '').trim();
       return {
-        title: `【动态】${talk.data.title || '日常动态'}`,
-        pubDate: toDate(talk.data.date || talk.data.published),
-        description: (body || '').substring(0, 200).replace(/[#*`_\[\]()\-]/g, '').trim(),
-        link: `/talk/${encodeURIComponent(slug)}/`,
-        content: sanitizeHtml(html, { allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img']) }),
+        title: talk.data.title,
+        pubDate: talk.data.date,
+        description: body.substring(0, 200).replace(/[#*`_\[\]()\-]/g, '').trim() || '',
+        link: `${siteUrl}/talk/${slug}/`,
+        content: sanitizeHtml(parser.render(cleaned), {
+          allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img']),
+        }),
       };
     }),
-  ]
-    .filter(item => item.pubDate.getTime() !== FALLBACK_DATE.getTime())
-    .sort((a, b) => b.pubDate.getTime() - a.pubDate.getTime());
+  ].sort((a, b) => {
+    const da = a.pubDate ? new Date(a.pubDate).getTime() : 0;
+    const db = b.pubDate ? new Date(b.pubDate).getTime() : 0;
+    return db - da;
+  });
 
   return rss({
     title: siteConfig.title,
     description: siteConfig.subtitle || '',
     site: siteUrl,
     items,
-    trailingSlash: true,
+    trailingSlash: false,
     xmlns: {
       atom: 'http://www.w3.org/2005/Atom',
       content: 'http://purl.org/rss/1.0/modules/content/',
