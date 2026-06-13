@@ -321,6 +321,7 @@ const canonicalUrl = siteConfig.url + Astro.url.pathname;
 </html>
 
 <script is:inline data-astro-rerun>
+{
   function setupGlobalScrollBar() {
     const indicator = document.getElementById('scroll-bar-indicator');
     if (indicator) {
@@ -402,4 +403,5 @@ const canonicalUrl = siteConfig.url + Astro.url.pathname;
     });
     window._layoutListenersInited = true;
   }
+}
 </script>

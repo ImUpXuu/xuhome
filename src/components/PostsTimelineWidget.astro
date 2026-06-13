@@ -67,6 +67,7 @@ const months = Object.keys(groupedPosts);
 )}
 
 <script is:inline data-astro-rerun>
+{
   const archiveContainer = document.getElementById('archive-list-container');
   if (archiveContainer) {
     const groups = archiveContainer.querySelectorAll('.archive-group');
@@ -94,4 +95,5 @@ const months = Object.keys(groupedPosts);
       }
     });
   }
+}
 </script>
