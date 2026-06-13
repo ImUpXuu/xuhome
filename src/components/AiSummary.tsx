@@ -4,8 +4,8 @@ import ReactMarkdown from "react-markdown";
 
 const SUMMARY_MODELS = [
   { id: 'gpt-oss', name: 'GPT-OSS-120B', url: 'https://blogapi.upxuu.com/summarize', hasThinking: false },
-  { id: 'deepseek-qwen', name: 'DeepSeek-R1-Qwen3', url: 'https://blogapi.upxuu.com/summarize2', hasThinking: true },
-  { id: 'mixtral', name: 'Mixtral 8x7B', url: 'https://blogapi.upxuu.com/summarize3', hasThinking: true },
+  { id: 'gemma', name: 'Gemma-4-31b-it (OpenRouter)', url: 'https://blogapi.upxuu.com/summarize2', hasThinking: true },
+  { id: 'deepseek-r1', name: 'DeepSeek-R1', url: 'https://blogapi.upxuu.com/summarize3', hasThinking: true },
 ];
 
 export function AiSummary({ url, toc = [] }: { url: string, toc?: { id: string; text: string }[] }) {

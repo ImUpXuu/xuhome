@@ -4,8 +4,8 @@ import ReactMarkdown from "react-markdown";
 
 const CHAT_MODELS = [
   { id: 'gpt-oss', name: 'GPT-OSS-120B', url: 'https://blogapi.upxuu.com/chat', hasThinking: false },
-  { id: 'deepseek-qwen', name: 'DeepSeek-R1-Qwen3', url: 'https://blogapi.upxuu.com/chat2', hasThinking: true },
-  { id: 'mixtral', name: 'Mixtral 8x7B', url: 'https://blogapi.upxuu.com/chat3', hasThinking: true },
+  { id: 'gemma', name: 'Gemma-4-31b-it (OpenRouter)', url: 'https://blogapi.upxuu.com/chat2', hasThinking: true },
+  { id: 'deepseek-r1', name: 'DeepSeek-R1', url: 'https://blogapi.upxuu.com/chat3', hasThinking: true },
 ];
 
 export function AiChat({ url, toc = [] }: { url: string, toc?: { id: string; text: string }[] }) {
