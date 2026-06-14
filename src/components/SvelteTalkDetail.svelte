@@ -66,7 +66,7 @@
     <!-- Avatar & Meta Header -->
     <div class="flex gap-4 items-center mb-4 select-none">
       <div class="rounded-sm bg-[#0ea5e9] border-3 border-[#0284c7] shadow-[4px_4px_0px_0px_#0284c7] flex-shrink-0 flex items-center justify-center transform -rotate-3 overflow-hidden w-12 h-12">
-         <img src="https://upxuu.com/images/20260214145619.jpg" alt="UpXuu" class="w-full h-full object-cover" />
+         <img src="https://upxuu.com/images/me.jpg" alt="UpXuu" class="w-full h-full object-cover" />
       </div>
       <div>
          <div class="font-black text-[#0284c7] tracking-wide flex items-center gap-2 text-lg">

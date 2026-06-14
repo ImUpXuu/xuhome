@@ -16,6 +16,10 @@ export default defineConfig({
     '/talk': {
       destination: '/talks',
       status: 301
+    },
+    '/images/20260214145619.jpg': {
+      destination: '/images/me.jpg',
+      status: 301
     }
   },
   vite: {

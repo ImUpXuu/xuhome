@@ -4,7 +4,7 @@ export const siteConfig = {
   description: "UpXuu's personal blog and portfolio",
   author: "UpXuu",
   url: "https://upxuu.com", // Base URL of the site
-  avatar: "https://upxuu.com/images/20260214145619.jpg",
+  avatar: "https://upxuu.com/images/me.jpg",
   socials: {
     github: "https://github.com/ImUpXuu",
     bilibili: "https://space.bilibili.com/3546855124240550",

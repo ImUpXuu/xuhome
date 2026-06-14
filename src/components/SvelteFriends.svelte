@@ -15,7 +15,7 @@
       );
 
   function copyTemplate() {
-    const text = `=== 友链申请信息 ===\n名称: UpXuu's blog\n链接: https://upxuu.com\n头像: https://upxuu.com/images/20260214145619.jpg\n介绍: 逐光而上\n====================`;
+    const text = `=== 友链申请信息 ===\n名称: UpXuu's blog\n链接: https://upxuu.com\n头像: https://upxuu.com/images/me.jpg\n介绍: 逐光而上\n====================`;
     navigator.clipboard.writeText(text);
     copied = true;
     setTimeout(() => copied = false, 2000);
@@ -211,7 +211,7 @@
               <strong class="text-slate-800">站点域名：</strong> https://upxuu.com
             </li>
             <li>
-              <strong class="text-slate-800">站点头像：</strong> https://upxuu.com/images/20260214145619.jpg
+              <strong class="text-slate-800">站点头像：</strong> https://upxuu.com/images/me.jpg
             </li>
             <li>
               <strong class="text-slate-800">站点简介：</strong> 逐光而上

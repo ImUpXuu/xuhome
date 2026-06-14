@@ -17,7 +17,7 @@ category: "技术"
 ```yaml
 名称: UpXuu
 链接: https://upxuu.com
-头像: https://upxuu.com/images/20260214145619.jpg
+头像: https://upxuu.com/images/me.jpg
 描述: 逐光而上
 ```
 
