@@ -9,3 +9,5 @@ coverage/
 !.env.example
 .deepseek/
 xuhome.zip
+np.exe
+*.spec

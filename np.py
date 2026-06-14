@@ -1,13 +1,26 @@
 import sys
 import os
+import subprocess
 from datetime import datetime
 
-POSTS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'src', 'content', 'posts')
+BASE_DIR = os.path.dirname(os.path.abspath(sys.argv[0]))
+POSTS_DIR = os.path.join(BASE_DIR, 'src', 'content', 'posts')
 
 def sanitize_filename(name):
     name = name.strip().replace(' ', '-')
     name = ''.join(c for c in name if c not in r'<>:"/\|?*')
     return name if name else 'untitled'
+
+def open_file(filepath):
+    try:
+        if sys.platform == 'win32':
+            os.startfile(filepath)
+        elif sys.platform == 'darwin':
+            subprocess.run(['open', filepath])
+        else:
+            subprocess.run(['xdg-open', filepath])
+    except Exception as e:
+        print(f"Warning: could not open file: {e}")
 
 def main():
     if len(sys.argv) < 2:
@@ -38,6 +51,7 @@ category: ""
         f.write(frontmatter)
 
     print(f"Created: {filepath}")
+    open_file(filepath)
 
 if __name__ == '__main__':
     main()
