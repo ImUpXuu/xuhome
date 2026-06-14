@@ -11,3 +11,4 @@ coverage/
 xuhome.zip
 np.exe
 *.spec
+build/
