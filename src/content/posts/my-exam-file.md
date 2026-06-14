@@ -10,6 +10,8 @@ category: "学习"
 
 一些全国各地方的中考真题/河北省模考卷子
 
+复制 密码 点击**标蓝链接**获取
+
 [2026zk | UpXuu's disk](https://f.upxuu.com/ljxaaa/share/2026zk)
 
 password ljxlove272026
