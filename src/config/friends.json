@@ -367,5 +367,11 @@
     "url": "https://i.lilog.cn",
     "avatar": "https://www.google.com/s2/favicons?domain=i.lilog.cn&sz=128",
     "description": "这是一个由 Jason 独自研发的纯原生 PHP 驱动，没有依赖任何框架的博客系统。"
+  },
+  {
+    "name": "Luquiesceneの小屋",
+    "url": "https://luq-blog.xyz/",
+    "avatar": "https://www.google.com/s2/favicons?domain=luq-blog.xyz&sz=128",
+    "description": "https://luq-blog.xyz/avatar.webp"
   }
 ]
