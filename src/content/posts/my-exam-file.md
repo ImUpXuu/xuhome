@@ -1,8 +1,6 @@
 ---
 title: "开源我的地生中考资料~"
 published: 2026-06-14 19:11:34
-description: ""
-tags: []
 category: "学习"
 ---
 
@@ -14,5 +12,6 @@ category: "学习"
 
 [2026zk | UpXuu's disk](https://f.upxuu.com/ljxaaa/share/2026zk)
 
-由openlist强力驱动
+password ljxlove272026
 
+由openlist强力驱动
