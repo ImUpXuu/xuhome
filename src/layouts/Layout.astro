@@ -630,3 +630,143 @@ const canonicalURL = new URL(Astro.url.pathname, "https://upxuu.com").href;
   }
 }
 </script>
+
+<!-- External link confirmation popover -->
+<script>
+  (function() {
+    const SITE_HOST = 'upxuu.com';
+    let popover = null;
+    let countdownTimer = null;
+    let pendingUrl = '';
+
+    function isExternal(href) {
+      if (!href || href.startsWith('#') || href.startsWith('javascript:')) return false;
+      if (href.startsWith('/') && !href.startsWith('//')) return false;
+      try {
+        const u = new URL(href, location.origin);
+        return u.hostname !== SITE_HOST && !u.hostname.endsWith('.' + SITE_HOST);
+      } catch {
+        return false;
+      }
+    }
+
+    function createPopover() {
+      if (popover) return popover;
+      const el = document.createElement('div');
+      el.id = 'ext-link-popover';
+      el.className = 'fixed z-[3000] bg-white dark:bg-slate-800 border-3 border-[#0284c7] shadow-[4px_4px_0px_0px_#0284c7] rounded-sm p-3 opacity-0 pointer-events-none transition-opacity duration-200';
+      el.style.maxWidth = '320px';
+      el.innerHTML = `
+        <div class="text-xs font-bold text-slate-600 dark:text-slate-300 mb-2 leading-relaxed break-all" id="ext-link-url"></div>
+        <div class="flex items-center gap-2">
+          <button id="ext-link-yes" class="flex-1 bg-[#0284c7] text-white font-black py-1.5 border-2 border-[#0284c7] rounded-sm text-xs uppercase tracking-wider shadow-[2px_2px_0px_0px_#f59e0b] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all cursor-pointer">是，打开</button>
+          <button id="ext-link-no" class="flex-1 bg-white dark:bg-slate-700 text-[#0284c7] font-black py-1.5 border-2 border-[#0284c7] rounded-sm text-xs uppercase tracking-wider shadow-[2px_2px_0px_0px_#0284c7] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all cursor-pointer relative">
+            <span id="ext-link-no-text">否</span>
+            <span id="ext-link-countdown" class="hidden absolute inset-0 flex items-center justify-center font-mono text-[#f59e0b]">3</span>
+          </button>
+        </div>
+      `;
+      document.body.appendChild(el);
+
+      el.querySelector('#ext-link-yes').addEventListener('click', () => {
+        if (pendingUrl) window.open(pendingUrl, '_blank', 'noopener,noreferrer');
+        dismiss();
+      });
+      el.querySelector('#ext-link-no').addEventListener('click', () => {
+        startCountdown();
+      });
+      // Click outside to dismiss
+      document.addEventListener('click', (e) => {
+        if (popover && !popover.contains(e.target) && popover.classList.contains('opacity-100')) {
+          dismiss();
+        }
+      });
+      popover = el;
+      return el;
+    }
+
+    function positionPopover(anchor) {
+      const rect = anchor.getBoundingClientRect();
+      const po = createPopover();
+      const pw = 300; // approximate popover width
+      let left = rect.left;
+      let top = rect.bottom + 8;
+      // Keep within viewport
+      if (left + pw > window.innerWidth - 8) left = window.innerWidth - pw - 8;
+      if (left < 8) left = 8;
+      if (top + 80 > window.innerHeight) top = rect.top - 88;
+      po.style.left = left + 'px';
+      po.style.top = top + 'px';
+    }
+
+    function show(anchor, url) {
+      pendingUrl = url;
+      clearCountdown();
+      const po = createPopover();
+      po.querySelector('#ext-link-url').textContent = url;
+      // Reset countdown UI
+      po.querySelector('#ext-link-no-text').classList.remove('hidden');
+      po.querySelector('#ext-link-countdown').classList.add('hidden');
+      positionPopover(anchor);
+      requestAnimationFrame(() => {
+        po.classList.add('opacity-100');
+        po.classList.remove('pointer-events-none');
+      });
+    }
+
+    function dismiss() {
+      clearCountdown();
+      if (popover) {
+        popover.classList.remove('opacity-100');
+        popover.classList.add('pointer-events-none');
+        pendingUrl = '';
+      }
+    }
+
+    function startCountdown() {
+      let sec = 3;
+      const noText = popover.querySelector('#ext-link-no-text');
+      const cdEl = popover.querySelector('#ext-link-countdown');
+      noText.classList.add('invisible');
+      cdEl.classList.remove('hidden');
+      cdEl.textContent = sec;
+
+      countdownTimer = setInterval(() => {
+        sec--;
+        if (sec <= 0) {
+          dismiss();
+        } else {
+          cdEl.textContent = sec;
+        }
+      }, 1000);
+    }
+
+    function clearCountdown() {
+      if (countdownTimer) {
+        clearInterval(countdownTimer);
+        countdownTimer = null;
+      }
+    }
+
+    // Global click interception
+    document.addEventListener('click', (e) => {
+      const anchor = e.target.closest('a');
+      if (!anchor) return;
+      const href = anchor.getAttribute('href');
+      if (!isExternal(href)) return;
+      // Skip if already handled or special case
+      if (anchor.getAttribute('target') === '_blank' && anchor.querySelector('#ext-link-yes')) return;
+      e.preventDefault();
+      e.stopPropagation();
+      show(anchor, href);
+    }, true);
+
+    // Refresh interception after page transitions
+    document.addEventListener('astro:page-load', () => {
+      dismiss();
+    });
+    document.addEventListener('astro:before-preparation', () => {
+      dismiss();
+    });
+  })();
+</script>
