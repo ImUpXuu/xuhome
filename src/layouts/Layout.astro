@@ -199,6 +199,10 @@ const canonicalURL = new URL(Astro.url.pathname, "https://upxuu.com").href;
     <div id="nav-loader" class="fixed top-0 left-0 w-full h-[4px] z-[111] pointer-events-none hidden">
       <div class="h-full bg-gradient-to-r from-[#fde68a] via-[#f59e0b] to-[#fde68a] w-0 h-full transition-all duration-300"></div>
     </div>
+    {/* Bottom page transition progress bar */}
+    <div id="bottom-loader" class="fixed bottom-0 left-0 w-full z-[111] pointer-events-none translate-y-full transition-transform duration-300" style="transform: translateY(100%);">
+      <div class="h-[5px] bg-[#0284c7] border-t-2 border-[#0284c7] shadow-[0px_-2px_0px_0px_#f59e0b] w-0 transition-all duration-500 ease-out"></div>
+    </div>
     <CustomCursor client:load />
     <WelcomeToast />                
     <div class="flex flex-col min-h-screen">
@@ -412,8 +416,11 @@ const canonicalURL = new URL(Astro.url.pathname, "https://upxuu.com").href;
   
   // Page navigation loader
   let navLoaderTimer = null;
+  let bottomLoaderTimer = null;
   const navLoader = document.getElementById('nav-loader');
   const navLoaderBar = navLoader?.querySelector('div');
+  const bottomLoader = document.getElementById('bottom-loader');
+  const bottomLoaderBar = bottomLoader?.querySelector('div');
 
   function startNavLoader() {
     if (!navLoader || !navLoaderBar) return;
@@ -425,17 +432,41 @@ const canonicalURL = new URL(Astro.url.pathname, "https://upxuu.com").href;
       navLoaderBar.style.transition = 'width 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
       navLoaderBar.style.width = '80%';
     });
+
+    // Bottom loader: slide up and start filling
+    if (!bottomLoader || !bottomLoaderBar) return;
+    clearTimeout(bottomLoaderTimer);
+    bottomLoader.style.transform = 'translateY(0)';
+    bottomLoaderBar.style.width = '0%';
+    requestAnimationFrame(() => {
+      bottomLoaderBar.style.transition = 'width 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+      bottomLoaderBar.style.width = '70%';
+    });
   }
 
   function completeNavLoader() {
-    if (!navLoader || !navLoaderBar) return;
-    clearTimeout(navLoaderTimer);
-    navLoaderBar.style.transition = 'width 0.25s ease-out';
-    navLoaderBar.style.width = '100%';
-    navLoaderTimer = setTimeout(() => {
-      navLoader.classList.add('hidden');
-      navLoaderBar.style.width = '0%';
-    }, 400);
+    if (navLoader && navLoaderBar) {
+      clearTimeout(navLoaderTimer);
+      navLoaderBar.style.transition = 'width 0.25s ease-out';
+      navLoaderBar.style.width = '100%';
+      navLoaderTimer = setTimeout(() => {
+        navLoader.classList.add('hidden');
+        navLoaderBar.style.width = '0%';
+      }, 400);
+    }
+
+    // Bottom loader: finish then slide down
+    if (bottomLoader && bottomLoaderBar) {
+      clearTimeout(bottomLoaderTimer);
+      bottomLoaderBar.style.transition = 'width 0.3s ease-out';
+      bottomLoaderBar.style.width = '100%';
+      bottomLoaderTimer = setTimeout(() => {
+        bottomLoader.style.transform = 'translateY(100%)';
+        setTimeout(() => {
+          bottomLoaderBar.style.width = '0%';
+        }, 300);
+      }, 350);
+    }
   }
 
   if (!window._layoutListenersInited) {
