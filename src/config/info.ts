@@ -39,7 +39,6 @@ export const infoConfig = {
     links: [
       { name: "友情链接", path: "/friends", external: false },
       { name: "RSS", path: "/rss.xml", external: true },
-      { name: "更新订阅", path: "/sub", external: true },
       { name: "Sitemap", path: "/sitemap.xml", external: true },
       { name: "隐私政策", path: "/privacy", external: false }
     ]
