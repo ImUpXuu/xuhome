@@ -175,6 +175,9 @@ const isArchivePage = pathname === '/archive';
       <div class="block sm:hidden relative self-center">
         <button
           id="mobile-menu-toggle"
+          aria-expanded="false"
+          aria-controls="mobile-menu-dropdown"
+          aria-label="打开菜单"
           class="p-1 px-1 border-2 border-[#0284c7] transition-all rounded-sm font-black flex items-center justify-center cursor-pointer shadow-[1px_1px_0px_0px_#0284c7] active:translate-x-0.5 active:translate-y-0.5 active:shadow-none bg-[#faf8f5] dark:bg-slate-700 text-[#0284c7]"
         >
           <svg id="menu-icon-open" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -284,6 +287,8 @@ const isArchivePage = pathname === '/archive';
         menuIconClose.classList.add('hidden');
         mobileMenuToggle.classList.remove('bg-[#fde68a]');
         mobileMenuToggle.classList.add('bg-[#faf8f5]');
+        mobileMenuToggle.setAttribute('aria-expanded', 'false');
+        mobileMenuToggle.setAttribute('aria-label', '打开菜单');
       }
 
       if (desktopMoreDropdown && !desktopMoreDropdown.classList.contains('hidden')) {
@@ -345,6 +350,8 @@ const isArchivePage = pathname === '/archive';
           document.getElementById('menu-icon-close').classList.remove('hidden');
           newMobileMenuToggle.classList.add('bg-[#fde68a]');
           newMobileMenuToggle.classList.remove('bg-[#faf8f5]');
+          newMobileMenuToggle.setAttribute('aria-expanded', 'true');
+          newMobileMenuToggle.setAttribute('aria-label', '关闭菜单');
           
           // Hide search dialog
           if (mobileSearchDialog && !mobileSearchDialog.classList.contains('hidden')) {

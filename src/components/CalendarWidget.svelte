@@ -96,7 +96,7 @@
         {@const isSelected = selectedDate && selectedDate.getTime() === day.getTime()}
         <button 
           on:click={() => handleDayClick(day, hasEvents)}
-          class="relative flex items-center justify-center h-[28px] text-[11px] rounded-sm border-2 font-black select-none cursor-pointer duration-150 outline-none
+          class="relative flex items-center justify-center h-[28px] text-[11px] rounded-sm border-2 font-black select-none cursor-pointer duration-150 outline-none focus-visible:ring-2 focus-visible:ring-[#0284c7] focus-visible:ring-offset-2
             {hasEvents             ? 'border-[#0284c7] hover:bg-[#fde68a] text-[#0284c7]' : 'border-transparent text-slate-450 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'}
             {isSelected ? 'bg-[#0ea5e9] text-white border-[#0284c7]' : hasEvents ? '' : ''}
           "
