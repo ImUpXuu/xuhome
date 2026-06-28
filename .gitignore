@@ -1,0 +1,14 @@
+node_modules/
+build/
+dist/
+.astro/
+coverage/
+.DS_Store
+*.log
+.env*
+!.env.example
+.deepseek/
+xuhome.zip
+np.exe
+*.spec
+build/

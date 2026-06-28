@@ -1,0 +1,710 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getProcessedPosts, getProcessedTalks } from '../../utils/postsFetcher';
+import { getCollection } from 'astro:content';
+import { siteConfig } from '../../config/site';
+import { calculateReadingTime } from '../../utils/readingTime';
+
+// Import React elements to hydrate
+import { AiSummary } from '../../components/AiSummary';
+import { AiChat } from '../../components/AiChat';
+import { WalineComment } from '../../components/WalineComment';
+import { TalkTicker } from '../../components/TalkTicker';
+import ShareButton from '../../components/ShareButton.svelte';
+import PageViews from '../../components/PageViews.svelte';
+import LeftSidebar from '../../components/LeftSidebar.astro';
+
+export async function getStaticPaths() {
+  const posts = await getProcessedPosts();
+  return posts.map(post => {
+    return {
+      params: { id: post.slug },
+      props: { post }
+    };
+  });
+}
+
+const { id } = Astro.params;
+const { post } = Astro.props;
+
+// Render original collection Markdown using Astro compiler
+import { render } from 'astro:content';
+const rawPosts = await getCollection('posts');
+const articleEntry = rawPosts.find(p => (p.slug || p.id) === post.slug);
+if (!articleEntry) {
+  return Astro.redirect('/404');
+}
+const { Content, headings } = await render(articleEntry);
+const readTime = calculateReadingTime(articleEntry.body || "");
+
+// Calculate adjacent posts
+const allPosts = await getProcessedPosts();
+const tagMap: Record<string, number> = {};
+allPosts.forEach(p => { if (p.tags) { p.tags.forEach(t => { tagMap[t] = (tagMap[t] || 0) + 1; }); } });
+const allTags = Object.entries(tagMap).map(([name, count]) => ({ name, count })).sort((a, b) => b.count - a.count);
+const idx = allPosts.findIndex(p => p.slug === post.slug);
+const prevPost = idx < allPosts.length - 1 ? allPosts[idx + 1] : null;
+const nextPost = idx > 0 ? allPosts[idx - 1] : null;
+
+// Map headings to our toc format
+const toc = headings.map(h => ({
+  level: h.depth,
+  text: h.text,
+  id: h.slug
+}));
+
+const minTocLevel = toc.length > 0 ? Math.min(...toc.map(item => item.level)) : 1;
+
+// Compute related posts by tag overlap
+const relatedPosts = (() => {
+  if (!post.tags || post.tags.length === 0) return [];
+  const scored = allPosts
+    .filter(p => p.slug !== post.slug)
+    .map(p => ({
+      post: p,
+      score: (p.tags || []).filter(t => post.tags.includes(t)).length
+    }))
+    .filter(x => x.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 3)
+    .map(x => x.post);
+  return scored;
+})();
+
+const allTalksData = await getProcessedTalks();
+---
+
+<Layout 
+  title={post.title}
+  description={post.description}
+  image={post.img}
+  post={post}
+>
+  <div class="w-full flex flex-col gap-6 relative">
+    <div class="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start w-full">
+      
+      {/* Main post body center panel */}
+      <div class="flex-1 min-w-0 w-full space-y-8 lg:order-2">
+        <article class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] p-4 sm:p-6 md:p-10 shadow-[6px_6px_0px_0px_#0284c7] sm:shadow-[8px_8px_0px_0px_#0284c7] rounded-sm animate-card-entrance opacity-0">
+          <div class="border-b-4 border-[#0284c7] pb-6 mb-8 text-center md:text-left flex flex-col md:flex-row justify-between items-center gap-4">
+            <div>
+              <h1 class="text-2xl sm:text-3xl md:text-4xl font-black text-[#0284c7] mb-4 leading-tight">{post.title}</h1>
+              <div class="flex flex-wrap items-center gap-3.5 justify-center md:justify-start">
+                <span class="text-slate-500 dark:text-slate-400 font-extrabold font-mono text-sm">{post.date}</span>
+                <span class="text-slate-500 dark:text-slate-400 font-extrabold font-mono text-sm">/ 预计阅读 {readTime} 分钟</span>
+                <PageViews path={post.slug} client:idle />
+                
+                {post.category && (
+                  <a 
+                    href={`/category/${post.category}`} 
+                    class="bg-[#fde68a] border-2 border-[#0284c7] px-2.5 py-0.5 shadow-[2px_2px_0px_0px_#0284c7] text-center font-bold text-[#0284c7] text-xs hover:bg-[#0284c7] hover:text-white transition-colors"
+                  >
+                    {post.category}
+                  </a>
+                )}
+
+                {post.tags && post.tags.length > 0 && (
+                  <div class="flex flex-wrap gap-2">
+                    {post.tags.map(tag => (
+                      <a 
+                        href={`/tag/${tag}`} 
+                        class="text-xs font-bold bg-white border-2 border-[#0284c7] text-slate-600 px-2.5 py-0.5 shadow-[2px_2px_0px_0px_#0284c7] hover:bg-[#0284c7] hover:text-white transition-colors"
+                      >
+                        #{tag}
+                      </a>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <AiSummary url={Astro.url.href} toc={toc} client:idle />
+
+          {/* Prose Content block */}
+          <div class="prose prose-slate dark:prose-invert prose-lg max-w-none w-full min-w-0 break-words prose-headings:font-black prose-headings:text-[#0284c7] dark:prose-headings:text-[#0ea5e9] prose-a:text-[#0ea5e9] prose-a:font-bold">
+            <Content />
+          </div>
+        </article>
+
+        {/* Copyright Metadata block */}
+        <div 
+          class="bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm border-4 border-[#0284c7] p-5 md:p-7 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm relative overflow-hidden transition-all duration-300 group/copyright animate-card-entrance opacity-0"
+          id="post-copyright-card"
+          style="animation-delay: 0.1s"
+        >
+          <div class="absolute right-4 bottom-0 text-[110px] font-black text-[#0284c7]/5 select-none pointer-events-none transform rotate-12 translate-y-12 translate-x-6 leading-none select-none">
+            C
+          </div>
+          
+          <div class="relative z-10 space-y-4">
+            <h3 class="text-base sm:text-lg font-black text-[#0284c7] leading-snug">{post.title}</h3>
+            
+            <div class="inline-block bg-[#e0f2fe]/80 border-2 border-[#0ea5e9]/20 px-3 py-1 rounded-sm text-xs font-bold text-[#0284c7] hover:text-[#0ea5e9] hover:bg-[#e0f2fe] transition-all break-all select-all">
+              <a href={Astro.url.href} target="_blank" rel="noopener noreferrer">
+                {Astro.url.href}
+              </a>
+            </div>
+
+            <div class="grid grid-cols-3 gap-3 border-t-2 border-dashed border-[#0284c7]/20 pt-4 text-[11px] sm:text-xs">
+              <div>
+                <div class="text-slate-400 font-bold mb-1 uppercase tracking-wider">作者</div>
+                <div class="font-extrabold text-[#0284c7] hover:translate-x-0.5 transition-transform">{siteConfig.author}</div>
+              </div>
+              <div>
+                <div class="text-slate-400 font-bold mb-1 uppercase tracking-wider">发布于</div>
+                <div class="font-mono font-bold text-slate-600">{post.date}</div>
+              </div>
+              <div>
+                <div class="text-slate-400 font-bold mb-1 uppercase tracking-wider">许可协议</div>
+                <div>
+                  <a href="/about" class="font-bold text-[#0ea5e9] hover:underline hover:text-[#0284c7] transition-all">
+                    All Rights Reserved
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Related Posts */}
+        {relatedPosts.length > 0 && (
+          <div class="animate-card-entrance opacity-0" style="animation-delay: 0.08s">
+            <div class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] p-4 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm">
+              <h3 class="font-black text-[#0284c7] text-sm mb-3 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 100 20 10 10 0 000-20z" />
+                </svg>
+                相关文章
+              </h3>
+              <div class="flex flex-wrap gap-2">
+                {relatedPosts.map(rp => (
+                  <a
+                    href={`/posts/${encodeURIComponent(rp.slug)}`}
+                    class="group bg-[#faf8f5] dark:bg-slate-700 border-2 border-[#0284c7] px-3 py-2 rounded-sm shadow-[3px_3px_0px_0px_#0284c7] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all duration-200 inline-flex items-center gap-2"
+                  >
+                    <span class="text-xs font-black text-slate-700 dark:text-slate-200 group-hover:text-[#0ea5e9] transition-colors whitespace-nowrap">{rp.title}</span>
+                    <span class="text-[9px] font-bold text-slate-400 font-mono shrink-0">{rp.date}</span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Previous / Next pagination navigation blocks */}
+        <div class="flex flex-col sm:flex-row gap-3 w-full animate-card-entrance opacity-0" style="animation-delay: 0.1s">
+          {prevPost ? (
+            <a 
+              href={`/posts/${encodeURIComponent(prevPost.slug)}`}
+              class="flex-1 min-w-0 bg-white hover:bg-slate-50 border-3 border-[#0284c7] px-4 py-3 rounded-sm shadow-[4px_4px_0px_0px_#0284c7] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all duration-200 flex items-center gap-3 group text-left"
+            >
+              <span class="text-[#0ea5e9] group-hover:-translate-x-1 transition-transform shrink-0 font-extrabold">❮</span>
+              <div class="min-w-0 flex-1">
+                <div class="text-[9px] uppercase font-black tracking-widest text-slate-400 mb-0.5">上一篇</div>
+                <p class="text-xs sm:text-sm font-black text-slate-700 dark:text-slate-200 truncate">{prevPost.title}</p>
+              </div>
+            </a>
+          ) : (
+            <div class="hidden sm:block flex-1 border-3 border-dashed border-[#0284c7]/20 px-4 py-3 rounded-sm text-center text-xs font-black text-slate-400 dark:text-slate-500 bg-slate-50/30 dark:bg-slate-700/30">
+              没有更多上一篇了
+            </div>
+          )}
+
+          {nextPost ? (
+            <a 
+              href={`/posts/${encodeURIComponent(nextPost.slug)}`}
+              class="flex-1 min-w-0 bg-white hover:bg-slate-50 border-3 border-[#0284c7] px-4 py-3 rounded-sm shadow-[4px_4px_0px_0px_#0284c7] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all duration-200 flex items-center justify-between gap-3 group text-right"
+            >
+              <div class="min-w-0 flex-1">
+                <div class="text-[9px] uppercase font-black tracking-widest text-slate-400 mb-0.5">下一篇</div>
+                <p class="text-xs sm:text-sm font-black text-slate-700 dark:text-slate-200 truncate">{nextPost.title}</p>
+              </div>
+              <span class="text-[#0ea5e9] group-hover:translate-x-1 transition-transform shrink-0 font-extrabold">❯</span>
+            </a>
+          ) : (
+            <div class="hidden sm:block flex-1 border-3 border-dashed border-[#0284c7]/20 px-4 py-3 rounded-sm text-center text-xs font-black text-slate-400 dark:text-slate-500 bg-slate-50/30 dark:bg-slate-700/30">
+              没有更多下一篇了
+            </div>
+          )}
+        </div>
+
+        {/* Talk ticker and Waline integration */}
+        <TalkTicker talks={allTalksData} client:only="react" />
+        <WalineComment client:idle />
+      </div>
+
+      {/* Left Sidebar - AFTER main content in DOM for SEO */}
+      <aside class="hidden lg:flex w-[260px] shrink-0 flex-col gap-6 sticky top-[100px] animate-card-entrance opacity-0 lg:order-1" style="animation-delay: 0.06s">
+        <LeftSidebar posts={allPosts} tags={allTags} />
+      </aside>
+
+      {/* Right Desktop Sticky TOC Side Menu */}
+      <div class="hidden lg:block w-[260px] shrink-0 sticky top-[100px] z-10 self-start animate-card-entrance opacity-0 lg:order-3" style="animation-delay: 0.1s">
+        <div class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] p-5 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm max-h-[calc(100vh-120px)] flex flex-col">
+          <h3 class="font-black text-[#0284c7] text-lg mb-4 flex items-center gap-2 shrink-0">
+            目录
+          </h3>
+          {toc.length === 0 ? (
+            <p class="text-sm text-slate-400 font-medium shrink-0">无目录</p>
+          ) : (
+            <div id="toc-container" class="overflow-y-auto pr-2 custom-scrollbar flex-1 relative">
+              <ul class="space-y-2 text-sm font-medium relative">
+                {toc.map((item, idx) => (
+                  <li 
+                    data-id={item.id}
+                    class="transition-all"
+                    style={{ paddingLeft: `${(item.level - minTocLevel) * 12}px` }}
+                  >
+                    <a 
+                      href={`#${item.id}`} 
+                      class="toc-nav-link block py-1 hover:text-[#0ea5e9] hover:underline transition-colors line-clamp-1 border-l-2 pl-2 text-slate-600 dark:text-slate-300 border-transparent"
+                      data-id={item.id}
+                    >
+                      {item.text}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      </div>
+
+    </div>
+
+    {/* Floating Mobile TOC launcher */}
+    {toc.length > 0 && (
+      <button
+        id="mobile-toc-trigger"
+        class="fixed bottom-6 left-6 lg:hidden w-11 h-11 bg-white border-3 border-[#0284c7] rounded-full shadow-[4px_4px_0px_0px_#0284c7] flex items-center justify-center text-[#0284c7] z-[50] hover:bg-[#fde68a] active:translate-y-[2px] transition-all cursor-pointer"
+        aria-label="查看目录"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 stroke-[3]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+    )}
+
+    {/* Mobile TOC Bottom Slider Cabinet */}
+    <div id="mobile-toc-cabinet" class="fixed inset-0 z-[2000] lg:hidden hidden flex-col justify-end">
+      <div id="mobile-toc-scrim" class="fixed inset-0 bg-black/70 dark:bg-black/80 backdrop-blur-md opacity-0 transition-opacity duration-500 cursor-pointer"></div>
+      <div 
+        id="mobile-toc-panel" 
+        class="relative w-full h-[75vh] bg-white border-t-[10px] border-[#0284c7] rounded-t-[3rem] shadow-[0_-20px_60px_-10px_rgba(0,0,0,0.6)] flex flex-col transform translate-y-full transition-transform duration-500 cubic-bezier(0.16, 1, 0.3, 1) z-[2001]"
+      >
+        <div class="p-6 border-b-4 border-[#0284c7] flex justify-between items-center shrink-0 bg-white rounded-t-[2.8rem]">
+          <h3 class="font-black text-[#0284c7] text-xl uppercase tracking-[0.3em] flex items-center gap-3">
+            <div class="w-8 h-8 flex items-center justify-center bg-[#fde68a] border-2 border-[#0284c7] shadow-[2px_2px_0px_0px_#0284c7]">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </div>
+            目录
+          </h3>
+          <button id="mobile-toc-close" class="w-12 h-12 flex items-center justify-center hover:bg-[#fde68a] rounded-2xl transition-all text-[#0284c7] cursor-pointer active:scale-75 border-2 border-[#0284c7] bg-white shadow-[3px_3px_0px_0px_#0284c7]">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 stroke-[3]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        <div class="p-6 flex-1 flex flex-col min-h-0 bg-[#faf8f5]">
+          <div class="overflow-y-auto custom-scrollbar flex-1 pb-20" id="mobile-toc-list-container">
+            <ul class="space-y-6">
+              {toc.map((item, idx) => (
+                <li 
+                  data-id={item.id}
+                  class="transition-all"
+                  style={{ paddingLeft: `${(item.level - minTocLevel) * 20}px` }}
+                >
+                  <a 
+                    href={`#${item.id}`} 
+                    class="mobile-toc-nav-link block py-3 px-4 rounded-xl hover:text-[#0ea5e9] transition-all line-clamp-2 border-l-8 border-transparent text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-700 shadow-[4px_4px_0px_0px_rgba(2,132,199,0.05)] active:translate-y-1 active:shadow-none"
+                    data-id={item.id}
+                  >
+                    <span class="opacity-40 mr-2 font-mono text-sm leading-none">{String(idx + 1).padStart(2, '0')}</span>
+                    {item.text}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <AiChat url={Astro.url.href} toc={toc} client:idle />
+    <ShareButton
+      title={post.title}
+      description={post.description}
+      url={Astro.url.href}
+      image={post.img}
+      client:only="svelte"
+    />
+  </div>
+</Layout>
+
+<script>
+  import { Fancybox } from '@fancyapps/ui';
+
+  function setupPostDetail() {
+    // Mobile TOC Cabinet Toggles
+    const trigger = document.getElementById('mobile-toc-trigger');
+    const cabinet = document.getElementById('mobile-toc-cabinet');
+    const scrim = document.getElementById('mobile-toc-scrim');
+    const panel = document.getElementById('mobile-toc-panel');
+    const closeBtn = document.getElementById('mobile-toc-close');
+
+    function openMobileToc() {
+      if (cabinet && panel && scrim) {
+        cabinet.classList.remove('hidden');
+        cabinet.classList.add('flex');
+        
+        // Use requestAnimationFrame for double buffer to ensure display:flex is applied before animation
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            scrim.style.opacity = '1';
+            panel.style.transform = 'translateY(0)';
+            document.body.style.overflow = 'hidden';
+          });
+        });
+      }
+    }
+
+    function closeMobileToc() {
+      if (cabinet && panel && scrim) {
+        scrim.style.opacity = '0';
+        panel.style.transform = 'translateY(100%)';
+        setTimeout(() => {
+          cabinet.classList.add('hidden');
+          cabinet.classList.remove('flex');
+          document.body.style.overflow = '';
+        }, 500);
+      }
+    }
+
+    if (trigger) trigger.addEventListener('click', openMobileToc);
+    if (scrim) scrim.addEventListener('click', closeMobileToc);
+    if (closeBtn) closeBtn.addEventListener('click', closeMobileToc);
+
+    // Initialize Fancybox for images in article
+    function setupFancybox() {
+      const article = document.querySelector('article');
+      if (!article) return;
+      
+      // Select only images inside the prose content
+      const content = article.querySelector('.prose');
+      if (!content) return;
+
+      const images = content.querySelectorAll('img');
+      images.forEach(img => {
+        // Skip icons or small decorative images
+        if (img.width < 40 || img.height < 40) return;
+        // Skip if already wrapped or has a parent link
+        if (img.closest('a')) return;
+        
+        const wrapper = document.createElement('a');
+        wrapper.setAttribute('data-fancybox', 'gallery');
+        wrapper.setAttribute('href', img.src);
+        wrapper.setAttribute('data-caption', img.alt || '');
+        wrapper.className = 'cursor-zoom-in block my-6 overflow-hidden rounded-sm border-4 border-[#0284c7] shadow-[6px_6px_0px_0px_#0284c7] hover:shadow-[10px_10px_0px_0px_#10b981] transition-all duration-300 transform hover:scale-[1.01]';
+        
+        // Handle images inside paragraphs correctly
+        const parent = img.parentElement;
+        if (parent && parent.tagName === 'P' && parent.children.length === 1 && parent.innerText.trim() === '') {
+           // Paragraph only contains the image, wrap the whole thing or replace
+           parent.classList.add('not-prose');
+        }
+
+        img.parentNode.insertBefore(wrapper, img);
+        wrapper.appendChild(img);
+        img.className = 'm-0 w-full h-auto block';
+      });
+
+      try {
+        Fancybox.destroy();
+        Fancybox.bind('[data-fancybox]', {
+          carousel: { friction: 0.8 },
+          Toolbar: {
+            display: {
+              left: ["infobar"],
+              middle: [],
+              right: ["iterateZoom", "close"],
+            },
+          },
+        });
+      } catch (e) {
+        console.error('Fancybox error:', e);
+      }
+    }
+
+    // Enhance Code Blocks with Mac Style
+    function enhanceCodeBlocks() {
+      // Find all pre elements - Shiki puts language info on the pre tag usually
+      const codeBlocks = document.querySelectorAll('.prose pre');
+      codeBlocks.forEach(pre => {
+        if (pre.hasAttribute('data-enhanced')) return;
+        pre.setAttribute('data-enhanced', 'true');
+        
+        // Language detection - check data attributes first then classes
+        let language = pre.getAttribute('data-language') || 'code';
+        if (language === 'code') {
+          const match = pre.className.match(/language-(\w+)/);
+          if (match) language = match[1];
+        }
+        
+        // Create container
+        const container = document.createElement('div');
+        container.className = 'my-8 relative border-4 border-[#0284c7] rounded-sm overflow-hidden bg-[#1e293b] shadow-[6px_6px_0px_0px_#0284c7] group animate-card-entrance';
+        
+        // Header
+        const header = document.createElement('div');
+        header.className = 'bg-[#f1f5f9] border-b-4 border-[#0284c7] px-4 py-2 flex items-center justify-between select-none';
+        header.innerHTML = `
+          <div class="flex gap-2 items-center">
+            <div class="w-2 h-2 rounded-full bg-[#ff5f56]"></div>
+            <div class="w-2 h-2 rounded-full bg-[#ffbd2e]"></div>
+            <div class="w-2 h-2 rounded-full bg-[#27c93f]"></div>
+          </div>
+          <div class="font-mono text-[9px] font-black text-[#0284c7] uppercase tracking-[0.2em] opacity-80">${language}</div>
+          <button class="copy-btn text-[#0284c7] hover:bg-[#0ea5e9] hover:text-white transition-all p-1 border-2 border-[#0284c7] rounded-sm bg-white shadow-[2px_2px_0px_0px_#0284c7] hover:shadow-none translate-x-[-1px] translate-y-[-1px] hover:translate-x-0 hover:translate-y-0" title="复制代码">
+            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+          </button>
+        `;
+        
+        const copyBtn = header.querySelector('.copy-btn');
+        copyBtn.addEventListener('click', () => {
+          const codeText = pre.innerText;
+          navigator.clipboard.writeText(codeText).then(() => {
+            copyBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>';
+            setTimeout(() => {
+              copyBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>';
+            }, 2000);
+          });
+        });
+
+        // Content Wrapper
+        const content = document.createElement('div');
+        content.className = 'relative flex flex-col min-h-0';
+        
+        const scrollArea = document.createElement('div');
+        scrollArea.className = 'overflow-x-auto custom-scrollbar text-sm font-mono leading-relaxed';
+        
+        // Reparent
+        pre.parentNode.insertBefore(container, pre);
+        container.appendChild(header);
+        container.appendChild(content);
+        content.appendChild(scrollArea);
+        scrollArea.appendChild(pre);
+        
+        // Folding logic
+        const lines = pre.innerText.split('\n').filter(l => l.trim()).length;
+        if (lines > 40) {
+          scrollArea.classList.add('max-h-[600px]', 'transition-all', 'duration-500');
+          
+          const overlay = document.createElement('div');
+          overlay.className = 'absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#1e293b] via-[#1e293b]/90 to-transparent flex items-end justify-center pb-4 z-10 fold-overlay';
+          overlay.innerHTML = `
+            <button class="expand-btn bg-[#0ea5e9] border-2 border-[#0284c7] text-white font-black px-4 py-1.5 flex items-center gap-2 shadow-[3px_3px_0px_0px_#0284c7] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all text-xs rounded-sm uppercase tracking-wider scale-90">
+              展开代码 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+          `;
+          
+          content.appendChild(overlay);
+          
+          const expandBtn = overlay.querySelector('.expand-btn');
+          expandBtn.addEventListener('click', () => {
+            scrollArea.style.maxHeight = 'none';
+            overlay.classList.add('hidden');
+            
+            // Add collapse button at bottom
+            const footer = document.createElement('div');
+            footer.className = 'border-t-2 border-dashed border-[#0284c7]/20 bg-[#1e293b]/50 p-2 flex justify-center collapse-footer';
+            footer.innerHTML = `
+              <button class="collapse-btn bg-white border-2 border-[#0284c7] text-[#0284c7] font-black px-4 py-1 flex items-center gap-2 shadow-[2px_2px_0px_0px_#0284c7] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all text-[10px] rounded-sm uppercase tracking-wider">
+                收起代码 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
+              </button>
+            `;
+            content.appendChild(footer);
+            footer.querySelector('.collapse-btn').addEventListener('click', () => {
+              scrollArea.style.maxHeight = '600px';
+              overlay.classList.remove('hidden');
+              footer.remove();
+              // Smooth scroll back to top of container if hidden
+              const rect = container.getBoundingClientRect();
+              if (rect.top < 0) {
+                window.scrollTo({
+                  top: window.scrollY + rect.top - 100,
+                  behavior: 'smooth'
+                });
+              }
+            });
+          });
+        }
+
+        // Apply clean styles to the original pre
+        pre.style.margin = '0';
+        pre.style.padding = '1.25rem';
+        pre.style.borderRadius = '0';
+        pre.style.backgroundColor = 'transparent';
+      });
+    }
+
+    setupFancybox();
+    enhanceCodeBlocks();
+    // Native dynamic TOC headers observers/scrollers
+    const desktopNavLinks = Array.from(document.querySelectorAll('.toc-nav-link'));
+    const mobileNavLinks = Array.from(document.querySelectorAll('.mobile-toc-nav-link'));
+    const articleHeadings = Array.from(document.querySelectorAll('.prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6'));
+    let activeId = '';
+    let isNavigating = false;
+
+    articleHeadings.forEach(heading => {
+      heading.classList.add('group', 'hover:bg-yellow-100/50', 'transition-colors', 'cursor-pointer', 'relative', 'scroll-mt-28');
+    });
+
+    // Track headings and their positions for more reliable detection
+    function updateTOCHighlight(id) {
+      if (!id || id === activeId) return;
+      activeId = id;
+
+      const links = [...desktopNavLinks, ...mobileNavLinks];
+      links.forEach(link => {
+        const dataId = link.getAttribute('data-id');
+        const isActive = dataId === id;
+        
+        if (isActive) {
+          link.classList.add('active-toc-link');
+          
+          // Enhanced auto-centering of active TOC item
+          const parentContainer = link.closest('.overflow-y-auto');
+          if (parentContainer) {
+            const containerHeight = parentContainer.clientHeight;
+            const itemOffsetTop = (link as HTMLElement).offsetTop;
+            const itemHeight = link.clientHeight;
+            const targetScroll = itemOffsetTop - (containerHeight / 2) + (itemHeight / 2);
+            
+            parentContainer.scrollTo({
+              top: targetScroll,
+              behavior: 'smooth'
+            });
+          }
+        } else {
+          link.classList.remove('active-toc-link');
+        }
+      });
+    }
+
+    // Use IntersectionObserver for performant detection
+    const observerOptions = {
+      rootMargin: '-10% 0px -80% 0px',
+      threshold: 0
+    };
+
+    const headingObserver = new IntersectionObserver((entries) => {
+      if (isNavigating) return;
+      
+      // Find the first heading that is currently intersecting our trigger zone
+      const visibleHeading = entries.find(e => e.isIntersecting);
+      if (visibleHeading) {
+        updateTOCHighlight(visibleHeading.target.id);
+      } else {
+        // Fallback: if no heading is in the zone, check which one is above it
+        const scrollPos = window.scrollY + 150;
+        let bestCandidate = '';
+        for (const heading of articleHeadings) {
+          if ((heading as HTMLElement).offsetTop <= scrollPos) {
+            bestCandidate = heading.id;
+          } else {
+            break;
+          }
+        }
+        if (bestCandidate) updateTOCHighlight(bestCandidate);
+      }
+    }, observerOptions);
+
+    articleHeadings.forEach(h => headingObserver.observe(h));
+
+    // Fallback scroll listener for cases where observer might be sluggish
+    let scrollTimeout: any;
+    window.addEventListener('scroll', () => {
+      if (isNavigating) return;
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {
+        const scrollPos = window.scrollY + 130;
+        let current = '';
+        for (const heading of articleHeadings) {
+          if ((heading as HTMLElement).offsetTop <= scrollPos) current = heading.id;
+          else break;
+        }
+        if (current) updateTOCHighlight(current);
+      }, 50);
+    }, { passive: true });
+
+    // Initial detection
+    setTimeout(() => {
+      const scrollPos = window.scrollY + 130;
+      let current = '';
+      for (const heading of articleHeadings) {
+        if ((heading as HTMLElement).offsetTop <= scrollPos) current = heading.id;
+        else break;
+      }
+      if (current) updateTOCHighlight(current);
+    }, 200);
+
+    function setupLinksClick(links) {
+      links.forEach(link => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          const id = link.getAttribute('data-id');
+          const targetEl = document.getElementById(id);
+          if (targetEl) {
+            isNavigating = true;
+            updateTOCHighlight(id);
+            
+            // Native smooth scroll to target
+            window.scrollTo({
+              top: targetEl.offsetTop - 100,
+              behavior: 'smooth'
+            });
+            
+            window.history.pushState(null, '', '#' + id);
+            setTimeout(() => { isNavigating = false; }, 1000);
+          }
+          closeMobileToc();
+        });
+      });
+    }
+
+    setupLinksClick(desktopNavLinks);
+    setupLinksClick(mobileNavLinks);
+  }
+
+  // Initial run
+  setupPostDetail();
+
+  // Re-run on page transitions
+  document.addEventListener('astro:page-load', setupPostDetail);
+</script>
+
+<style is:global>
+  .toc-nav-link.active-toc-link, .mobile-toc-nav-link.active-toc-link {
+    border-left-width: 4px;
+    border-color: #0ea5e9;
+    background-color: rgb(224 242 254 / 0.6);
+    border-top-right-radius: 0.375rem;
+    border-bottom-right-radius: 0.375rem;
+    color: #0ea5e9;
+    font-weight: 800;
+    transform: scale(1.02);
+  }
+  .prose h1:target, .prose h2:target, .prose h3:target, .prose h4:target {
+    background-color: rgb(254 249 195 / 0.5);
+  }
+  .prose table {
+    display: block;
+    overflow-x: auto;
+    max-width: 100%;
+    -webkit-overflow-scrolling: touch;
+  }
+</style>

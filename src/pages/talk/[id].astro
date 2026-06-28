@@ -1,0 +1,27 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getProcessedTalks } from '../../utils/postsFetcher';
+import SvelteTalkDetail from '../../components/SvelteTalkDetail.svelte';
+import { WalineComment } from '../../components/WalineComment';
+
+export async function getStaticPaths() {
+  const talks = await getProcessedTalks();
+  return talks.map(talk => {
+    return {
+      params: { id: talk.slug },
+      props: { talk }
+    };
+  });
+}
+
+const { id } = Astro.params;
+const { talk } = Astro.props;
+---
+
+<Layout 
+  title={talk.title || '说说详情'}
+  description={talk.content.substring(0, 150)}
+>
+  <SvelteTalkDetail talk={talk} client:load />
+  <WalineComment client:idle />
+</Layout>

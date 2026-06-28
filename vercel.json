@@ -1,0 +1,5 @@
+{
+  "redirects": [
+    { "source": "/images/20260214145619.jpg", "destination": "/images/me.jpg", "permanent": true }
+  ]
+}

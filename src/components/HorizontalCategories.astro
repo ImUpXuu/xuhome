@@ -1,0 +1,112 @@
+---
+import { getProcessedPosts } from '../utils/postsFetcher';
+import CalendarWidget from './CalendarWidget.svelte';
+
+interface Props {
+  categories: { name: string; count: number }[];
+  activeCategory: string | null;
+}
+
+const { categories, activeCategory } = Astro.props;
+const allPosts = await getProcessedPosts();
+---
+
+<script>
+  function setupMobileCalendar() {
+    const btn = document.getElementById('mobile-calendar-btn');
+    const dialog = document.getElementById('mobile-calendar-dialog') as HTMLDialogElement;
+    if (btn && dialog) {
+      btn.addEventListener('click', () => {
+        dialog.showModal();
+        dialog.style.opacity = '1';
+        dialog.style.transform = 'scale(1)';
+      });
+      
+      // Close when clicking backdrop
+      dialog.addEventListener('click', (e) => {
+        const rect = dialog.getBoundingClientRect();
+        if (
+          e.clientX < rect.left ||
+          e.clientX > rect.right ||
+          e.clientY < rect.top ||
+          e.clientY > rect.bottom
+        ) {
+          dialog.close();
+        }
+      });
+    }
+  }
+
+  setupMobileCalendar();
+  document.addEventListener('astro:page-load', setupMobileCalendar);
+</script>
+
+{categories.length > 0 && (
+  <>
+    <div 
+      class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] p-3 shadow-[4px_4px_0px_0px_#0284c7] rounded-sm mb-6 flex items-center gap-3 overflow-x-auto hide-scrollbar custom-scrollbar pb-2 animate-card-entrance opacity-0"
+      transition:name="horizontal-categories"
+    >
+      <div class="flex items-center gap-1 font-black text-[#0284c7] shrink-0 text-sm">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+        </svg>
+        <span>分类:</span>
+      </div>
+      
+      <a
+        href="/"
+        class={`shrink-0 px-3 py-1 rounded-sm font-bold text-xs transition-all border-2 border-[#0284c7] shadow-[2px_2px_0px_0px_#0284c7] ${
+          activeCategory === null
+            ? "bg-[#0ea5e9] text-white"
+            : "bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-[#fde68a] hover:translate-y-[-1px]"
+        }`}
+      >
+        全部
+      </a>
+      
+      {categories.map((cat) => (
+        <a
+          href={`/category/${cat.name}`}
+          class={`shrink-0 flex items-center gap-1.5 px-3 py-1 rounded-sm font-bold text-xs transition-all border-2 border-[#0284c7] shadow-[2px_2px_0px_0px_#0284c7] ${
+            activeCategory === cat.name
+              ? "bg-[#0ea5e9] text-white"
+              : "bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-[#fde68a] hover:translate-y-[-1px]"
+          }`}
+        >
+          <span>{cat.name}</span>
+          <span class={`px-1.5 py-0.5 text-[9px] rounded-full font-black ${activeCategory === cat.name ? 'bg-white/30 text-white' : 'bg-slate-100 dark:bg-slate-600 text-slate-500 dark:text-slate-300'}`}>
+            {cat.count}
+          </span>
+        </a>
+      ))}
+
+      <div class="ml-auto flex xl:hidden shrink-0 sticky right-0 bg-white dark:bg-slate-800 shadow-[-8px_0_8px_-8px_rgba(0,0,0,0.1)] pl-2">
+        <button
+          id="mobile-calendar-btn"
+          class="shrink-0 px-2 py-1 rounded-sm font-bold text-xs transition-all border-2 border-[#0284c7] shadow-[2px_2px_0px_0px_#0284c7] bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-[#fde68a] hover:translate-y-[-1px] flex items-center justify-center cursor-pointer"
+          aria-label="打开日历"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 stroke-[2.5] text-[#0284c7]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Calendar Dialog -->
+    <dialog 
+      id="mobile-calendar-dialog" 
+      class="backdrop:bg-[#1e293b]/60 backdrop:backdrop-blur-sm p-0 m-auto mt-[15vh] border-0 outline-none overflow-visible shadow-none bg-transparent w-full max-w-[340px] px-4 transition-all duration-300 opacity-0 scale-95"
+    >
+      <div class="relative w-full">
+        <button onclick="document.getElementById('mobile-calendar-dialog').close()" class="absolute -top-3 -right-3 w-8 h-8 z-50 bg-white dark:bg-slate-700 border-3 border-[#0284c7] rounded-full shadow-[2px_2px_0px_0px_#0284c7] flex items-center justify-center text-[#0284c7] hover:bg-[#fde68a] cursor-pointer">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 stroke-[3]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+        <CalendarWidget posts={allPosts} client:idle />
+      </div>
+    </dialog>
+  </>
+)}
