@@ -1,0 +1,183 @@
+<script lang="ts">
+  import type { TalkItem } from '../utils/postsFetcher';
+  import SvelteLightbox from './SvelteLightbox.svelte';
+  import TalkShareModal from './TalkShareModal.svelte';
+  import PageViews from './PageViews.svelte';
+
+  export let talk: TalkItem;
+
+  let isLightboxOpen = false;
+  let lightboxImages: string[] = [];
+  let lightboxInitialIndex = 0;
+  let showShare = false;
+
+  function openShare() {
+    showShare = true;
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeShare() {
+    showShare = false;
+    document.body.style.overflow = '';
+  }
+
+  function formatMarkdown(text: string): string {
+    if (!text) return "";
+    // Replace markdown bold tags
+    let html = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    // Replace markdown link tags
+    html = html.replace(/\[(.*?)\]\((.*?)\)/g, '<a class="text-[#0ea5e9] font-bold hover:underline" href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+    return html.split('\n\n').map(p => `<p class="mb-3.5 leading-relaxed break-words">${p.replace(/\n/g, '<br/>')}</p>`).join('');
+  }
+
+  function extractImages(content: string): string[] {
+    const imageRegex = /!\[.*?\]\((.*?)\)/g;
+    return Array.from(content.matchAll(imageRegex)).map((m) => m[1]);
+  }
+
+  function getContentWithoutImages(content: string): string {
+    return content.replace(/!\[.*?\]\((.*?)\)/g, '').trim();
+  }
+
+  function openLightbox(imagesList: string[], index: number, e: Event) {
+    e.stopPropagation();
+    lightboxImages = imagesList;
+    lightboxInitialIndex = index;
+    isLightboxOpen = true;
+  }
+
+  $: images = extractImages(talk.content);
+  $: textOnly = getContentWithoutImages(talk.content);
+</script>
+
+<div class="max-w-[800px] mx-auto w-full space-y-6">
+  <!-- Back button -->
+  <div class="mb-6 flex justify-start select-none animate-card-entrance opacity-0">
+     <a href="/talks" class="px-3 py-1.5 border-3 border-[#0284c7] bg-white dark:bg-slate-700 text-[#0284c7] dark:text-slate-200 flex items-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm shadow-[4px_4px_0px_0px_#0284c7] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all font-black uppercase text-xs">
+        <span>&lsaquo; BACK TO TALKS</span>
+     </a>
+  </div>
+
+  <!-- Main Talk Card -->
+  <div 
+    class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] p-5 md:p-6 shadow-[10px_10px_0px_0px_#f59e0b] rounded-sm relative animate-card-entrance opacity-0"
+    style="animation-delay: 0.06s"
+  >
+    <!-- Avatar & Meta Header -->
+    <div class="flex gap-4 items-center mb-4 select-none">
+      <div class="rounded-sm bg-[#0ea5e9] border-3 border-[#0284c7] shadow-[4px_4px_0px_0px_#0284c7] flex-shrink-0 flex items-center justify-center transform -rotate-3 overflow-hidden w-12 h-12">
+         <img src="https://upxuu.com/images/me.jpg" alt="UpXuu" class="w-full h-full object-cover" />
+      </div>
+      <div>
+         <div class="font-black text-[#0284c7] tracking-wide flex items-center gap-2 text-lg">
+            UpXuu
+            {#if talk.mood}
+              <span class="text-xs ml-1" title="心情">{talk.mood}</span>
+            {/if}
+            <span class="text-[10px] bg-[#fde68a] border-2 border-[#0284c7] px-1.5 py-0.5 shadow-[1px_1px_0px_0px_#0284c7] tracking-wider uppercase font-bold transform skew-x-12 ml-1">
+               逐光而上
+            </span>
+         </div>
+         <div class="flex items-center gap-2 mt-1 leading-none">
+            <span class="text-xs text-slate-500 font-mono font-bold">{talk.date}</span>
+            <PageViews path={`/talk/${talk.slug}`} />
+         </div>
+      </div>
+    </div>
+
+    <!-- Content area -->
+    <div class="talk-content mt-2 pl-0 sm:pl-[64px] text-base text-slate-700 dark:text-slate-300">
+      {#if talk.title && talk.title !== '日常动态'}
+        <div class="flex items-center gap-2 mb-2 select-none">
+          <span class="w-2 h-2 bg-[#f59e0b] border border-[#0284c7] inline-block shadow-[1px_1px_0px_0px_#0284c7] skew-x-12"></span>
+          <h3 class="font-black text-[#0284c7] text-lg">{talk.title}</h3>
+        </div>
+      {/if}
+      
+      {#if textOnly}
+        <div class="prose prose-lg max-w-none text-slate-755 dark:text-slate-300 leading-relaxed font-medium">
+          {@html formatMarkdown(textOnly)}
+        </div>
+      {/if}
+
+      <!-- Nine-grid Image Gallery -->
+      {#if images.length > 0}
+        <div class="mt-4 grid gap-2 {images.length === 1 ? 'grid-cols-1 max-w-sm' : images.length === 2 || images.length === 4 ? 'grid-cols-2 max-w-xs' : 'grid-cols-3 max-w-md'}">
+          {#each images as src, idx}
+            <!-- svelte-ignore a11y-click-events-have-key-events -->
+            <div 
+              class="w-full overflow-hidden rounded-sm border-2 border-[#0284c7] hover:border-[#f59e0b] shadow-[2px_2px_0px_0px_rgba(2,132,199,0.15)] hover:shadow-[3px_3px_0px_0px_#0284c7] transition-all cursor-pointer bg-slate-50 relative {images.length === 1 ? 'aspect-video sm:aspect-[4/3] max-h-80' : 'aspect-square'}"
+              on:click={(e) => openLightbox(images, idx, e)}
+            >
+              <img src={src} alt="talk detail graphic asset" class="w-full h-full object-cover transition-transform duration-550 hover:scale-[1.06]" loading="lazy" />
+            </div>
+          {/each}
+        </div>
+      {/if}
+
+      <!-- Bottom Metadata: Location, Weather, Device -->
+      {#if talk.location || talk.weather || talk.device}
+        <div class="mt-4 flex flex-wrap gap-3 items-center text-xs font-bold text-slate-500 dark:text-slate-400 select-none border-t border-dashed border-slate-100 dark:border-slate-700 pt-3">
+          {#if talk.location}
+            <span class="flex items-center gap-1 hover:text-[#0284c7] transition-colors"><span>📍</span> {talk.location}</span>
+          {/if}
+          {#if talk.weather}
+            <span class="flex items-center gap-1 hover:text-[#0284c7] transition-colors"><span>⛅</span> {talk.weather}</span>
+          {/if}
+          {#if talk.device}
+            <span class="flex items-center gap-1 hover:text-[#0284c7] transition-colors font-mono"><span class="text-slate-400 dark:text-slate-500">📱</span> {talk.device}</span>
+          {/if}
+        </div>
+      {/if}
+    </div>
+
+    <!-- Share footer -->
+    <div class="mt-8 border-t-2 border-dashed border-[#0284c7]/20 pt-4 flex justify-between items-center pl-0 sm:pl-[64px]">
+       <div class="flex gap-3">
+         <button class="flex items-center gap-1.5 px-3 py-1.5 border-2 border-[#0284c7] bg-white dark:bg-slate-700 text-[#0284c7] text-xs font-black shadow-[2px_2px_0px_0px_#0284c7] hover:bg-[#0284c7] hover:text-white transition-colors cursor-pointer rounded-sm transform active:translate-y-0.5 active:shadow-[0px_0px_0px_0px_#0284c7]">
+           🤍 LIKE
+         </button>
+       </div>
+       <div class="text-[10px] uppercase font-mono font-bold text-slate-400 dark:text-slate-500 select-none">
+          ID: {talk.id}
+       </div>
+    </div>
+  </div>
+
+  <!-- Waline comments placeholder -->
+  <div id="waline-placeholder"></div>
+
+  <div class="mt-8 text-center flex justify-center pb-12 select-none">
+      <a href="/talks" class="px-6 py-3 border-4 border-[#0284c7] text-[#0284c7] bg-white dark:bg-slate-700 font-black hover:bg-[#0284c7] hover:text-white transition-all cursor-pointer rounded-sm shadow-[6px_6px_0px_0px_#0284c7] uppercase tracking-widest text-sm flex items-center justify-center hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none">
+        返回列表 / Back to Talks
+      </a>
+  </div>
+</div>
+
+<!-- Floating share trigger (bottom-right) -->
+<button
+  on:click={openShare}
+  class="fixed bottom-[5.5rem] right-6 z-[2000] w-12 h-12 rounded-sm border-3 sm:border-4 border-[#0284c7] bg-[#fde68a] dark:bg-amber-700/50 text-[#0284c7] flex items-center justify-center cursor-pointer shadow-[4px_4px_0px_0px_#0284c7] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#0284c7] active:translate-y-0 active:shadow-none transition-all duration-150"
+  aria-label="分享"
+>
+  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 sm:w-6 sm:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+  </svg>
+</button>
+
+{#if showShare}
+  {@const images = extractImages(talk.content)}
+  {@const textOnly = getContentWithoutImages(talk.content)}
+  <TalkShareModal
+    talkTitle={talk.title || '日常动态'}
+    talkContent={textOnly}
+    talkUrl={`${window.location.origin}/talk/${talk.slug}`}
+    talkImage={images[0] || ''}
+    show={true}
+    on:close={closeShare}
+  />
+{/if}
+
+{#if isLightboxOpen}
+  <SvelteLightbox images={lightboxImages} initialIndex={lightboxInitialIndex} onClose={() => isLightboxOpen = false} />
+{/if}

@@ -1,0 +1,70 @@
+name: IndexNow
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "src/content/posts/**/*.md"
+
+jobs:
+  indexnow:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get changed post files
+        id: changed
+        run: |
+          CHANGED=$(git diff --name-only HEAD~1 HEAD | grep 'src/content/posts/.*\.md$' | tr '\n' ' ')
+          echo "changed=${CHANGED}" >> $GITHUB_OUTPUT
+
+      - name: Build URLs and submit
+        run: |
+          SITE_URL="https://upxuu.com"
+          CHANGED="${{ steps.changed.outputs.changed }}"
+
+          if [ -z "$CHANGED" ]; then
+            echo "No post files changed"
+            echo "result=no_changes" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          echo "Changed files: $CHANGED"
+          echo ""
+
+          URLS="["
+          first=true
+          for file in $CHANGED; do
+            slug=$(basename "$file" .md)
+            url="${SITE_URL}/posts/${slug}/"
+            echo "  Found: ${url}"
+            if [ "$first" = true ]; then
+              first=false
+            else
+              URLS="${URLS},"
+            fi
+            URLS="${URLS}\"${url}\""
+          done
+          URLS="${URLS}]"
+
+          SECRET="${{ secrets.INDEXNOW_SECRET }}"
+          KEY_LOCATION="${SITE_URL}/${SECRET}.txt"
+
+          echo ""
+          echo "Submitting to IndexNow..."
+          echo ""
+
+          RESPONSE=$(curl -s -w "\n%{http_code}" -X POST \
+            "https://api.indexnow.org/IndexNow" \
+            -H "Content-Type: application/json; charset=utf-8" \
+            -H "Host: api.indexnow.org" \
+            -d "{\"host\":\"upxuu.com\",\"key\":\"${SECRET}\",\"keyLocation\":\"${KEY_LOCATION}\",\"urlList\":${URLS}}")
+
+          HTTP_CODE=$(echo "$RESPONSE" | tail -n1)
+          BODY=$(echo "$RESPONSE" | sed '$d')
+
+          echo "HTTP Status: $HTTP_CODE"
+          echo "Response: $BODY"
+          echo "result=HTTP_${HTTP_CODE}" >> $GITHUB_OUTPUT

@@ -1,0 +1,191 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getProcessedPosts } from '../utils/postsFetcher';
+
+const allPosts = await getProcessedPosts();
+
+// Group posts by Year-Month
+const archiveMap: Record<string, typeof allPosts> = {};
+allPosts.forEach(post => {
+  const dateStr = post.date || '';
+  const match = dateStr.match(/^(\d{4}-\d{2})/);
+  let key = '未知';
+  if (match) {
+    const [year, month] = match[1].split('-');
+    key = `${year}年${month}月`;
+  }
+  if (!archiveMap[key]) archiveMap[key] = [];
+  archiveMap[key].push(post);
+});
+
+// Sort keys descending (e.g. 2026年06月 > 2026年05月)
+const archiveKeys = Object.keys(archiveMap).sort((a, b) => b.localeCompare(a));
+
+// Group keys by Year for the right sidebar
+const yearsMap: Record<string, string[]> = {};
+archiveKeys.forEach(key => {
+  if (key === '未知') {
+    if (!yearsMap['未知']) yearsMap['未知'] = [];
+    yearsMap['未知'].push(key);
+    return;
+  }
+  const year = key.substring(0, 4);
+  if (!yearsMap[year]) yearsMap[year] = [];
+  yearsMap[year].push(key);
+});
+const years = Object.keys(yearsMap).sort((a, b) => b.localeCompare(a));
+---
+
+<Layout 
+  title="文章归档"
+  description="博客文章时间轴归档"
+>
+  <div class="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start justify-center max-w-[1000px] mx-auto w-full relative">
+    
+    {/* Main Timeline Column */}
+    <div class="flex-1 w-full min-w-0 flex flex-col gap-8 order-2 lg:order-1 animate-card-entrance opacity-0" style="animation-delay: 0.06s">
+      <div class="bg-white border-4 border-[#0284c7] p-6 sm:p-8 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm relative overflow-hidden">
+        <h1 class="text-3xl font-black text-[#0284c7] mb-8 flex items-center gap-3">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 stroke-[3]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+          </svg>
+          文章归档
+        </h1>
+        
+        <div class="absolute right-4 top-4 text-[100px] font-black text-[#0284c7]/5 select-none pointer-events-none transform -rotate-12 translate-x-4 -translate-y-4">
+          A
+        </div>
+
+        <div class="relative border-l-4 border-dashed border-[#0284c7]/30 ml-4 pl-6 space-y-12">
+          {archiveKeys.map((key) => (
+            <div class="relative" id={`archive-${key}`}>
+              {/* Timeline dot */}
+              <div class="absolute -left-[30px] top-1.5 w-4 h-4 bg-[#fde68a] border-4 border-[#0284c7] rounded-full shadow-[2px_2px_0px_0px_#f59e0b]"></div>
+              
+              <h2 class="text-xl font-black text-[#0284c7] mb-4 bg-[#e0f2fe] inline-block px-3 py-1 rounded-sm border-2 border-[#0284c7] shadow-[2px_2px_0px_0px_#0284c7] tracking-wider">
+                {key}
+              </h2>
+              
+              <div class="flex flex-col gap-4">
+                {archiveMap[key].map(post => (
+                  <a href={`/posts/${encodeURIComponent(post.slug)}`} data-astro-prefetch class="relative z-10 group flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 p-3 bg-white border-2 border-[#0284c7]/30 hover:border-[#0284c7] rounded-sm transition-all hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#0284c7]">
+                    <span class="font-mono text-xs font-black text-slate-400 shrink-0">
+                      {post.date.substring(5, 10)}
+                    </span>
+                    <h3 class="font-bold text-slate-700 group-hover:text-[#0ea5e9] transition-colors line-clamp-1 flex-1">
+                      {post.title}
+                    </h3>
+                  </a>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+    
+    {/* Right Sidebar: Year-Month Axis */}
+    <div class="w-full lg:w-[260px] shrink-0 flex flex-col gap-6 sticky top-[100px] order-1 lg:order-2 animate-card-entrance opacity-0" style="animation-delay: 0.1s">
+      <div class="bg-white border-4 border-[#0284c7] p-5 shadow-[6px_6px_0px_0px_#f59e0b] rounded-sm max-h-[80vh] flex flex-col overflow-hidden">
+        <h3 class="font-black text-[#0284c7] text-lg mb-4 flex items-center gap-2 shrink-0 border-b-2 border-dashed border-[#0284c7]/20 pb-2">
+          时间轴
+        </h3>
+        <div class="overflow-y-auto custom-scrollbar pr-2 flex-1 relative" id="archive-nav">
+          <div class="border-l-2 border-[#0284c7]/20 ml-2 space-y-4 py-2">
+            {years.map(year => (
+              <div class="relative pl-4 group">
+                <div class="absolute -left-[5px] top-2 w-2 h-2 bg-[#0284c7] rounded-full"></div>
+                <div class="font-black text-base text-[#0284c7] mb-2">{year}</div>
+                <div class="space-y-1">
+                  {yearsMap[year].map(key => (
+                    <a 
+                      href={`#archive-${key}`} 
+                      class="block font-bold text-xs text-slate-500 hover:text-[#0ea5e9] hover:translate-x-1 transition-all py-1 archive-nav-link"
+                      data-target={`archive-${key}`}
+                    >
+                      {key.includes('年') ? key.substring(5) : key} ({archiveMap[key].length})
+                    </a>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+</Layout>
+
+<script>
+  function setupArchiveNav() {
+    const navLinks = Array.from(document.querySelectorAll('.archive-nav-link'));
+    const sections = navLinks.map(link => document.getElementById(link.getAttribute('data-target') || ''));
+    let activeId = '';
+
+    function updateHighlight() {
+      const scrollPos = window.scrollY + 150;
+      let current = '';
+      
+      for (const section of sections) {
+        if (section && section.offsetTop <= scrollPos) {
+          current = section.id;
+        } else {
+          break; // Stop at the first section below our scroll position
+        }
+      }
+      
+      if (!current && sections.length > 0) current = sections[0].id;
+      
+      if (current && current !== activeId) {
+        activeId = current;
+        navLinks.forEach(link => {
+          if (link.getAttribute('data-target') === current) {
+            link.classList.add('text-[#0ea5e9]', 'font-black', 'scale-105');
+            link.classList.remove('text-slate-500', 'font-bold');
+            
+            // basic scroll into view logic for the nav
+            const container = document.getElementById('archive-nav');
+            if (container) {
+              const rect = link.getBoundingClientRect();
+              const containerRect = container.getBoundingClientRect();
+              if (rect.top < containerRect.top || rect.bottom > containerRect.bottom) {
+                container.scrollTo({
+                  top: (link as HTMLElement).offsetTop - container.clientHeight / 2,
+                  behavior: 'smooth'
+                });
+              }
+            }
+          } else {
+            link.classList.remove('text-[#0ea5e9]', 'font-black', 'scale-105');
+            link.classList.add('text-slate-500', 'font-bold');
+          }
+        });
+      }
+    }
+
+    if (sections.length > 0) {
+      window.addEventListener('scroll', updateHighlight, { passive: true });
+      setTimeout(updateHighlight, 100);
+      
+      // smooth scroll on click
+      navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          const targetId = link.getAttribute('data-target');
+          const targetSection = document.getElementById(targetId || '');
+          if (targetSection) {
+            window.scrollTo({
+              top: targetSection.offsetTop - 100,
+              behavior: 'smooth'
+            });
+            window.history.pushState(null, '', '#' + targetId);
+          }
+        });
+      });
+    }
+  }
+
+  setupArchiveNav();
+  document.addEventListener('astro:page-load', setupArchiveNav);
+</script>

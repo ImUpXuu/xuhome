@@ -1,0 +1,27 @@
+---
+import type { PostItem } from '../utils/postsFetcher';
+import CalendarWidget from './CalendarWidget.svelte';
+import SidebarTags from './SidebarTags.astro';
+import AuthorCard from './AuthorCard.astro';
+
+export interface Props {
+  posts: PostItem[];
+  tags: { name: string; count: number }[];
+  activeTag?: string | null;
+  showCalendar?: boolean;
+  showTags?: boolean;
+  showAuthor?: boolean;
+}
+
+const { posts, tags, activeTag = null, showCalendar = true, showTags = true, showAuthor = true } = Astro.props;
+---
+
+{
+  showAuthor && <AuthorCard />
+}
+{
+  showCalendar && <CalendarWidget posts={posts} client:idle />
+}
+{
+  showTags && <SidebarTags tags={tags} activeTag={activeTag} />
+}

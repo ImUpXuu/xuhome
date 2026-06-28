@@ -1,0 +1,20 @@
+---
+import { getProcessedPosts } from '../../../../utils/postsFetcher';
+
+export async function getStaticPaths() {
+  const allPosts = await getProcessedPosts();
+  const categoriesSet = new Set(allPosts.map(p => p.category).filter(Boolean));
+  const paths = [];
+  for (const cat of categoriesSet) {
+    for (let p = 1; p <= 15; p++) {
+      paths.push({
+        params: { categoryName: cat, page: String(p) }
+      });
+    }
+  }
+  return paths;
+}
+
+const { categoryName, page } = Astro.params;
+return Astro.redirect(`/category/${encodeURIComponent(categoryName || '')}?page=${page}`);
+---

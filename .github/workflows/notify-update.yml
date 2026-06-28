@@ -1,0 +1,146 @@
+name: Notify Blog Update
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/content/posts/**/*.md'
+      - '!src/content/posts/talk/**'
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    permissions:
+      contents: write
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Get changed files
+        id: changed
+        run: |
+          CHANGED=$(git diff --name-only HEAD~1 HEAD | grep 'src/content/posts/.*\.md$' || true)
+          if [ -z "$CHANGED" ]; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+            echo "changed<<EOF" >> $GITHUB_OUTPUT
+            echo "$CHANGED" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Check cooldown
+        id: cooldown
+        run: |
+          NOW=$(date +%s)
+          echo "now=$NOW" >> $GITHUB_OUTPUT
+          if [ -f skipupdate.json ]; then
+            LAST=$(python3 -c "import json; print(json.load(open('skipupdate.json'))['time'])" 2>/dev/null || echo "0")
+            DIFF=$((NOW - LAST))
+            if [ $DIFF -lt 1800 ]; then
+              echo "skip=true" >> $GITHUB_OUTPUT
+              echo "Cooldown active: ${DIFF}s since last notification (cooldown: 1800s)"
+              exit 0
+            fi
+          fi
+          echo "skip=false" >> $GITHUB_OUTPUT
+
+      - name: Build and post notification
+        if: steps.changed.outputs.has_changes == 'true' && steps.cooldown.outputs.skip == 'false'
+        env:
+          CHANGED_FILES: ${{ steps.changed.outputs.changed }}
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+            const crypto = require('crypto');
+
+            const changedFiles = process.env.CHANGED_FILES.trim().split(/\s+/).filter(Boolean);
+            const commitMsg = require('child_process').execSync('git log -1 --pretty=format:%s').toString().trim().split('\n')[0];
+            const commitSha = require('child_process').execSync('git log -1 --pretty=format:%h').toString().trim();
+            const commitTime = new Date().toISOString().replace('T', ' ').substring(0, 19) + ' UTC';
+
+            function parseFrontmatter(filepath) {
+              const content = fs.readFileSync(filepath, 'utf-8');
+              const m = content.match(/^---\s*\n(.*?)\n---/s);
+              if (!m) return {};
+              const fm = {};
+              m[1].split('\n').forEach(line => {
+                const idx = line.indexOf(':');
+                if (idx !== -1) {
+                  const key = line.substring(0, idx).trim();
+                  let val = line.substring(idx + 1).trim().replace(/^['"<]+|['">]+$/g, '');
+                  fm[key] = val;
+                }
+              });
+              return fm;
+            }
+
+            const posts = [];
+            for (const file of changedFiles) {
+              if (!file.endsWith('.md')) continue;
+              const content = fs.readFileSync(file, 'utf-8');
+              const fm = parseFrontmatter(file);
+              const slug = path.basename(file, '.md');
+
+              const fmEnd = content.indexOf('---', 3) + 3;
+              const body = content.substring(fmEnd).trim();
+              const plainText = body.replace(/^#+\s+/gm, '').replace(/!\[.*?\]\(.*?\)/g, '').replace(/\[.*?\]\(.*?\)/g, '$1').replace(/[*_~`#]/g, '').replace(/\n+/g, ' ').trim();
+              const preview = plainText.length > 70 ? plainText.substring(0, 70) + '...' : plainText;
+
+              posts.push({
+                title: fm['title'] || slug,
+                description: fm['description'] || '',
+                published: fm['published'] || '',
+                url: `https://upxuu.com/posts/${slug}/`,
+                preview: preview
+              });
+            }
+
+            let body = '## 宝子订阅的UpXuu的博客更新啦~\n\n';
+
+            for (const p of posts) {
+              body += `本文链接：${p.url}\n\n`;
+              body += `### ${p.title}\n\n`;
+              if (p.description) {
+                body += `${p.description}\n\n`;
+              }
+              if (p.preview) {
+                body += `**文章概览：** ${p.preview}\n\n`;
+              }
+              if (p.published) {
+                body += `📅 ${p.published}\n\n`;
+              }
+            }
+
+            body += '感谢您对upxuu的支持 祝好~\n\n';
+            body += `**更新时间：** ${commitTime}\n`;
+            body += `**Commit：** \`${commitSha}\` - ${commitMsg}\n`;
+            body += '\n---\n*此通知由 GitHub Actions 自动发布*\n';
+
+            const issueNumber = 66;
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issueNumber,
+              body: body
+            });
+
+            console.log('Notification posted to issue #' + issueNumber);
+
+      - name: Update cooldown timestamp
+        if: steps.changed.outputs.has_changes == 'true' && steps.cooldown.outputs.skip == 'false'
+        run: |
+          NOW=$(date +%s)
+          echo "{\"time\": $NOW}" > skipupdate.json
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          git add skipupdate.json
+          git commit -m "chore: update skipupdate cooldown [skip ci]" || true
+          git push

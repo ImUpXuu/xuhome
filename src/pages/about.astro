@@ -1,0 +1,300 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { infoConfig } from '../config/info';
+import { siteConfig } from '../config/site';
+import { Content } from '../config/about.md';
+
+const skills = [
+  "React", "TypeScript", "Node.js", "Astro", "Tailwind CSS", 
+  "Next.js", "Vue", "Vite", "Git", "Figma"
+];
+
+const GITHUB_USER = 'IMUPXUU';
+const BILIBILI_MID = '3546855124240550';
+const BILIBILI_SPACE = 'https://space.bilibili.com/3546855124240550';
+
+interface GitHubRepo {
+  name: string;
+  description: string | null;
+  html_url: string;
+  language: string | null;
+  stargazers_count: number;
+  forks_count: number;
+  topics: string[];
+}
+
+interface BiliVideo {
+  bvid: string;
+  title: string;
+  cover: string;
+  duration: number;
+  play_count: number;
+  publish_time: number;
+}
+
+let repos: GitHubRepo[] = [];
+try {
+  const res = await fetch(`https://api.github.com/users/${GITHUB_USER}/repos?sort=updated&per_page=100`);
+  if (res.ok) {
+    const data = await res.json();
+    repos = data.map((r: any) => ({
+      name: r.name,
+      description: r.description,
+      html_url: r.html_url,
+      language: r.language,
+      stargazers_count: r.stargazers_count,
+      forks_count: r.forks_count,
+      topics: r.topics || [],
+    }));
+  }
+} catch (e) {
+  console.error('Failed to fetch GitHub repos', e);
+}
+
+let biliVideos: BiliVideo[] = [];
+try {
+  const firstRes = await fetch(`https://uapis.cn/api/v1/social/bilibili/archives?mid=${BILIBILI_MID}&ps=30`);
+  if (firstRes.ok) {
+    const firstData = await firstRes.json();
+    const total = firstData.total || 0;
+    const firstBatch: BiliVideo[] = (firstData.videos || []).map((v: any) => ({
+      bvid: v.bvid, title: v.title, cover: v.cover,
+      duration: v.duration, play_count: v.play_count, publish_time: v.publish_time,
+    }));
+    biliVideos = firstBatch;
+    const totalPages = Math.ceil(total / 30);
+    for (let p = 2; p <= totalPages; p++) {
+      const res = await fetch(`https://uapis.cn/api/v1/social/bilibili/archives?mid=${BILIBILI_MID}&ps=30&pn=${p}`);
+      if (res.ok) {
+        const data = await res.json();
+        const more: BiliVideo[] = (data.videos || []).map((v: any) => ({
+          bvid: v.bvid, title: v.title, cover: v.cover,
+          duration: v.duration, play_count: v.play_count, publish_time: v.publish_time,
+        }));
+        biliVideos = biliVideos.concat(more);
+      }
+    }
+  }
+} catch (e) {
+  console.error('Failed to fetch Bilibili videos', e);
+}
+
+function fmtDuration(sec: number): string {
+  const m = Math.floor(sec / 60);
+  const s = sec % 60;
+  return `${m}:${s.toString().padStart(2, '0')}`;
+}
+
+function fmtPlayCount(n: number): string {
+  if (n >= 10000) return (n / 10000).toFixed(1) + '万';
+  if (n >= 1000) return (n / 1000).toFixed(1) + 'k';
+  return String(n);
+}
+
+---
+
+<Layout 
+  title="关于我"
+  description="UpXuu的个人介绍、独立开发者履历与前端技术栈栈架构建。"
+  isAboutPage={true}
+>
+  <div class="max-w-[1440px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+    <div class="max-w-5xl mx-auto space-y-8 animate-card-entrance">
+      
+      {/* Profile Header */}
+      <div class="bg-white border-4 border-[#0284c7] p-8 shadow-[8px_8px_0px_0px_#f59e0b] rounded-sm relative">
+        <div class="flex flex-col md:flex-row items-center gap-8">
+          <div class="w-32 h-32 md:w-40 md:h-40 rounded-sm bg-[#0ea5e9] border-4 border-[#0284c7] shadow-[4px_4px_0px_0px_#0284c7] overflow-hidden flex items-center justify-center shrink-0">
+            <img src={siteConfig.avatar} alt={siteConfig.author} width="160" height="160" loading="lazy" class="w-full h-full object-cover" />
+          </div>
+          <div class="text-center md:text-left">
+            <h1 class="text-3xl md:text-5xl font-black text-[#0284c7] tracking-wider mb-2">{siteConfig.author}</h1>
+            <p class="text-lg md:text-xl font-bold text-slate-600 mb-4 font-mono select-none">
+              <span class="bg-[#fde68a] px-2 py-0.5 border-2 border-[#0284c7] shadow-[2px_2px_0px_0px_#0284c7] inline-block">前端开发者 / 独立创作者</span>
+            </p>
+            <p class="text-slate-700 leading-relaxed font-medium">
+              你好，世界！我是 {siteConfig.author}-(ljx)。一个在sb河北上学的cs
+              目前专注于学习前端 Python（其实是上学罢了） 热爱分享，持续折腾（hardly）。
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* About Me (from Markdown) */}
+      <div class="bg-white border-4 border-[#0284c7] p-6 md:p-8 shadow-[6px_6px_0px_0px_#f59e0b] rounded-sm">
+        <h2 class="text-2xl md:text-3xl font-black text-[#0284c7] tracking-wider mb-6 flex items-center gap-2">
+          <span class="text-xl">📖</span> ABOUT ME
+        </h2>
+        <div class="prose prose-slate max-w-none prose-headings:text-[#0284c7] prose-headings:font-bold prose-a:text-[#0ea5e9] prose-strong:text-[#0284c7] prose-code:bg-slate-100 prose-code:px-1 prose-pre:border-2 prose-pre:border-[#0284c7]">
+          <Content />
+        </div>
+      </div>
+
+      {/* Bilibili Videos */}
+      <div class="bg-white border-4 border-[#0284c7] p-6 shadow-[6px_6px_0px_0px_#fb923c] rounded-sm">
+        <a href={BILIBILI_SPACE} target="_blank" class="inline-flex items-center gap-2 group mb-4">
+          <span class="text-xl">🎬</span>
+          <h2 class="text-2xl font-black text-[#0284c7] tracking-wider group-hover:text-[#0ea5e9] transition-colors">MY bilibili @UPXUU</h2>
+          <span class="text-sm text-slate-400 font-mono">({biliVideos.length})</span>
+        </a>
+        <div class="overflow-x-auto pb-2 custom-scrollbar">
+          <div class="flex flex-nowrap gap-4 w-max" id="bili-scroll">
+            {biliVideos.length === 0 && (
+              <p class="text-slate-400 text-sm">暂无数据</p>
+            )}
+            {biliVideos.map(video => (
+              <a href={`https://www.bilibili.com/video/${video.bvid}`} target="_blank" class="w-56 shrink-0 border-2 border-[#0284c7] hover:bg-[#0ea5e9] hover:text-white transition-colors shadow-[2px_2px_0px_0px_#0284c7] group">
+                <div class="aspect-video overflow-hidden border-b-2 border-[#0284c7] bg-slate-100">
+                  <img src={video.cover} alt={video.title} width="320" height="180" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform" referrerpolicy="no-referrer" />
+                </div>
+                <div class="p-3">
+                  <p class="font-bold text-sm leading-snug line-clamp-2 group-hover:text-white">{video.title}</p>
+                  <div class="flex items-center gap-3 mt-2 text-xs text-slate-500 group-hover:text-white/80">
+                    <span>▶ {fmtPlayCount(video.play_count)}</span>
+                    <span>⏱ {fmtDuration(video.duration)}</span>
+                  </div>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {/* Skills */}
+        <div class="bg-white border-4 border-[#0284c7] p-6 shadow-[6px_6px_0px_0px_#10b981] rounded-sm ">
+          <h2 class="text-2xl font-black text-[#0284c7] tracking-wider mb-6 flex items-center gap-2">
+            <span class="text-xl">⚒️</span> 技能栈
+          </h2>
+          <div class="flex flex-wrap gap-3">
+            {skills.map(skill => (
+               <span class="bg-slate-50 border-2 border-[#0284c7] px-3 py-1 font-bold text-slate-700 shadow-[2px_2px_0px_0px_#0284c7] hover:bg-[#0284c7] hover:text-white transition-colors cursor-default text-sm">
+                 {skill}
+               </span>
+            ))}
+          </div>
+        </div>
+
+        {/* Contact/Find Me */}
+        <div class="bg-white border-4 border-[#0284c7] p-6 shadow-[6px_6px_0px_0px_#0ea5e9] rounded-sm ">
+          <h2 class="text-2xl font-black text-[#0284c7] tracking-wider mb-6 flex items-center gap-2">
+            <span class="text-xl">📫</span> 找到我
+          </h2>
+          <div class="space-y-4">
+            <a href="https://github.com/Imupxuu" target="_blank" class="flex items-center gap-3 p-3 border-2 border-[#0284c7] hover:bg-[#0ea5e9] hover:text-white transition-colors shadow-[2px_2px_0px_0px_#0284c7] group">
+              <span class="font-black text-lg">GitHub</span>
+              <span class="font-mono text-sm ml-auto opacity-70 group-hover:opacity-100">@ImUpXuu
+              upxuu</span>
+            </a>
+            <a href="mailto:ME@UPXUU.COM" class="flex items-center gap-3 p-3 border-2 border-[#0284c7] hover:bg-[#10b981] hover:text-white transition-colors shadow-[2px_2px_0px_0px_#0284c7] group">
+              <span class="font-black text-lg">Email</span>
+              <span class="font-mono text-sm ml-auto opacity-70 group-hover:opacity-100">ME@UPXUU.COM</span>
+            </a>
+            <div class="flex items-center gap-3 p-3 border-2 border-[#0284c7] hover:bg-[#f59e0b] hover:text-white transition-colors shadow-[2px_2px_0px_0px_#0284c7] group">
+              <span class="font-black text-lg">微信</span>
+              <span class="font-mono text-sm ml-auto opacity-70 group-hover:opacity-100">@imljxu</span>
+            </div>
+            <div class="flex items-center gap-3 p-3 border-2 border-[#0284c7] hover:bg-[#8b5cf6] hover:text-white transition-colors shadow-[2px_2px_0px_0px_#0284c7] group">
+              <span class="font-black text-lg">QQ</span>
+              <span class="font-mono text-sm ml-auto opacity-70 group-hover:opacity-100">3697773416</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* GitHub Section */}
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+        {/* GitHub INFO */}
+        <div class="bg-white border-4 border-[#0284c7] p-6 shadow-[6px_6px_0px_0px_#0ea5e9] rounded-sm ">
+          <h2 class="text-2xl font-black text-[#0284c7] tracking-wider mb-6 flex items-center gap-2">
+            <span class="text-xl">💫</span> GitHub INFO
+          </h2>
+
+          <div class="space-y-6">
+            {/* About */}
+            <div>
+              <h3 class="font-bold text-slate-800 mb-1">💫 About Me:</h3>
+              <p class="text-slate-600 text-sm leading-relaxed">
+                HI I am UpXuu. A developer, student, simple people from HeBei, China.
+              </p>
+            </div>
+
+            {/* Socials */}
+            <div>
+              <h3 class="font-bold text-slate-800 mb-2">🌐 Socials:</h3>
+              <div class="flex flex-wrap gap-2">
+                <a href="https://x.com/IMUPXUU" target="_blank" class="bg-slate-50 border-2 border-[#0284c7] px-3 py-1 font-bold text-slate-700 shadow-[2px_2px_0px_0px_#0284c7] hover:bg-black hover:text-white transition-colors text-xs">𝕏</a>
+                <a href="https://youtube.com/@UpXuu" target="_blank" class="bg-slate-50 border-2 border-[#0284c7] px-3 py-1 font-bold text-slate-700 shadow-[2px_2px_0px_0px_#0284c7] hover:bg-red-600 hover:text-white transition-colors text-xs">YouTube</a>
+                <a href="mailto:me@upxuu.com" class="bg-slate-50 border-2 border-[#0284c7] px-3 py-1 font-bold text-slate-700 shadow-[2px_2px_0px_0px_#0284c7] hover:bg-red-500 hover:text-white transition-colors text-xs">Email</a>
+              </div>
+            </div>
+
+            {/* Tech Stack */}
+            <div>
+              <h3 class="font-bold text-slate-800 mb-2">💻 Tech Stack:</h3>
+              <div class="flex flex-wrap gap-1.5">
+                {["CSS3", "JavaScript", "Python", "Java", "HTML5", "Cloudflare", "Git", "GitHub", "Adobe After Effects"].map(tech => (
+                  <span class="bg-slate-50 border border-[#0284c7] px-2 py-0.5 font-mono text-xs text-slate-600">{tech}</span>
+                ))}
+              </div>
+            </div>
+
+            {/* GitHub Stats */}
+            <div>
+              <h3 class="font-bold text-slate-800 mb-2">📊 GitHub Stats:</h3>
+              <div class="space-y-2">
+                <img src={`https://github-readme-stats.shion.dev/api?username=${GITHUB_USER}&theme=graywhite&hide_border=false&include_all_commits=true&count_private=true`} alt="GitHub Stats" class="w-full max-w-md border border-slate-200" loading="lazy" />
+                <img src={`https://streak-stats.demolab.com/?user=${GITHUB_USER}&theme=graywhite&hide_border=false`} alt="GitHub Streak" class="w-full max-w-md border border-slate-200" loading="lazy" />
+                <img src={`https://github-readme-stats.shion.dev/api/top-langs/?username=${GITHUB_USER}&theme=graywhite&hide_border=false&include_all_commits=true&count_private=true&layout=compact`} alt="Top Langs" class="w-full max-w-md border border-slate-200" loading="lazy" />
+              </div>
+            </div>
+
+            <div class="text-xs text-slate-400">
+              <img src={`https://komarev.com/ghpvc/?username=${GITHUB_USER}&icon=4&color=0`} alt="Profile views" loading="lazy" />
+            </div>
+          </div>
+        </div>
+
+        {/* GitHub Repos */}
+        <div class="bg-white border-4 border-[#0284c7] p-6 shadow-[6px_6px_0px_0px_#10b981] rounded-sm ">
+          <h2 class="text-2xl font-black text-[#0284c7] tracking-wider mb-4 flex items-center gap-2">
+            <span class="text-xl">📦</span> 仓库列表
+            <span class="text-sm text-slate-400 font-mono">({repos.length})</span>
+          </h2>
+          <div class="overflow-x-auto pb-2 custom-scrollbar">
+            <div class="flex flex-nowrap gap-4 w-max">
+              {repos.length === 0 && (
+                <p class="text-slate-400 text-sm">暂无数据</p>
+              )}
+              {repos.map(repo => (
+                <a href={repo.html_url} target="_blank" class="w-64 shrink-0 p-4 border-2 border-[#0284c7] hover:bg-[#0ea5e9] hover:text-white transition-colors shadow-[2px_2px_0px_0px_#0284c7] group">
+                  <div class="flex items-start justify-between gap-2">
+                    <span class="font-bold text-sm truncate group-hover:text-white">{repo.name}</span>
+                    <div class="flex items-center gap-2 text-xs shrink-0 text-slate-500 group-hover:text-white/80">
+                      {repo.stargazers_count > 0 && <span>⭐ {repo.stargazers_count}</span>}
+                      {repo.forks_count > 0 && <span>⑂ {repo.forks_count}</span>}
+                    </div>
+                  </div>
+                  {repo.description && (
+                    <p class="text-xs text-slate-500 mt-1 line-clamp-2 group-hover:text-white/80">{repo.description}</p>
+                  )}
+                  <div class="flex items-center gap-2 mt-2">
+                    {repo.language && (
+                      <span class="text-[10px] font-mono bg-slate-100 px-1.5 py-0.5 border border-slate-300 group-hover:bg-white/20 group-hover:border-white/30 group-hover:text-white/90">{repo.language}</span>
+                    )}
+                    {repo.topics?.slice(0, 2).map(topic => (
+                      <span class="text-[10px] bg-[#e0f2fe] text-[#0284c7] px-1.5 py-0.5 border border-[#0284c7] group-hover:bg-white/20 group-hover:text-white/90">{topic}</span>
+                    ))}
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</Layout>

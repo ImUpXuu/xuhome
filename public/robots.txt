@@ -1,0 +1,3 @@
+User-agent: *
+Disallow: /_astro/
+Sitemap: https://upxuu.com/sitemap-index.xml

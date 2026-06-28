@@ -1,0 +1,6 @@
+{
+  "name": "UpXuu 个人主页",
+  "description": "简洁风、蓝色主题与手绘米黄色线条搭配的积木风格响应式个人主页",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

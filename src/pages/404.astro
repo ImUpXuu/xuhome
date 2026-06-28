@@ -1,0 +1,27 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="页面未找到">
+  <div class="min-h-[60vh] flex items-center justify-center px-4">
+    <div class="bg-white border-4 border-[#0284c7] p-8 sm:p-12 shadow-[8px_8px_0px_0px_#0284c7] rounded-sm text-center max-w-lg w-full animate-card-entrance">
+      <div class="text-8xl sm:text-9xl font-black text-[#0284c7] leading-none mb-4">404</div>
+      <div class="h-1 w-16 bg-[#fde68a] mx-auto mb-6"></div>
+      <p class="text-lg sm:text-xl font-bold text-slate-600 mb-8">这个页面好像不见了</p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a 
+          href="/" 
+          class="inline-block bg-[#0284c7] text-white font-black px-6 py-3 border-3 border-[#0284c7] shadow-[4px_4px_0px_0px_#fde68a] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all text-sm uppercase tracking-wider"
+        >
+          回到首页
+        </a>
+        <a 
+          href="/archive" 
+          class="inline-block bg-[#fde68a] text-[#0284c7] font-black px-6 py-3 border-3 border-[#0284c7] shadow-[4px_4px_0px_0px_#0284c7] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all text-sm uppercase tracking-wider"
+        >
+          浏览归档
+        </a>
+      </div>
+    </div>
+  </div>
+</Layout>

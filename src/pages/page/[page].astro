@@ -1,0 +1,10 @@
+---
+export async function getStaticPaths() {
+  return Array.from({ length: 25 }).map((_, i) => ({
+    params: { page: String(i + 1) }
+  }));
+}
+
+const { page } = Astro.params;
+return Astro.redirect(`/?page=${page}`);
+---

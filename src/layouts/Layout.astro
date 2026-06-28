@@ -1,0 +1,454 @@
+---
+import { siteConfig } from '../config/site';
+import { infoConfig } from '../config/info';
+import { seoConfig } from '../config/seo';
+import { ClientRouter } from 'astro:transitions';
+import NavBar from '../components/NavBar.astro';
+import CustomCursor from '../components/CustomCursor.svelte';
+import WelcomeToast from '../components/WelcomeToast.astro';
+import { PageBanner } from '../components/PageBanner';
+import { execSync } from 'child_process';
+import '../index.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  categoryName?: string | null;
+  tagName?: string | null;
+  post?: { title: string; date: string } | null;
+  isTalk?: boolean;
+  postsCount?: number;
+  isAboutPage?: boolean;
+  isArticle?: boolean;
+}
+
+const {
+  title,
+  description,
+  image = seoConfig.defaultImage,
+  categoryName = null,
+  tagName = null,
+  post = null,
+  isTalk = false,
+  postsCount = 0,
+  isAboutPage = false,
+  isArticle = false,
+} = Astro.props;
+
+const pageTitle = title 
+  ? `${title}${seoConfig.titleTemplate}` 
+  : `${siteConfig.title} - ${siteConfig.subtitle.split(' / ')[0]}`;
+const pageDescription = description || seoConfig.defaultDescription;
+
+const sectionTitle = (() => {
+  if (isTalk) return '说说';
+  if (title === '首页') return '最新文章';
+  if (title === '文章归档') return '归档';
+  return '';
+})();
+
+const canonicalUrl = siteConfig.url + Astro.url.pathname;
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDescription} />
+    <meta name="keywords" content={seoConfig.keywords.join(", ")} />
+    <meta name="author" content={siteConfig.author} />
+    <meta name="robots" content={seoConfig.robots} />
+    <link rel="canonical" href={canonicalUrl} />
+
+    {/* Open Graph Tags */}
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDescription} />
+    <meta property="og:type" content={post ? "article" : "website"} />
+    <meta property="og:image" content={image} />
+    <meta property="og:site_name" content={siteConfig.title} />
+    <meta property="og:locale" content="zh-CN" />
+    <meta property="og:url" content={canonicalUrl} />
+    {post && <meta property="article:published_time" content={post.date} />}
+    
+    {/* Twitter Card Tags */}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content={seoConfig.twitter.site} />
+    <meta name="twitter:creator" content={seoConfig.twitter.creator} />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={pageDescription} />
+    <meta name="twitter:image" content={image} />
+
+    {/* JSON-LD Structured Data */}
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "@id": `${siteConfig.url}/#website`,
+          "url": siteConfig.url,
+          "name": siteConfig.title,
+          "description": siteConfig.description,
+          "inLanguage": "zh-CN"
+        },
+        {
+          "@type": "Person",
+          "@id": `${siteConfig.url}/#person`,
+          "name": siteConfig.author,
+          "url": siteConfig.url,
+          "image": siteConfig.avatar,
+          "sameAs": [
+            siteConfig.socials.github
+          ]
+        },
+        ...(post ? [{
+          "@type": "Article",
+          "@id": `${canonicalUrl}#article`,
+          "headline": post.title,
+          "description": pageDescription,
+          "image": image,
+          "datePublished": post.date,
+          "author": {
+            "@type": "Person",
+            "name": siteConfig.author,
+            "url": siteConfig.url,
+            "image": siteConfig.avatar
+          },
+          "publisher": {
+            "@type": "Person",
+            "name": siteConfig.author,
+            "image": siteConfig.avatar
+          },
+          "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": canonicalUrl
+          }
+        }] : [])
+      ]
+    })} />
+
+    {/* Dynamic Prefetch & Preconnect */}
+    {seoConfig.dnsPrefetch.map(domain => (
+      <link rel="dns-prefetch" href={domain} />
+    ))}
+    {seoConfig.preconnect.map(conn => (
+      <link rel="preconnect" href={conn.url} crossorigin={conn.crossOrigin === "anonymous" ? "anonymous" : undefined} />
+    ))}
+
+    <!-- Fancybox CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css" />
+    
+    <script defer src="https://stats.upxuu.com/script.js" data-website-id="cd983d6c-e011-489d-903f-4757ce41c14d"></script>
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="9f42cc31-08eb-4829-8af7-06527a02f6c9"></script>
+  <style is:global>
+    @keyframes content-in {
+      0% { opacity: 0; transform: translateY(20px); filter: blur(4px); }
+      100% { opacity: 1; transform: translateY(0); filter: blur(0); }
+    }
+    @keyframes content-out {
+      0% { opacity: 1; transform: translateY(0); }
+      100% { opacity: 0; transform: translateY(15px); filter: blur(2px); }
+    }
+    /* Card Specific Entrance - Used for staggered listing */
+    @keyframes card-entrance {
+      0% { 
+        opacity: 0; 
+        transform: translateY(30px) scale(0.96); 
+        filter: blur(4px);
+      }
+      70% {
+        opacity: 1;
+        transform: translateY(-4px) scale(1.02);
+        filter: blur(0);
+      }
+      100% { 
+        opacity: 1; 
+        transform: translateY(0) scale(1); 
+        filter: blur(0);
+      }
+    }
+    .animate-card-entrance {
+      animation: card-entrance 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+
+  </style>
+  {/* Dark mode init - default light, never follow system */}
+  <script is:inline>
+    (function() {
+      if (localStorage.getItem('theme') === 'dark') {
+        document.documentElement.classList.add('dark');
+      }
+    })();
+  </script>
+  <ClientRouter />
+</head>
+  <body class="bg-[#faf8f5] dark:bg-slate-900 text-slate-800 dark:text-slate-200 selection:bg-[#fde68a] selection:text-[#0284c7]">
+    {/* Global reading progress bar */}
+    <div class="fixed top-0 left-0 w-full h-[5px] bg-transparent z-[110] pointer-events-none">
+      <div 
+        id="scroll-bar-indicator"
+        class="h-full bg-gradient-to-r from-[#0284c7] via-[#0ea5e9] to-[#f59e0b] origin-left w-0 transition-all duration-75"
+      ></div>
+    </div>
+    {/* Page navigation loading bar */}
+    <div id="nav-loader" class="fixed top-0 left-0 w-full h-[4px] z-[111] pointer-events-none hidden">
+      <div class="h-full bg-gradient-to-r from-[#fde68a] via-[#f59e0b] to-[#fde68a] w-0 h-full transition-all duration-300"></div>
+    </div>
+    <CustomCursor client:load />
+    <WelcomeToast />                
+    <div class="flex flex-col min-h-screen">
+      <NavBar />
+      
+      {!isAboutPage ? (
+        <div 
+          class="min-h-screen bg-[#faf8f5] dark:bg-slate-900 py-2 px-2 sm:py-6 sm:px-6 md:py-8 md:px-8 font-sans transition-all duration-300"
+          style={{ backgroundImage: "radial-gradient(#0284c70d 2px, transparent 2px)", backgroundSize: "24px 24px" }}
+        >
+          <div class="max-w-[1440px] w-full mx-auto flex flex-col gap-3 sm:gap-6">
+            <PageBanner 
+              client:load
+              pathname={Astro.url.pathname}
+              categoryName={categoryName}
+              tagName={tagName}
+              post={post}
+              postsCount={postsCount}
+            />
+            {sectionTitle && (
+              <div class="flex items-center gap-3 px-1 select-none">
+                <span class="w-3 h-3 bg-[#f59e0b] border-2 border-[#0284c7] rotate-45 shrink-0"></span>
+                <h2 class="text-sm sm:text-base font-black text-[#0284c7] tracking-widest uppercase">
+                  {sectionTitle}
+                </h2>
+                {postsCount > 0 && (
+                  <span class="text-[10px] font-black text-slate-400 font-mono">({postsCount})</span>
+                )}
+              </div>
+            )}
+            <main 
+              class="flex-1"
+              transition:animate={{
+                forwards: {
+                  old: [{ name: 'content-out', duration: '0.2s', easing: 'ease-in' }],
+                  new: [{ name: 'content-in', duration: '0.35s', easing: 'ease-out' }]
+                },
+                backwards: {
+                  old: [{ name: 'content-out', duration: '0.2s', easing: 'ease-in' }],
+                  new: [{ name: 'content-in', duration: '0.35s', easing: 'ease-out' }]
+                }
+              }}
+            >
+              <slot />
+            </main>
+          </div>
+        </div>
+      ) : (
+        <main class="flex-1">
+          <slot />
+        </main>
+      )}
+      
+      <footer class="w-full bg-[#faf8f5] dark:bg-slate-900 border-t-4 border-[#0284c7] select-none">
+        <div class="max-w-5xl mx-auto px-4 py-5 text-center text-xs font-mono text-slate-500 dark:text-slate-400 leading-relaxed space-y-2">
+          <div class="font-bold">
+            <span class="text-slate-700 dark:text-slate-300">{infoConfig.footer.copyrightText}</span>
+            <span class="mx-1.5">|</span>
+            {infoConfig.footer.links.map((link, i) => (
+              <>
+                <a href={link.path} target={link.external ? "_blank" : undefined} rel={link.external ? "noopener noreferrer" : undefined} class="hover:text-[#0ea5e9] transition-colors hover:underline">{link.name}</a>
+                {i < infoConfig.footer.links.length - 1 && <span class="mx-1">·</span>}
+              </>
+            ))}
+            {infoConfig.footer.icp && <><span class="mx-1.5">|</span><a href={infoConfig.footer.icp.link} target="_blank" rel="noopener noreferrer" class="hover:text-[#0ea5e9] transition-colors text-[#0284c7] hover:underline">{infoConfig.footer.icp.text}</a></>}
+          </div>
+          <div>
+            <span>本站已开源 </span><a href="https://github.com/ImUpXuu/xuhome" class="hover:text-[#0ea5e9] underline font-bold">IMUPXUU/XUHOME</a>
+            {(() => {
+              try {
+                const log = execSync('git log -n 1 --pretty=format:"%h||%s||%ci"').toString().trim();
+                const [hash, ...rest] = log.split('||');
+                const message = rest.join(' ').split('||')[0];
+                const date = rest.join(' ').split('||')[1] || '';
+                const formattedDate = date ? new Date(date).toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }) : '';
+                return <>
+                  <span class="mx-1">·</span>
+                  <span class="font-bold">LATEST COMMIT</span>
+                  <span class="mx-1">-</span>
+                  <a href={`https://github.com/ImUpXuu/xuhome/commit/${hash}`} class="hover:text-[#0ea5e9] underline">{hash}</a>
+                  <span class="mx-1">·</span>
+                  <span>{formattedDate}</span>
+                  <span class="mx-1">·</span>
+                  <span>{message}</span>
+                </>;
+              } catch (e) {
+                return "";
+              }
+            })()}
+          </div>
+          <div id="footer-stats" class="text-[10px] sm:text-xs">
+            <span>访问量 <span id="stat-pv" class="font-bold text-[#0284c7]">-</span></span>
+            <span class="mx-1">|</span>
+            <span>访客 <span id="stat-uv" class="font-bold text-[#0284c7]">-</span></span>
+            <span class="mx-1">|</span>
+            <span>次数 <span id="stat-vt" class="font-bold text-[#0284c7]">-</span></span>
+            <span class="mx-1">|</span>
+            <span>在线 <span id="stat-online" class="font-bold text-[#10b981]">-</span></span>
+          </div>
+          <div id="footer-uptime" class="text-[10px] sm:text-xs text-slate-400 dark:text-slate-500">
+            本站已在互联网中航行 <span id="uptime-display" class="font-bold text-[#0284c7]">计算中...</span>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+<script>
+  function initFooter() {
+    (async function() {
+      try {
+        const [statsRes, activeRes] = await Promise.allSettled([
+          fetch('https://vapi.upxuu.com/statsapi/alltime'),
+          fetch('https://vapi.upxuu.com/api/active')
+        ]);
+        let pv = 0, uv = 0, vt = 0, active = 0;
+        if (statsRes.status === 'fulfilled') {
+          const d = await statsRes.value.json();
+          pv = typeof d.pageviews === 'object' ? (d.pageviews?.value ?? 0) : (d.pageviews ?? 0);
+          uv = typeof d.visitors === 'object' ? (d.visitors?.value ?? 0) : (d.visitors ?? 0);
+          vt = typeof d.visits === 'object' ? (d.visits?.value ?? 0) : (d.visits ?? 0);
+        }
+        if (activeRes.status === 'fulfilled') {
+          const d = await activeRes.value.json();
+          active = Array.isArray(d) ? d.length : (d.total ?? d.visitors ?? 0);
+        }
+        const pvEl = document.getElementById('stat-pv');
+        if (pvEl) pvEl.textContent = pv.toLocaleString();
+        const uvEl = document.getElementById('stat-uv');
+        if (uvEl) uvEl.textContent = uv.toLocaleString();
+        const vtEl = document.getElementById('stat-vt');
+        if (vtEl) vtEl.textContent = vt.toLocaleString();
+        const olEl = document.getElementById('stat-online');
+        if (olEl) olEl.textContent = String(active);
+      } catch {}
+    })();
+  }
+
+  if (!window._uptimeStarted) {
+    window._uptimeStarted = true;
+    const start = new Date(2025, 8, 30, 20, 20, 0);
+    setInterval(function() {
+      const el = document.getElementById('uptime-display');
+      if (!el) return;
+      const diff = (Date.now() - start.getTime()) / 1000;
+      const days = Math.floor(diff / 86400);
+      const hours = Math.floor((diff % 86400) / 3600);
+      const mins = Math.floor((diff % 3600) / 60);
+      const secs = diff % 60;
+      el.textContent = days + '\u5929' + String(hours).padStart(2,'0') + '\u5c0f\u65f6' + String(mins).padStart(2,'0') + '\u5206' + secs.toFixed(2).padStart(5,'0') + '\u79d2';
+    }, 10);
+  }
+
+  document.addEventListener('astro:page-load', initFooter);
+</script>
+    </div>
+
+    {/* Floating Back To Top button */}
+    <button
+      id="back-to-top-btn"
+      class="fixed bottom-24 right-6 z-[95] w-12 h-12 rounded-sm border-3 sm:border-4 border-[#0284c7] bg-[#fde68a] dark:bg-[#1e293b] text-[#0284c7] flex items-center justify-center cursor-pointer shadow-[4px_4px_0px_0px_#0284c7] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#0284c7] active:translate-y-0 active:shadow-none transition-all duration-150 opacity-0 pointer-events-none"
+      aria-label="回到顶部"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 stroke-[3]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+      </svg>
+    </button>
+  </body>
+</html>
+
+<script is:inline data-astro-rerun>
+{
+  function setupGlobalScrollBar() {
+    const indicator = document.getElementById('scroll-bar-indicator');
+    if (indicator) {
+      window.addEventListener('scroll', () => {
+        const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const percentage = totalHeight > 0 ? (window.pageYOffset / totalHeight) * 100 : 0;
+        indicator.style.width = percentage + '%';
+      }, { passive: true });
+    }
+  }
+
+  function setupBackToTop() {
+    // Floating Back to Top Button script
+    const backToTopBtn = document.getElementById('back-to-top-btn');
+    if (backToTopBtn) {
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 300) {
+          backToTopBtn.classList.remove('opacity-0', 'pointer-events-none');
+          backToTopBtn.classList.add('opacity-100');
+        } else {
+          backToTopBtn.classList.add('opacity-0', 'pointer-events-none');
+          backToTopBtn.classList.remove('opacity-100');
+        }
+      }, { passive: true });
+
+      backToTopBtn.addEventListener('click', () => {
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      });
+    }
+  }
+
+  // Initial run
+  setupGlobalScrollBar();
+  setupBackToTop();
+  
+  // Page navigation loader
+  let navLoaderTimer = null;
+  const navLoader = document.getElementById('nav-loader');
+  const navLoaderBar = navLoader?.querySelector('div');
+
+  function startNavLoader() {
+    if (!navLoader || !navLoaderBar) return;
+    clearTimeout(navLoaderTimer);
+    navLoader.classList.remove('hidden');
+    navLoaderBar.style.width = '0%';
+    // Animate to 80% quickly
+    requestAnimationFrame(() => {
+      navLoaderBar.style.transition = 'width 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
+      navLoaderBar.style.width = '80%';
+    });
+  }
+
+  function completeNavLoader() {
+    if (!navLoader || !navLoaderBar) return;
+    clearTimeout(navLoaderTimer);
+    navLoaderBar.style.transition = 'width 0.25s ease-out';
+    navLoaderBar.style.width = '100%';
+    navLoaderTimer = setTimeout(() => {
+      navLoader.classList.add('hidden');
+      navLoaderBar.style.width = '0%';
+    }, 400);
+  }
+
+  if (!window._layoutListenersInited) {
+    document.addEventListener('astro:before-preparation', startNavLoader);
+    document.addEventListener('astro:error', completeNavLoader);
+    document.addEventListener('astro:page-load', () => {
+      completeNavLoader();
+      setupGlobalScrollBar();
+      setupBackToTop();
+      if (localStorage.getItem('theme') === 'dark') {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    });
+    window._layoutListenersInited = true;
+  }
+}
+</script>
