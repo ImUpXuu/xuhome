@@ -200,8 +200,8 @@ const canonicalURL = new URL(Astro.url.pathname, "https://upxuu.com").href;
       <div class="h-full bg-gradient-to-r from-[#fde68a] via-[#f59e0b] to-[#fde68a] w-0 h-full transition-all duration-300"></div>
     </div>
     {/* Bottom page transition progress bar */}
-    <div id="bottom-loader" class="fixed bottom-0 left-0 w-full z-[111] pointer-events-none translate-y-full transition-transform duration-300" style="transform: translateY(100%);">
-      <div class="h-[5px] bg-[#0284c7] border-t-2 border-[#0284c7] shadow-[0px_-2px_0px_0px_#f59e0b] w-0 transition-all duration-500 ease-out"></div>
+    <div id="bottom-loader" class="fixed bottom-0 left-0 w-full z-[111] pointer-events-none" style="transform: translateY(100%); transition: transform 0.3s ease;">
+      <div class="h-[5px] bg-[#0284c7] border-t-2 border-[#0284c7] shadow-[0px_-2px_0px_0px_#f59e0b] w-0" style="transition: width 0.3s ease-out;"></div>
     </div>
     <CustomCursor client:load />
     <WelcomeToast />                
@@ -307,6 +307,11 @@ const canonicalURL = new URL(Astro.url.pathname, "https://upxuu.com").href;
           <div id="footer-uptime" class="text-[10px] sm:text-xs text-slate-400 dark:text-slate-500">
             本站已在互联网中航行 <span id="uptime-display" class="font-bold text-[#0284c7]">计算中...</span>
           </div>
+          <div id="footer-perf" class="text-[10px] sm:text-xs text-slate-400 dark:text-slate-500">
+            <span>加载 <span id="perf-time" class="font-bold text-[#0284c7]">-</span></span>
+            <span class="mx-1">·</span>
+            <span>传输 <span id="perf-size" class="font-bold text-[#0284c7]">-</span></span>
+          </div>
         </div>
       </footer>
     </div>
@@ -342,6 +347,38 @@ const canonicalURL = new URL(Astro.url.pathname, "https://upxuu.com").href;
     })();
   }
 
+  // Show real page performance metrics (load time + transfer size)
+  function showPerfMetrics() {
+    try {
+      const nav = performance.getEntriesByType('navigation')[0];
+      if (!nav) return;
+      const loadTime = (nav.loadEventEnd - nav.fetchStart) / 1000; // seconds
+      const transferSize = nav.transferSize || 0; // bytes
+
+      const timeEl = document.getElementById('perf-time');
+      if (timeEl) {
+        timeEl.textContent = loadTime > 0 ? loadTime.toFixed(2) + 's' : '-';
+      }
+      const sizeEl = document.getElementById('perf-size');
+      if (sizeEl) {
+        if (transferSize > 1048576) {
+          sizeEl.textContent = (transferSize / 1048576).toFixed(1) + ' MB';
+        } else if (transferSize > 1024) {
+          sizeEl.textContent = (transferSize / 1024).toFixed(0) + ' KB';
+        } else {
+          sizeEl.textContent = transferSize + ' B';
+        }
+      }
+    } catch {}
+  }
+
+  // Initial perf measurement
+  if (document.readyState === 'complete') {
+    showPerfMetrics();
+  } else {
+    window.addEventListener('load', showPerfMetrics);
+  }
+
   if (!window._uptimeStarted) {
     window._uptimeStarted = true;
     const start = new Date(2025, 8, 30, 20, 20, 0);
@@ -357,7 +394,10 @@ const canonicalURL = new URL(Astro.url.pathname, "https://upxuu.com").href;
     }, 10);
   }
 
-  document.addEventListener('astro:page-load', initFooter);
+  document.addEventListener('astro:page-load', () => {
+    initFooter();
+    showPerfMetrics();
+  });
 </script>
     </div>
 
@@ -579,6 +619,7 @@ const canonicalURL = new URL(Astro.url.pathname, "https://upxuu.com").href;
       completeNavLoader();
       setupGlobalScrollBar();
       setupBackToTop();
+      showPerfMetrics();
       if (localStorage.getItem('theme') === 'dark') {
         document.documentElement.classList.add('dark');
       } else {
