@@ -12,7 +12,7 @@
       "has": [
         {
           "type": "host",
-          "value": "(?!^upxuu\\.com$)(.*)"
+          "value": "(?<subdomain>.*)\\.vercel\\.app"
         }
       ],
       "headers": [
@@ -24,3 +24,4 @@
     }
   ]
 }
+
