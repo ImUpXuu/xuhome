@@ -635,34 +635,60 @@ const canonicalURL = new URL(Astro.url.pathname, "https://upxuu.com").href;
 <script>
   (function() {
     const SITE_HOST = 'upxuu.com';
+    // Trusted domains that skip verification
+    const TRUSTED = ['github.com', 'bilibili.com', 'space.bilibili.com', 'icp.gov.moe'];
     let popover = null;
     let countdownTimer = null;
     let pendingUrl = '';
 
     function isExternal(href) {
-      if (!href || href.startsWith('#') || href.startsWith('javascript:')) return false;
+      if (!href || href.startsWith('#') || href.startsWith('javascript:') || href.startsWith('mailto:')) return false;
       if (href.startsWith('/') && !href.startsWith('//')) return false;
       try {
         const u = new URL(href, location.origin);
         return u.hostname !== SITE_HOST && !u.hostname.endsWith('.' + SITE_HOST);
-      } catch {
-        return false;
-      }
+      } catch { return false; }
+    }
+
+    function isTrustedDomain(href) {
+      try {
+        const host = new URL(href, location.origin).hostname;
+        return TRUSTED.some(d => host === d || host.endsWith('.' + d));
+      } catch { return false; }
+    }
+
+    function isBypassed(anchor) {
+      // Explicit bypass attribute on link or any parent
+      if (anchor.closest('[data-ext-bypass]')) return true;
+      // Trusted domains
+      const href = anchor.getAttribute('href');
+      if (isTrustedDomain(href)) return true;
+      return false;
     }
 
     function createPopover() {
       if (popover) return popover;
       const el = document.createElement('div');
       el.id = 'ext-link-popover';
-      el.className = 'fixed z-[3000] bg-white dark:bg-slate-800 border-3 border-[#0284c7] shadow-[4px_4px_0px_0px_#0284c7] rounded-sm p-3 opacity-0 pointer-events-none transition-opacity duration-200';
-      el.style.maxWidth = '320px';
+      el.className = 'fixed z-[3000] bg-white dark:bg-slate-800 border-3 border-[#0284c7] shadow-[4px_4px_0px_0px_#0284c7] rounded-sm p-4 pointer-events-none';
+      el.style.maxWidth = '340px';
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(8px) scale(0.95)';
+      el.style.transition = 'opacity 0.2s ease, transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)';
       el.innerHTML = `
-        <div class="text-xs font-bold text-slate-600 dark:text-slate-300 mb-2 leading-relaxed break-all" id="ext-link-url"></div>
+        <div class="flex items-start gap-2 mb-3">
+          <span class="text-lg shrink-0">⚠️</span>
+          <div>
+            <p class="text-xs font-black text-[#0284c7] uppercase tracking-wider leading-snug">你即将跳转至第三方页面</p>
+            <p class="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5 leading-snug">本站不保证该站内容合规与安全</p>
+          </div>
+        </div>
+        <div class="text-[10px] font-mono text-slate-500 dark:text-slate-400 mb-3 py-1.5 px-2 bg-slate-100 dark:bg-slate-700 rounded-sm break-all leading-relaxed border-l-2 border-[#f59e0b]" id="ext-link-url"></div>
         <div class="flex items-center gap-2">
           <button id="ext-link-yes" class="flex-1 bg-[#0284c7] text-white font-black py-1.5 border-2 border-[#0284c7] rounded-sm text-xs uppercase tracking-wider shadow-[2px_2px_0px_0px_#f59e0b] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all cursor-pointer">是，打开</button>
-          <button id="ext-link-no" class="flex-1 bg-white dark:bg-slate-700 text-[#0284c7] font-black py-1.5 border-2 border-[#0284c7] rounded-sm text-xs uppercase tracking-wider shadow-[2px_2px_0px_0px_#0284c7] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all cursor-pointer relative">
+          <button id="ext-link-no" class="flex-1 bg-white dark:bg-slate-700 text-[#0284c7] font-black py-1.5 border-2 border-[#0284c7] rounded-sm text-xs uppercase tracking-wider shadow-[2px_2px_0px_0px_#0284c7] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all cursor-pointer relative overflow-hidden">
             <span id="ext-link-no-text">否</span>
-            <span id="ext-link-countdown" class="hidden absolute inset-0 flex items-center justify-center font-mono text-[#f59e0b]">3</span>
+            <span id="ext-link-countdown" class="hidden absolute inset-0 flex items-center justify-center font-mono font-black text-[#f59e0b] text-sm bg-white dark:bg-slate-700">3</span>
           </button>
         </div>
       `;
@@ -672,12 +698,10 @@ const canonicalURL = new URL(Astro.url.pathname, "https://upxuu.com").href;
         if (pendingUrl) window.open(pendingUrl, '_blank', 'noopener,noreferrer');
         dismiss();
       });
-      el.querySelector('#ext-link-no').addEventListener('click', () => {
-        startCountdown();
-      });
+      el.querySelector('#ext-link-no').addEventListener('click', startCountdown);
       // Click outside to dismiss
       document.addEventListener('click', (e) => {
-        if (popover && !popover.contains(e.target) && popover.classList.contains('opacity-100')) {
+        if (popover && !popover.contains(e.target) && popover.classList.contains('active')) {
           dismiss();
         }
       });
@@ -688,13 +712,12 @@ const canonicalURL = new URL(Astro.url.pathname, "https://upxuu.com").href;
     function positionPopover(anchor) {
       const rect = anchor.getBoundingClientRect();
       const po = createPopover();
-      const pw = 300; // approximate popover width
+      const pw = 340;
       let left = rect.left;
       let top = rect.bottom + 8;
-      // Keep within viewport
       if (left + pw > window.innerWidth - 8) left = window.innerWidth - pw - 8;
       if (left < 8) left = 8;
-      if (top + 80 > window.innerHeight) top = rect.top - 88;
+      if (top + 160 > window.innerHeight) top = rect.top - 168;
       po.style.left = left + 'px';
       po.style.top = top + 'px';
     }
@@ -705,20 +728,22 @@ const canonicalURL = new URL(Astro.url.pathname, "https://upxuu.com").href;
       const po = createPopover();
       po.querySelector('#ext-link-url').textContent = url;
       // Reset countdown UI
-      po.querySelector('#ext-link-no-text').classList.remove('hidden');
+      po.querySelector('#ext-link-no-text').classList.remove('invisible');
       po.querySelector('#ext-link-countdown').classList.add('hidden');
       positionPopover(anchor);
       requestAnimationFrame(() => {
-        po.classList.add('opacity-100');
-        po.classList.remove('pointer-events-none');
+        po.style.opacity = '1';
+        po.style.transform = 'translateY(0) scale(1)';
+        po.classList.add('active');
       });
     }
 
     function dismiss() {
       clearCountdown();
       if (popover) {
-        popover.classList.remove('opacity-100');
-        popover.classList.add('pointer-events-none');
+        popover.style.opacity = '0';
+        popover.style.transform = 'translateY(8px) scale(0.95)';
+        popover.classList.remove('active');
         pendingUrl = '';
       }
     }
@@ -742,31 +767,26 @@ const canonicalURL = new URL(Astro.url.pathname, "https://upxuu.com").href;
     }
 
     function clearCountdown() {
-      if (countdownTimer) {
-        clearInterval(countdownTimer);
-        countdownTimer = null;
-      }
+      if (countdownTimer) { clearInterval(countdownTimer); countdownTimer = null; }
     }
 
-    // Global click interception
+    // Global click interception (capture phase)
     document.addEventListener('click', (e) => {
       const anchor = e.target.closest('a');
       if (!anchor) return;
       const href = anchor.getAttribute('href');
       if (!isExternal(href)) return;
-      // Skip if already handled or special case
-      if (anchor.getAttribute('target') === '_blank' && anchor.querySelector('#ext-link-yes')) return;
+      if (isBypassed(anchor)) return;
       e.preventDefault();
       e.stopPropagation();
       show(anchor, href);
     }, true);
 
-    // Refresh interception after page transitions
-    document.addEventListener('astro:page-load', () => {
-      dismiss();
-    });
-    document.addEventListener('astro:before-preparation', () => {
-      dismiss();
+    document.addEventListener('astro:page-load', dismiss);
+    document.addEventListener('astro:before-preparation', dismiss);
+    // Press Escape to dismiss
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && popover && popover.classList.contains('active')) dismiss();
     });
   })();
 </script>
