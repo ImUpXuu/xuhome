@@ -1,5 +1,26 @@
 {
   "redirects": [
-    { "source": "/images/20260214145619.jpg", "destination": "/images/me.jpg", "permanent": true }
+    { 
+      "source": "/images/20260214145619.jpg", 
+      "destination": "/images/me.jpg", 
+      "permanent": true 
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "(?!^upxuu\\.com$)(.*)"
+        }
+      ],
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, nosnippet"
+        }
+      ]
+    }
   ]
 }
