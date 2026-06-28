@@ -414,7 +414,7 @@ const canonicalURL = new URL(Astro.url.pathname, "https://upxuu.com").href;
   setupGlobalScrollBar();
   setupBackToTop();
   
-  // Page navigation loader
+  // Page navigation loader — tracks real resource loading
   let navLoaderTimer = null;
   let bottomLoaderTimer = null;
   const navLoader = document.getElementById('nav-loader');
@@ -422,50 +422,153 @@ const canonicalURL = new URL(Astro.url.pathname, "https://upxuu.com").href;
   const bottomLoader = document.getElementById('bottom-loader');
   const bottomLoaderBar = bottomLoader?.querySelector('div');
 
-  function startNavLoader() {
-    if (!navLoader || !navLoaderBar) return;
-    clearTimeout(navLoaderTimer);
-    navLoader.classList.remove('hidden');
-    navLoaderBar.style.width = '0%';
-    // Animate to 80% quickly
-    requestAnimationFrame(() => {
-      navLoaderBar.style.transition = 'width 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
-      navLoaderBar.style.width = '80%';
-    });
+  // PerformanceObserver-based real resource tracking
+  let resourceObserver = null;
+  let navStartTime = 0;
+  let pendingResources = new Set();
+  let loadedCount = 0;
+  let totalCount = 0;
+  let loaderActive = false;
 
-    // Bottom loader: slide up and start filling
-    if (!bottomLoader || !bottomLoaderBar) return;
-    clearTimeout(bottomLoaderTimer);
-    bottomLoader.style.transform = 'translateY(0)';
-    bottomLoaderBar.style.width = '0%';
-    requestAnimationFrame(() => {
-      bottomLoaderBar.style.transition = 'width 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
-      bottomLoaderBar.style.width = '70%';
-    });
+  function setProgress(pct) {
+    const clamped = Math.max(0, Math.min(100, pct));
+    // Top loader
+    if (navLoaderBar) {
+      navLoaderBar.style.width = clamped + '%';
+    }
+    // Bottom loader: reflect same real progress
+    if (bottomLoaderBar) {
+      bottomLoaderBar.style.width = clamped + '%';
+    }
+  }
+
+  function startResourceTracking() {
+    if (resourceObserver) {
+      resourceObserver.disconnect();
+    }
+    navStartTime = performance.now();
+    pendingResources = new Set();
+    loadedCount = 0;
+    totalCount = 0;
+    setProgress(0);
+
+    try {
+      resourceObserver = new PerformanceObserver((list) => {
+        if (!loaderActive) return;
+        for (const entry of list.getEntries()) {
+          // Only track resources loaded AFTER navigation started
+          if (entry.startTime < navStartTime) continue;
+          // Only track meaningful resources
+          if (entry.initiatorType === 'fetch' || entry.initiatorType === 'xmlhttprequest') continue;
+          const key = entry.name;
+          if (!pendingResources.has(key)) {
+            pendingResources.add(key);
+            totalCount++;
+          }
+          // transferSize can be 0 for cached/304 — count as loaded instantly
+          if (entry.transferSize > 0 || entry.duration > 0) {
+            if (pendingResources.has(key)) {
+              pendingResources.delete(key);
+              loadedCount++;
+            }
+          }
+        }
+        // Calculate real progress (reserve 5%-95% range while loading)
+        // Cached resources are counted as loaded instantly
+        const remaining = pendingResources.size;
+        if (totalCount > 0) {
+          const realPct = Math.round((loadedCount / totalCount) * 90); // 0-90% for resources
+          setProgress(5 + realPct); // Start at 5%, resource loading covers 5%-95%
+        } else {
+          // No resources detected yet, show 10%
+          setProgress(10);
+        }
+      });
+      resourceObserver.observe({ type: 'resource', buffered: false });
+    } catch (e) {
+      // PerformanceObserver not supported — fall through to fake progress
+    }
+
+    // Also track document readiness
+    loaderActive = true;
+  }
+
+  function startNavLoader() {
+    if (navLoader && navLoaderBar) {
+      clearTimeout(navLoaderTimer);
+      navLoader.classList.remove('hidden');
+      navLoaderBar.style.transition = 'width 0.3s ease-out';
+    }
+
+    // Bottom loader: slide up
+    if (bottomLoader && bottomLoaderBar) {
+      clearTimeout(bottomLoaderTimer);
+      bottomLoader.style.transform = 'translateY(0)';
+      bottomLoaderBar.style.width = '0%';
+      bottomLoaderBar.style.transition = 'width 0.3s ease-out';
+    }
+
+    setProgress(3);
+    startResourceTracking();
+
+    // Fallback timer: if no resources are detected within 2s, simulate steady progress
+    clearTimeout(window.__loaderFallbackTimer);
+    window.__loaderFallbackTimer = setTimeout(() => {
+      if (!loaderActive) return;
+      if (totalCount === 0) {
+        // No resources detected — simulate incremental progress up to 85%
+        let fakeProgress = 10;
+        window.__loaderFallbackInterval = setInterval(() => {
+          if (!loaderActive) {
+            clearInterval(window.__loaderFallbackInterval);
+            return;
+          }
+          fakeProgress += Math.random() * 8 + 2;
+          if (fakeProgress >= 85) {
+            fakeProgress = 85;
+            clearInterval(window.__loaderFallbackInterval);
+          }
+          setProgress(fakeProgress);
+        }, 400);
+      }
+    }, 2000);
   }
 
   function completeNavLoader() {
+    loaderActive = false;
+    clearTimeout(window.__loaderFallbackTimer);
+    clearInterval(window.__loaderFallbackInterval);
+
+    if (resourceObserver) {
+      resourceObserver.disconnect();
+      resourceObserver = null;
+    }
+
+    // Jump to 100%
+    if (navLoaderBar) setProgress(100);
+    if (bottomLoaderBar) setProgress(100);
+
     if (navLoader && navLoaderBar) {
       clearTimeout(navLoaderTimer);
-      navLoaderBar.style.transition = 'width 0.25s ease-out';
+      navLoaderBar.style.transition = 'width 0.2s ease-out';
       navLoaderBar.style.width = '100%';
       navLoaderTimer = setTimeout(() => {
         navLoader.classList.add('hidden');
         navLoaderBar.style.width = '0%';
-      }, 400);
+      }, 300);
     }
 
     // Bottom loader: finish then slide down
     if (bottomLoader && bottomLoaderBar) {
       clearTimeout(bottomLoaderTimer);
-      bottomLoaderBar.style.transition = 'width 0.3s ease-out';
+      bottomLoaderBar.style.transition = 'width 0.2s ease-out';
       bottomLoaderBar.style.width = '100%';
       bottomLoaderTimer = setTimeout(() => {
         bottomLoader.style.transform = 'translateY(100%)';
         setTimeout(() => {
           bottomLoaderBar.style.width = '0%';
         }, 300);
-      }, 350);
+      }, 250);
     }
   }
 
