@@ -1,0 +1,294 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="隐私政策" description="UpXuu 博客的隐私政策——我们如何收集、使用和保护你的个人信息。">
+  <div class="max-w-3xl mx-auto px-4 py-8 sm:py-12">
+
+    <!-- Page header -->
+    <div class="mb-10">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="w-4 h-4 bg-[#f59e0b] border-2 border-[#0284c7] rotate-45 shrink-0"></span>
+        <h1 class="text-2xl sm:text-3xl font-black text-[#0284c7] tracking-widest uppercase">
+          隐私政策
+        </h1>
+      </div>
+      <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-mono">
+        最后更新日期：2026 年 6 月 28 日 · 生效日期：2026 年 6 月 28 日
+      </p>
+    </div>
+
+    <!-- Intro card -->
+    <div class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] p-5 sm:p-7 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm mb-8">
+      <p class="text-sm sm:text-base leading-relaxed text-slate-700 dark:text-slate-300">
+        本隐私政策说明了 <strong class="text-[#0284c7]">UpXuu 博客</strong>（以下简称"本站"或"我们"）如何收集、使用和保护你在访问
+        <a href="https://upxuu.com" class="text-[#0284c7] underline hover:text-[#0ea5e9] transition-colors font-bold">upxuu.com</a>
+        过程中涉及的个人信息。我们重视你的隐私，并致力于以透明、合法的方式处理数据。
+      </p>
+    </div>
+
+    <!-- Section: Data we collect -->
+    <div class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] p-5 sm:p-7 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm mb-6">
+      <h2 class="text-lg sm:text-xl font-black text-[#0284c7] border-b-4 border-[#0284c7] pb-2 mb-5 uppercase tracking-wider inline-block pr-4">
+        一、我们收集的信息
+      </h2>
+
+      <div class="space-y-5 text-sm sm:text-base leading-relaxed text-slate-700 dark:text-slate-300">
+
+        <!-- 1.1 Analytics -->
+        <div>
+          <h3 class="font-black text-slate-800 dark:text-slate-200 text-sm sm:text-base mb-2">
+            <span class="inline-block w-2.5 h-2.5 bg-[#f59e0b] border-2 border-[#0284c7] mr-2 align-middle"></span>
+            1.1 访问统计
+          </h3>
+          <p>
+            本站使用 <strong>Umami Analytics</strong>（自托管实例及云服务）收集匿名的页面访问数据，包括：
+          </p>
+          <ul class="list-disc list-inside mt-2 ml-4 space-y-1 text-slate-600 dark:text-slate-400">
+            <li>访问的页面路径（URL）</li>
+            <li>来源站点（Referer）</li>
+            <li>浏览器类型与操作系统</li>
+            <li>设备类型与屏幕分辨率</li>
+            <li>国家/地区级别的粗略位置（基于 IP，不精确到城市以下）</li>
+          </ul>
+          <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">
+            ⓘ Umami 不使用 Cookie，不会追踪个人身份信息，数据仅用于统计站点访问量。
+          </p>
+          <div class="mt-2 p-3 bg-[#faf8f5] dark:bg-slate-700 border-2 border-slate-300 dark:border-slate-600 rounded-sm text-xs font-mono text-slate-500 dark:text-slate-400 break-all">
+            服务方：stats.upxuu.com（自托管）· cloud.umami.is（Umami Cloud）
+          </div>
+        </div>
+
+        <!-- 1.2 Comments -->
+        <div>
+          <h3 class="font-black text-slate-800 dark:text-slate-200 text-sm sm:text-base mb-2">
+            <span class="inline-block w-2.5 h-2.5 bg-[#f59e0b] border-2 border-[#0284c7] mr-2 align-middle"></span>
+            1.2 评论系统
+          </h3>
+          <p>
+            本站使用自托管的 <strong>Waline</strong> 评论系统。当你发表评论时，我们会收集：
+          </p>
+          <ul class="list-disc list-inside mt-2 ml-4 space-y-1 text-slate-600 dark:text-slate-400">
+            <li>你主动填写的昵称、邮箱、网址</li>
+            <li>评论内容及 Markdown 格式的文本</li>
+            <li>浏览器 User-Agent 字符串（用于展示操作系统/浏览器徽标）</li>
+          </ul>
+          <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">
+            ⓘ 邮箱不会公开展示，仅用于 Gravatar 头像和回复通知。评论数据存储在我们的服务器上。
+          </p>
+          <div class="mt-2 p-3 bg-[#faf8f5] dark:bg-slate-700 border-2 border-slate-300 dark:border-slate-600 rounded-sm text-xs font-mono text-slate-500 dark:text-slate-400 break-all">
+            服务方：com4.upxuu.com（自托管 Waline）
+          </div>
+        </div>
+
+        <!-- 1.3 AI Features -->
+        <div>
+          <h3 class="font-black text-slate-800 dark:text-slate-200 text-sm sm:text-base mb-2">
+            <span class="inline-block w-2.5 h-2.5 bg-[#f59e0b] border-2 border-[#0284c7] mr-2 align-middle"></span>
+            1.3 AI 摘要与对话
+          </h3>
+          <p>
+            本站提供 AI 文章摘要和 AI 对话功能。当使用这些功能时：
+          </p>
+          <ul class="list-disc list-inside mt-2 ml-4 space-y-1 text-slate-600 dark:text-slate-400">
+            <li><strong>AI 摘要</strong>——向服务端发送当前文章的 URL，服务端抓取文章内容生成摘要</li>
+            <li><strong>AI 对话</strong>——你输入的消息会发送至服务端，由 AI 模型处理后返回回复</li>
+            <li>聊天记录和模型偏好保存在你的浏览器本地存储（localStorage）中，不会上传至服务器</li>
+          </ul>
+          <div class="mt-2 p-3 bg-[#faf8f5] dark:bg-slate-700 border-2 border-slate-300 dark:border-slate-600 rounded-sm text-xs font-mono text-slate-500 dark:text-slate-400 break-all">
+            服务方：blogapi.upxuu.com（自托管 AI 后端）
+          </div>
+        </div>
+
+        <!-- 1.4 Visitor Stats -->
+        <div>
+          <h3 class="font-black text-slate-800 dark:text-slate-200 text-sm sm:text-base mb-2">
+            <span class="inline-block w-2.5 h-2.5 bg-[#f59e0b] border-2 border-[#0284c7] mr-2 align-middle"></span>
+            1.4 访客统计展示
+          </h3>
+          <p>
+            本站页脚和欢迎提示中展示累积访问量和在线人数。这些数据通过自托管统计 API 获取，仅展示聚合数字，不与个人身份关联。
+          </p>
+          <div class="mt-2 p-3 bg-[#faf8f5] dark:bg-slate-700 border-2 border-slate-300 dark:border-slate-600 rounded-sm text-xs font-mono text-slate-500 dark:text-slate-400 break-all">
+            服务方：vapi.upxuu.com（自托管统计 API）
+          </div>
+        </div>
+
+        <!-- 1.5 Location & Weather -->
+        <div>
+          <h3 class="font-black text-slate-800 dark:text-slate-200 text-sm sm:text-base mb-2">
+            <span class="inline-block w-2.5 h-2.5 bg-[#f59e0b] border-2 border-[#0284c7] mr-2 align-middle"></span>
+            1.5 欢迎提示中的位置与天气
+          </h3>
+          <p>
+            首次访问时，页面底部会显示欢迎信息，包含基于 IP 的城市级别位置和当日天气。此功能通过第三方 API 实现，你的 IP 地址会被用于查询大致位置。
+          </p>
+          <div class="mt-2 p-3 bg-[#faf8f5] dark:bg-slate-700 border-2 border-slate-300 dark:border-slate-600 rounded-sm text-xs font-mono text-slate-500 dark:text-slate-400 break-all">
+            服务方：uapis.cn（第三方天气 API）
+          </div>
+        </div>
+
+        <!-- 1.6 External Resources -->
+        <div>
+          <h3 class="font-black text-slate-800 dark:text-slate-200 text-sm sm:text-base mb-2">
+            <span class="inline-block w-2.5 h-2.5 bg-[#f59e0b] border-2 border-[#0284c7] mr-2 align-middle"></span>
+            1.6 外部资源加载
+          </h3>
+          <p>
+            本站加载以下第三方资源，这些服务可能会接收标准的 HTTP 请求信息（IP、User-Agent、Referer）：
+          </p>
+          <ul class="list-disc list-inside mt-2 ml-4 space-y-1 text-slate-600 dark:text-slate-400">
+            <li><strong>Google Fonts</strong>——提供 Fredoka、Noto Sans SC、JetBrains Mono 字体</li>
+            <li><strong>jsdelivr CDN</strong>——提供 Fancybox 图片灯箱样式文件</li>
+            <li><strong>关于页面</strong>——调用 GitHub API（api.github.com）展示公开仓库列表；调用第三方 API（uapis.cn）获取 Bilibili 视频列表</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section: Local Storage -->
+    <div class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] p-5 sm:p-7 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm mb-6">
+      <h2 class="text-lg sm:text-xl font-black text-[#0284c7] border-b-4 border-[#0284c7] pb-2 mb-5 uppercase tracking-wider inline-block pr-4">
+        二、浏览器本地存储
+      </h2>
+      <div class="space-y-4 text-sm sm:text-base leading-relaxed text-slate-700 dark:text-slate-300">
+        <p>为提升用户体验，本站会在你的浏览器中存储以下信息（所有数据仅保存在本地，不会上传）：</p>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs sm:text-sm border-collapse">
+            <thead>
+              <tr class="border-b-3 border-[#0284c7]">
+                <th class="text-left py-2 px-3 font-black text-[#0284c7] uppercase tracking-wider">存储键</th>
+                <th class="text-left py-2 px-3 font-black text-[#0284c7] uppercase tracking-wider">类型</th>
+                <th class="text-left py-2 px-3 font-black text-[#0284c7] uppercase tracking-wider">用途</th>
+              </tr>
+            </thead>
+            <tbody class="text-slate-600 dark:text-slate-400">
+              <tr class="border-b border-slate-200 dark:border-slate-700">
+                <td class="py-2 px-3 font-mono text-[10px] sm:text-xs">theme</td>
+                <td class="py-2 px-3">localStorage</td>
+                <td class="py-2 px-3">深色/浅色主题偏好</td>
+              </tr>
+              <tr class="border-b border-slate-200 dark:border-slate-700">
+                <td class="py-2 px-3 font-mono text-[10px] sm:text-xs">xuai-chat-model</td>
+                <td class="py-2 px-3">localStorage</td>
+                <td class="py-2 px-3">AI 对话模型选择</td>
+              </tr>
+              <tr class="border-b border-slate-200 dark:border-slate-700">
+                <td class="py-2 px-3 font-mono text-[10px] sm:text-xs">xuai-chat-{url}</td>
+                <td class="py-2 px-3">localStorage</td>
+                <td class="py-2 px-3">AI 对话历史记录（按文章）</td>
+              </tr>
+              <tr class="border-b border-slate-200 dark:border-slate-700">
+                <td class="py-2 px-3 font-mono text-[10px] sm:text-xs">xuai-summary-model</td>
+                <td class="py-2 px-3">localStorage</td>
+                <td class="py-2 px-3">AI 摘要模型选择</td>
+              </tr>
+              <tr class="border-b border-slate-200 dark:border-slate-700">
+                <td class="py-2 px-3 font-mono text-[10px] sm:text-xs">xuhome_visit_flag</td>
+                <td class="py-2 px-3">sessionStorage</td>
+                <td class="py-2 px-3">欢迎提示弹窗展示标记（会话级别）</td>
+              </tr>
+              <tr>
+                <td class="py-2 px-3 font-mono text-[10px] sm:text-xs">xuai-summary-v3-{slug}</td>
+                <td class="py-2 px-3">sessionStorage</td>
+                <td class="py-2 px-3">AI 摘要结果缓存（会话级别）</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section: Cookies -->
+    <div class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] p-5 sm:p-7 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm mb-6">
+      <h2 class="text-lg sm:text-xl font-black text-[#0284c7] border-b-4 border-[#0284c7] pb-2 mb-5 uppercase tracking-wider inline-block pr-4">
+        三、Cookie 使用
+      </h2>
+      <p class="text-sm sm:text-base leading-relaxed text-slate-700 dark:text-slate-300">
+        本站本身<strong class="text-[#0284c7]">不设置任何第一方 Cookie</strong>。评论系统（Waline）可能会设置用于用户识别和会话管理的必要 Cookie。Umami Analytics 不使用 Cookie 进行追踪。
+      </p>
+    </div>
+
+    <!-- Section: Data sharing -->
+    <div class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] p-5 sm:p-7 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm mb-6">
+      <h2 class="text-lg sm:text-xl font-black text-[#0284c7] border-b-4 border-[#0284c7] pb-2 mb-5 uppercase tracking-wider inline-block pr-4">
+        四、数据分享与披露
+      </h2>
+      <div class="space-y-3 text-sm sm:text-base leading-relaxed text-slate-700 dark:text-slate-300">
+        <p>我们<strong>不会</strong>出售、出租或以其他方式向第三方披露你的个人信息，除非以下情况：</p>
+        <ul class="list-disc list-inside ml-4 space-y-2 text-slate-600 dark:text-slate-400">
+          <li><strong>法律要求</strong>——应法律、法规、司法程序或政府要求披露</li>
+          <li><strong>服务运营</strong>——本博客使用的自托管第三方服务（Waline、Umami、AI 后端）均运行在我们控制的服务器上，数据不会转交给其他方</li>
+          <li><strong>聚合数据</strong>——匿名的、聚合的统计数据（如页面访问量）可能会公开显示</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Section: Data security -->
+    <div class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] p-5 sm:p-7 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm mb-6">
+      <h2 class="text-lg sm:text-xl font-black text-[#0284c7] border-b-4 border-[#0284c7] pb-2 mb-5 uppercase tracking-wider inline-block pr-4">
+        五、数据安全
+      </h2>
+      <p class="text-sm sm:text-base leading-relaxed text-slate-700 dark:text-slate-300">
+        我们采取合理的技术手段保护你的数据安全。本站全站启用 HTTPS 加密传输。评论数据存储在受访问控制的服务器上。请注意，互联网上的数据传输无法保证 100% 绝对安全。
+      </p>
+    </div>
+
+    <!-- Section: Your rights -->
+    <div class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] p-5 sm:p-7 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm mb-6">
+      <h2 class="text-lg sm:text-xl font-black text-[#0284c7] border-b-4 border-[#0284c7] pb-2 mb-5 uppercase tracking-wider inline-block pr-4">
+        六、你的权利
+      </h2>
+      <div class="space-y-3 text-sm sm:text-base leading-relaxed text-slate-700 dark:text-slate-300">
+        <p>关于你的个人信息，你拥有以下权利：</p>
+        <ul class="list-disc list-inside ml-4 space-y-2 text-slate-600 dark:text-slate-400">
+          <li><strong>访问权</strong>——了解我们收集了哪些与你相关的数据</li>
+          <li><strong>更正权</strong>——要求更正不准确的个人信息</li>
+          <li><strong>删除权</strong>——要求删除你的评论内容或个人数据</li>
+          <li><strong>拒绝权</strong>——你可以通过浏览器设置禁用 Cookie 和本地存储，或使用广告拦截器屏蔽分析脚本</li>
+        </ul>
+        <p class="mt-3">
+          如需行使上述权利，请通过以下方式联系我们：
+        </p>
+        <div class="mt-3 p-4 bg-[#faf8f5] dark:bg-slate-700 border-2 border-[#0284c7] rounded-sm text-sm">
+          <p>📧 邮箱：<a href="mailto:upxuu@outlook.com" class="text-[#0284c7] underline hover:text-[#0ea5e9] transition-colors font-bold">upxuu@outlook.com</a></p>
+          <p>🐙 GitHub：<a href="https://github.com/ImUpXuu" target="_blank" rel="noopener noreferrer" class="text-[#0284c7] underline hover:text-[#0ea5e9] transition-colors font-bold">ImUpXuu</a></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section: External links -->
+    <div class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] p-5 sm:p-7 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm mb-6">
+      <h2 class="text-lg sm:text-xl font-black text-[#0284c7] border-b-4 border-[#0284c7] pb-2 mb-5 uppercase tracking-wider inline-block pr-4">
+        七、外部链接
+      </h2>
+      <p class="text-sm sm:text-base leading-relaxed text-slate-700 dark:text-slate-300">
+        本站包含指向第三方网站（如友情链接、社交媒体、GitHub 等）的链接。我们不对这些第三方网站的隐私做法负责。建议你在访问这些网站时查看其各自的隐私政策。
+      </p>
+    </div>
+
+    <!-- Section: Updates -->
+    <div class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] p-5 sm:p-7 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm mb-6">
+      <h2 class="text-lg sm:text-xl font-black text-[#0284c7] border-b-4 border-[#0284c7] pb-2 mb-5 uppercase tracking-wider inline-block pr-4">
+        八、政策更新
+      </h2>
+      <p class="text-sm sm:text-base leading-relaxed text-slate-700 dark:text-slate-300">
+        我们可能会不时更新本隐私政策。更新后的版本将发布在此页面，重大变更会通过站内公告或 RSS 通知。建议你定期查看本页面以了解最新信息。
+      </p>
+    </div>
+
+    <!-- Footer note -->
+    <div class="text-center mt-10 pt-6 border-t-4 border-[#0284c7]">
+      <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-mono">
+        如有任何隐私相关问题，欢迎通过 <a href="mailto:upxuu@outlook.com" class="text-[#0284c7] underline hover:text-[#0ea5e9] transition-colors font-bold">upxuu@outlook.com</a> 联系我们。
+      </p>
+      <div class="mt-3 flex items-center justify-center gap-2">
+        <span class="w-2.5 h-2.5 bg-[#fde68a] border-2 border-[#0284c7] rounded-sm rotate-12"></span>
+        <span class="w-2.5 h-2.5 bg-[#0ea5e9] border-2 border-[#0284c7] rounded-sm -rotate-12"></span>
+        <span class="w-2.5 h-2.5 bg-[#f59e0b] border-2 border-[#0284c7] rounded-sm rotate-45"></span>
+      </div>
+    </div>
+
+  </div>
+</Layout>
