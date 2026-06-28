@@ -13,9 +13,16 @@
     }
     document.body.classList.add('cursor-none');
 
+    let ticking = false;
     function updateCursor(e) {
-      x = e.clientX;
-      y = e.clientY;
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          x = e.clientX;
+          y = e.clientY;
+          ticking = false;
+        });
+        ticking = true;
+      }
     }
 
     window.addEventListener('mousemove', updateCursor);

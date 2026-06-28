@@ -9,9 +9,30 @@
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
 }
 
+/* Design tokens for layout consistency */
+:root {
+  --navbar-height: 52px;
+  --z-mobile-toc-trigger: 50;
+  --z-back-to-top: 95;
+  --z-navbar: 100;
+  --z-dropdown: 110;
+  --z-nav-loader: 111;
+  --z-lightbox: 300;
+  --z-lightbox-controls: 310;
+  --z-overlay: 2000;
+  --z-overlay-panel: 2001;
+  --z-modal: 3000;
+  --z-custom-cursor: 9999;
+}
+@media (min-width: 640px) {
+  :root {
+    --navbar-height: 68px;
+  }
+}
+
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 110px; /* offset for navbar */
+  scroll-padding-top: calc(var(--navbar-height) + 42px); /* offset for navbar */
 }
 
 /* Prevent horizontal overflow on mobile viewports while preserving sticky on desktop */

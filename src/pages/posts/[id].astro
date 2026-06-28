@@ -13,6 +13,7 @@ import { TalkTicker } from '../../components/TalkTicker';
 import ShareButton from '../../components/ShareButton.svelte';
 import PageViews from '../../components/PageViews.svelte';
 import LeftSidebar from '../../components/LeftSidebar.astro';
+import '@fancyapps/ui/dist/fancybox/fancybox.css';
 
 export async function getStaticPaths() {
   const posts = await getProcessedPosts();

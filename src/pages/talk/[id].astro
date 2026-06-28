@@ -3,6 +3,7 @@ import Layout from '../../layouts/Layout.astro';
 import { getProcessedTalks } from '../../utils/postsFetcher';
 import SvelteTalkDetail from '../../components/SvelteTalkDetail.svelte';
 import { WalineComment } from '../../components/WalineComment';
+import '@fancyapps/ui/dist/fancybox/fancybox.css';
 
 export async function getStaticPaths() {
   const talks = await getProcessedTalks();
