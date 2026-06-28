@@ -27,6 +27,9 @@ export async function GET(context: any) {
     { loc: `${domain}/talk`, priority: '0.8', changefreq: 'daily' },
     { loc: `${domain}/friends`, priority: '0.6', changefreq: 'monthly' },
     { loc: `${domain}/links`, priority: '0.6', changefreq: 'monthly' },
+    { loc: `${domain}/archive`, priority: '0.5', changefreq: 'weekly' },
+    { loc: `${domain}/stats`, priority: '0.3', changefreq: 'monthly' },
+    { loc: `${domain}/privacy`, priority: '0.2', changefreq: 'monthly' },
   ];
 
   rawPosts.forEach((post: any) => {
