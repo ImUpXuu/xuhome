@@ -283,9 +283,9 @@
     {/each}
     {#if range === 'custom'}
       <div class="flex items-center gap-1">
-        <input type="date" bind:value={customStart} class="border-2 border-[#0284c7] px-2 py-1 text-xs font-bold font-mono rounded-sm outline-none" />
+        <input type="date" bind:value={customStart} class="border-2 border-[#0284c7] px-2 py-1 text-xs font-bold font-mono rounded-sm outline-none focus:border-[#0ea5e9] focus:ring-2 focus:ring-[#0284c7]/30" />
         <span class="text-xs font-bold text-slate-400">~</span>
-        <input type="date" bind:value={customEnd} class="border-2 border-[#0284c7] px-2 py-1 text-xs font-bold font-mono rounded-sm outline-none" />
+        <input type="date" bind:value={customEnd} class="border-2 border-[#0284c7] px-2 py-1 text-xs font-bold font-mono rounded-sm outline-none focus:border-[#0ea5e9] focus:ring-2 focus:ring-[#0284c7]/30" />
         <button on:click={fetchMetrics} class="px-2 py-1 bg-[#0284c7] text-white border-2 border-[#0284c7] text-xs font-black rounded-sm shadow-[2px_2px_0px_0px_#f59e0b]">确定</button>
       </div>
     {/if}

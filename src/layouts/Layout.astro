@@ -187,6 +187,10 @@ const canonicalURL = new URL(Astro.url.pathname, "https://upxuu.com").href;
   <ClientRouter />
 </head>
   <body class="bg-[#faf8f5] dark:bg-slate-900 text-slate-800 dark:text-slate-200 selection:bg-[#fde68a] selection:text-[#0284c7]">
+    <!-- Skip to content for keyboard users -->
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[200] focus:bg-[#0284c7] focus:text-white focus:px-4 focus:py-2 focus:rounded-sm focus:font-black focus:text-sm focus:shadow-[4px_4px_0px_0px_#fde68a] focus:no-underline focus:outline-none">
+      跳转到主要内容
+    </a>
     {/* Global reading progress bar */}
     <div class="fixed top-0 left-0 w-full h-[5px] bg-transparent z-[110] pointer-events-none">
       <div 
@@ -228,7 +232,8 @@ const canonicalURL = new URL(Astro.url.pathname, "https://upxuu.com").href;
                 )}
               </div>
             )}
-            <main 
+            <main
+              id="main-content"
               class="flex-1"
               transition:animate={{
                 forwards: {
