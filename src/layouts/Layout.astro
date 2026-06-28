@@ -48,7 +48,7 @@ const sectionTitle = (() => {
   return '';
 })();
 
-const canonicalUrl = siteConfig.url + Astro.url.pathname;
+const canonicalURL = new URL(Astro.url.pathname, "https://upxuu.com").href;
 ---
 
 <!doctype html>
@@ -62,7 +62,7 @@ const canonicalUrl = siteConfig.url + Astro.url.pathname;
     <meta name="keywords" content={seoConfig.keywords.join(", ")} />
     <meta name="author" content={siteConfig.author} />
     <meta name="robots" content={seoConfig.robots} />
-    <link rel="canonical" href={canonicalUrl} />
+    <link rel="canonical" href={canonicalURL} />
 
     {/* Open Graph Tags */}
     <meta property="og:title" content={pageTitle} />
@@ -71,7 +71,7 @@ const canonicalUrl = siteConfig.url + Astro.url.pathname;
     <meta property="og:image" content={image} />
     <meta property="og:site_name" content={siteConfig.title} />
     <meta property="og:locale" content="zh-CN" />
-    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:url" content={canonicalURL} />
     {post && <meta property="article:published_time" content={post.date} />}
     
     {/* Twitter Card Tags */}
@@ -106,7 +106,7 @@ const canonicalUrl = siteConfig.url + Astro.url.pathname;
         },
         ...(post ? [{
           "@type": "Article",
-          "@id": `${canonicalUrl}#article`,
+          "@id": `${canonicalURL}#article`,
           "headline": post.title,
           "description": pageDescription,
           "image": image,
@@ -124,7 +124,7 @@ const canonicalUrl = siteConfig.url + Astro.url.pathname;
           },
           "mainEntityOfPage": {
             "@type": "WebPage",
-            "@id": canonicalUrl
+            "@id": canonicalURL
           }
         }] : [])
       ]
