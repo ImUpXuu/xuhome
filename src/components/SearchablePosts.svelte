@@ -201,7 +201,7 @@
           </div>
           
           <a href={`/posts/${encodeURIComponent(post.slug)}`} class="w-[100px] sm:w-[130px] md:w-[190px] shrink-0 border-l-4 border-[#0284c7] relative bg-[#fde68a] flex items-center justify-center overflow-hidden">
-            <img src={post.img || 'https://bing.img.run/rand.php'} alt={post.title} width="190" height="120" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" referrerpolicy="no-referrer" />
+            <img src={post.img || 'https://bing.img.run/rand.php'} alt={post.title} width="190" height="120" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" referrerpolicy="no-referrer" on:error={(e) => { const fallback = 'https://bing.img.run/rand.php'; if ((e.currentTarget as HTMLImageElement).src !== fallback) { (e.currentTarget as HTMLImageElement).src = fallback; } }} />
           </a>
         </div>
       </article>
