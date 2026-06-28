@@ -229,8 +229,15 @@ const allTalksData = await getProcessedTalks();
           )}
         </div>
 
-        {/* Talk ticker and Waline integration */}
+        {/* Talk ticker, Share, and Waline integration */}
         <TalkTicker talks={allTalksData} client:only="react" />
+        <ShareButton
+          title={post.title}
+          description={post.description}
+          url={Astro.url.href}
+          image={post.img}
+          client:only="svelte"
+        />
         <WalineComment client:idle />
       </div>
 
@@ -334,13 +341,6 @@ const allTalksData = await getProcessedTalks();
     </div>
 
     <AiChat url={Astro.url.href} toc={toc} client:idle />
-    <ShareButton
-      title={post.title}
-      description={post.description}
-      url={Astro.url.href}
-      image={post.img}
-      client:only="svelte"
-    />
   </div>
 </Layout>
 

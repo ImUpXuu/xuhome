@@ -17,10 +17,10 @@ const allTags = Object.entries(tagMap).map(([name, count]) => ({ name, count }))
   postsCount={allTalks.length}
 >
   <div class="flex flex-col xl:flex-row gap-4 sm:gap-6 xl:gap-8 items-start justify-center">
-    <div class="w-full xl:w-[260px] shrink-0 flex flex-col gap-4 sm:gap-6 xl:sticky xl:top-[100px] order-2 xl:order-1">
+    <div class="w-full xl:w-[260px] shrink-0 flex flex-col gap-4 sm:gap-6 xl:sticky xl:top-[100px] order-1 xl:order-1">
       <LeftSidebar posts={allPosts} tags={allTags} />
     </div>
-    <div class="w-full xl:flex-1 min-w-0 order-1 xl:order-2">
+    <div class="w-full xl:flex-1 min-w-0 order-2 xl:order-2">
       <TalksFeed talks={allTalks} client:load />
     </div>
   </div>
