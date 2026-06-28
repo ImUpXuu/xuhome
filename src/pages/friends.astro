@@ -8,6 +8,8 @@ import { WalineComment } from '../components/WalineComment';
   title="友情链接"
   description="UpXuu的友情链接，汇集各路神仙的有趣博客、个人小站。"
 >
-  <SvelteFriends client:load />
+  <div data-ext-bypass>
+    <SvelteFriends client:load />
+  </div>
   <WalineComment client:idle />
 </Layout>
