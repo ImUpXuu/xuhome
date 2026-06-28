@@ -635,7 +635,6 @@ const canonicalURL = new URL(Astro.url.pathname, "https://upxuu.com").href;
 <script>
   (function() {
     const SITE_HOST = 'upxuu.com';
-    // Trusted domains that skip verification
     const TRUSTED = ['github.com', 'bilibili.com', 'space.bilibili.com', 'icp.gov.moe'];
     let popover = null;
     let countdownTimer = null;
@@ -658,11 +657,8 @@ const canonicalURL = new URL(Astro.url.pathname, "https://upxuu.com").href;
     }
 
     function isBypassed(anchor) {
-      // Explicit bypass attribute on link or any parent
       if (anchor.closest('[data-ext-bypass]')) return true;
-      // Trusted domains
-      const href = anchor.getAttribute('href');
-      if (isTrustedDomain(href)) return true;
+      if (isTrustedDomain(anchor.getAttribute('href'))) return true;
       return false;
     }
 
@@ -670,9 +666,10 @@ const canonicalURL = new URL(Astro.url.pathname, "https://upxuu.com").href;
       if (popover) return popover;
       const el = document.createElement('div');
       el.id = 'ext-link-popover';
-      el.className = 'fixed z-[3000] bg-white dark:bg-slate-800 border-3 border-[#0284c7] shadow-[4px_4px_0px_0px_#0284c7] rounded-sm p-4 pointer-events-none';
+      el.className = 'fixed z-[3000] bg-white dark:bg-slate-800 border-3 border-[#0284c7] shadow-[4px_4px_0px_0px_#0284c7] rounded-sm p-4';
       el.style.maxWidth = '340px';
       el.style.opacity = '0';
+      el.style.pointerEvents = 'none';
       el.style.transform = 'translateY(8px) scale(0.95)';
       el.style.transition = 'opacity 0.2s ease, transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)';
       el.innerHTML = `
@@ -694,17 +691,27 @@ const canonicalURL = new URL(Astro.url.pathname, "https://upxuu.com").href;
       `;
       document.body.appendChild(el);
 
+      // "是" — open link via trusted anchor element (avoids popup blocker)
       el.querySelector('#ext-link-yes').addEventListener('click', () => {
-        if (pendingUrl) window.open(pendingUrl, '_blank', 'noopener,noreferrer');
+        if (pendingUrl) {
+          const a = document.createElement('a');
+          a.href = pendingUrl;
+          a.target = '_blank';
+          a.rel = 'noopener noreferrer';
+          a.click();
+        }
         dismiss();
       });
+      // "否" — start countdown
       el.querySelector('#ext-link-no').addEventListener('click', startCountdown);
-      // Click outside to dismiss
-      document.addEventListener('click', (e) => {
-        if (popover && !popover.contains(e.target) && popover.classList.contains('active')) {
-          dismiss();
-        }
+
+      // Click outside to dismiss (bubble phase)
+      document.addEventListener('click', function(e) {
+        if (!popover) return;
+        if (popover.style.pointerEvents === 'none') return;
+        if (!popover.contains(e.target)) dismiss();
       });
+
       popover = el;
       return el;
     }
@@ -727,38 +734,40 @@ const canonicalURL = new URL(Astro.url.pathname, "https://upxuu.com").href;
       clearCountdown();
       const po = createPopover();
       po.querySelector('#ext-link-url').textContent = url;
-      // Reset countdown UI
       po.querySelector('#ext-link-no-text').classList.remove('invisible');
       po.querySelector('#ext-link-countdown').classList.add('hidden');
       positionPopover(anchor);
+      // Trigger entrance animation
       requestAnimationFrame(() => {
         po.style.opacity = '1';
+        po.style.pointerEvents = 'auto';
         po.style.transform = 'translateY(0) scale(1)';
-        po.classList.add('active');
       });
     }
 
     function dismiss() {
       clearCountdown();
-      if (popover) {
-        popover.style.opacity = '0';
-        popover.style.transform = 'translateY(8px) scale(0.95)';
-        popover.classList.remove('active');
-        pendingUrl = '';
-      }
+      pendingUrl = '';
+      if (!popover) return;
+      popover.style.opacity = '0';
+      popover.style.pointerEvents = 'none';
+      popover.style.transform = 'translateY(8px) scale(0.95)';
     }
 
     function startCountdown() {
       let sec = 3;
-      const noText = popover.querySelector('#ext-link-no-text');
-      const cdEl = popover.querySelector('#ext-link-countdown');
+      var noText = popover.querySelector('#ext-link-no-text');
+      var cdEl = popover.querySelector('#ext-link-countdown');
       noText.classList.add('invisible');
       cdEl.classList.remove('hidden');
       cdEl.textContent = sec;
 
-      countdownTimer = setInterval(() => {
+      clearCountdown();
+      countdownTimer = setInterval(function() {
         sec--;
         if (sec <= 0) {
+          clearInterval(countdownTimer);
+          countdownTimer = null;
           dismiss();
         } else {
           cdEl.textContent = sec;
@@ -770,11 +779,11 @@ const canonicalURL = new URL(Astro.url.pathname, "https://upxuu.com").href;
       if (countdownTimer) { clearInterval(countdownTimer); countdownTimer = null; }
     }
 
-    // Global click interception (capture phase)
-    document.addEventListener('click', (e) => {
-      const anchor = e.target.closest('a');
+    // Intercept external link clicks (capture phase)
+    document.addEventListener('click', function(e) {
+      var anchor = e.target.closest('a');
       if (!anchor) return;
-      const href = anchor.getAttribute('href');
+      var href = anchor.getAttribute('href');
       if (!isExternal(href)) return;
       if (isBypassed(anchor)) return;
       e.preventDefault();
@@ -784,9 +793,8 @@ const canonicalURL = new URL(Astro.url.pathname, "https://upxuu.com").href;
 
     document.addEventListener('astro:page-load', dismiss);
     document.addEventListener('astro:before-preparation', dismiss);
-    // Press Escape to dismiss
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && popover && popover.classList.contains('active')) dismiss();
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && popover && popover.style.pointerEvents === 'auto') dismiss();
     });
   })();
 </script>
