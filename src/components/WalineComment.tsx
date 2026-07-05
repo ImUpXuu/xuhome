@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { init } from '@waline/client';
 import '@waline/client/waline.css';
+import { siteConfig } from '../config/site';
 
 export function WalineComment() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -21,7 +22,7 @@ export function WalineComment() {
       if (!p.endsWith('/')) p += '/';
       walineInstanceConfig.current = init({
         el: containerRef.current,
-        serverURL: 'https://com4.upxuu.com',
+        serverURL: siteConfig.waline.serverURL,
         path: p,
         dark: 'html.dark',
         search: false,
