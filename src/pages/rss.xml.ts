@@ -14,6 +14,14 @@ function stripInvalidXmlChars(str: string): string {
   );
 }
 
+function stripMarkdown(md: string): string {
+  return md
+    .replace(/[#*`_\[\]()\->|~]/g, '')
+    .replace(/\n+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 export async function GET(context: APIContext) {
   const [posts, talks] = await Promise.all([
     getCollection('posts'),
@@ -22,33 +30,42 @@ export async function GET(context: APIContext) {
 
   const siteUrl = (context.site ?? new URL(siteConfig.url)).toString().replace(/\/$/, '');
 
+  const author = siteConfig.author;
+
   const items = [
     ...posts.map((post) => {
       const body = typeof post.body === 'string' ? post.body : '';
       const cleaned = stripInvalidXmlChars(body);
       const slug = (post.data.slug || post.slug || post.id || '').trim();
+      const desc = post.data.description || stripMarkdown(body).substring(0, 50);
+      const permalink = `${siteUrl}/posts/${slug}/`;
       return {
         title: post.data.title,
         pubDate: post.data.published || post.data.date,
-        description: post.data.description || '',
-        link: `${siteUrl}/posts/${slug}/`,
+        description: desc,
+        link: permalink,
+        guid: permalink,
         content: sanitizeHtml(parser.render(cleaned), {
           allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img']),
         }),
+        customData: `<dc:creator><![CDATA[${author}]]></dc:creator>`,
       };
     }),
     ...talks.map((talk) => {
       const body = typeof talk.body === 'string' ? talk.body : '';
       const cleaned = stripInvalidXmlChars(body);
       const slug = (talk.data.slug || talk.slug || talk.id || '').trim();
+      const permalink = `${siteUrl}/talk/${slug}/`;
       return {
         title: talk.data.title,
         pubDate: talk.data.date,
         description: body.substring(0, 200).replace(/[#*`_\[\]()\-]/g, '').trim() || '',
-        link: `${siteUrl}/talk/${slug}/`,
+        link: permalink,
+        guid: permalink,
         content: sanitizeHtml(parser.render(cleaned), {
           allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img']),
         }),
+        customData: `<dc:creator><![CDATA[${author}]]></dc:creator>`,
       };
     }),
   ].sort((a, b) => {
@@ -66,9 +83,11 @@ export async function GET(context: APIContext) {
     xmlns: {
       atom: 'http://www.w3.org/2005/Atom',
       content: 'http://purl.org/rss/1.0/modules/content/',
+      dc: 'http://purl.org/dc/elements/1.1/',
     },
     customData: [
       '<language>zh-CN</language>',
+      `<lastBuildDate>${new Date().toUTCString()}</lastBuildDate>`,
       `<atom:link href="${siteUrl}/rss.xml" rel="self" type="application/rss+xml"/>`,
     ].join(''),
   });
