@@ -11,11 +11,11 @@ export const seoConfig = {
   },
   dnsPrefetch: [
     "//f.xxu6.top",
-    "//comment.upxuu.com"
+    "//com3.upxuu.com"
   ],
   preconnect: [
     { url: "https://f.xxu6.top", crossOrigin: "anonymous" },
-    { url: "https://comment.upxuu.com", crossOrigin: "anonymous" }
+    { url: "https://com3.upxuu.com", crossOrigin: "anonymous" }
   ],
   robots: "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
 };
