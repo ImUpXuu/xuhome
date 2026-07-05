@@ -1,3 +1,7 @@
+import { siteConfig } from './site';
+
+const walineProtocolRelative = '//' + new URL(siteConfig.waline.serverURL).host;
+
 export const seoConfig = {
   defaultTitle: "UpXuu's blog",
   titleTemplate: " - UpXuu",
@@ -11,11 +15,11 @@ export const seoConfig = {
   },
   dnsPrefetch: [
     "//f.xxu6.top",
-    "//com2.upxuu.com"
+    walineProtocolRelative
   ],
   preconnect: [
     { url: "https://f.xxu6.top", crossOrigin: "anonymous" },
-    { url: "https://com2.upxuu.com", crossOrigin: "anonymous" }
+    { url: siteConfig.waline.serverURL, crossOrigin: "anonymous" }
   ],
   robots: "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
 };
