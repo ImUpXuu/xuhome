@@ -12,7 +12,7 @@ export const siteConfig = {
     website: "https://upxuu.com"
   },
   waline: {
-    serverURL: 'https://comment.upxuu.com'
+    serverURL: 'https://com3.upxuu.com'
   },
   // Umami Analytics settings (leave source/id empty or fill in to enable scripts)
   umami: {
