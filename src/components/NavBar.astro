@@ -449,20 +449,25 @@ const isArchivePage = pathname === '/archive';
   }
 
   function setupTheme() {
-    // Event delegation: single click listener on body for all [data-theme-toggle] buttons
     if (!window._themeInit) {
       document.body.addEventListener('click', (e) => {
         const btn = e.target.closest('[data-theme-toggle]');
         if (!btn) return;
-        const isDark = document.documentElement.classList.toggle('dark');
-        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        const wasDark = document.documentElement.classList.contains('dark');
+        document.documentElement.classList.add('no-transition');
+        document.documentElement.classList.toggle('dark', !wasDark);
+        localStorage.setItem('theme', wasDark ? 'light' : 'dark');
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            document.documentElement.classList.remove('no-transition');
+          });
+        });
         const label = document.getElementById('mobile-dark-mode-label');
         if (label) label.textContent = isDark ? lightModeText : darkModeText;
       });
       window._themeInit = true;
     }
 
-    // Sync mobile label on page transitions
     const isDark = document.documentElement.classList.contains('dark');
     const label = document.getElementById('mobile-dark-mode-label');
     if (label) label.textContent = isDark ? lightModeText : darkModeText;
