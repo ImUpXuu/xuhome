@@ -388,6 +388,23 @@ const allTalksData = await getProcessedTalks();
     if (scrim) scrim.addEventListener('click', closeMobileToc);
     if (closeBtn) closeBtn.addEventListener('click', closeMobileToc);
 
+    // Render image captions for images with alt text
+    function setupImageCaptions() {
+      const content = document.querySelector('.prose');
+      if (!content) return;
+      content.querySelectorAll('img[alt]').forEach(img => {
+        if (!img.alt || img.closest('figure')) return;
+        const p = img.closest('p');
+        if (!p || p.children.length !== 1) return;
+        const fig = document.createElement('figure');
+        const cap = document.createElement('figcaption');
+        cap.textContent = img.alt;
+        p.parentNode.replaceChild(fig, p);
+        fig.appendChild(img);
+        fig.appendChild(cap);
+      });
+    }
+
     // Initialize Fancybox for images in article
     function setupFancybox() {
       const article = document.querySelector('article');
@@ -551,6 +568,7 @@ const allTalksData = await getProcessedTalks();
       });
     }
 
+    setupImageCaptions();
     setupFancybox();
     enhanceCodeBlocks();
     // Native dynamic TOC headers observers/scrollers
