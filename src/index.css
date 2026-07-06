@@ -4,6 +4,14 @@
 @plugin "@tailwindcss/typography";
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* Freeze all CSS transitions during theme switch to prevent entrance replays */
+html.no-transition *,
+html.no-transition *::before,
+html.no-transition *::after {
+  transition: none !important;
+  animation: none !important;
+}
+
 /* Dark mode icons: show/hide based on .dark class */
 .theme-sun { display: none; }
 .theme-moon { display: block; }
