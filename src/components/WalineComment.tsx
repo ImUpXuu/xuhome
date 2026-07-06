@@ -18,7 +18,7 @@ export function WalineComment() {
     window.addEventListener('unhandledrejection', handleRejection);
 
     if (containerRef.current) {
-      let p = window.location.pathname;
+      let p = window.location.pathname.replace(/\/+/g, '/');
       if (!p.endsWith('/')) p += '/';
       walineInstanceConfig.current = init({
         el: containerRef.current,
