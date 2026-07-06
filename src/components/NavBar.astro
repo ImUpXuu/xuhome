@@ -1,7 +1,12 @@
 ---
-import { siteConfig } from '../config/site';
+import { siteConfig, navConfig, i18nConfig } from '../config/site';
 
 const { pathname } = Astro.url;
+
+// 从配置中获取导航项
+const nav = navConfig.desktop;
+const ext = navConfig.external;
+const mob = navConfig.mobileMore;
 
 const isTalkPage = pathname === '/talks' || pathname.startsWith('/talks/');
 const isPostPage = pathname === '/' || pathname.startsWith('/page/') || pathname.startsWith('/posts/') || pathname.startsWith('/category/') || pathname.startsWith('/tag/');
@@ -20,8 +25,8 @@ const isArchivePage = pathname === '/archive';
     </a>
     
     <div class="flex items-center gap-1 sm:gap-3 pb-1 -mb-1 min-w-0 justify-end relative">
-      <a 
-        href="/" 
+      <a
+        href={nav[0].href}
         class={`px-1.5 py-0.5 sm:px-3 sm:py-1.5 border-2 border-[#0284c7] flex items-center gap-0.5 sm:gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[10px] sm:text-xs tracking-wider shrink-0 whitespace-nowrap ${
           isPostPage ? 'bg-[#0ea5e9] text-white shadow-[1px_1px_0px_0px_#0284c7] sm:shadow-[2px_2px_0px_0px_#0284c7]' : 'text-[#0284c7] shadow-[1px_1px_0px_0px_#f59e0b] sm:shadow-[2px_2px_0px_0px_#f59e0b] bg-[#faf8f5]'
         }`}
@@ -29,10 +34,10 @@ const isArchivePage = pathname === '/archive';
         <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 sm:w-4 sm:h-4 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
         </svg>
-        <span>首页</span>
+        <span>{nav[0].name}</span>
       </a>
-      <a 
-        href="/talks" 
+      <a
+        href={nav[1].href}
         class={`px-1.5 py-0.5 sm:px-3 sm:py-1.5 border-2 border-[#0284c7] flex items-center gap-0.5 sm:gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[10px] sm:text-xs tracking-wider shrink-0 whitespace-nowrap ${
           isTalkPage ? 'bg-[#0ea5e9] text-white shadow-[1px_1px_0px_0px_#0284c7] sm:shadow-[2px_2px_0px_0px_#0284c7]' : 'text-[#0284c7] shadow-[1px_1px_0px_0px_#fde68a] sm:shadow-[2px_2px_0px_0px_#fde68a] bg-[#faf8f5]'
         }`}
@@ -40,11 +45,11 @@ const isArchivePage = pathname === '/archive';
         <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 sm:w-4 sm:h-4 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
         </svg>
-        <span>说说</span>
+        <span>{nav[1].name}</span>
       </a>
       
-      <a 
-        href="/friends" 
+      <a
+        href={nav[2].href}
         class={`hidden sm:flex px-1.5 py-0.5 sm:px-3 sm:py-1.5 border-2 border-[#0284c7] items-center gap-0.5 sm:gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[10px] sm:text-xs tracking-wider shrink-0 whitespace-nowrap ${
           isFriendsPage ? 'bg-[#0ea5e9] text-white shadow-[1px_1px_0px_0px_#0284c7] sm:shadow-[2px_2px_0px_0px_#0284c7]' : 'text-[#0284c7] shadow-[1px_1px_0px_0px_#fde68a] sm:shadow-[2px_2px_0px_0px_#fde68a] bg-[#faf8f5]'
         }`}
@@ -52,11 +57,11 @@ const isArchivePage = pathname === '/archive';
         <svg xmlns="http://www.w3.org/2000/svg" class={`w-3 h-3 sm:w-4 sm:h-4 ${isFriendsPage ? 'fill-white stroke-white' : 'stroke-red-500 fill-red-400'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
         </svg>
-        <span>友链</span>
+        <span>{nav[2].name}</span>
       </a>
 
-      <a 
-        href="/about" 
+      <a
+        href={nav[3].href}
         class={`hidden md:flex px-1.5 py-0.5 sm:px-3 sm:py-1.5 border-2 border-[#0284c7] items-center gap-0.5 sm:gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[10px] sm:text-xs tracking-wider shrink-0 whitespace-nowrap ${
           isAboutPage ? 'bg-[#0ea5e9] text-white shadow-[1px_1px_0px_0px_#0284c7] sm:shadow-[2px_2px_0px_0px_#0284c7]' : 'text-[#0284c7] shadow-[1px_1px_0px_0px_#fde68a] sm:shadow-[2px_2px_0px_0px_#fde68a] bg-[#faf8f5]'
         }`}
@@ -64,11 +69,11 @@ const isArchivePage = pathname === '/archive';
         <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 sm:w-4 sm:h-4 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
         </svg>
-        <span>关于</span>
+        <span>{nav[3].name}</span>
       </a>
 
-      <a 
-        href="/archive" 
+      <a
+        href={nav[4].href}
         class={`hidden lg:flex px-1.5 py-0.5 sm:px-3 sm:py-1.5 border-2 border-[#0284c7] items-center gap-0.5 sm:gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[10px] sm:text-xs tracking-wider shrink-0 whitespace-nowrap ${
           isArchivePage ? 'bg-[#0ea5e9] text-white shadow-[1px_1px_0px_0px_#0284c7] sm:shadow-[2px_2px_0px_0px_#0284c7]' : 'text-[#0284c7] shadow-[1px_1px_0px_0px_#fde68a] sm:shadow-[2px_2px_0px_0px_#fde68a] bg-[#faf8f5]'
         }`}
@@ -76,11 +81,11 @@ const isArchivePage = pathname === '/archive';
         <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 sm:w-4 sm:h-4 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
         </svg>
-        <span>归档</span>
+        <span>{nav[4].name}</span>
       </a>
 
-      <a 
-        href="/stats" 
+      <a
+        href={nav[5].href}
         class={`hidden lg:flex px-1.5 py-0.5 sm:px-3 sm:py-1.5 border-2 border-[#0284c7] items-center gap-0.5 sm:gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[10px] sm:text-xs tracking-wider shrink-0 whitespace-nowrap ${
           Astro.url.pathname.startsWith('/stats') ? 'bg-[#0ea5e9] text-white shadow-[1px_1px_0px_0px_#0284c7] sm:shadow-[2px_2px_0px_0px_#0284c7]' : 'text-[#0284c7] shadow-[1px_1px_0px_0px_#fde68a] sm:shadow-[2px_2px_0px_0px_#fde68a] bg-[#faf8f5]'
         }`}
@@ -88,24 +93,24 @@ const isArchivePage = pathname === '/archive';
         <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 sm:w-4 sm:h-4 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
         </svg>
-        <span>统计</span>
+        <span>{nav[5].name}</span>
       </a>
 
-      <a 
-        href="https://www.travellings.cn/go.html" 
+      <a
+        href={ext[0].href}
         target="_blank" rel="noopener noreferrer"
         class={`hidden xl:flex px-1.5 py-0.5 sm:px-3 sm:py-1.5 border-2 border-[#0284c7] items-center gap-0.5 sm:gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[10px] sm:text-xs tracking-wider shrink-0 whitespace-nowrap text-[#0284c7] shadow-[1px_1px_0px_0px_#fde68a] sm:shadow-[2px_2px_0px_0px_#fde68a] bg-[#faf8f5]`}
       >
         <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 sm:w-4 sm:h-4 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
         </svg>
-        <span>开往</span>
+        <span>{ext[0].name}</span>
       </a>
 
       <button
         id="dark-mode-toggle"
         class="px-1.5 py-0.5 sm:px-3 sm:py-1.5 border-2 border-[#0284c7] flex items-center gap-0.5 sm:gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[10px] sm:text-xs tracking-wider shrink-0 whitespace-nowrap text-[#0284c7] shadow-[1px_1px_0px_0px_#fde68a] sm:shadow-[2px_2px_0px_0px_#fde68a] bg-[#faf8f5] dark:bg-slate-700 dark:hover:bg-[#0ea5e9]"
-        aria-label="切换暗色模式"
+        aria-label={i18nConfig.common.toggleDarkMode}
       >
         <svg id="dark-mode-sun" xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 sm:w-4 sm:h-4 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
           <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m8.66-13.66l-.71.71M4.05 19.95l-.71.71M21 12h-1M4 12H3m15.66 7.66l-.71-.71M4.05 4.05l-.71-.71M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
@@ -123,38 +128,38 @@ const isArchivePage = pathname === '/archive';
           <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 sm:w-4 sm:h-4 stroke-[3]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
           </svg>
-          <span class="hidden md:inline">更多</span>
+          <span class="hidden md:inline">{i18nConfig.common.more}</span>
         </button>
         <div id="desktop-more-dropdown" class="absolute right-0 mt-3 w-32 bg-white dark:bg-slate-800 border-3 border-[#0284c7] shadow-[3px_3px_0px_0px_#0284c7] rounded-sm p-1.5 flex flex-col gap-1.5 z-[110] transform rotate-0.5 hidden">
-          <a href="https://www.travellings.cn/go.html" target="_blank" rel="noopener noreferrer" class="xl:hidden p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider bg-[#ebf3ff] dark:bg-slate-700 text-[#0284c7] select-none">
+          <a href={ext[0].href} target="_blank" rel="noopener noreferrer" class="xl:hidden p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider bg-[#ebf3ff] dark:bg-slate-700 text-[#0284c7] select-none">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
             </svg>
-            开往
+            {ext[0].name}
           </a>
-          <a href="/about" class="md:hidden p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none bg-[#faf8f5] dark:bg-slate-700 text-[#0284c7]">
+          <a href={mob[1].href} class="md:hidden p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none bg-[#faf8f5] dark:bg-slate-700 text-[#0284c7]">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
-            关于
+            {mob[1].name}
           </a>
-          <a href="/archive" class="lg:hidden p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none bg-[#faf8f5] dark:bg-slate-700 text-[#0284c7]">
+          <a href={mob[2].href} class="lg:hidden p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none bg-[#faf8f5] dark:bg-slate-700 text-[#0284c7]">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
             </svg>
-            归档页面
+            {mob[2].name}
           </a>
-          <a href="/stats" class="lg:hidden p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none bg-[#faf8f5] dark:bg-slate-700 text-[#0284c7]">
+          <a href={mob[3].href} class="lg:hidden p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none bg-[#faf8f5] dark:bg-slate-700 text-[#0284c7]">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
             </svg>
-            网站统计
+            {mob[3].name}
           </a>
-          <a href="https://up.upxuu.com/status/1" target="_blank" class="p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none bg-[#faf8f5] dark:bg-slate-700 text-[#0284c7]">
+          <a href={ext[1].href} target="_blank" class="p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none bg-[#faf8f5] dark:bg-slate-700 text-[#0284c7]">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
             </svg>
-            服务状态
+            {ext[1].name}
           </a>
         </div>
       </div>
@@ -177,7 +182,7 @@ const isArchivePage = pathname === '/archive';
           id="mobile-menu-toggle"
           aria-expanded="false"
           aria-controls="mobile-menu-dropdown"
-          aria-label="打开菜单"
+          aria-label={i18nConfig.common.openMenu}
           class="p-1 px-1 border-2 border-[#0284c7] transition-all rounded-sm font-black flex items-center justify-center cursor-pointer shadow-[1px_1px_0px_0px_#0284c7] active:translate-x-0.5 active:translate-y-0.5 active:shadow-none bg-[#faf8f5] dark:bg-slate-700 text-[#0284c7]"
         >
           <svg id="menu-icon-open" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -199,10 +204,10 @@ const isArchivePage = pathname === '/archive';
             <svg id="mobile-dark-mode-sun" xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m8.66-13.66l-.71.71M4.05 19.95l-.71.71M21 12h-1M4 12H3m15.66 7.66l-.71-.71M4.05 4.05l-.71-.71M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
             </svg>
-            <span id="mobile-dark-mode-label">暗色</span>
+            <span id="mobile-dark-mode-label">{i18nConfig.common.darkMode}</span>
           </button>
           <a
-            href="/friends"
+            href={mob[0].href}
             class={`p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none ${
               isFriendsPage ? "bg-[#0ea5e9] text-white" : "bg-[#faf8f5] dark:bg-slate-700 text-[#0284c7]"
             }`}
@@ -210,13 +215,13 @@ const isArchivePage = pathname === '/archive';
             <svg xmlns="http://www.w3.org/2000/svg" class={`w-3.5 h-3.5 ${isFriendsPage ? "fill-white text-white" : "fill-red-400 text-red-500"}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
             </svg>
-            <span>友链</span>
+            <span>{mob[0].name}</span>
           </a>
-          <a href="/about" class={`p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none ${isAboutPage ? "bg-[#0ea5e9] text-white" : "bg-[#faf8f5] dark:bg-slate-700 text-[#0284c7]"}`}>
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>关于
+          <a href={mob[1].href} class={`p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none ${isAboutPage ? "bg-[#0ea5e9] text-white" : "bg-[#faf8f5] dark:bg-slate-700 text-[#0284c7]"}`}>
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>{mob[1].name}
           </a>
           <a
-            href="https://www.travellings.cn/go.html"
+            href={ext[0].href}
             target="_blank"
             rel="noopener noreferrer"
             class="p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider bg-[#ebf3ff] dark:bg-slate-700 text-[#0284c7] select-none"
@@ -224,19 +229,19 @@ const isArchivePage = pathname === '/archive';
             <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-[#0ea5e9] stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
             </svg>
-            <span>开往</span>
+            <span>{ext[0].name}</span>
           </a>
-          <a href="/archive" class={`p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none ${isArchivePage ? "bg-[#0ea5e9] text-white" : "bg-[#faf8f5] dark:bg-slate-700 text-[#0284c7]"}`}>
+          <a href={mob[2].href} class={`p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none ${isArchivePage ? "bg-[#0ea5e9] text-white" : "bg-[#faf8f5] dark:bg-slate-700 text-[#0284c7]"}`}>
             <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
             </svg>
-            归档页面
+            {mob[2].name}
           </a>
-          <a href="/stats" class="p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none bg-[#faf8f5] dark:bg-slate-700 text-[#0284c7]">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>网站统计
+          <a href={mob[3].href} class="p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none bg-[#faf8f5] dark:bg-slate-700 text-[#0284c7]">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>{mob[3].name}
           </a>
-          <a href="https://up.upxuu.com/status/1" target="_blank" class="p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none bg-[#faf8f5] dark:bg-slate-700 text-[#0284c7]">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>服务状态
+          <a href={ext[1].href} target="_blank" class="p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none bg-[#faf8f5] dark:bg-slate-700 text-[#0284c7]">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>{ext[1].name}
           </a>
         </div>
       </div>
@@ -249,7 +254,7 @@ const isArchivePage = pathname === '/archive';
       <input
         type="text"
         id="mobile-search-input"
-        placeholder="搜索文章标题、简述、内容或标签..."
+        placeholder={i18nConfig.search.placeholder}
         class="w-full bg-white dark:bg-slate-700 border-3 border-[#0284c7] font-extrabold focus:outline-none px-4 py-2.5 rounded-sm text-sm text-[#0284c7] dark:text-slate-200 placeholder-slate-400 shadow-[2px_2px_0px_0px_#0284c7] outline-none"
       />
       <div class="absolute right-4 top-1/2 -translate-y-1/2 text-[#0284c7] flex items-center gap-2">
@@ -257,7 +262,7 @@ const isArchivePage = pathname === '/archive';
           id="mobile-search-clear"
           class="text-slate-400 hover:text-[#0284c7] font-bold text-xs uppercase cursor-pointer hidden"
         >
-          清除
+          {i18nConfig.search.clear}
         </button>
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5 pointer-events-none stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -269,7 +274,12 @@ const isArchivePage = pathname === '/archive';
 {/* Spacer to prevent content from going under the fixed navbar */}
 <div style="height: var(--navbar-height)"></div>
 
-<script is:inline data-astro-rerun>
+<script is:inline data-astro-rerun define:vars={{
+  openMenuText: i18nConfig.common.openMenu,
+  closeMenuText: i18nConfig.common.closeMenu,
+  lightModeText: i18nConfig.common.lightMode,
+  darkModeText: i18nConfig.common.darkMode,
+}}>
   function setupNavBar() {
     // Utility to close open dropdowns
     function closeDropdowns() {
@@ -288,7 +298,7 @@ const isArchivePage = pathname === '/archive';
         mobileMenuToggle.classList.remove('bg-[#fde68a]');
         mobileMenuToggle.classList.add('bg-[#faf8f5]');
         mobileMenuToggle.setAttribute('aria-expanded', 'false');
-        mobileMenuToggle.setAttribute('aria-label', '打开菜单');
+        mobileMenuToggle.setAttribute('aria-label', openMenuText);
       }
 
       if (desktopMoreDropdown && !desktopMoreDropdown.classList.contains('hidden')) {
@@ -351,7 +361,7 @@ const isArchivePage = pathname === '/archive';
           newMobileMenuToggle.classList.add('bg-[#fde68a]');
           newMobileMenuToggle.classList.remove('bg-[#faf8f5]');
           newMobileMenuToggle.setAttribute('aria-expanded', 'true');
-          newMobileMenuToggle.setAttribute('aria-label', '关闭菜单');
+          newMobileMenuToggle.setAttribute('aria-label', closeMenuText);
           
           // Hide search dialog
           if (mobileSearchDialog && !mobileSearchDialog.classList.contains('hidden')) {
@@ -458,7 +468,7 @@ const isArchivePage = pathname === '/archive';
       if (moon) moon.classList.toggle('hidden', isDark);
       if (mobileSun) mobileSun.classList.toggle('hidden', !isDark);
       if (mobileMoon) mobileMoon.classList.toggle('hidden', isDark);
-      if (mobileLabel) mobileLabel.textContent = isDark ? '亮色' : '暗色';
+      if (mobileLabel) mobileLabel.textContent = isDark ? lightModeText : darkModeText;
     }
 
     // Set initial icon state
@@ -467,7 +477,7 @@ const isArchivePage = pathname === '/archive';
     if (moon) moon.classList.toggle('hidden', isDark);
     if (mobileSun) mobileSun.classList.toggle('hidden', !isDark);
     if (mobileMoon) mobileMoon.classList.toggle('hidden', isDark);
-    if (mobileLabel) mobileLabel.textContent = isDark ? '亮色' : '暗色';
+    if (mobileLabel) mobileLabel.textContent = isDark ? lightModeText : darkModeText;
 
     if (toggle) toggle.addEventListener('click', () => applyTheme(!document.documentElement.classList.contains('dark')));
     if (mobileToggle) mobileToggle.addEventListener('click', () => applyTheme(!document.documentElement.classList.contains('dark')));

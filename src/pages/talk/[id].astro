@@ -4,6 +4,7 @@ import { getProcessedTalks } from '../../utils/postsFetcher';
 import SvelteTalkDetail from '../../components/SvelteTalkDetail.svelte';
 import { WalineComment } from '../../components/WalineComment';
 import '@fancyapps/ui/dist/fancybox/fancybox.css';
+import { i18nConfig } from '../../config/site';
 
 export async function getStaticPaths() {
   const talks = await getProcessedTalks();
@@ -20,7 +21,7 @@ const { talk } = Astro.props;
 ---
 
 <Layout 
-  title={talk.title || '说说详情'}
+  title={talk.title || i18nConfig.talk.detailFallbackTitle}
   description={talk.content.substring(0, 150)}
 >
   <SvelteTalkDetail talk={talk} client:load />

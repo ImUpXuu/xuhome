@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { getProcessedPosts } from '../utils/postsFetcher';
+import { i18nConfig } from '../config/site';
 
 const allPosts = await getProcessedPosts();
 
@@ -37,8 +38,8 @@ const years = Object.keys(yearsMap).sort((a, b) => b.localeCompare(a));
 ---
 
 <Layout 
-  title="文章归档"
-  description="博客文章时间轴归档"
+  title={i18nConfig.archive.title}
+  description={i18nConfig.archive.description}
 >
   <div class="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start justify-center max-w-[1000px] mx-auto w-full relative">
     
@@ -49,7 +50,7 @@ const years = Object.keys(yearsMap).sort((a, b) => b.localeCompare(a));
           <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 stroke-[3]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
           </svg>
-          文章归档
+          {i18nConfig.archive.title}
         </h1>
         
         <div class="absolute right-4 top-4 text-[100px] font-black text-[#0284c7]/5 select-none pointer-events-none transform -rotate-12 translate-x-4 -translate-y-4">
@@ -58,8 +59,8 @@ const years = Object.keys(yearsMap).sort((a, b) => b.localeCompare(a));
 
         {archiveKeys.length === 0 ? (
           <div class="text-center py-16">
-            <p class="text-[#0284c7] font-black tracking-widest uppercase text-lg">暂无文章归档</p>
-            <p class="text-slate-500 text-sm mt-2 font-mono">还没有发布任何文章</p>
+            <p class="text-[#0284c7] font-black tracking-widest uppercase text-lg">{i18nConfig.archive.emptyText}</p>
+            <p class="text-slate-500 text-sm mt-2 font-mono">{i18nConfig.archive.emptySubtext}</p>
           </div>
         ) : (
         <div class="relative border-l-4 border-dashed border-[#0284c7]/30 ml-4 pl-6 space-y-12">
@@ -95,7 +96,7 @@ const years = Object.keys(yearsMap).sort((a, b) => b.localeCompare(a));
     <div class="w-full lg:w-[260px] shrink-0 flex flex-col gap-6 sticky top-[100px] order-1 lg:order-2 animate-card-entrance opacity-0" style="animation-delay: 0.1s">
       <div class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] p-5 shadow-[6px_6px_0px_0px_#f59e0b] rounded-sm max-h-[80vh] flex flex-col overflow-hidden">
         <h3 class="font-black text-[#0284c7] dark:text-[#0ea5e9] text-lg mb-4 flex items-center gap-2 shrink-0 border-b-2 border-dashed border-[#0284c7]/20 pb-2">
-          时间轴
+          {i18nConfig.archive.timelineTitle}
         </h3>
         <div class="overflow-y-auto custom-scrollbar pr-2 flex-1 relative" id="archive-nav">
           <div class="border-l-2 border-[#0284c7]/20 ml-2 space-y-4 py-2">

@@ -4,6 +4,7 @@
   import { onMount } from 'svelte';
   import { flip } from 'svelte/animate';
   import { fade } from 'svelte/transition';
+  import { siteConfig, i18nConfig } from '../config/site';
 
   export let posts: PostItem[] = [];
   export let postsPerPage: number = 10;
@@ -130,7 +131,7 @@
   <div class="relative w-full hidden sm:block">
     <input
       type="text"
-      placeholder="搜索文章标题、简述、内容或标签..."
+      placeholder={i18nConfig.search.placeholder}
       value={searchQuery}
       on:input={handleSearchInput}
       class="w-full bg-white dark:bg-slate-700 border-4 border-[#0284c7] font-extrabold focus:outline-none px-4 sm:px-5 py-3 rounded-sm text-sm text-[#0284c7] dark:text-slate-200 placeholder-slate-400 shadow-[4px_4px_0px_0px_#0284c7] focus:shadow-[6px_6px_0px_0px_#0284c7] focus:-translate-x-0.5 focus:-translate-y-0.5 transition-all outline-none"
@@ -141,7 +142,7 @@
           on:click={clearSearch}
           class="text-slate-400 hover:text-[#0284c7] font-black text-xs uppercase cursor-pointer"
         >
-          清除
+          {i18nConfig.search.clear}
         </button>
       {/if}
       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -153,7 +154,7 @@
   <div class="flex flex-col gap-4 sm:gap-6 md:gap-8 mt-2 sm:mt-1">
     {#if displayedPosts.length === 0}
       <div class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] p-12 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm text-center">
-        <p class="text-[#0284c7] font-black tracking-widest uppercase">哎呀，没有找到文章</p>
+        <p class="text-[#0284c7] font-black tracking-widest uppercase">{i18nConfig.search.noResults}</p>
       </div>
     {/if}
 
@@ -201,7 +202,7 @@
           </div>
           
           <a href={`/posts/${encodeURIComponent(post.slug)}`} class="w-[100px] sm:w-[130px] md:w-[190px] shrink-0 border-l-4 border-[#0284c7] relative bg-[#fde68a] flex items-center justify-center overflow-hidden">
-            <img src={post.img || 'https://bing.img.run/rand.php'} alt={post.title} width="190" height="120" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" referrerpolicy="no-referrer" on:error={(e) => { const fallback = 'https://bing.img.run/rand.php'; if ((e.currentTarget as HTMLImageElement).src !== fallback) { (e.currentTarget as HTMLImageElement).src = fallback; } }} />
+            <img src={post.img || siteConfig.assets.randomImage} alt={post.title} width="190" height="120" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" referrerpolicy="no-referrer" on:error={(e) => { const fallback = siteConfig.assets.randomImage; if ((e.currentTarget as HTMLImageElement).src !== fallback) { (e.currentTarget as HTMLImageElement).src = fallback; } }} />
           </a>
         </div>
       </article>
@@ -272,7 +273,7 @@
               type="number" 
               min="1" 
               max={totalPages}
-              placeholder="跳转..."
+              placeholder={i18nConfig.search.jumpTo}
               class="w-20 pl-3 pr-2 py-1.5 text-sm font-bold border-3 border-[#0284c7] rounded-sm bg-white dark:bg-slate-700 dark:text-slate-200 focus:outline-none focus:shadow-[2px_2px_0px_0px_#0284c7] transition-all placeholder-slate-400 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               on:keydown={(e) => {
                 if (e.key === 'Enter') {
@@ -298,7 +299,7 @@
             }}
             class="px-3 py-1.5 text-sm font-black text-[#0284c7] bg-[#fde68a] border-3 border-[#0284c7] rounded-sm shadow-[2px_2px_0px_0px_#0284c7] active:translate-y-0.5 active:shadow-none transition-all cursor-pointer"
           >
-            GO
+            {i18nConfig.search.go}
           </button>
         </div>
       </div>

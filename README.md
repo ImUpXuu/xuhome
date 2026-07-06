@@ -189,65 +189,192 @@ xuhome/
 
 ## ⚙️ 配置指南 / Configuration Guide
 
-### 1. 站点基本信息 / Site Info
+所有可定制内容都已集中到 `src/config/site.ts`，文件内全部字段都有中文注释说明用途。`seo.ts` 与 `info.ts` 现在只是向后兼容的 re-export，便于旧引用过渡。
 
-编辑 `src/config/site.ts`:
+### 1. 站点基础信息 / Site Config
+
+`src/config/site.ts` 中的 `siteConfig`：
 
 ```ts
 export const siteConfig = {
-  title: "UpXuu",           // 站点标题
-  subtitle: "HI I AM UPXUU / UPXUU AND YOU",  // 副标题
+  title: "UpXuu",                          // 站点标题
+  subtitle: "HI I AM UPXUU / UPXUU AND YOU", // 副标题（用 / 分隔多句，首页打字动画轮流展示）
   description: "UpXuu's personal blog and portfolio",
-  author: "UpXuu",          // 作者名
-  url: "https://upxuu.com", // 站点 URL（影响 Canonical、Sitemap、OG）
-  avatar: "https://upxuu.com/images/avatar.jpg",
+  author: "UpXuu",
+  url: "https://upxuu.com",                // 影响 Canonical / Sitemap / OG / RSS
+  avatar: "https://upxuu.com/images/me.jpg",
+  signature: "逐光而上！",                  // AuthorCard 签名
   socials: {
     github: "https://github.com/ImUpXuu",
-    website: "https://upxuu.com"
+    githubUser: "IMUPXUU",                 // 关于页拉取仓库列表用
+    bilibili: "https://space.bilibili.com/...",
+    bilibiliMid: "3546855124240550",       // 关于页拉取视频列表用
+    bilibiliDisplayName: "UPXUU",
+    email: "upxuu@outlook.com",
+    qqGroup: "https://qun.qq.com/...",     // 欢迎提示中的 QQ 群链接
+    subscribe: "https://github.com/ImUpXuu/xuhome/issues",
+    // twitter / youtube / wechat / qq ...
   },
-  waline: {
-    serverURL: 'https://comment.upxuu.com'  // Waline 服务地址
-  }
+  waline: { serverURL: 'https://com2.upxuu.com' },
+  analytics: {
+    umami: [                               // 可配多个 Umami 实例
+      { src: "https://stats.upxuu.com/script.js", id: "cd983d6c-..." },
+      { src: "https://cloud.umami.is/script.js", id: "9f42cc31-..." },
+    ],
+    statsApi: {
+      alltime: 'https://vapi.upxuu.com/statsapi/alltime',
+      active: 'https://vapi.upxuu.com/api/active',
+    },
+  },
+  assets: {
+    defaultPostCover: "",
+    randomImage: "https://bing.img.run/rand.php",
+    favicon: "/images/me.jpg",
+  },
+  startTime: new Date(2025, 8, 30, 20, 20, 0), // 页脚运行计时器起点
+  trustedDomains: ['github.com', 'bilibili.com', ...], // 外链免确认白名单
 };
 ```
 
-### 2. SEO 配置 / SEO
+### 2. 导航栏 / Navigation
 
-编辑 `src/config/seo.ts`:
+`navConfig` 分三组：桌面端主项、移动端汉堡菜单、外链项：
+
+```ts
+export const navConfig = {
+  desktop: [
+    { name: "首页", href: "/" },
+    { name: "说说", href: "/talks" },
+    { name: "友链", href: "/friends" },
+    { name: "关于", href: "/about" },
+    { name: "归档", href: "/archive" },
+    { name: "统计", href: "/stats" },
+  ],
+  mobileMore: [
+    { name: "友链", href: "/friends" },
+    { name: "关于", href: "/about" },
+    { name: "归档页面", href: "/archive" },
+    { name: "网站统计", href: "/stats" },
+  ],
+  external: [
+    { name: "开往", href: "https://www.travellings.cn/go.html", external: true },
+    { name: "服务状态", href: "https://up.upxuu.com/status/1", external: true },
+  ],
+};
+```
+
+### 3. 页脚 / Footer
+
+`footerConfig` 包含版权文字、ICP 备案、底部链接、开源仓库信息：
+
+```ts
+export const footerConfig = {
+  copyrightText: "© 2026 UpXuu. All Rights Reserved. ",
+  icp: { text: "萌 ICP 备 20269996 号", link: "https://icp.gov.moe/?keyword=20269996" },
+  links: [
+    { name: "友情链接", path: "/friends", external: false },
+    { name: "RSS", path: "/rss.xml", external: true },
+    { name: "Sitemap", path: "/sitemap.xml", external: true },
+    { name: "隐私政策", path: "/privacy", external: false },
+  ],
+  repoText: "本站已开源 ",
+  repoUrl: "https://github.com/ImUpXuu/xuhome",
+  repoDisplayName: "IMUPXUU/XUHOME",
+};
+```
+
+### 4. SEO 配置 / SEO
+
+`seoConfig` 已移入 `site.ts`，`src/config/seo.ts` 现为 re-export：
 
 ```ts
 export const seoConfig = {
   defaultTitle: "UpXuu's blog",
-  titleTemplate: " - UpXuu",           // 标题后缀
-  defaultDescription: "...",
-  defaultImage: "https://.../og.jpg",  // 默认 OG 图片
-  keywords: ["UpXuu", "blog", ...],
-  twitter: {
-    site: "@ImUpXuu",
-    creator: "@ImUpXuu"
-  }
+  titleTemplate: " - UpXuu",
+  defaultDescription: "UpXuu的个人博客 - 记录生活、学习、编程与思考。",
+  defaultImage: "https://upxuu.com/images/me.jpg",
+  keywords: ["UpXuu", "blog", "开发者", ...],
+  twitter: { card: "summary_large_image", site: "@ImUpXuu", creator: "@ImUpXuu" },
+  dnsPrefetch: [...],
+  preconnect: [...],
+  robots: "index, follow, max-image-preview:large, ...",
 };
 ```
 
-### 3. 页脚信息 / Footer
+### 5. AI 功能 / AI Features
 
-编辑 `src/config/info.ts` 中的 `footer` 字段：
+`contentConfig` 集中管理 AI 摘要 / 对话模型列表（`url` 为完整请求地址，按顺序 fallback）：
 
 ```ts
-footer: {
-  copyrightText: "© 2026 UpXuu. All Rights Reserved.",
-  icp: {
-    text: "萌 ICP 备 20269996 号",
-    link: "https://icp.gov.moe/..."
-  },
-  links: [
-    { name: "友情链接", path: "/friends", external: false },
-    { name: "RSS", path: "/rss.xml", external: true }
-  ]
-}
+export const contentConfig = {
+  postsPerPage: 10,
+  readingSpeed: 400,                       // 字/分钟，计算预计阅读时间
+  license: { name: "All Rights Reserved", url: "/about" },
+  aiSummaryModels: [
+    { id: 'gpt-oss', name: 'GPT-OSS-120B', url: 'https://blogapi.upxuu.com/summarize', hasThinking: false },
+    { id: 'gemma', name: 'Gemma-4-31b-it (OpenRouter)', url: 'https://blogapi.upxuu.com/summarize2', hasThinking: true },
+    { id: 'deepseek-r1', name: 'DeepSeek-R1', url: 'https://blogapi.upxuu.com/summarize3', hasThinking: true },
+  ],
+  aiChatModels: [
+    { id: 'gpt-oss', name: 'GPT-OSS-120B', url: 'https://blogapi.upxuu.com/chat', hasThinking: false },
+    // ...
+  ],
+};
 ```
 
-### 4. 友链 / Friends
+AI 后端服务需自行部署（默认指向 `https://blogapi.upxuu.com`）。
+
+### 6. 欢迎提示 / Welcome Toast
+
+`welcomeConfig` 控制首次访问的欢迎横幅：
+
+```ts
+export const welcomeConfig = {
+  enabled: true,
+  duration: 5000,
+  weatherApi: "https://uapis.cn/api/v1/misc/weather",
+  fallbackMessage: "Hi！远方的朋友",
+  sessionKey: "xuhome_visit_flag",
+  quickLinks: [
+    { name: "QQ群", href: siteConfig.socials.qqGroup, color: "blue" },
+    { name: "订阅", href: siteConfig.socials.subscribe, color: "green" },
+    { name: "RSS", href: "", action: "copyRss", color: "orange" },
+  ],
+};
+```
+
+### 7. 关于页 / About Page
+
+`aboutConfig` 单独管理关于页的所有内容（角色、简介、技能、Bilibili/GitHub 区块文字等）。注意：关于页 Socials 区块的邮箱链接使用 `socialEmailLink: "mailto:me@upxuu.com"`，与 `siteConfig.socials.email` (`upxuu@outlook.com`) 不同，原博客即如此。
+
+### 8. 全站文案 / i18n
+
+`i18nConfig` 收纳所有页面固定文案，方便统一修改和未来国际化：
+
+```ts
+export const i18nConfig = {
+  notFound: { title, bigText, message, backHome, browseArchive },
+  archive: { title, description, timelineTitle, emptyText, emptySubtext, sectionTitle },
+  home: { title, description, sectionTitle },
+  talks: { title, sectionTitle },
+  talk: { detailFallbackTitle },
+  category: { titleSuffix, descriptionTemplate },
+  tag: { titleSuffix, descriptionTemplate },
+  friends: { title, description },
+  privacy: { title, description, lastUpdated, effectiveDate, contactEmail },
+  stats: { title },
+  post: { readingTime, readingTimeUnit, copyrightTitle, publishedTitle, licenseTitle,
+          relatedPosts, prevPost, nextPost, noMorePrev, noMoreNext, tocTitle, tocEmpty, viewToc },
+  search: { placeholder, clear, noResults, jumpTo, go },
+  common: { darkMode, lightMode, more, openMenu, closeMenu, toggleDarkMode },
+};
+```
+
+### 9. 横幅与副标题 / Banner & Subtitle
+
+`bannerConfig` 控制 PageBanner 主标题、网格透明度、各页面类型标签、说说页打字动画；`subtitleConfig` 控制首页 Banner 左侧的副标题打字动画序列。
+
+### 10. 友链 / Friends
 
 编辑 `src/config/friends.json`，格式：
 
@@ -262,53 +389,12 @@ footer: {
 ]
 ```
 
-### 5. AI 功能 / AI Features
-
-**需要环境变量 / Required env:**
-
-```env
-# Gemini API Key (用于 AI 摘要和 AI 对话)
-GEMINI_API_KEY="your_gemini_api_key"
-
-# 站点 URL
-APP_URL="https://upxuu.com"
-```
-
-AI 摘要和对话的后端服务需自行部署（项目默认指向 `https://blogapi.upxuu.com`），可在 `AiSummary.tsx` 和 `AiChat.tsx` 中修改 `API_BASE`。
-
-### 6. 评论系统 / Comments
+### 11. 评论系统 / Comments
 
 项目使用 Waline 自托管评论系统。需要：
 
 1. 部署 Waline 服务端（参考 [Waline 文档](https://waline.js.org)）
-2. 在 `src/config/site.ts` 中设置 `waline.serverURL`
-
-### 7. 分析统计 / Analytics
-
-项目使用 Umami，在 `src/config/site.ts` 中配置：
-
-```ts
-umami: {
-  src: "https://stats.upxuu.com/script.js",
-  id: "your-website-id"
-}
-```
-
-也可在 `Layout.astro` 中直接修改 Umami 脚本地址。
-
-### 8. 导航栏 / Navigation
-
-编辑 `src/config/site.ts` 中的 `navConfig`:
-
-```ts
-export const navConfig = [
-  { name: "博客", path: "/", icon: "BookOpen" },
-  { name: "说说", path: "/talk", icon: "MessageSquare" },
-  { name: "关于我", path: "/about", icon: "User" }
-];
-```
-
-图标使用 Lucide React 图标名。
+2. 在 `siteConfig.waline.serverURL` 中设置服务地址
 
 ---
 

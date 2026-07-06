@@ -2,7 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import { getProcessedPosts, getProcessedTalks } from '../../utils/postsFetcher';
 import { getCollection } from 'astro:content';
-import { siteConfig } from '../../config/site';
+import { siteConfig, i18nConfig, contentConfig } from '../../config/site';
 import { calculateReadingTime } from '../../utils/readingTime';
 
 // Import React elements to hydrate
@@ -92,7 +92,7 @@ const allTalksData = await getProcessedTalks();
               <h1 class="text-2xl sm:text-3xl md:text-4xl font-black text-[#0284c7] mb-4 leading-tight">{post.title}</h1>
               <div class="flex flex-wrap items-center gap-3.5 justify-center md:justify-start">
                 <span class="text-slate-500 dark:text-slate-400 font-extrabold font-mono text-sm">{post.date}</span>
-                <span class="text-slate-500 dark:text-slate-400 font-extrabold font-mono text-sm">/ 预计阅读 {readTime} 分钟</span>
+                <span class="text-slate-500 dark:text-slate-400 font-extrabold font-mono text-sm">/ {i18nConfig.post.readingTime} {readTime} {i18nConfig.post.readingTimeUnit}</span>
                 <PageViews path={post.slug} client:idle />
                 
                 {post.category && (
@@ -149,18 +149,18 @@ const allTalksData = await getProcessedTalks();
 
             <div class="grid grid-cols-3 gap-3 border-t-2 border-dashed border-[#0284c7]/20 pt-4 text-[11px] sm:text-xs">
               <div>
-                <div class="text-slate-400 font-bold mb-1 uppercase tracking-wider">作者</div>
+                <div class="text-slate-400 font-bold mb-1 uppercase tracking-wider">{i18nConfig.post.copyrightTitle}</div>
                 <div class="font-extrabold text-[#0284c7] hover:translate-x-0.5 transition-transform">{siteConfig.author}</div>
               </div>
               <div>
-                <div class="text-slate-400 font-bold mb-1 uppercase tracking-wider">发布于</div>
+                <div class="text-slate-400 font-bold mb-1 uppercase tracking-wider">{i18nConfig.post.publishedTitle}</div>
                 <div class="font-mono font-bold text-slate-600">{post.date}</div>
               </div>
               <div>
-                <div class="text-slate-400 font-bold mb-1 uppercase tracking-wider">许可协议</div>
+                <div class="text-slate-400 font-bold mb-1 uppercase tracking-wider">{i18nConfig.post.licenseTitle}</div>
                 <div>
-                  <a href="/about" class="font-bold text-[#0ea5e9] hover:underline hover:text-[#0284c7] transition-all">
-                    All Rights Reserved
+                  <a href={contentConfig.license.url} class="font-bold text-[#0ea5e9] hover:underline hover:text-[#0284c7] transition-all">
+                    {contentConfig.license.name}
                   </a>
                 </div>
               </div>
@@ -176,7 +176,7 @@ const allTalksData = await getProcessedTalks();
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 100 20 10 10 0 000-20z" />
                 </svg>
-                相关文章
+                {i18nConfig.post.relatedPosts}
               </h3>
               <div class="flex flex-wrap gap-2">
                 {relatedPosts.map(rp => (
@@ -202,13 +202,13 @@ const allTalksData = await getProcessedTalks();
             >
               <span class="text-[#0ea5e9] group-hover:-translate-x-1 transition-transform shrink-0 font-extrabold">❮</span>
               <div class="min-w-0 flex-1">
-                <div class="text-[9px] uppercase font-black tracking-widest text-slate-400 mb-0.5">上一篇</div>
+                <div class="text-[9px] uppercase font-black tracking-widest text-slate-400 mb-0.5">{i18nConfig.post.prevPost}</div>
                 <p class="text-xs sm:text-sm font-black text-slate-700 dark:text-slate-200 truncate">{prevPost.title}</p>
               </div>
             </a>
           ) : (
             <div class="hidden sm:block flex-1 border-3 border-dashed border-[#0284c7]/20 px-4 py-3 rounded-sm text-center text-xs font-black text-slate-400 dark:text-slate-500 bg-slate-50/30 dark:bg-slate-700/30">
-              没有更多上一篇了
+              {i18nConfig.post.noMorePrev}
             </div>
           )}
 
@@ -218,14 +218,14 @@ const allTalksData = await getProcessedTalks();
               class="flex-1 min-w-0 bg-white hover:bg-slate-50 border-3 border-[#0284c7] px-4 py-3 rounded-sm shadow-[4px_4px_0px_0px_#0284c7] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all duration-200 flex items-center justify-between gap-3 group text-right"
             >
               <div class="min-w-0 flex-1">
-                <div class="text-[9px] uppercase font-black tracking-widest text-slate-400 mb-0.5">下一篇</div>
+                <div class="text-[9px] uppercase font-black tracking-widest text-slate-400 mb-0.5">{i18nConfig.post.nextPost}</div>
                 <p class="text-xs sm:text-sm font-black text-slate-700 dark:text-slate-200 truncate">{nextPost.title}</p>
               </div>
               <span class="text-[#0ea5e9] group-hover:translate-x-1 transition-transform shrink-0 font-extrabold">❯</span>
             </a>
           ) : (
             <div class="hidden sm:block flex-1 border-3 border-dashed border-[#0284c7]/20 px-4 py-3 rounded-sm text-center text-xs font-black text-slate-400 dark:text-slate-500 bg-slate-50/30 dark:bg-slate-700/30">
-              没有更多下一篇了
+              {i18nConfig.post.noMoreNext}
             </div>
           )}
         </div>
@@ -251,10 +251,10 @@ const allTalksData = await getProcessedTalks();
       <div class="hidden lg:block w-[260px] shrink-0 sticky top-[100px] z-10 self-start animate-card-entrance opacity-0 lg:order-3" style="animation-delay: 0.1s">
         <div class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] p-5 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm max-h-[calc(100vh-120px)] flex flex-col">
           <h3 class="font-black text-[#0284c7] text-lg mb-4 flex items-center gap-2 shrink-0">
-            目录
+            {i18nConfig.post.tocTitle}
           </h3>
           {toc.length === 0 ? (
-            <p class="text-sm text-slate-400 font-medium shrink-0">无目录</p>
+            <p class="text-sm text-slate-400 font-medium shrink-0">{i18nConfig.post.tocEmpty}</p>
           ) : (
             <div id="toc-container" class="overflow-y-auto pr-2 custom-scrollbar flex-1 relative">
               <ul class="space-y-2 text-sm font-medium relative">
@@ -286,7 +286,7 @@ const allTalksData = await getProcessedTalks();
       <button
         id="mobile-toc-trigger"
         class="fixed bottom-6 left-6 lg:hidden w-11 h-11 bg-white border-3 border-[#0284c7] rounded-full shadow-[4px_4px_0px_0px_#0284c7] flex items-center justify-center text-[#0284c7] z-[50] hover:bg-[#fde68a] active:translate-y-[2px] transition-all cursor-pointer"
-        aria-label="查看目录"
+        aria-label={i18nConfig.post.viewToc}
       >
         <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 stroke-[3]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
@@ -308,7 +308,7 @@ const allTalksData = await getProcessedTalks();
                 <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
               </svg>
             </div>
-            目录
+            {i18nConfig.post.tocTitle}
           </h3>
           <button id="mobile-toc-close" class="w-12 h-12 flex items-center justify-center hover:bg-[#fde68a] rounded-2xl transition-all text-[#0284c7] cursor-pointer active:scale-75 border-2 border-[#0284c7] bg-white shadow-[3px_3px_0px_0px_#0284c7]">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 stroke-[3]" fill="none" viewBox="0 0 24 24" stroke="currentColor">

@@ -2,11 +2,12 @@
 import Layout from '../layouts/Layout.astro';
 import SvelteFriends from '../components/SvelteFriends.svelte';
 import { WalineComment } from '../components/WalineComment';
+import { i18nConfig } from '../config/site';
 ---
 
 <Layout 
-  title="友情链接"
-  description="UpXuu的友情链接，汇集各路神仙的有趣博客、个人小站。"
+  title={i18nConfig.friends.title}
+  description={i18nConfig.friends.description}
 >
   <div data-ext-bypass>
     <SvelteFriends client:load />

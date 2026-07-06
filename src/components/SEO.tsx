@@ -28,13 +28,6 @@ export function SEO({
     ? `${siteConfig.url}${typeof window !== 'undefined' ? window.location.pathname : ''}` 
     : url;
 
-  // Verify if custom Umami is active and not default placeholder
-  const isUmamiEnabled = !!(
-    siteConfig.umami && 
-    siteConfig.umami.id && 
-    siteConfig.umami.id !== "your-umami-website-id"
-  );
-
   return (
     <>
       <title>{pageTitle}</title>
@@ -68,16 +61,6 @@ export function SEO({
       {seoConfig.preconnect.map(conn => (
         <link key={conn.url} rel="preconnect" href={conn.url} crossOrigin={conn.crossOrigin as any} />
       ))}
-
-      {/* Umami Tracking Script - injected dynamically */}
-      {isUmamiEnabled && (
-        <script 
-          async 
-          defer 
-          data-website-id={siteConfig.umami.id} 
-          src={siteConfig.umami.src}
-        />
-      )}
     </>
   );
 }
