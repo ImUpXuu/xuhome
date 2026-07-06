@@ -418,12 +418,12 @@ const allTalksData = await getProcessedTalks();
       images.forEach(img => {
         // Skip icons or small decorative images
         if (img.width < 40 || img.height < 40) return;
-        // Skip if already wrapped or has a parent link
-        if (img.closest('a')) return;
+        // Skip if already wrapped with fancybox
+        if (img.closest('[data-fancybox]')) return;
         
-        const wrapper = document.createElement('a');
+        const wrapper = document.createElement('span');
         wrapper.setAttribute('data-fancybox', 'gallery');
-        wrapper.setAttribute('href', img.src);
+        wrapper.setAttribute('data-src', img.src);
         wrapper.setAttribute('data-caption', img.alt || '');
         wrapper.className = 'cursor-zoom-in block my-6 overflow-hidden rounded-sm border-4 border-[#0284c7] shadow-[6px_6px_0px_0px_#0284c7] hover:shadow-[10px_10px_0px_0px_#10b981] transition-all duration-300 transform hover:scale-[1.01]';
         
@@ -442,6 +442,7 @@ const allTalksData = await getProcessedTalks();
       try {
         Fancybox.destroy();
         Fancybox.bind('[data-fancybox]', {
+          placeFocusBack: false,
           carousel: { friction: 0.8 },
           Toolbar: {
             display: {
