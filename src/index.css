@@ -224,7 +224,8 @@ html {
   margin-bottom: 0;
 }
 
-.talk-content p:has(img) {
+.talk-content p:has(img),
+.talk-content figure:has(img) {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 8px;
@@ -232,7 +233,8 @@ html {
   margin-top: 12px;
 }
 
-.talk-content p img {
+.talk-content p img,
+.talk-content figure img {
   width: 100%;
   aspect-ratio: 1 / 1;
   object-fit: cover;
@@ -241,19 +243,61 @@ html {
   box-shadow: 4px 4px 0px 0px #0ea5e9;
   transition: transform 0.2s, box-shadow 0.2s;
 }
-.talk-content p img:hover {
+.talk-content p img:hover,
+.talk-content figure img:hover {
   transform: translate(-2px, -2px);
   box-shadow: 6px 6px 0px 0px #f59e0b;
 }
 
 /* Single image override */
-.talk-content p:has(img:only-child) {
+.talk-content p:has(img:only-child),
+.talk-content figure:has(img:only-child) {
   display: block;
 }
-.talk-content p:has(img:only-child) img {
+.talk-content p:has(img:only-child) img,
+.talk-content figure:has(img:only-child) img {
   max-width: 60%;
   aspect-ratio: auto;
   max-height: 250px;
+}
+.talk-content figure:has(figcaption) {
+  display: block;
+}
+.talk-content figure:has(figcaption) img {
+  max-width: 60%;
+  aspect-ratio: auto;
+  max-height: 250px;
+}
+.talk-content figcaption {
+  display: block;
+  text-align: center;
+  font-style: italic;
+  color: #94a3b8;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+}
+:root.dark .talk-content figcaption {
+  color: #64748b;
+}
+
+/* Figure/figcaption for post images (rehype plugin) */
+.prose figure {
+  margin: 1.5em 0;
+}
+.prose figure img {
+  display: block;
+  margin: 0 auto;
+}
+.prose figcaption {
+  display: block;
+  text-align: center;
+  font-style: italic;
+  color: #94a3b8;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+:root.dark .prose figcaption {
+  color: #64748b;
 }
 
 /* Waline Custom Theme overwrites for Lego Brutalist Style */
