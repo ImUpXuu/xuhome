@@ -8,8 +8,8 @@ import tailwindcss from '@tailwindcss/vite';
 function rehypeImageCaption() {
   return (tree) => {
     function visit(node, parent) {
-      if (node.type !== 'element' || !parent) return;
-      if (node.tagName === 'p') {
+      if (node.type !== 'element') return;
+      if (node.tagName === 'p' && parent) {
         const imgs = node.children.filter(
           (c) => c.type === 'element' && c.tagName === 'img',
         );
@@ -36,14 +36,15 @@ function rehypeImageCaption() {
             ],
           });
         }
-      } else if (node.children) {
+      }
+      if (node.children) {
         for (let i = node.children.length - 1; i >= 0; i--) {
           visit(node.children[i], node);
         }
       }
     }
     for (const child of tree.children) {
-      visit(child);
+      if (child.type === 'element') visit(child);
     }
   };
 }
