@@ -1,12 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import { MessageSquare, X, Cpu, ChevronDown, Loader2, Send, Sparkles } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import { contentConfig } from "../config/site";
 
-const CHAT_MODELS = [
-  { id: 'gpt-oss', name: 'GPT-OSS-120B', url: 'https://blogapi.upxuu.com/chat', hasThinking: false },
-  { id: 'gemma', name: 'Gemma-4-31b-it (OpenRouter)', url: 'https://blogapi.upxuu.com/chat2', hasThinking: true },
-  { id: 'deepseek-r1', name: 'DeepSeek-R1', url: 'https://blogapi.upxuu.com/chat3', hasThinking: true },
-];
+const CHAT_MODELS = contentConfig.aiChatModels;
 
 export function AiChat({ url, toc = [] }: { url: string, toc?: { id: string; text: string }[] }) {
   const [isOpen, setIsOpen] = useState(false);

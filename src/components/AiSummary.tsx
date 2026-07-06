@@ -1,12 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import { Sparkles, Settings2, Cpu, Loader2, ChevronDown, ChevronRight, MessageCircle } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import { contentConfig } from "../config/site";
 
-const SUMMARY_MODELS = [
-  { id: 'gpt-oss', name: 'GPT-OSS-120B', url: 'https://blogapi.upxuu.com/summarize', hasThinking: false },
-  { id: 'gemma', name: 'Gemma-4-31b-it (OpenRouter)', url: 'https://blogapi.upxuu.com/summarize2', hasThinking: true },
-  { id: 'deepseek-r1', name: 'DeepSeek-R1', url: 'https://blogapi.upxuu.com/summarize3', hasThinking: true },
-];
+const SUMMARY_MODELS = contentConfig.aiSummaryModels;
 
 export function AiSummary({ url, toc = [] }: { url: string, toc?: { id: string; text: string }[] }) {
   const [modelIdx, setModelIdx] = useState(0);

@@ -6,6 +6,7 @@ import SidebarTags from '../../components/SidebarTags.astro';
 import PostsTimelineWidget from '../../components/PostsTimelineWidget.astro';
 import CalendarWidget from '../../components/CalendarWidget.svelte';
 import SearchablePosts from '../../components/SearchablePosts.svelte';
+import { i18nConfig } from '../../config/site';
 
 export async function getStaticPaths() {
   const allPosts = await getProcessedPosts();
@@ -48,9 +49,9 @@ const tags = Object.entries(tagMap)
 ---
 
 <Layout 
-  title={`${categoryName} 分类`}
+  title={`${categoryName}${i18nConfig.category.titleSuffix}`}
   categoryName={categoryName}
-  description={`${categoryName} 分类下的全部文章 - UpXuu的个人博客`}
+  description={i18nConfig.category.descriptionTemplate.replace('{name}', categoryName || '')}
   postsCount={catPosts.length}
 >
   <HorizontalCategories 

@@ -1,8 +1,9 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { i18nConfig } from '../config/site';
 ---
 
-<Layout title="隐私政策" description="UpXuu 博客的隐私政策——我们如何收集、使用和保护你的个人信息。">
+<Layout title={i18nConfig.privacy.title} description={i18nConfig.privacy.description}>
   <div class="max-w-3xl mx-auto px-4 py-8 sm:py-12">
 
     <!-- Page header -->
@@ -10,11 +11,11 @@ import Layout from '../layouts/Layout.astro';
       <div class="flex items-center gap-3 mb-4">
         <span class="w-4 h-4 bg-[#f59e0b] border-2 border-[#0284c7] rotate-45 shrink-0"></span>
         <h1 class="text-2xl sm:text-3xl font-black text-[#0284c7] tracking-widest uppercase">
-          隐私政策
+          {i18nConfig.privacy.title}
         </h1>
       </div>
       <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-mono">
-        最后更新日期：2026 年 6 月 28 日 · 生效日期：2026 年 6 月 28 日
+        最后更新日期：{i18nConfig.privacy.lastUpdated} · 生效日期：{i18nConfig.privacy.effectiveDate}
       </p>
     </div>
 
@@ -252,7 +253,7 @@ import Layout from '../layouts/Layout.astro';
           如需行使上述权利，请通过以下方式联系我们：
         </p>
         <div class="mt-3 p-4 bg-[#faf8f5] dark:bg-slate-700 border-2 border-[#0284c7] rounded-sm text-sm">
-          <p>📧 邮箱：<a href="mailto:me@upxuu.com" class="text-[#0284c7] underline hover:text-[#0ea5e9] transition-colors font-bold">me@upxuu.com</a></p>
+          <p>📧 邮箱：<a href={`mailto:${i18nConfig.privacy.contactEmail}`} class="text-[#0284c7] underline hover:text-[#0ea5e9] transition-colors font-bold">{i18nConfig.privacy.contactEmail}</a></p>
           <p>🐙 GitHub：<a href="https://github.com/ImUpXuu" target="_blank" rel="noopener noreferrer" class="text-[#0284c7] underline hover:text-[#0ea5e9] transition-colors font-bold">ImUpXuu</a></p>
         </div>
       </div>
@@ -281,7 +282,7 @@ import Layout from '../layouts/Layout.astro';
     <!-- Footer note -->
     <div class="text-center mt-10 pt-6 border-t-4 border-[#0284c7]">
       <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-mono">
-        如有任何隐私相关问题，欢迎通过 <a href="mailto:me@upxuu.com" class="text-[#0284c7] underline hover:text-[#0ea5e9] transition-colors font-bold">me@upxuu.com</a> 联系我们。
+        如有任何隐私相关问题，欢迎通过 <a href={`mailto:${i18nConfig.privacy.contactEmail}`} class="text-[#0284c7] underline hover:text-[#0ea5e9] transition-colors font-bold">{i18nConfig.privacy.contactEmail}</a> 联系我们。
       </p>
       <div class="mt-3 flex items-center justify-center gap-2">
         <span class="w-2.5 h-2.5 bg-[#fde68a] border-2 border-[#0284c7] rounded-sm rotate-12"></span>

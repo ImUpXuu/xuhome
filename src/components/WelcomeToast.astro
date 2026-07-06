@@ -3,7 +3,9 @@
 ---
 
 <script>
-  const VISIT_SESSION_KEY = 'xuhome_visit_flag';
+  import { welcomeConfig, siteConfig } from '../config/site';
+
+  const VISIT_SESSION_KEY = welcomeConfig.sessionKey;
 
   let hasShownToast = false;
 
@@ -21,9 +23,9 @@
           <span class="text-slate-300 dark:text-slate-600 text-xs font-black hidden sm:inline">|</span>
           <span id="welcome-stats" class="text-xs font-bold text-slate-500 dark:text-slate-400"></span>
           <div class="flex items-center gap-1.5 ml-auto sm:ml-1 shrink-0">
-            <a href="https://qun.qq.com/universal-share/share?ac=1&authKey=NZ9BP%2BPT44nu34JWAL4Jdz25Bq7ueQoOfOqA4iYPT1JvQKYktml43kgBTMfqTkNl&busi_data=eyJncm91cENvZGUiOiIxMTAzMjMyNDIyIiwidG9rZW4iOiJTZDh2RmhWbXFTL3ZHbVBXeXhJZndQTVcrOUlhNXRSNlczVG1GNUIzQnlQejFZSThWYStSSEVEWUtDcHdHSTM3IiwidWluIjoiMzY5Nzc3MzQxNiJ9&data=HZcezojmJTU_U4qRqv_3ODAb7vm86b6wP8YEp9Stz5b4EzngKNFllXJneyVO7qr4u-plsM84FyvpZl6kkuyZgg&svctype=4&tempid=h5_group_info" target="_blank" rel="noopener noreferrer" class="text-[10px] font-black text-blue-500 hover:text-[#0284c7] dark:hover:text-blue-400 transition-colors shrink-0 uppercase tracking-wider">QQ群</a>
+            <a href="${siteConfig.socials.qqGroup}" target="_blank" rel="noopener noreferrer" class="text-[10px] font-black text-blue-500 hover:text-[#0284c7] dark:hover:text-blue-400 transition-colors shrink-0 uppercase tracking-wider">QQ群</a>
             <span class="text-slate-300 dark:text-slate-600 text-[10px] font-black">|</span>
-            <a href="https://github.com/ImUpXuu/xuhome/issues" class="text-[10px] font-black text-green-500 hover:text-[#0284c7] dark:hover:text-green-400 transition-colors shrink-0 uppercase tracking-wider">订阅</a>
+            <a href="${siteConfig.socials.subscribe}" class="text-[10px] font-black text-green-500 hover:text-[#0284c7] dark:hover:text-green-400 transition-colors shrink-0 uppercase tracking-wider">订阅</a>
             <span class="text-slate-300 dark:text-slate-600 text-[10px] font-black">|</span>
             <a href="javascript:void(0)" onclick="copyRssLink()" class="text-[10px] font-black text-orange-500 hover:text-[#0284c7] dark:hover:text-orange-400 transition-colors shrink-0 uppercase tracking-wider">RSS</a>
             <button
@@ -56,7 +58,7 @@
 
   async function fetchLocationAndWeather() {
     try {
-      const response = await fetch('https://uapis.cn/api/v1/misc/weather');
+      const response = await fetch(welcomeConfig.weatherApi);
       const data = await response.json();
 
       const messageEl = document.getElementById('welcome-message');
@@ -89,7 +91,7 @@
     } catch {
       const messageEl = document.getElementById('welcome-message');
       if (messageEl) {
-        messageEl.textContent = 'Hi！远方的朋友';
+        messageEl.textContent = welcomeConfig.fallbackMessage;
       }
     }
   }
@@ -97,8 +99,8 @@
   async function fetchStats() {
     try {
       const [statsRes, activeRes] = await Promise.allSettled([
-        fetch('https://vapi.upxuu.com/statsapi/alltime'),
-        fetch('https://vapi.upxuu.com/api/active')
+        fetch(siteConfig.analytics.statsApi.alltime),
+        fetch(siteConfig.analytics.statsApi.active)
       ]);
 
       let text = '';
@@ -150,7 +152,7 @@
 
     setTimeout(() => {
       closeWelcomeToast();
-    }, 5000);
+    }, welcomeConfig.duration);
   }
 
   function shouldShowWelcome() {

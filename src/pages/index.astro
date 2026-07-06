@@ -5,6 +5,7 @@ import HorizontalCategories from '../components/HorizontalCategories.astro';
 import LeftSidebar from '../components/LeftSidebar.astro';
 import PostsTimelineWidget from '../components/PostsTimelineWidget.astro';
 import SearchablePosts from '../components/SearchablePosts.svelte';
+import { i18nConfig } from '../config/site';
 
 const allPosts = await getProcessedPosts();
 
@@ -33,8 +34,8 @@ const tags = Object.entries(tagMap)
 ---
 
 <Layout 
-  title="首页"
-  description="UpXuu的个人博客 - 记录生活、学习、编程与思考的原创文章。"
+  title={i18nConfig.home.title}
+  description={i18nConfig.home.description}
   postsCount={allPosts.length}
 >
   <HorizontalCategories 

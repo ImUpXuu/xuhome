@@ -3,6 +3,7 @@ import Layout from '../../layouts/Layout.astro';
 import { getProcessedPosts, getProcessedTalks } from '../../utils/postsFetcher';
 import TalksFeed from '../../components/TalksFeed.svelte';
 import LeftSidebar from '../../components/LeftSidebar.astro';
+import { i18nConfig } from '../../config/site';
 
 const allTalks = await getProcessedTalks();
 const allPosts = await getProcessedPosts();
@@ -12,7 +13,7 @@ const allTags = Object.entries(tagMap).map(([name, count]) => ({ name, count }))
 ---
 
 <Layout 
-  title="说说"
+  title={i18nConfig.talks.title}
   isTalk={true}
   postsCount={allTalks.length}
 >

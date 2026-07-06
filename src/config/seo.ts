@@ -1,25 +1,5 @@
-import { siteConfig } from './site';
-
-const walineProtocolRelative = '//' + new URL(siteConfig.waline.serverURL).host;
-
-export const seoConfig = {
-  defaultTitle: "UpXuu's blog",
-  titleTemplate: " - UpXuu",
-  defaultDescription: "UpXuu的个人博客 - 记录生活、学习、编程与思考。",
-  defaultImage: "https://upxuu.com/images/me.jpg",
-  keywords: ["UpXuu", "blog", "开发者", "生活", "学习", "技术分享", "upxuu的碎碎念"],
-  twitter: {
-    card: "summary_large_image",
-    site: "@ImUpXuu",
-    creator: "@ImUpXuu"
-  },
-  dnsPrefetch: [
-    "//f.xxu6.top",
-    walineProtocolRelative
-  ],
-  preconnect: [
-    { url: "https://f.xxu6.top", crossOrigin: "anonymous" },
-    { url: siteConfig.waline.serverURL, crossOrigin: "anonymous" }
-  ],
-  robots: "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
-};
+/**
+ * SEO 配置 — 从 site.ts 重新导出
+ * 保留此文件是为了兼容已有的 import { seoConfig } from '../config/seo' 引用
+ */
+export { seoConfig } from './site';

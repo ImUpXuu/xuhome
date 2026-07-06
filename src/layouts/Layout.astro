@@ -1,5 +1,5 @@
 ---
-import { siteConfig } from '../config/site';
+import { siteConfig, footerConfig, i18nConfig } from '../config/site';
 import { infoConfig } from '../config/info';
 import { seoConfig } from '../config/seo';
 import { ClientRouter } from 'astro:transitions';
@@ -42,13 +42,13 @@ const pageTitle = title
 const pageDescription = description || seoConfig.defaultDescription;
 
 const sectionTitle = (() => {
-  if (isTalk) return '说说';
-  if (title === '首页') return '最新文章';
-  if (title === '文章归档') return '归档';
+  if (isTalk) return i18nConfig.talks.sectionTitle;
+  if (title === i18nConfig.home.title) return i18nConfig.home.sectionTitle;
+  if (title === i18nConfig.archive.title) return i18nConfig.archive.sectionTitle;
   return '';
 })();
 
-const canonicalURL = new URL(Astro.url.pathname, "https://upxuu.com").href;
+const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
 ---
 
 <!doctype html>
@@ -138,8 +138,9 @@ const canonicalURL = new URL(Astro.url.pathname, "https://upxuu.com").href;
       <link rel="preconnect" href={conn.url} crossorigin={conn.crossOrigin === "anonymous" ? "anonymous" : undefined} />
     ))}
 
-    <script defer src="https://stats.upxuu.com/script.js" data-website-id="cd983d6c-e011-489d-903f-4757ce41c14d"></script>
-    <script defer src="https://cloud.umami.is/script.js" data-website-id="9f42cc31-08eb-4829-8af7-06527a02f6c9"></script>
+    {siteConfig.analytics.umami.map(u => (
+      <script defer src={u.src} data-website-id={u.id}></script>
+    ))}
   <style is:global>
     @keyframes content-in {
       0% { opacity: 0; transform: translateY(20px); filter: blur(4px); }
@@ -271,7 +272,7 @@ const canonicalURL = new URL(Astro.url.pathname, "https://upxuu.com").href;
             {infoConfig.footer.icp && <><span class="mx-1.5">|</span><a href={infoConfig.footer.icp.link} target="_blank" rel="noopener noreferrer" class="hover:text-[#0ea5e9] transition-colors text-[#0284c7] hover:underline">{infoConfig.footer.icp.text}</a></>}
           </div>
           <div>
-            <span>本站已开源 </span><a href="https://github.com/ImUpXuu/xuhome" class="hover:text-[#0ea5e9] underline font-bold">IMUPXUU/XUHOME</a>
+            <span>{footerConfig.repoText}</span><a href={footerConfig.repoUrl} class="hover:text-[#0ea5e9] underline font-bold">{footerConfig.repoDisplayName}</a>
             {(() => {
               try {
                 const log = execSync('git log -n 1 --pretty=format:"%h||%s||%ci"').toString().trim();
@@ -283,7 +284,7 @@ const canonicalURL = new URL(Astro.url.pathname, "https://upxuu.com").href;
                   <span class="mx-1">·</span>
                   <span class="font-bold">LATEST COMMIT</span>
                   <span class="mx-1">-</span>
-                  <a href={`https://github.com/ImUpXuu/xuhome/commit/${hash}`} class="hover:text-[#0ea5e9] underline">{hash}</a>
+                  <a href={`${footerConfig.repoUrl}/commit/${hash}`} class="hover:text-[#0ea5e9] underline">{hash}</a>
                   <span class="mx-1">·</span>
                   <span>{formattedDate}</span>
                   <span class="mx-1">·</span>
@@ -317,12 +318,14 @@ const canonicalURL = new URL(Astro.url.pathname, "https://upxuu.com").href;
     </div>
 
 <script>
+  import { siteConfig } from '../config/site';
+
   function initFooter() {
     (async function() {
       try {
         const [statsRes, activeRes] = await Promise.allSettled([
-          fetch('https://vapi.upxuu.com/statsapi/alltime'),
-          fetch('https://vapi.upxuu.com/api/active')
+          fetch(siteConfig.analytics.statsApi.alltime),
+          fetch(siteConfig.analytics.statsApi.active)
         ]);
         let pv = 0, uv = 0, vt = 0, active = 0;
         if (statsRes.status === 'fulfilled') {
@@ -381,7 +384,7 @@ const canonicalURL = new URL(Astro.url.pathname, "https://upxuu.com").href;
 
   if (!window._uptimeStarted) {
     window._uptimeStarted = true;
-    const start = new Date(2025, 8, 30, 20, 20, 0);
+    const start = siteConfig.startTime;
     setInterval(function() {
       const el = document.getElementById('uptime-display');
       if (!el) return;
@@ -633,9 +636,11 @@ const canonicalURL = new URL(Astro.url.pathname, "https://upxuu.com").href;
 
 <!-- External link confirmation popover -->
 <script>
+  import { siteConfig } from '../config/site';
+
   (function() {
-    const SITE_HOST = 'upxuu.com';
-    const TRUSTED = ['github.com', 'bilibili.com', 'space.bilibili.com', 'icp.gov.moe'];
+    const SITE_HOST = new URL(siteConfig.url).hostname;
+    const TRUSTED = siteConfig.trustedDomains;
     let popover = null;
     let countdownTimer = null;
     let pendingUrl = '';
