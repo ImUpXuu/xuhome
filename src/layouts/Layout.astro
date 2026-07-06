@@ -623,11 +623,6 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
       setupGlobalScrollBar();
       setupBackToTop();
       showPerfMetrics();
-      if (localStorage.getItem('theme') === 'dark') {
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-      }
     });
     window._layoutListenersInited = true;
   }
