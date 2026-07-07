@@ -1,5 +1,5 @@
 ---
-import { siteConfig, footerConfig, i18nConfig } from '../config/site';
+import { siteConfig, footerConfig } from '../config/site';
 import { infoConfig } from '../config/info';
 import { seoConfig } from '../config/seo';
 import { ClientRouter } from 'astro:transitions';
@@ -40,13 +40,6 @@ const pageTitle = title
   ? `${title}${seoConfig.titleTemplate}` 
   : `${siteConfig.title} - ${siteConfig.subtitle.split(' / ')[0]}`;
 const pageDescription = description || seoConfig.defaultDescription;
-
-const sectionTitle = (() => {
-  if (isTalk) return i18nConfig.talks.sectionTitle;
-  if (title === i18nConfig.home.title) return i18nConfig.home.sectionTitle;
-  if (title === i18nConfig.archive.title) return i18nConfig.archive.sectionTitle;
-  return '';
-})();
 
 const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
 ---
@@ -174,11 +167,18 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
 
 
   </style>
-  {/* Dark mode init - default light, never follow system */}
+  {/* Dark mode init: read persisted theme before first paint */}
   <script is:inline>
     (function() {
-      if (localStorage.getItem('theme') === 'dark') {
-        document.documentElement.classList.add('dark');
+      try {
+        const saved = localStorage.getItem('theme');
+        if (saved === 'dark') {
+          document.documentElement.classList.add('dark');
+        } else if (saved === 'light') {
+          document.documentElement.classList.remove('dark');
+        }
+      } catch (e) {
+        // localStorage may be unavailable in some contexts
       }
     })();
   </script>
@@ -223,17 +223,7 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
               post={post}
               postsCount={postsCount}
             />
-            {sectionTitle && (
-              <div class="flex items-center gap-3 px-1 select-none">
-                <span class="w-3 h-3 bg-[#f59e0b] border-2 border-[#0284c7] rotate-45 shrink-0"></span>
-                <h2 class="text-sm sm:text-base font-black text-[#0284c7] tracking-widest uppercase">
-                  {sectionTitle}
-                </h2>
-                {postsCount > 0 && (
-                  <span class="text-[10px] font-black text-slate-400 font-mono">({postsCount})</span>
-                )}
-              </div>
-            )}
+
             <main
               id="main-content"
               class="flex-1"
