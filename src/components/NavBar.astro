@@ -334,14 +334,23 @@ const isArchivePage = pathname === '/archive';
     return document.documentElement.classList.contains('dark');
   }
 
-  // Initialize / sync theme UI on every page load
+  // Sync theme: restore from localStorage first, then update UI
+  // Astro View Transitions can strip the dark class from <html>, so we force it back
   function initThemeUI() {
+    try {
+      const saved = localStorage.getItem('theme');
+      if (saved === 'dark') {
+        document.documentElement.classList.add('dark');
+      } else if (saved === 'light') {
+        document.documentElement.classList.remove('dark');
+      }
+    } catch {}
     updateThemeUI(isDarkTheme());
   }
 
-  // Bind theme toggle once globally
+  // Bind theme toggle once globally — use document (not body) so it survives view transitions
   if (!window.__themeToggleBound) {
-    document.body.addEventListener('click', (e) => {
+    document.addEventListener('click', (e) => {
       const btn = e.target.closest('[data-theme-toggle]');
       if (!btn) return;
       e.preventDefault();
@@ -351,10 +360,10 @@ const isArchivePage = pathname === '/archive';
     window.__themeToggleBound = true;
   }
 
-  // Bind navbar interactions once globally
+  // Bind navbar interactions once globally — use document for all listeners
   if (!window.__navBarBound) {
     // Desktop more dropdown
-    document.body.addEventListener('click', (e) => {
+    document.addEventListener('click', (e) => {
       const desktopMoreToggle = document.getElementById('desktop-more-toggle');
       const desktopMoreDropdown = document.getElementById('desktop-more-dropdown');
       if (!desktopMoreToggle || !desktopMoreDropdown) return;
@@ -374,7 +383,7 @@ const isArchivePage = pathname === '/archive';
     });
 
     // Mobile menu toggle
-    document.body.addEventListener('click', (e) => {
+    document.addEventListener('click', (e) => {
       const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
       const mobileMenuDropdown = document.getElementById('mobile-menu-dropdown');
       const menuIconOpen = document.getElementById('menu-icon-open');
@@ -398,7 +407,7 @@ const isArchivePage = pathname === '/archive';
     });
 
     // Mobile search toggle
-    document.body.addEventListener('click', (e) => {
+    document.addEventListener('click', (e) => {
       const mobileSearchToggle = document.getElementById('mobile-search-toggle');
       const mobileSearchDialog = document.getElementById('mobile-search-dialog');
       const mobileSearchInput = document.getElementById('mobile-search-input');
