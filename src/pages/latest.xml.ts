@@ -29,7 +29,6 @@ export async function GET(context: APIContext) {
   ]);
 
   const siteUrl = (context.site ?? new URL(siteConfig.url)).toString().replace(/\/$/, '');
-
   const author = siteConfig.author;
 
   const items = [
@@ -68,15 +67,17 @@ export async function GET(context: APIContext) {
         customData: `<dc:creator><![CDATA[${author}]]></dc:creator>`,
       };
     }),
-  ].sort((a, b) => {
-    const da = a.pubDate ? new Date(a.pubDate).getTime() : 0;
-    const db = b.pubDate ? new Date(b.pubDate).getTime() : 0;
-    return db - da;
-  });
+  ]
+    .sort((a, b) => {
+      const da = a.pubDate ? new Date(a.pubDate).getTime() : 0;
+      const db = b.pubDate ? new Date(b.pubDate).getTime() : 0;
+      return db - da;
+    })
+    .slice(0, 10);
 
   return rss({
-    title: siteConfig.title,
-    description: siteConfig.subtitle || '',
+    title: `${siteConfig.title} - 最新`,
+    description: `${siteConfig.title} 最新文章与说说 RSS`,
     site: siteUrl,
     items,
     trailingSlash: false,
@@ -88,7 +89,7 @@ export async function GET(context: APIContext) {
     customData: [
       '<language>zh-CN</language>',
       `<lastBuildDate>${new Date().toUTCString()}</lastBuildDate>`,
-      `<atom:link href="${siteUrl}/rss.xml" rel="self" type="application/rss+xml"/>`,
+      `<atom:link href="${siteUrl}/latest.xml" rel="self" type="application/rss+xml"/>`,
     ].join(''),
   });
 }
