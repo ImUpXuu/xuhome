@@ -411,34 +411,40 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
 {
   function setupGlobalScrollBar() {
     const indicator = document.getElementById('scroll-bar-indicator');
-    if (indicator) {
-      window.addEventListener('scroll', () => {
-        const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
-        const percentage = totalHeight > 0 ? (window.pageYOffset / totalHeight) * 100 : 0;
-        indicator.style.width = percentage + '%';
-      }, { passive: true });
-    }
+    if (!indicator || window.__scrollBarSetup) return;
+    window.__scrollBarSetup = true;
+    window.addEventListener('scroll', () => {
+      const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const percentage = totalHeight > 0 ? (window.pageYOffset / totalHeight) * 100 : 0;
+      indicator.style.width = percentage + '%';
+    }, { passive: true });
   }
 
   function setupBackToTop() {
-    // Floating Back to Top Button script
     const backToTopBtn = document.getElementById('back-to-top-btn');
-    if (backToTopBtn) {
+    if (!backToTopBtn) return;
+
+    // Scroll listener: only once (window persists across view transitions)
+    if (!window.__backToTopScrollSetup) {
+      window.__backToTopScrollSetup = true;
       window.addEventListener('scroll', () => {
+        const btn = document.getElementById('back-to-top-btn');
+        if (!btn) return;
         if (window.scrollY > 300) {
-          backToTopBtn.classList.remove('opacity-0', 'pointer-events-none');
-          backToTopBtn.classList.add('opacity-100');
+          btn.classList.remove('opacity-0', 'pointer-events-none');
+          btn.classList.add('opacity-100');
         } else {
-          backToTopBtn.classList.add('opacity-0', 'pointer-events-none');
-          backToTopBtn.classList.remove('opacity-100');
+          btn.classList.add('opacity-0', 'pointer-events-none');
+          btn.classList.remove('opacity-100');
         }
       }, { passive: true });
+    }
 
+    // Click listener: only once (button is in layout body, persists)
+    if (!window.__backToTopClickSetup) {
+      window.__backToTopClickSetup = true;
       backToTopBtn.addEventListener('click', () => {
-        window.scrollTo({
-          top: 0,
-          behavior: 'smooth'
-        });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       });
     }
   }
