@@ -44,7 +44,7 @@
 |------|------|
 | **Waline 评论** | 自托管评论系统，支持 Markdown、表情、验证码、邮件通知 |
 | **分享功能**    | 生成海报（横向分享图）、分享到 QQ 空间 / X (Twitter) / 微信、复制链接、系统原生分享 |
-| **RSS 订阅**    | 全量 RSS 2.0 Feed，含完整文章内容 |
+| **RSS 订阅**    | 4 条 RSS 2.0 Feed（全量 / 仅文章 / 仅说说 / 最新 10 篇） |
 | **邮件订阅**    | 基于 GitHub Issues 的更新通知方案 |
 
 ### 🔍 内容管理 / Content Management
@@ -169,7 +169,10 @@ xuhome/
 │   │   ├── about.astro        # 关于页
 │   │   ├── archive.astro      # 归档页
 │   │   ├── friends.astro      # 友链页
-│   │   ├── rss.xml.ts         # RSS Feed
+│   │   ├── rss.xml.ts         # RSS Feed（全量：文章 + 说说）
+│   │   ├── posts.xml.ts       # RSS Feed（仅文章）
+│   │   ├── talk.xml.ts        # RSS Feed（仅说说）
+│   │   ├── latest.xml.ts      # RSS Feed（最新 10 篇）
 │   │   ├── sitemap.xml.ts     # Sitemap
 │   │   ├── posts/[id].astro   # 文章详情页
 │   │   ├── category/[...]     # 分类页面
@@ -440,6 +443,21 @@ tags: ["日常"]
 
 内容正文...
 ```
+
+---
+
+## 📡 RSS 订阅
+
+项目提供 4 条 RSS 2.0 Feed，均含完整文章/说说内容、`dc:creator`、`lastBuildDate`：
+
+| Feed | 路径 | 内容 |
+|------|------|------|
+| 全量 | `/rss.xml` | 全部文章 + 说说（说说标题前加 `「说说」` 前缀） |
+| 文章 | `/posts.xml` | 仅文章 |
+| 说说 | `/talk.xml` | 仅说说 |
+| 最新 | `/latest.xml` | 最近 10 篇（文章 + 说说混合，说说带 `「说说」` 前缀） |
+
+页脚有 RSS 快捷链接，欢迎提示中也可一键复制 RSS 地址。
 
 ---
 
