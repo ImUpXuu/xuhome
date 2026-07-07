@@ -396,6 +396,12 @@ export const i18nConfig = {
 1. 部署 Waline 服务端（参考 [Waline 文档](https://waline.js.org)）
 2. 在 `siteConfig.waline.serverURL` 中设置服务地址
 
+### 12. 深浅色主题 / Dark Mode
+
+主题状态保存在 `localStorage.theme`，在 `Layout.astro` 的 `<head>` 内联脚本中优先于首屏渲染读取，避免闪白。`NavBar.astro` 中的切换按钮通过 `data-theme-toggle` 触发，事件监听器只全局绑定一次，并在每次 `astro:page-load` 时同步 icon / label 状态，切页后不会回退到浅色。主题不跟随系统，默认浅色。
+
+如需修改主题相关文案，在 `i18nConfig.common` 中调整 `darkMode`、`lightMode`、`toggleDarkMode`。
+
 ---
 
 ## 📝 内容管理 / Content Management

@@ -282,199 +282,197 @@ const isArchivePage = pathname === '/archive';
   lightModeText: i18nConfig.common.lightMode,
   darkModeText: i18nConfig.common.darkMode,
 }}>
-  function setupNavBar() {
-    // Utility to close open dropdowns
-    function closeDropdowns() {
-      const mobileMenuDropdown = document.getElementById('mobile-menu-dropdown');
-      const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
-      const menuIconOpen = document.getElementById('menu-icon-open');
-      const menuIconClose = document.getElementById('menu-icon-close');
-      
-      const desktopMoreDropdown = document.getElementById('desktop-more-dropdown');
-      const desktopMoreToggle = document.getElementById('desktop-more-toggle');
+  function closeNavDropdowns() {
+    const mobileMenuDropdown = document.getElementById('mobile-menu-dropdown');
+    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+    const menuIconOpen = document.getElementById('menu-icon-open');
+    const menuIconClose = document.getElementById('menu-icon-close');
+    const desktopMoreDropdown = document.getElementById('desktop-more-dropdown');
+    const desktopMoreToggle = document.getElementById('desktop-more-toggle');
 
-      if (mobileMenuDropdown && !mobileMenuDropdown.classList.contains('hidden')) {
-        mobileMenuDropdown.classList.add('hidden');
-        menuIconOpen.classList.remove('hidden');
-        menuIconClose.classList.add('hidden');
+    if (mobileMenuDropdown && !mobileMenuDropdown.classList.contains('hidden')) {
+      mobileMenuDropdown.classList.add('hidden');
+      if (menuIconOpen) menuIconOpen.classList.remove('hidden');
+      if (menuIconClose) menuIconClose.classList.add('hidden');
+      if (mobileMenuToggle) {
         mobileMenuToggle.classList.remove('bg-[#fde68a]');
         mobileMenuToggle.classList.add('bg-[#faf8f5]');
         mobileMenuToggle.setAttribute('aria-expanded', 'false');
         mobileMenuToggle.setAttribute('aria-label', openMenuText);
       }
+    }
 
-      if (desktopMoreDropdown && !desktopMoreDropdown.classList.contains('hidden')) {
-        desktopMoreDropdown.classList.add('hidden');
+    if (desktopMoreDropdown && !desktopMoreDropdown.classList.contains('hidden')) {
+      desktopMoreDropdown.classList.add('hidden');
+      if (desktopMoreToggle) {
         desktopMoreToggle.classList.remove('bg-[#fde68a]');
         desktopMoreToggle.classList.add('bg-[#faf8f5]');
       }
     }
+  }
 
-    // Mobile menu drop toggle
-    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
-    const mobileMenuDropdown = document.getElementById('mobile-menu-dropdown');
-    
-    // Desktop more drop toggle
-    const desktopMoreToggle = document.getElementById('desktop-more-toggle');
-    const desktopMoreDropdown = document.getElementById('desktop-more-dropdown');
+  // Theme handling: single source of truth, persisted in localStorage
+  function applyTheme(dark) {
+    const root = document.documentElement;
+    if (dark) root.classList.add('dark');
+    else root.classList.remove('dark');
+    try { localStorage.setItem('theme', dark ? 'dark' : 'light'); } catch {}
+    updateThemeUI(dark);
+    window.dispatchEvent(new CustomEvent('theme-change', { detail: { dark } }));
+  }
 
-    const mobileSearchToggle = document.getElementById('mobile-search-toggle');
-    const mobileSearchDialog = document.getElementById('mobile-search-dialog');
-    const mobileSearchInput = document.getElementById('mobile-search-input');
-    const mobileSearchClear = document.getElementById('mobile-search-clear');
+  function updateThemeUI(dark) {
+    const label = document.getElementById('mobile-dark-mode-label');
+    const sun = document.getElementById('dark-mode-sun');
+    const moon = document.getElementById('dark-mode-moon');
+    if (label) label.textContent = dark ? lightModeText : darkModeText;
+    if (sun) sun.classList.toggle('hidden', !dark);
+    if (moon) moon.classList.toggle('hidden', dark);
+  }
 
-    // Clean up old listeners by replacing nodes
-    if (desktopMoreToggle) desktopMoreToggle.replaceWith(desktopMoreToggle.cloneNode(true));
-    if (mobileMenuToggle) mobileMenuToggle.replaceWith(mobileMenuToggle.cloneNode(true));
-    if (mobileSearchToggle) mobileSearchToggle.replaceWith(mobileSearchToggle.cloneNode(true));
-    if (mobileSearchClear) mobileSearchClear.replaceWith(mobileSearchClear.cloneNode(true));
-    if (mobileSearchInput) mobileSearchInput.replaceWith(mobileSearchInput.cloneNode(true));
+  function isDarkTheme() {
+    return document.documentElement.classList.contains('dark');
+  }
 
-    // Re-fetch nodes after replaceWith
-    const newDesktopMoreToggle = document.getElementById('desktop-more-toggle');
-    const newMobileMenuToggle = document.getElementById('mobile-menu-toggle');
-    const newMobileSearchToggle = document.getElementById('mobile-search-toggle');
-    const newMobileSearchClear = document.getElementById('mobile-search-clear');
-    const newMobileSearchInput = document.getElementById('mobile-search-input');
+  // Initialize / sync theme UI on every page load
+  function initThemeUI() {
+    updateThemeUI(isDarkTheme());
+  }
 
-    if (newDesktopMoreToggle && desktopMoreDropdown) {
-      newDesktopMoreToggle.addEventListener('click', (e) => {
+  // Bind theme toggle once globally
+  if (!window.__themeToggleBound) {
+    document.body.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-theme-toggle]');
+      if (!btn) return;
+      e.preventDefault();
+      e.stopPropagation();
+      applyTheme(!isDarkTheme());
+    });
+    window.__themeToggleBound = true;
+  }
+
+  // Bind navbar interactions once globally
+  if (!window.__navBarBound) {
+    // Desktop more dropdown
+    document.body.addEventListener('click', (e) => {
+      const desktopMoreToggle = document.getElementById('desktop-more-toggle');
+      const desktopMoreDropdown = document.getElementById('desktop-more-dropdown');
+      if (!desktopMoreToggle || !desktopMoreDropdown) return;
+      if (e.target.closest('#desktop-more-toggle')) {
         e.stopPropagation();
         const isOpen = !desktopMoreDropdown.classList.contains('hidden');
-        closeDropdowns();
+        closeNavDropdowns();
         if (!isOpen) {
           desktopMoreDropdown.classList.remove('hidden');
-          newDesktopMoreToggle.classList.add('bg-[#fde68a]');
-          newDesktopMoreToggle.classList.remove('bg-[#faf8f5]');
+          desktopMoreToggle.classList.add('bg-[#fde68a]');
+          desktopMoreToggle.classList.remove('bg-[#faf8f5]');
         }
-      });
-    }
-
-    if (newMobileMenuToggle && mobileMenuDropdown) {
-      newMobileMenuToggle.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const isOpen = !mobileMenuDropdown.classList.contains('hidden');
-        closeDropdowns();
-        
-        if (!isOpen) {
-          mobileMenuDropdown.classList.remove('hidden');
-          document.getElementById('menu-icon-open').classList.add('hidden');
-          document.getElementById('menu-icon-close').classList.remove('hidden');
-          newMobileMenuToggle.classList.add('bg-[#fde68a]');
-          newMobileMenuToggle.classList.remove('bg-[#faf8f5]');
-          newMobileMenuToggle.setAttribute('aria-expanded', 'true');
-          newMobileMenuToggle.setAttribute('aria-label', closeMenuText);
-          
-          // Hide search dialog
-          if (mobileSearchDialog && !mobileSearchDialog.classList.contains('hidden')) {
-            mobileSearchDialog.classList.add('hidden');
-            if (newMobileSearchToggle) {
-              newMobileSearchToggle.classList.remove('bg-[#fde68a]');
-              newMobileSearchToggle.classList.add('bg-[#faf8f5]');
-            }
-          }
-        }
-      });
-    }
-
-    if (newMobileSearchToggle) {
-      newMobileSearchToggle.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const isOpen = !mobileSearchDialog.classList.contains('hidden');
-        if (isOpen) {
-          mobileSearchDialog.classList.add('hidden');
-          newMobileSearchToggle.classList.remove('bg-[#fde68a]');
-          newMobileSearchToggle.classList.add('bg-[#faf8f5]');
-        } else {
-          mobileSearchDialog.classList.remove('hidden');
-          newMobileSearchToggle.classList.add('bg-[#fde68a]');
-          newMobileSearchToggle.classList.remove('bg-[#faf8f5]');
-          
-          closeDropdowns();
-          
-          // Focus input
-          setTimeout(() => newMobileSearchInput?.focus(), 50);
-        }
-      });
-    }
-
-    // Handle outside clicks to close lists
-    // Need to handle document clicks carefully to not duplicate
-    if (!window.navGlobalClickListenerInitialized) {
-      document.addEventListener('click', () => {
-        closeDropdowns();
-      });
-      window.navGlobalClickListenerInitialized = true;
-    }
-
-    // Mobile search input behavior
-    if (newMobileSearchInput) {
-      // Populate query param on page load
-      const urlParams = new URLSearchParams(window.location.search);
-      const initialQ = urlParams.get('q') || '';
-      newMobileSearchInput.value = initialQ;
-      if (initialQ && newMobileSearchClear) newMobileSearchClear.classList.remove('hidden');
-
-      newMobileSearchInput.addEventListener('input', (e) => {
-        const val = e.target.value.trim();
-        if (val && newMobileSearchClear) {
-          newMobileSearchClear.classList.remove('hidden');
-        } else if (newMobileSearchClear) {
-          newMobileSearchClear.classList.add('hidden');
-        }
-        
-        // Dispatch search custom event
-        window.dispatchEvent(new CustomEvent('blog-search', { detail: { query: val } }));
-      });
-
-      if (newMobileSearchClear) {
-        newMobileSearchClear.addEventListener('click', () => {
-          newMobileSearchInput.value = '';
-          newMobileSearchClear.classList.add('hidden');
-          window.dispatchEvent(new CustomEvent('blog-search', { detail: { query: '' } }));
-        });
+        return;
       }
+      if (e.target.closest('#desktop-more-dropdown')) return;
+      closeNavDropdowns();
+    });
 
-      // handle Enter inside search to redirect or act if not on posts page
-      newMobileSearchInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-          const val = newMobileSearchInput.value.trim();
-          const isBlogHome = window.location.pathname === '/' || window.location.pathname.startsWith('/page/') || window.location.pathname.startsWith('/category/') || window.location.pathname.startsWith('/tag/');
-          if (!isBlogHome) {
-            window.location.href = val ? `/?q=${encodeURIComponent(val)}` : '/';
-          }
-        }
+    // Mobile menu toggle
+    document.body.addEventListener('click', (e) => {
+      const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+      const mobileMenuDropdown = document.getElementById('mobile-menu-dropdown');
+      const menuIconOpen = document.getElementById('menu-icon-open');
+      const menuIconClose = document.getElementById('menu-icon-close');
+      const mobileSearchDialog = document.getElementById('mobile-search-dialog');
+      if (!mobileMenuToggle || !mobileMenuDropdown) return;
+      if (!e.target.closest('#mobile-menu-toggle')) return;
+      e.stopPropagation();
+      const isOpen = !mobileMenuDropdown.classList.contains('hidden');
+      closeNavDropdowns();
+      if (!isOpen) {
+        mobileMenuDropdown.classList.remove('hidden');
+        if (menuIconOpen) menuIconOpen.classList.add('hidden');
+        if (menuIconClose) menuIconClose.classList.remove('hidden');
+        mobileMenuToggle.classList.add('bg-[#fde68a]');
+        mobileMenuToggle.classList.remove('bg-[#faf8f5]');
+        mobileMenuToggle.setAttribute('aria-expanded', 'true');
+        mobileMenuToggle.setAttribute('aria-label', closeMenuText);
+        if (mobileSearchDialog) mobileSearchDialog.classList.add('hidden');
+      }
+    });
+
+    // Mobile search toggle
+    document.body.addEventListener('click', (e) => {
+      const mobileSearchToggle = document.getElementById('mobile-search-toggle');
+      const mobileSearchDialog = document.getElementById('mobile-search-dialog');
+      const mobileSearchInput = document.getElementById('mobile-search-input');
+      if (!mobileSearchToggle || !mobileSearchDialog) return;
+      if (!e.target.closest('#mobile-search-toggle')) return;
+      e.stopPropagation();
+      const isOpen = !mobileSearchDialog.classList.contains('hidden');
+      if (isOpen) {
+        mobileSearchDialog.classList.add('hidden');
+        mobileSearchToggle.classList.remove('bg-[#fde68a]');
+        mobileSearchToggle.classList.add('bg-[#faf8f5]');
+      } else {
+        mobileSearchDialog.classList.remove('hidden');
+        mobileSearchToggle.classList.add('bg-[#fde68a]');
+        mobileSearchToggle.classList.remove('bg-[#faf8f5]');
+        closeNavDropdowns();
+        setTimeout(() => mobileSearchInput?.focus(), 50);
+      }
+    });
+
+    // Close dropdowns on Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeNavDropdowns();
+    });
+
+    window.__navBarBound = true;
+  }
+
+  // Mobile search input behavior: refresh bindings on each page load because the input node is new
+  function setupMobileSearchInput() {
+    const mobileSearchInput = document.getElementById('mobile-search-input');
+    const mobileSearchClear = document.getElementById('mobile-search-clear');
+    if (!mobileSearchInput) return;
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const initialQ = urlParams.get('q') || '';
+    mobileSearchInput.value = initialQ;
+    if (initialQ && mobileSearchClear) mobileSearchClear.classList.remove('hidden');
+
+    mobileSearchInput.addEventListener('input', (e) => {
+      const val = e.target.value.trim();
+      if (mobileSearchClear) mobileSearchClear.classList.toggle('hidden', !val);
+      window.dispatchEvent(new CustomEvent('blog-search', { detail: { query: val } }));
+    });
+
+    mobileSearchInput.addEventListener('keydown', (e) => {
+      if (e.key !== 'Enter') return;
+      const val = mobileSearchInput.value.trim();
+      const isBlogHome = window.location.pathname === '/' || window.location.pathname.startsWith('/page/') || window.location.pathname.startsWith('/category/') || window.location.pathname.startsWith('/tag/');
+      if (!isBlogHome) {
+        window.location.href = val ? `/?q=${encodeURIComponent(val)}` : '/';
+      }
+    });
+
+    if (mobileSearchClear) {
+      mobileSearchClear.addEventListener('click', () => {
+        mobileSearchInput.value = '';
+        mobileSearchClear.classList.add('hidden');
+        window.dispatchEvent(new CustomEvent('blog-search', { detail: { query: '' } }));
       });
     }
   }
 
-  function setupTheme() {
-    // Event delegation: single click listener on body for all [data-theme-toggle] buttons
-    if (!window._themeInit) {
-      document.body.addEventListener('click', (e) => {
-        const btn = e.target.closest('[data-theme-toggle]');
-        if (!btn) return;
-        const isDark = document.documentElement.classList.toggle('dark');
-        localStorage.setItem('theme', isDark ? 'dark' : 'light');
-        const label = document.getElementById('mobile-dark-mode-label');
-        if (label) label.textContent = isDark ? lightModeText : darkModeText;
-      });
-      window._themeInit = true;
-    }
-
-    // Sync mobile label on page transitions
-    const isDark = document.documentElement.classList.contains('dark');
-    const label = document.getElementById('mobile-dark-mode-label');
-    if (label) label.textContent = isDark ? lightModeText : darkModeText;
+  function initNavBar() {
+    closeNavDropdowns();
+    setupMobileSearchInput();
+    initThemeUI();
   }
 
-  // Initial run
-  setupNavBar();
-  setupTheme();
-  
-  // Re-run on page transitions
-  document.addEventListener('astro:page-load', () => {
-    setupNavBar();
-    setupTheme();
-  });
+  initNavBar();
+
+  // data-astro-rerun executes on every navigation, so only bind the lifecycle listener once
+  if (!window.__navPageLoadBound) {
+    document.addEventListener('astro:page-load', initNavBar);
+    window.__navPageLoadBound = true;
+  }
 </script>
