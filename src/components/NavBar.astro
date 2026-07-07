@@ -478,10 +478,4 @@ const isArchivePage = pathname === '/archive';
   }
 
   initNavBar();
-
-  // data-astro-rerun executes on every navigation, so only bind the lifecycle listener once
-  if (!window.__navPageLoadBound) {
-    document.addEventListener('astro:page-load', initNavBar);
-    window.__navPageLoadBound = true;
-  }
 </script>
