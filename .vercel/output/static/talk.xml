@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/"><channel><title>UpXuu - 说说</title><description>UpXuu 说说 RSS</description><link>https://upxuu.com</link><language>zh-CN</language><lastBuildDate>Tue, 07 Jul 2026 07:42:19 GMT</lastBuildDate><atom:link href="https://upxuu.com/talk.xml" rel="self" type="application/rss+xml"/><item><title>fix-waline-backend</title><link>https://upxuu.com/talk/2026-07-05-fix-waline-backend/</link><guid isPermaLink="true">https://upxuu.com/talk/2026-07-05-fix-waline-backend/</guid><description>最近考完试修了一下评论，那你可能会问了 UPXUU你这用的waline都是serverless，怎么炸的呢。
+那么那么是这样的，还记得我前几个月发了一个文章吗 https://upxuu.com/posts/yuanbaoopenclaw 一个把元宝bot搞成服务器的。本身这个东西很稳，但是那，我们的腾讯突然收回了没有在元宝bot内活动的bot主机，而且，在我复习周发的消息！！！ 
+本身也没啥重要</description><pubDate>Sun, 05 Jul 2026 21:24:13 GMT</pubDate><content:encoded>&lt;p&gt;最近考完试修了一下评论，那你可能会问了 UPXUU你这用的waline都是serverless，怎么炸的呢。
+那么那么是这样的，还记得我前几个月发了一个文章吗 https://upxuu.com/posts/yuanbaoopenclaw 一个把元宝bot搞成服务器的。本身这个东西很稳，但是那，我们的腾讯突然收回了没有在元宝bot内活动的bot主机，而且，在我复习周发的消息！！！
+本身也没啥重要服务，结果我后来一看 好家伙评论系统炸了 结果发现之前引入的是部署在bot上的后端（还有一个cf的和vercel）
+好吧数据已经丢了，懒得恢复了就直接换上vercel得了，至少现在能用对&lt;/p&gt;
+</content:encoded><dc:creator>UpXuu</dc:creator></item><item><title>为啥我的家宽 ip 段风险这高</title><link>https://upxuu.com/talk/为啥我的家宽-ip-段风险这高/</link><guid isPermaLink="true">https://upxuu.com/talk/为啥我的家宽-ip-段风险这高/</guid><description>众所周知  ippure.com  主要是侧节点纯净度的 闲的没事没开题试了下 发现我家宽风险居然比节点纯净度还低 6666 这对吗!https://edit.upxuu.com/img/2026/6/28/20260628225549056.jpg</description><pubDate>Sun, 28 Jun 2026 21:56:48 GMT</pubDate><content:encoded>&lt;p&gt;众所周知  ippure.com  主要是侧节点纯净度的 闲的没事没开题试了下 发现我家宽风险居然比节点纯净度还低 6666 这对吗&lt;img src=&quot;https://edit.upxuu.com/img/2026/6/28/20260628225549_056.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+</content:encoded><dc:creator>UpXuu</dc:creator></item><item><title>明天该期末了~</title><link>https://upxuu.com/talk/2026-06-28-明天该期末了/</link><guid isPermaLink="true">https://upxuu.com/talk/2026-06-28-明天该期末了/</guid><description>这或许是我平生参加过的复习最仓促的一次期末
+为什么呢？因为23号中考（地生），在这之前我的其他科几乎没有复习过一点，甚至连额外的除了作业的练习都没做。然后就这样的，29号 6天后 期末....
+虽然大家都一样，but... 那也不能考的太惨吧 
+总之只能尽力而为了 希望能保持住
+哦对了 这也是为什么是“XUU”的原因⬇️（成绩单）
+!image.pnghttps://edit.upx</description><pubDate>Sun, 28 Jun 2026 10:23:01 GMT</pubDate><content:encoded>&lt;p&gt;这或许是我平生参加过的复习&lt;strong&gt;最仓促&lt;/strong&gt;的一次期末
+为什么呢？因为23号中考（地生），在这之前我的其他科几乎没有复习过一点，甚至连额外的除了作业的练习都没做。然后就这样的，29号 6天后 期末....
+虽然大家都一样，but... 那也不能考的太惨吧
+总之只能尽力而为了 希望能保持住
+哦对了 这也是为什么是“XUU”的原因⬇️（成绩单）
+&lt;img src=&quot;https://edit.upxuu.com/img/2026/6/28/20260628102546_297.png&quot; alt=&quot;image.png&quot; /&gt;&lt;img src=&quot;https://edit.upxuu.com/img/2026/6/28/20260628102739_563.jpg&quot; alt=&quot;20260504142928_750.jpg&quot; /&gt;&lt;/p&gt;
+</content:encoded><dc:creator>UpXuu</dc:creator></item><item><title>体验一下不写作业的感受</title><link>https://upxuu.com/talk/体验一下不写作业的感受/</link><guid isPermaLink="true">https://upxuu.com/talk/体验一下不写作业的感受/</guid><description>这辈子第一回没有写作业 还是 5 天中考长假的
+但我真的太难受了 精神+心理 就这样吧我感觉我能强撑着上学都是奇迹了</description><pubDate>Wed, 24 Jun 2026 06:23:45 GMT</pubDate><content:encoded>&lt;p&gt;这辈子第一回没有写作业 还是 5 天中考长假的
+但我真的太难受了 精神+心理 就这样吧我感觉我能强撑着上学都是奇迹了&lt;/p&gt;
+</content:encoded><dc:creator>UpXuu</dc:creator></item><item><title>我的中考——争议，崩溃与愤怒</title><link>https://upxuu.com/talk/2026-06-23-我的中考争议崩溃与愤怒/</link><guid isPermaLink="true">https://upxuu.com/talk/2026-06-23-我的中考争议崩溃与愤怒/</guid><description>今天，upxuu终于把她的地生中考考完了 然后呢...?
+河北今年的生物出了一个非常出生的题，真的不是我说，我是真的无法遏制我的情绪
+因为刚刚考完 所以试卷还没有流出，等过段时间再补图吧
+就是有一个填空 她是让填一个顺序 （血液循环） 就是做了不知道多少次的这种题 一般空的前后会有开头和结尾 让你补全中间的的 您猜怎么着 tm出题人就给挖个空 然后关键是他前面铺垫一大堆 从A进入xx 经过血液循环</description><pubDate>Tue, 23 Jun 2026 22:49:25 GMT</pubDate><content:encoded>&lt;p&gt;今天，upxuu终于把她的地生中考考完了 然后呢...?
+河北今年的生物出了一个非常出生的题，真的不是我说，我是真的无法遏制我的情绪
+因为刚刚考完 所以试卷还没有流出，等过段时间再补图吧
+就是有一个填空 她是让填一个顺序 （血液循环） 就是做了不知道多少次的这种题 一般空的前后会有开头和结尾 让你补全中间的的 您猜怎么着 tm出题人就给挖个空 然后关键是他前面铺垫一大堆 从A进入xx 经过血液循环到达B 其中经过了什么 我就想问了 这个AB需不需要也写上呢 你倒是标明啊 我tm研究了半天 不是知识性错误就这b东西要扣我一分
+怎么想的&lt;/p&gt;
+&lt;p&gt;然后回家发下这个就开始哭 哭了一晚上 作业也没写（因为连着大中考我们放了5天） 也没复习期末 最后都绝望了出门去街上走了走 心里还是难受&lt;/p&gt;
+&lt;p&gt;我不知道凭啥啊 就靠运气？？？？  我不知道这道题想表达什么 我只知道 很多人都会做 就因为这个破题的表述问题 也和我一样在这一分就没了 这是中考啊 这是要算到800总分的120啊 就这么没了一分？？？？
+&lt;img src=&quot;https://edit.upxuu.com/img/2026/6/23/20260623225826_193.png&quot; alt=&quot;屏幕截图 2026-06-23 194358.png&quot; /&gt;&lt;img src=&quot;https://edit.upxuu.com/img/2026/6/23/20260623225828_334.png&quot; alt=&quot;屏幕截图 2026-06-23 194323.png&quot; /&gt;&lt;img src=&quot;https://edit.upxuu.com/img/2026/6/23/20260623225829_150.png&quot; alt=&quot;屏幕截图 2026-06-23 194247.png&quot; /&gt;
+我无法理解 无法释怀 无法面对&lt;/p&gt;
+</content:encoded><dc:creator>UpXuu</dc:creator></item><item><title>中考，出发！</title><link>https://upxuu.com/talk/中考出发/</link><guid isPermaLink="true">https://upxuu.com/talk/中考出发/</guid><description>还有2.5h
+ 我将开始为我的地生120分冲击</description><pubDate>Tue, 23 Jun 2026 12:09:23 GMT</pubDate><content:encoded>&lt;p&gt;还有2.5h
+我将开始为我的地生120分冲击&lt;/p&gt;
+</content:encoded><dc:creator>UpXuu</dc:creator></item><item><title>心脏不好这一块</title><link>https://upxuu.com/talk/心脏不好这一块/</link><guid isPermaLink="true">https://upxuu.com/talk/心脏不好这一块/</guid><description>行行行你就这样吧 我祝你23号在东南实验找不到考场不兑20号还要看考场&apos;
+!https://edit.upxuu.com/img/2026/6/19/20260619145109883.jpg
+!https://edit.upxuu.com/img/2026/6/19/20260619145113647.jpg
+!https://edit.upxuu.com/img/2</description><pubDate>Fri, 19 Jun 2026 14:50:24 GMT</pubDate><content:encoded>&lt;p&gt;行行行你就这样吧 我祝你23号在东南实验找不到考场(不兑20号还要看考场&apos;
+&lt;img src=&quot;https://edit.upxuu.com/img/2026/6/19/20260619145109_883.jpg&quot; alt=&quot;&quot; /&gt;
+&lt;img src=&quot;https://edit.upxuu.com/img/2026/6/19/20260619145113_647.jpg&quot; alt=&quot;&quot; /&gt;
+&lt;img src=&quot;https://edit.upxuu.com/img/2026/6/19/20260619145117_120.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+</content:encoded><dc:creator>UpXuu</dc:creator></item><item><title>7days</title><link>https://upxuu.com/talk/7days/</link><guid isPermaLink="true">https://upxuu.com/talk/7days/</guid><description>不悲观，不言弃
+!https://edit.upxuu.com/img/2026/6/16/20260616062208303.jpg</description><pubDate>Tue, 16 Jun 2026 06:21:43 GMT</pubDate><content:encoded>&lt;p&gt;不悲观，不言弃
+&lt;img src=&quot;https://edit.upxuu.com/img/2026/6/16/20260616062208_303.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+</content:encoded><dc:creator>UpXuu</dc:creator></item><item><title>终有一日，登省第一</title><link>https://upxuu.com/talk/终有一日登全省第一/</link><guid isPermaLink="true">https://upxuu.com/talk/终有一日登全省第一/</guid><description>一切皆有可能╮╯╰╭</description><pubDate>Sat, 13 Jun 2026 14:54:44 GMT</pubDate><content:encoded>&lt;p&gt;一切皆有可能╮(╯*╰)╭&lt;/p&gt;
+</content:encoded><dc:creator>UpXuu</dc:creator></item><item><title>latest-biography-geography-class</title><link>https://upxuu.com/talk/latest-biography-geography-class/</link><guid isPermaLink="true">https://upxuu.com/talk/latest-biography-geography-class/</guid><description>突然发现，我们只剩下最后的 6 节生物地理课了😭😭😭T^T
+时间很快，有时来不及思考就转瞬即逝
+!https://edit.upxuu.com/img/2026/6/11/20260611063719812.jpg</description><pubDate>Thu, 11 Jun 2026 06:33:44 GMT</pubDate><content:encoded>&lt;p&gt;突然发现，我们只剩下最后的 6 节生物地理课了😭😭😭(T^T)
+时间很快，有时来不及思考就转瞬即逝
+&lt;img src=&quot;https://edit.upxuu.com/img/2026/6/11/20260611063719_812.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+</content:encoded><dc:creator>UpXuu</dc:creator></item><item><title>关于我在梦里梦到我起床起晚了这件事</title><link>https://upxuu.com/talk/关于我在梦中醒了这件事/</link><guid isPermaLink="true">https://upxuu.com/talk/关于我在梦中醒了这件事/</guid><description>是的你没看错，今天我正睡着觉呢，就梦到自己已经醒了，一看时间已经 6 点，吓得我赶紧从床上跳起来😱 结果您猜怎么着，竟然是正常时间 4:50😂 甚至比平时还早起 10min
+看来是睡多了啊！😏
+!https://edit.upxuu.com/img/2026/6/9/20260609062645115.jpg</description><pubDate>Tue, 09 Jun 2026 06:22:47 GMT</pubDate><content:encoded>&lt;p&gt;是的你没看错，今天我正**睡着觉呢，**就梦到自己已经醒了，一看时间已经 6 点，吓得我赶紧从床上跳起来😱 结果您猜怎么着，竟然是正常时间 4:50😂 甚至比平时还早起 10min
+看来是睡多了啊！😏
+&lt;img src=&quot;https://edit.upxuu.com/img/2026/6/9/20260609062645_115.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+</content:encoded><dc:creator>UpXuu</dc:creator></item><item><title>人怎么会这样倒霉</title><link>https://upxuu.com/talk/人怎么会这样倒霉/</link><guid isPermaLink="true">https://upxuu.com/talk/人怎么会这样倒霉/</guid><description>又是被淋的一个晚上｡°°¯᷄◠¯᷅°°｡
+!https://edit.upxuu.com/img/2026/6/8/20260608230326978.jpg</description><pubDate>Mon, 08 Jun 2026 23:02:47 GMT</pubDate><content:encoded>&lt;p&gt;又是被淋的一个晚上｡°(°¯᷄◠¯᷅°)°｡
+&lt;img src=&quot;https://edit.upxuu.com/img/2026/6/8/20260608230326_978.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+</content:encoded><dc:creator>UpXuu</dc:creator></item><item><title>fix-rss</title><link>https://upxuu.com/talk/2026-06-08-fix-r-/</link><guid isPermaLink="true">https://upxuu.com/talk/2026-06-08-fix-r-/</guid><description>非常感谢bllyds999https://github.com/bllyds999大佬 在PR https://github.com/ImUpXuu/xuhome/pull/9 中终于修好了rss的问题，看来还是我用RSS太少了根本不太懂RSS的结构: 
+!image.pnghttps://edit.upxuu.com/img/2026/6/8/20260608213339029</description><pubDate>Mon, 08 Jun 2026 21:31:41 GMT</pubDate><content:encoded>&lt;p&gt;非常感谢&lt;a href=&quot;https://github.com/bllyds999&quot;&gt;bllyds999&lt;/a&gt;大佬 在PR https://github.com/ImUpXuu/xuhome/pull/9 中终于修好了rss的问题，看来还是我用RSS太少了根本不太懂RSS的结构:)
+&lt;img src=&quot;https://edit.upxuu.com/img/2026/6/8/20260608213339_029.png&quot; alt=&quot;image.png&quot; /&gt;&lt;img src=&quot;https://edit.upxuu.com/img/2026/6/8/20260608213350_532.png&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt;
+</content:encoded><dc:creator>UpXuu</dc:creator></item><item><title>Juiceup 二十周年限定好看的</title><link>https://upxuu.com/talk/juiceup-二十周年限定好看的/</link><guid isPermaLink="true">https://upxuu.com/talk/juiceup-二十周年限定好看的/</guid><description>真的超级好看✧∀✧
+
+!</description><pubDate>Sun, 07 Jun 2026 18:46:39 GMT</pubDate><content:encoded>&lt;p&gt;真的超级好看(✧∀✧)&lt;/p&gt;
+&lt;p&gt;&lt;img alt=&quot;&quot; /&gt;&lt;/p&gt;
+</content:encoded><dc:creator>UpXuu</dc:creator></item><item><title>xucmstest</title><link>https://upxuu.com/talk/2026-06-07-xucmstest/</link><guid isPermaLink="true">https://upxuu.com/talk/2026-06-07-xucmstest/</guid><description>写了一个 Android 的博客编辑客户端 后台还是我最开始的 cf worker 发布测试</description><pubDate>Sun, 07 Jun 2026 17:19:11 GMT</pubDate><content:encoded>&lt;p&gt;写了一个 Android 的博客编辑客户端 后台还是我最开始的 cf worker 发布测试&lt;/p&gt;
+</content:encoded><dc:creator>UpXuu</dc:creator></item><item><title>1</title><link>https://upxuu.com/talk/2026-06-07-1/</link><guid isPermaLink="true">https://upxuu.com/talk/2026-06-07-1/</guid><description>想换了 感觉Nova 16 u这会进步挺大w 但还是不如等明年换 mate80pro 基本上也就降到这个价了 
+!IMG20260607153557.jpghttps://edit.upxuu.com/img/2026/6/7/20260607153640192.jpg这个蓝色超好看 
+!image.pnghttps://edit.upxuu.com/img/2026/6/7/</description><pubDate>Sun, 07 Jun 2026 15:28:42 GMT</pubDate><content:encoded>&lt;p&gt;想换了 感觉Nova 16 u这会进步挺大w 但还是不如等明年换 mate80pro 基本上也就降到这个价了
+&lt;img src=&quot;https://edit.upxuu.com/img/2026/6/7/20260607153640_192.jpg&quot; alt=&quot;IMG_20260607_153557.jpg&quot; /&gt;这个蓝色超好看
+&lt;img src=&quot;https://edit.upxuu.com/img/2026/6/7/20260607153129_789.png&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt;
+</content:encoded><dc:creator>UpXuu</dc:creator></item><item><title>OMG高考期间的元宝AI还可以拍照答题！</title><link>https://upxuu.com/talk/2026-06-07-omg高考期间的元宝ai还可以拍照答题/</link><guid isPermaLink="true">https://upxuu.com/talk/2026-06-07-omg高考期间的元宝ai还可以拍照答题/</guid><description>今天该高考了 但是 我们的元宝竟然还可以搜题 啊啊啊啊啊啊啊？！ 强强
+!Screenshot20260607100719com.tencent.hunyuan.app.chat.jpghttps://edit.upxuu.com/img/2026/6/7/20260607100851998.jpg
+!Screenshot20260607100946com.deepseek</description><pubDate>Sun, 07 Jun 2026 10:07:34 GMT</pubDate><content:encoded>&lt;p&gt;今天该高考了 但是 我们的元宝竟然还可以搜题 啊啊啊啊啊啊啊？！ 强强
+&lt;img src=&quot;https://edit.upxuu.com/img/2026/6/7/20260607100851_998.jpg&quot; alt=&quot;Screenshot_20260607_100719_com.tencent.hunyuan.app.chat.jpg&quot; /&gt;
+&lt;img src=&quot;https://edit.upxuu.com/img/2026/6/7/20260607101020_707.jpg&quot; alt=&quot;Screenshot_20260607_100946_com.deepseek.chat.jpg&quot; /&gt;&lt;/p&gt;
+</content:encoded><dc:creator>UpXuu</dc:creator></item><item><title>英伟达的免费DeepSeek v4 pro 竟然还能用</title><link>https://upxuu.com/talk/2026-06-07-英伟达的免费deepseek-v4-pro-竟然还能用/</link><guid isPermaLink="true">https://upxuu.com/talk/2026-06-07-英伟达的免费deepseek-v4-pro-竟然还能用/</guid><description>是的你没看错 目前依旧可以稳定使用 虽然速度慢一点吧 但其实还好 可以参照我的这篇文章 NVIDIA Build：不花一分钱，免费部署DeepSeek等顶级 AI 模型|NVIDIA NIM|免费AI APIhttps://upxuu.com/posts/nvidiabuild
+!image.pnghttps://edit.upxuu.com/img/2026/6/7/202606</description><pubDate>Sun, 07 Jun 2026 07:59:33 GMT</pubDate><content:encoded>&lt;p&gt;是的你没看错 目前依旧可以稳定使用 虽然速度慢一点吧 但其实还好 可以参照我的这篇文章 &lt;a href=&quot;https://upxuu.com/posts/nvidia-build&quot;&gt;NVIDIA Build：不花一分钱，免费部署DeepSeek等顶级 AI 模型|NVIDIA NIM|免费AI API&lt;/a&gt;
+&lt;img src=&quot;https://edit.upxuu.com/img/2026/6/7/20260607080000_565.png&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt;
+</content:encoded><dc:creator>UpXuu</dc:creator></item><item><title>emm 我还见过凌晨4点半的月亮 且天天看到呢</title><link>https://upxuu.com/talk/2026-06-06-emm-我还见过凌晨4点半的月亮-且天天看到呢/</link><guid isPermaLink="true">https://upxuu.com/talk/2026-06-06-emm-我还见过凌晨4点半的月亮-且天天看到呢/</guid><description>中考是这样的!1780740992275share.jpghttps://edit.upxuu.com/img/2026/6/6/20260606182429386.jpg
+
+真的很好听嘿嘿https://t1.kugou.com/P14z30G2V3</description><pubDate>Sat, 06 Jun 2026 18:23:26 GMT</pubDate><content:encoded>&lt;h2&gt;中考是这样的&lt;img src=&quot;https://edit.upxuu.com/img/2026/6/6/20260606182429_386.jpg&quot; alt=&quot;1780740992275-share.jpg&quot; /&gt;&lt;/h2&gt;
+&lt;p&gt;真的很好听嘿嘿https://t1.kugou.com/P14z30G2V3&lt;/p&gt;
+</content:encoded><dc:creator>UpXuu</dc:creator></item><item><title>耗时1week 我终于有了自己的主题Cubie</title><link>https://upxuu.com/talk/2026-06-06-耗时1week-我终于有了自己的主题cubie/</link><guid isPermaLink="true">https://upxuu.com/talk/2026-06-06-耗时1week-我终于有了自己的主题cubie/</guid><description>众所周知啊，upxuu之前一直用的魔改的fuwari，但代码吗，肯定是越改越屎山，经过我半年的构思堆积，现在就构建便要划掉整整6m！
+于是，我写了一个全新的主题 Cubie 这个主题的核心理念就是simple.fast 极其简约的设计，甚至删掉了背景图
+因为时间关系 基本全部vibecoding 那么最开始也是很猎奇 没发现Gemini用react写的（恼），害得我今天花了一上午重构成Astro</description><pubDate>Sat, 06 Jun 2026 14:05:55 GMT</pubDate><content:encoded>&lt;p&gt;众所周知啊，upxuu之前一直用的魔改的fuwari，但代码吗，肯定是越改越屎山，经过我半年的构思堆积，现在就构建便要划掉整整6m！
+于是，我写了一个全新的主题 Cubie 这个主题的核心理念就是simple.fast 极其简约的设计，甚至删掉了背景图(
+因为时间关系 基本全部vibecoding 那么最开始也是很猎奇 没发现Gemini用react写的（恼），害得我今天花了一上午重构成Astro
+整体感觉挺漂亮的这个主题 友链页也是终于拿得出手了
+&lt;img src=&quot;https://edit.upxuu.com/img/2026/6/6/20260606141103_824.png&quot; alt=&quot;image.png&quot; /&gt;
+&lt;img src=&quot;https://edit.upxuu.com/img/2026/6/6/20260606141129_904.png&quot; alt=&quot;image.png&quot; /&gt;
+&lt;img src=&quot;https://edit.upxuu.com/img/2026/6/6/20260606141149_473.png&quot; alt=&quot;image.png&quot; /&gt;
+&lt;img src=&quot;https://edit.upxuu.com/img/2026/6/6/20260606141205_278.png&quot; alt=&quot;image.png&quot; /&gt;
+&lt;img src=&quot;https://edit.upxuu.com/img/2026/6/6/20260606141248_225.png&quot; alt=&quot;image.png&quot; /&gt;
+&lt;img src=&quot;https://edit.upxuu.com/img/2026/6/6/20260606141317_577.png&quot; alt=&quot;image.png&quot; /&gt;
+&lt;img src=&quot;https://edit.upxuu.com/img/2026/6/6/20260606141407_988.png&quot; alt=&quot;image.png&quot; /&gt;
+&lt;img src=&quot;https://edit.upxuu.com/img/2026/6/6/20260606141450_371.png&quot; alt=&quot;image.png&quot; /&gt;
+&lt;img src=&quot;https://edit.upxuu.com/img/2026/6/6/20260606141501_334.png&quot; alt=&quot;image.png&quot; /&gt;&lt;/p&gt;
+</content:encoded><dc:creator>UpXuu</dc:creator></item><item><title>祝我哥高考顺利w.w</title><link>https://upxuu.com/talk/2026-06-06-祝我哥高考顺利ww/</link><guid isPermaLink="true">https://upxuu.com/talk/2026-06-06-祝我哥高考顺利ww/</guid><description>明日就要高考了 希望他一切顺利 金榜题名</description><pubDate>Sat, 06 Jun 2026 13:40:07 GMT</pubDate><content:encoded>&lt;p&gt;明日就要高考了 希望他一切顺利 金榜题名&lt;/p&gt;
+</content:encoded><dc:creator>UpXuu</dc:creator></item><item><title>✨ 欢迎来到 UpXuu 的个人说说空间！</title><link>https://upxuu.com/talk/20260531150141/</link><guid isPermaLink="true">https://upxuu.com/talk/20260531150141/</guid><description>👋 你好，世界！
+
+终于把这个专属的 Web 个人空间 搭建完美了！在这个快节奏的时代里，我希望有一个完全属于自己的、可以随时随手记录碎片想法和技术折腾的角落。
+
+这个网站不仅仅是一个静态的展示，它由 React + Vite + Tailwind CSS 强力驱动，采用了非常具有视觉张力的 新粗野主义 Neobrutalism 风格，粗边框、强阴影，配合舒适柔</description><pubDate>Sun, 31 May 2026 15:01:41 GMT</pubDate><content:encoded>&lt;h2&gt;👋 你好，世界！&lt;/h2&gt;
+&lt;p&gt;终于把这个专属的 &lt;strong&gt;Web 个人空间&lt;/strong&gt; 搭建完美了！在这个快节奏的时代里，我希望有一个完全属于自己的、可以随时随手记录碎片想法和技术折腾的角落。&lt;/p&gt;
+&lt;p&gt;这个网站不仅仅是一个静态的展示，它由 &lt;strong&gt;React + Vite + Tailwind CSS&lt;/strong&gt; 强力驱动，采用了非常具有视觉张力的 &lt;strong&gt;新粗野主义 (Neobrutalism)&lt;/strong&gt; 风格，粗边框、强阴影，配合舒适柔和的&lt;strong&gt;米黄暖光纸张底色&lt;/strong&gt;，带有一点复古又极具个性的格调。&lt;/p&gt;
+&lt;hr /&gt;
+&lt;h3&gt;🎨 这里的亮点功能&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;📌 专属说说列表 (Talks)&lt;/strong&gt;&lt;br /&gt;
+支持完整的 &lt;strong&gt;Markdown &amp;amp; HTML&lt;/strong&gt; 语法。在这里我能非常直观地写技术笔记、吐槽生活趣事，或者展示一些刚拍的风景照片。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;⚡ 瞬时无痕跳转&lt;/strong&gt;&lt;br /&gt;
+列表页加入了极致的平滑过渡和分页动画体验，在各种尺寸的屏幕上都能完美呈现。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;🔗 快速一键分享&lt;/strong&gt;&lt;br /&gt;
+在说说的右上角或详情页提供了精致的 &lt;strong&gt;&quot;快速分享&quot;&lt;/strong&gt; 按钮，一键将特定的一份说说复制为专属直达卡片链接，随时和朋友分享。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;✨ 温暖人心的环境光&lt;/strong&gt;&lt;br /&gt;
+可以在主页的名片中一键切换“暖光”和“冷光”，伴随着极简 of 乐高风格小积木。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr /&gt;
+&lt;h3&gt;🚀 接下来打算写点什么？&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;💻 &lt;strong&gt;技术折腾&lt;/strong&gt;：日常遇到的那些奇葩 Bug 记录，以及好玩的开源轮子。&lt;/li&gt;
+&lt;li&gt;🍲 &lt;strong&gt;成都生活&lt;/strong&gt;：记录大街小巷里的美食（尤其是火锅与串串香）！&lt;/li&gt;
+&lt;li&gt;📷 &lt;strong&gt;碎片记录&lt;/strong&gt;：各种电子小玩具 of 开箱、偶尔的摄影以及胡思乱想。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;如果你喜欢这里的风格，可以通过名片页面的&lt;strong&gt;友情链接&lt;/strong&gt;去我的主站 &lt;a href=&quot;https://upxuu.com&quot;&gt;upxuu.com&lt;/a&gt; 玩耍，或者通过邮箱联系我！&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;“逐光而上，愿我们在这里都能发现生活里被阳光照亮的每一个瞬间。”&lt;/em&gt; 😊&lt;/p&gt;
+</content:encoded><dc:creator>UpXuu</dc:creator></item></channel></rss>
