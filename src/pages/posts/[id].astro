@@ -139,7 +139,18 @@ const allTalksData = await getProcessedTalks();
           </div>
           
           <div class="relative z-10 space-y-4">
-            <h3 class="text-base sm:text-lg font-black text-[#0284c7] leading-snug">{post.title}</h3>
+            <div class="flex items-start justify-between gap-3">
+              <h3 class="text-base sm:text-lg font-black text-[#0284c7] leading-snug">{post.title}</h3>
+              <div class="shrink-0">
+                <ShareButton
+                  title={post.title}
+                  description={post.description}
+                  url={Astro.url.href}
+                  image={post.img}
+                  client:only="svelte"
+                />
+              </div>
+            </div>
             
             <div class="inline-block bg-[#e0f2fe]/80 border-2 border-[#0ea5e9]/20 px-3 py-1 rounded-sm text-xs font-bold text-[#0284c7] hover:text-[#0ea5e9] hover:bg-[#e0f2fe] transition-all break-all select-all">
               <a href={Astro.url.href} target="_blank" rel="noopener noreferrer">
@@ -230,17 +241,8 @@ const allTalksData = await getProcessedTalks();
           )}
         </div>
 
-        {/* Talk ticker, Share, and Waline integration */}
+        {/* Talk ticker and Waline integration */}
         <TalkTicker talks={allTalksData} client:only="react" />
-        <div class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] p-4 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm flex items-center justify-center animate-card-entrance opacity-0" style="animation-delay: 0.12s">
-          <ShareButton
-            title={post.title}
-            description={post.description}
-            url={Astro.url.href}
-            image={post.img}
-            client:only="svelte"
-          />
-        </div>
         <WalineComment client:idle />
       </div>
 
@@ -319,9 +321,6 @@ const allTalksData = await getProcessedTalks();
 
       const images = content.querySelectorAll('img');
       images.forEach(img => {
-        // Skip icons or small decorative images
-        if (img.width < 40 || img.height < 40) return;
-        // Skip if already wrapped with fancybox
         if (img.closest('[data-fancybox]')) return;
         
         const wrapper = document.createElement('span');
@@ -330,10 +329,8 @@ const allTalksData = await getProcessedTalks();
         wrapper.setAttribute('data-caption', img.alt || '');
         wrapper.className = 'cursor-zoom-in block my-6 overflow-hidden rounded-sm border-4 border-[#0284c7] shadow-[6px_6px_0px_0px_#0284c7] hover:shadow-[10px_10px_0px_0px_#10b981] transition-all duration-300 transform hover:scale-[1.01]';
         
-        // Handle images inside paragraphs correctly
         const parent = img.parentElement;
         if (parent && parent.tagName === 'P' && parent.children.length === 1 && parent.innerText.trim() === '') {
-           // Paragraph only contains the image, wrap the whole thing or replace
            parent.classList.add('not-prose');
         }
 
@@ -342,21 +339,23 @@ const allTalksData = await getProcessedTalks();
         img.className = 'm-0 w-full h-auto block';
       });
 
-      try {
-        Fancybox.destroy();
-        Fancybox.bind('[data-fancybox]', {
-          placeFocusBack: false,
-          carousel: { friction: 0.8 },
-          Toolbar: {
-            display: {
-              left: ["infobar"],
-              middle: [],
-              right: ["iterateZoom", "close"],
+      if (!window._fancyboxBound) {
+        try {
+          Fancybox.bind('[data-fancybox]', {
+            placeFocusBack: false,
+            carousel: { friction: 0.8 },
+            Toolbar: {
+              display: {
+                left: ["infobar"],
+                middle: [],
+                right: ["iterateZoom", "close"],
+              },
             },
-          },
-        });
-      } catch (e) {
-        console.error('Fancybox error:', e);
+          });
+          window._fancyboxBound = true;
+        } catch (e) {
+          console.error('Fancybox error:', e);
+        }
       }
     }
 
