@@ -3,6 +3,7 @@ import Layout from '../../layouts/Layout.astro';
 import { getProcessedTalks } from '../../utils/postsFetcher';
 import SvelteTalkDetail from '../../components/SvelteTalkDetail.svelte';
 import { WalineComment } from '../../components/WalineComment';
+import ShareButton from '../../components/ShareButton.svelte';
 import '@fancyapps/ui/dist/fancybox/fancybox.css';
 import { i18nConfig } from '../../config/site';
 
@@ -25,5 +26,14 @@ const { talk } = Astro.props;
   description={talk.content.substring(0, 150)}
 >
   <SvelteTalkDetail talk={talk} client:load />
+  <div class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] p-4 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm flex items-center justify-center mt-6">
+    <ShareButton
+      title={talk.title || ''}
+      description={talk.content?.substring(0, 150) || ''}
+      url={Astro.url.href}
+      image={''}
+      client:only="svelte"
+    />
+  </div>
   <WalineComment client:idle />
 </Layout>
