@@ -18,7 +18,6 @@
 /* Design tokens for layout consistency */
 :root {
   --navbar-height: 52px;
-  --z-mobile-toc-trigger: 50;
   --z-back-to-top: 95;
   --z-navbar: 100;
   --z-dropdown: 110;
