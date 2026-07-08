@@ -1,16 +1,16 @@
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte';
+  import { onMount } from 'svelte';
 
   export let title: string = '';
   export let description: string = '';
   export let url: string = '';
   export let image: string = '';
 
-  const dispatch = createEventDispatcher();
   let showModal = false;
   let generatingPoster = false;
   let posterDataUrl: string | null = null;
   let posterError = '';
+  let pageViews = 0;
 
   const shareData = {
     title: title || document.title,
@@ -18,6 +18,22 @@
     url: url || window.location.href,
     image: image || ''
   };
+
+  const encodedUrl = encodeURI(shareData.url);
+  const truncatedDesc = shareData.description.length > 100
+    ? shareData.description.slice(0, 100) + '…'
+    : shareData.description;
+
+  onMount(async () => {
+    try {
+      const p = new URL(shareData.url).pathname;
+      const res = await fetch(`https://vapi.upxuu.com/statsapi/alltime?path=${encodeURIComponent(p)}`);
+      const data = await res.json();
+      if (data) {
+        pageViews = typeof data.pageviews === 'object' ? (data.pageviews?.value ?? 0) : (data.pageviews ?? 0);
+      }
+    } catch {}
+  });
 
   function openModal() {
     showModal = true;
@@ -38,7 +54,7 @@
   }
 
   function copyLink() {
-    navigator.clipboard.writeText(shareData.url).then(() => {
+    navigator.clipboard.writeText(encodedUrl).then(() => {
       const btn = document.querySelector('.copy-link-btn');
       if (btn) {
         btn.textContent = '已复制 ✓';
@@ -78,26 +94,21 @@
       canvas.width = width;
       canvas.height = height;
 
-      // Background
       ctx.fillStyle = '#faf8f5';
       ctx.fillRect(0, 0, width, height);
 
-      // Outer border
       ctx.strokeStyle = '#0284c7';
       ctx.lineWidth = 8;
       ctx.strokeRect(20, 20, width - 40, height - 40);
 
-      // Top accent bar
       ctx.fillStyle = '#fde68a';
       ctx.fillRect(28, 28, width - 56, 6);
 
-      // "UPXUU'S BLOG SHARING!" header
       ctx.fillStyle = '#0284c7';
       ctx.font = 'bold 22px "Fredoka", "Noto Sans SC", sans-serif';
       ctx.textAlign = 'left';
       ctx.fillText("UPXUU'S BLOG SHARING!", 50, 80);
 
-      // Decorative line after header
       ctx.strokeStyle = '#0284c7';
       ctx.lineWidth = 2;
       ctx.setLineDash([6, 4]);
@@ -107,7 +118,6 @@
       ctx.stroke();
       ctx.setLineDash([]);
 
-      // Left column: Image (if available)
       let textX = 500;
       if (shareData.image) {
         try {
@@ -135,7 +145,6 @@
         textX = 60;
       }
 
-      // Right column: Article title
       const maxTextWidth = width - textX - 60;
       const titleY = 170;
       ctx.fillStyle = '#1e293b';
@@ -147,7 +156,6 @@
       });
       const titleBottom = titleY + Math.min(titleLines.length, 4) * 36 + 20;
 
-      // Description
       let descY = titleBottom + 10;
       if (shareData.description) {
         ctx.fillStyle = '#64748b';
@@ -159,17 +167,14 @@
         descY += Math.min(descLines.length, 4) * 26 + 20;
       }
 
-      // Bottom accent bar
       ctx.fillStyle = '#fde68a';
       ctx.fillRect(28, height - 34, width - 56, 6);
 
-      // URL at bottom
       ctx.fillStyle = '#0ea5e9';
       ctx.font = '14px "JetBrains Mono", monospace';
       ctx.textAlign = 'left';
       ctx.fillText(shareData.url, 50, height - 70);
 
-      // Site name at bottom right
       ctx.fillStyle = '#94a3b8';
       ctx.font = '12px "Noto Sans SC", sans-serif';
       ctx.textAlign = 'right';
@@ -195,11 +200,9 @@
           files: [file]
         });
       } else {
-        // Fallback to download
         downloadPoster();
       }
     } catch (e) {
-      // User cancelled or share failed, fallback to download
       downloadPoster();
     }
   }
@@ -241,10 +244,10 @@
 
 <button
   on:click={openModal}
-  class="share-trigger w-12 h-12 rounded-sm border-3 sm:border-4 border-[#0284c7] bg-[#fde68a] dark:bg-[#fde68a]/20 text-[#0284c7] flex items-center justify-center cursor-pointer shadow-[4px_4px_0px_0px_#0284c7] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#0284c7] active:translate-y-0 active:shadow-none transition-all duration-150"
+  class="share-trigger w-9 h-9 rounded-sm border-2 border-[#0284c7] bg-[#fde68a] dark:bg-[#fde68a]/20 text-[#0284c7] flex items-center justify-center cursor-pointer shadow-[2px_2px_0px_0px_#0284c7] hover:-translate-y-0.5 hover:shadow-[3px_3px_0px_0px_#0284c7] active:translate-y-0 active:shadow-none transition-all duration-150 shrink-0"
   aria-label="分享"
 >
-  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 sm:w-6 sm:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 sm:w-5 sm:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
     <path stroke-linecap="round" stroke-linejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
   </svg>
 </button>
@@ -257,7 +260,7 @@
     on:click={closeModal}
   >
     <div 
-      class="absolute bottom-0 sm:bottom-auto sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 w-full sm:w-[420px] max-h-[90vh] bg-[#faf8f5] dark:bg-slate-800 border-t-[10px] sm:border-[10px] border-[#0284c7] rounded-t-3xl sm:rounded-sm shadow-[0_-20px_60px_-10px_rgba(0,0,0,0.5),8px_8px_0px_0px_#0284c7] overflow-y-auto"
+      class="absolute bottom-0 sm:bottom-auto sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 w-full sm:w-[460px] max-h-[90vh] bg-[#faf8f5] dark:bg-slate-800 border-t-[10px] sm:border-[10px] border-[#0284c7] rounded-t-3xl sm:rounded-sm shadow-[0_-20px_60px_-10px_rgba(0,0,0,0.5),8px_8px_0px_0px_#0284c7] overflow-y-auto"
       on:click|stopPropagation
     >
       <!-- Header -->
@@ -270,8 +273,28 @@
         </button>
       </div>
 
-      <!-- Share options -->
       <div class="p-5 space-y-3">
+        <!-- Preview + Views + QR row -->
+        <div class="bg-white dark:bg-slate-700 border-2 border-[#0284c7]/30 rounded-sm p-4 space-y-3">
+          {#if truncatedDesc}
+            <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed line-clamp-3">{truncatedDesc}</p>
+          {/if}
+          <div class="flex items-center justify-between">
+            <div class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 dark:text-slate-400">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              </svg>
+              {pageViews}
+            </div>
+            <img
+              src={`https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=${encodeURIComponent(shareData.url)}`}
+              alt="QR Code"
+              class="w-16 h-16 sm:w-20 sm:h-20 border border-[#0284c7]/20 rounded-sm"
+              loading="lazy"
+            />
+          </div>
+        </div>
 
         <!-- Generate Poster -->
         <button
@@ -293,7 +316,6 @@
           {/if}
         </button>
 
-        <!-- Poster Preview & Download -->
         {#if posterDataUrl}
           <div class="bg-white border-3 border-[#0ea5e9] rounded-sm p-3 shadow-[3px_3px_0px_0px_#0ea5e9]">
             <img src={posterDataUrl} alt="海报预览" class="w-full h-auto rounded-sm" />
@@ -386,7 +408,3 @@
     </div>
   </div>
 {/if}
-
-
-
-
