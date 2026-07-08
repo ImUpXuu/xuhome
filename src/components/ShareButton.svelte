@@ -12,6 +12,7 @@
   let generatingPoster = false;
   let posterDataUrl: string | null = null;
   let posterError = '';
+  let showPoster = false;
 
   const encodedUrl = encodeURI(url || window.location.href);
 
@@ -44,6 +45,24 @@
     navigator.clipboard.writeText(title + '\n' + description + '\n' + url).then(() => alert('已复制，打开微信粘贴给好友'));
   }
 
+  function closePoster() {
+    showPoster = false; posterDataUrl = null; posterError = '';
+    document.body.style.overflow = '';
+    document.removeEventListener('keydown', onKeyDown);
+  }
+
+  function onKeyDown(e: KeyboardEvent) { if (e.key === 'Escape') closePoster(); }
+
+  async function copyPoster() {
+    if (!posterDataUrl) return;
+    try {
+      const blob = await (await fetch(posterDataUrl)).blob();
+      await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+    } catch {
+      const a = document.createElement('a'); a.href = posterDataUrl; a.download = 'poster-' + Date.now() + '.png'; a.click();
+    }
+  }
+
   async function loadImage(src: string): Promise<HTMLImageElement> {
     return new Promise((resolve, reject) => {
       const img = new Image();
@@ -65,79 +84,97 @@
     try {
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d')!;
-      const width = 900, height = 600;
-      canvas.width = width; canvas.height = height;
+      const W = 900, H = 600;
+      canvas.width = W; canvas.height = H;
 
-      // Background
-      ctx.fillStyle = '#faf8f5'; ctx.fillRect(0, 0, width, height);
-      ctx.strokeStyle = '#0284c7'; ctx.lineWidth = 8; ctx.strokeRect(20, 20, width - 40, height - 40);
-      ctx.fillStyle = '#fde68a'; ctx.fillRect(28, 28, width - 56, 6);
+      // Background & border
+      ctx.fillStyle = '#faf8f5'; ctx.fillRect(0, 0, W, H);
+      ctx.strokeStyle = '#0284c7'; ctx.lineWidth = 8; ctx.strokeRect(20, 20, W - 40, H - 40);
+      ctx.fillStyle = '#fde68a'; ctx.fillRect(28, 28, W - 56, 6);
 
       // Header
-      ctx.fillStyle = '#0284c7';
-      ctx.font = 'bold 20px "Fredoka", "Noto Sans SC", sans-serif'; ctx.textAlign = 'left';
+      ctx.fillStyle = '#0284c7'; ctx.font = 'bold 20px "Fredoka", "Noto Sans SC", sans-serif'; ctx.textAlign = 'left';
       ctx.fillText("UPXUU'S BLOG SHARING!", 50, 75);
-
-      // Decorative line
       ctx.strokeStyle = '#0284c7'; ctx.lineWidth = 2; ctx.setLineDash([6, 4]);
       ctx.beginPath(); ctx.moveTo(50, 95); ctx.lineTo(850, 95); ctx.stroke(); ctx.setLineDash([]);
 
-      let textX = 60;
-      let hasImage = false;
+      let leftX = 60, rightX = 480, hasImg = false;
 
-      // Left column: article image
+      // Left: article image
       if (image) {
         try {
           const img = await loadImage(image);
-          const imgH = Math.min(420, 420 * (img.height / img.width));
-          ctx.fillStyle = '#0284c7'; ctx.fillRect(56, 110, 382, imgH + 4);
-          ctx.save(); ctx.beginPath(); ctx.rect(60, 112, 374, imgH); ctx.clip();
-          ctx.drawImage(img, 60, 112, 374, imgH); ctx.restore();
-          textX = 480; hasImage = true;
+          const imgH = Math.min(400, 400 * (img.height / img.width));
+          ctx.fillStyle = '#0284c7'; ctx.fillRect(leftX - 4, 112, 388, imgH + 8);
+          ctx.save(); ctx.beginPath(); ctx.rect(leftX, 116, 380, imgH); ctx.clip();
+          ctx.drawImage(img, leftX, 116, 380, imgH); ctx.restore();
+          hasImg = true;
         } catch {}
       }
 
-      const maxTextW = width - textX - 60;
+      if (!hasImg) rightX = 60;
+      const maxW = W - rightX - 60;
 
       // Title
       ctx.fillStyle = '#1e293b'; ctx.font = 'bold 24px "Noto Sans SC", sans-serif'; ctx.textAlign = 'left';
-      const titleLines = wrapText(ctx, title || '', maxTextW);
-      let y = 150;
-      titleLines.slice(0, 3).forEach((l, i) => ctx.fillText(l, textX, y + i * 34));
-      y += Math.min(titleLines.length, 3) * 34 + 12;
+      const tLines = wrapText(ctx, title || '', maxW);
+      let y = 140;
+      tLines.slice(0, 3).forEach((l, i) => ctx.fillText(l, rightX, y + i * 34));
+      y += Math.min(tLines.length, 3) * 34 + 10;
 
-      // Description (100 chars)
+      // Description
       if (description) {
-        const descText = description.length > 100 ? description.slice(0, 100) + '...' : description;
         ctx.fillStyle = '#64748b'; ctx.font = '14px "Noto Sans SC", sans-serif';
-        const descLines = wrapText(ctx, descText, maxTextW);
-        descLines.slice(0, 8).forEach((l, i) => ctx.fillText(l, textX, y + i * 22));
-        y += Math.min(descLines.length, 8) * 22 + 8;
+        const dLines = wrapText(ctx, description, maxW);
+        dLines.slice(0, 3).forEach((l, i) => ctx.fillText(l, rightX, y + i * 22));
+        y += Math.min(dLines.length, 3) * 22 + 8;
       }
 
-      // Views count
-      ctx.fillStyle = '#94a3b8'; ctx.font = '13px "Noto Sans SC", sans-serif'; ctx.textAlign = 'left';
-      ctx.fillText('\uD83D\uDC41 ' + pageViews + ' views', textX, y + 18);
-      y += 30;
+      // Separator
+      y += 4;
+      ctx.strokeStyle = '#0284c7'; ctx.lineWidth = 1; ctx.setLineDash([4, 3]);
+      ctx.beginPath(); ctx.moveTo(rightX, y); ctx.lineTo(W - 60, y); ctx.stroke(); ctx.setLineDash([]);
+      y += 16;
 
-      // Bottom accent bar
-      ctx.fillStyle = '#fde68a'; ctx.fillRect(28, height - 40, width - 56, 6);
+      // 100-char preview
+      const previewText = (description || '').length > 100 ? (description || '').slice(0, 100) + '...' : (description || '');
+      if (previewText) {
+        ctx.fillStyle = '#475569'; ctx.font = '13px "Noto Sans SC", sans-serif';
+        const pLines = wrapText(ctx, previewText, maxW);
+        pLines.slice(0, 4).forEach((l, i) => ctx.fillText(l, rightX, y + i * 20));
+        y += Math.min(pLines.length, 4) * 20 + 10;
+      }
+
+      // Views
+      ctx.fillStyle = '#94a3b8'; ctx.font = '13px "Noto Sans SC", sans-serif';
+      ctx.fillText('\uD83D\uDC41 ' + pageViews + ' views', rightX, y + 18);
+      y += 28;
+
+      // Bottom accent
+      ctx.fillStyle = '#fde68a'; ctx.fillRect(28, H - 40, W - 56, 6);
 
       // URL
       ctx.fillStyle = '#0ea5e9'; ctx.font = '13px "JetBrains Mono", monospace'; ctx.textAlign = 'left';
-      ctx.fillText(url, 50, height - 58);
+      ctx.fillText(url, 50, H - 58);
 
-      // QR code on bottom right
+      // QR with decorative border
+      const qrSize = 100;
+      const qrX = W - 145, qrY = H - 145;
+      ctx.fillStyle = '#0284c7'; ctx.fillRect(qrX - 4, qrY - 4, qrSize + 8, qrSize + 8);
+      ctx.fillStyle = 'white'; ctx.fillRect(qrX - 2, qrY - 2, qrSize + 4, qrSize + 4);
       try {
         const qrImg = await loadImage('https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=' + encodeURIComponent(url));
-        ctx.drawImage(qrImg, width - 130, height - 130, 100, 100);
+        ctx.drawImage(qrImg, qrX, qrY, qrSize, qrSize);
       } catch {}
 
-      // Date at bottom right
+      // Date
       ctx.fillStyle = '#94a3b8'; ctx.font = '11px "Noto Sans SC", sans-serif'; ctx.textAlign = 'right';
-      ctx.fillText('UpXuu \u00B7 ' + new Date().toLocaleDateString('zh-CN'), 850, height - 44);
+      ctx.fillText('UpXuu \u00B7 ' + new Date().toLocaleDateString('zh-CN'), 850, H - 44);
 
       posterDataUrl = canvas.toDataURL('image/png');
+      showPoster = true;
+      document.body.style.overflow = 'hidden';
+      document.addEventListener('keydown', onKeyDown);
     } catch { posterError = '生成失败'; } finally { generatingPoster = false; }
   }
 
@@ -161,7 +198,7 @@
     <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
       <button on:click={generatePoster} disabled={generatingPoster} class="flex items-center gap-2 p-2.5 bg-white dark:bg-slate-700 border-2 border-[#0284c7] rounded-sm shadow-[2px_2px_0px_0px_#0284c7] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all text-xs font-black text-[#0284c7] cursor-pointer disabled:opacity-50">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-        {#if generatingPoster}<span class="animate-spin">\u27F3</span>{:else}海报{/if}
+        {#if generatingPoster}<span class="animate-spin">{'\u27F3'}</span>{:else}海报{/if}
       </button>
       <button on:click={shareToQQ} class="flex items-center gap-2 p-2.5 bg-white dark:bg-slate-700 border-2 border-[#0284c7] rounded-sm shadow-[2px_2px_0px_0px_#0284c7] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all text-xs font-black text-[#0284c7] cursor-pointer">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 shrink-0 fill-[#0284c7]" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.5 14h-9c-.83 0-1.5-.67-1.5-1.5S6.67 13 7.5 13h9c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5zm0-5h-9c-.83 0-1.5-.67-1.5-1.5S6.67 8 7.5 8h9c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5z"/></svg>
@@ -181,14 +218,32 @@
       </button>
     </div>
 
-    {#if posterDataUrl}
-      <div class="bg-white dark:bg-slate-700 border-2 border-[#0ea5e9] rounded-sm p-2 shadow-[2px_2px_0px_0px_#0ea5e9]">
-        <img src={posterDataUrl} alt="海报" class="w-full h-auto rounded-sm" />
-        <div class="mt-2 flex gap-2">
-          <button on:click={downloadPoster} class="flex-1 bg-[#0284c7] text-white font-black py-2 border-2 border-[#0284c7] rounded-sm shadow-[2px_2px_0px_0px_#fde68a] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all text-xs cursor-pointer">下载</button>
+    {#if posterError}
+      <p class="text-xs font-bold text-red-500 text-center">{posterError}</p>
+    {/if}
+  </div>
+{/if}
+
+{#if showPoster && posterDataUrl}
+  <div class="fixed inset-0 z-[9999]" style="background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);" role="dialog" aria-modal="true" on:click={closePoster}>
+    <div class="absolute bottom-0 sm:bottom-auto sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 w-full sm:w-[520px] max-h-[90vh] bg-[#faf8f5] dark:bg-slate-800 border-t-[10px] sm:border-[10px] border-[#0284c7] rounded-t-3xl sm:rounded-sm shadow-[0_-20px_60px_-10px_rgba(0,0,0,0.5),8px_8px_0px_0px_#0284c7] overflow-y-auto" on:click|stopPropagation>
+      <div class="flex items-center justify-between p-4 border-b-4 border-[#0284c7] bg-white dark:bg-slate-800 sticky top-0 z-10">
+        <h3 class="font-black text-[#0284c7] text-base uppercase tracking-wider">海报预览</h3>
+        <button on:click={closePoster} class="w-9 h-9 flex items-center justify-center hover:bg-[#fde68a] dark:hover:bg-[#fde68a]/20 rounded-sm transition-all text-[#0284c7] cursor-pointer border-2 border-[#0284c7] bg-white dark:bg-slate-700 shadow-[2px_2px_0px_0px_#0284c7] active:translate-y-0.5 active:shadow-none">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 stroke-[3]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+      </div>
+      <div class="p-4">
+        <img src={posterDataUrl} alt="海报" class="w-full h-auto rounded-sm border-2 border-[#0284c7]/20" />
+        <div class="mt-3 flex gap-2">
+          <button on:click={downloadPoster} class="flex-1 bg-[#0284c7] text-white font-black py-2.5 border-3 border-[#0284c7] rounded-sm shadow-[3px_3px_0px_0px_#fde68a] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all text-sm cursor-pointer">
+            下载
+          </button>
+          <button on:click={copyPoster} class="flex-1 bg-white dark:bg-slate-700 text-[#0284c7] font-black py-2.5 border-3 border-[#0284c7] rounded-sm shadow-[3px_3px_0px_0px_#0284c7] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all text-sm cursor-pointer">
+            复制
+          </button>
         </div>
       </div>
-    {/if}
-    {#if posterError}<p class="text-xs font-bold text-red-500 text-center">{posterError}</p>{/if}
+    </div>
   </div>
 {/if}
