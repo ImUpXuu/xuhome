@@ -120,7 +120,7 @@ const allTalksData = await getProcessedTalks();
             </div>
           </div>
 
-          <AiSummary url={Astro.url.href} toc={toc} client:idle />
+          <!-- <AiSummary url={Astro.url.href} toc={toc} client:idle /> -->
 
           {/* Prose Content block */}
           <div class="prose prose-slate dark:prose-invert prose-lg max-w-none w-full min-w-0 break-words prose-headings:font-black prose-headings:text-[#0284c7] dark:prose-headings:text-[#0ea5e9] prose-a:text-[#0ea5e9] prose-a:font-bold">
@@ -232,13 +232,15 @@ const allTalksData = await getProcessedTalks();
 
         {/* Talk ticker, Share, and Waline integration */}
         <TalkTicker talks={allTalksData} client:only="react" />
-        <ShareButton
-          title={post.title}
-          description={post.description}
-          url={Astro.url.href}
-          image={post.img}
-          client:only="svelte"
-        />
+        <div class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] p-4 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm flex items-center justify-center animate-card-entrance opacity-0" style="animation-delay: 0.12s">
+          <ShareButton
+            title={post.title}
+            description={post.description}
+            url={Astro.url.href}
+            image={post.img}
+            client:only="svelte"
+          />
+        </div>
         <WalineComment client:idle />
       </div>
 
@@ -281,67 +283,7 @@ const allTalksData = await getProcessedTalks();
 
     </div>
 
-    {/* Floating Mobile TOC launcher */}
-    {toc.length > 0 && (
-      <button
-        id="mobile-toc-trigger"
-        class="fixed bottom-6 left-6 lg:hidden w-11 h-11 bg-white border-3 border-[#0284c7] rounded-full shadow-[4px_4px_0px_0px_#0284c7] flex items-center justify-center text-[#0284c7] z-[50] hover:bg-[#fde68a] active:translate-y-[2px] transition-all cursor-pointer"
-        aria-label={i18nConfig.post.viewToc}
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 stroke-[3]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-        </svg>
-      </button>
-    )}
-
-    {/* Mobile TOC Bottom Slider Cabinet */}
-    <div id="mobile-toc-cabinet" class="fixed inset-0 z-[2000] lg:hidden hidden flex-col justify-end">
-      <div id="mobile-toc-scrim" class="fixed inset-0 bg-black/70 dark:bg-black/80 backdrop-blur-md opacity-0 transition-opacity duration-500 cursor-pointer"></div>
-      <div 
-        id="mobile-toc-panel" 
-        class="relative w-full h-[75vh] bg-white border-t-[10px] border-[#0284c7] rounded-t-[3rem] shadow-[0_-20px_60px_-10px_rgba(0,0,0,0.6)] flex flex-col transform translate-y-full transition-transform duration-500 cubic-bezier(0.16, 1, 0.3, 1) z-[2001]"
-      >
-        <div class="p-6 border-b-4 border-[#0284c7] flex justify-between items-center shrink-0 bg-white rounded-t-[2.8rem]">
-          <h3 class="font-black text-[#0284c7] text-xl uppercase tracking-[0.3em] flex items-center gap-3">
-            <div class="w-8 h-8 flex items-center justify-center bg-[#fde68a] border-2 border-[#0284c7] shadow-[2px_2px_0px_0px_#0284c7]">
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </div>
-            {i18nConfig.post.tocTitle}
-          </h3>
-          <button id="mobile-toc-close" class="w-12 h-12 flex items-center justify-center hover:bg-[#fde68a] rounded-2xl transition-all text-[#0284c7] cursor-pointer active:scale-75 border-2 border-[#0284c7] bg-white shadow-[3px_3px_0px_0px_#0284c7]">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 stroke-[3]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-        <div class="p-6 flex-1 flex flex-col min-h-0 bg-[#faf8f5]">
-          <div class="overflow-y-auto custom-scrollbar flex-1 pb-20" id="mobile-toc-list-container">
-            <ul class="space-y-6">
-              {toc.map((item, idx) => (
-                <li 
-                  data-id={item.id}
-                  class="transition-all"
-                  style={{ paddingLeft: `${(item.level - minTocLevel) * 20}px` }}
-                >
-                  <a 
-                    href={`#${item.id}`} 
-                    class="mobile-toc-nav-link block py-3 px-4 rounded-xl hover:text-[#0ea5e9] transition-all line-clamp-2 border-l-8 border-transparent text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-700 shadow-[4px_4px_0px_0px_rgba(2,132,199,0.05)] active:translate-y-1 active:shadow-none"
-                    data-id={item.id}
-                  >
-                    <span class="opacity-40 mr-2 font-mono text-sm leading-none">{String(idx + 1).padStart(2, '0')}</span>
-                    {item.text}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <AiChat url={Astro.url.href} toc={toc} client:idle />
+    <!-- <AiChat url={Astro.url.href} toc={toc} client:idle /> -->
   </div>
 </Layout>
 
@@ -349,45 +291,6 @@ const allTalksData = await getProcessedTalks();
   import { Fancybox } from '@fancyapps/ui';
 
   function setupPostDetail() {
-    // Mobile TOC Cabinet Toggles
-    const trigger = document.getElementById('mobile-toc-trigger');
-    const cabinet = document.getElementById('mobile-toc-cabinet');
-    const scrim = document.getElementById('mobile-toc-scrim');
-    const panel = document.getElementById('mobile-toc-panel');
-    const closeBtn = document.getElementById('mobile-toc-close');
-
-    function openMobileToc() {
-      if (cabinet && panel && scrim) {
-        cabinet.classList.remove('hidden');
-        cabinet.classList.add('flex');
-        
-        // Use requestAnimationFrame for double buffer to ensure display:flex is applied before animation
-        requestAnimationFrame(() => {
-          requestAnimationFrame(() => {
-            scrim.style.opacity = '1';
-            panel.style.transform = 'translateY(0)';
-            document.body.style.overflow = 'hidden';
-          });
-        });
-      }
-    }
-
-    function closeMobileToc() {
-      if (cabinet && panel && scrim) {
-        scrim.style.opacity = '0';
-        panel.style.transform = 'translateY(100%)';
-        setTimeout(() => {
-          cabinet.classList.add('hidden');
-          cabinet.classList.remove('flex');
-          document.body.style.overflow = '';
-        }, 500);
-      }
-    }
-
-    if (trigger) trigger.addEventListener('click', openMobileToc);
-    if (scrim) scrim.addEventListener('click', closeMobileToc);
-    if (closeBtn) closeBtn.addEventListener('click', closeMobileToc);
-
     // Render image captions for images with alt text
     function setupImageCaptions() {
       const content = document.querySelector('.prose');

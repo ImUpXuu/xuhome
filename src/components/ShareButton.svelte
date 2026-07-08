@@ -379,13 +379,6 @@
   </div>
 {/if}
 
-<style>
-  .share-trigger {
-    position: fixed;
-    bottom: 5.5rem;
-    left: 1.5rem;
-    z-index: 2000;
-  }
-</style>
+
 
 
