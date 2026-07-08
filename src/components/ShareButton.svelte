@@ -22,6 +22,11 @@
   function openModal() {
     showModal = true;
     document.body.style.overflow = 'hidden';
+    document.addEventListener('keydown', onKeyDown);
+  }
+
+  function onKeyDown(e: KeyboardEvent) {
+    if (e.key === 'Escape') closeModal();
   }
 
   function closeModal() {
@@ -29,6 +34,7 @@
     posterDataUrl = null;
     posterError = '';
     document.body.style.overflow = '';
+    document.removeEventListener('keydown', onKeyDown);
   }
 
   function copyLink() {
@@ -244,12 +250,14 @@
 </button>
 
 {#if showModal}
-  <div class="fixed inset-0 z-[3000]" 
+  <div class="fixed inset-0 z-[9999]" 
     style="background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);"
-    on:click|self={closeModal}
+    role="dialog"
+    aria-modal="true"
+    on:click={closeModal}
   >
     <div 
-      class="absolute bottom-0 sm:bottom-24 left-0 sm:left-6 w-full sm:w-[420px] max-h-[90vh] bg-[#faf8f5] dark:bg-slate-800 border-t-[10px] sm:border-[10px] border-[#0284c7] rounded-t-3xl sm:rounded-sm shadow-[0_-20px_60px_-10px_rgba(0,0,0,0.5),8px_8px_0px_0px_#0284c7] overflow-y-auto"
+      class="absolute bottom-0 sm:bottom-auto sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 w-full sm:w-[420px] max-h-[90vh] bg-[#faf8f5] dark:bg-slate-800 border-t-[10px] sm:border-[10px] border-[#0284c7] rounded-t-3xl sm:rounded-sm shadow-[0_-20px_60px_-10px_rgba(0,0,0,0.5),8px_8px_0px_0px_#0284c7] overflow-y-auto"
       on:click|stopPropagation
     >
       <!-- Header -->
