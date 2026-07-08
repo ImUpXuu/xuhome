@@ -57,6 +57,11 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
     <meta name="robots" content={seoConfig.robots} />
     <link rel="canonical" href={canonicalURL} />
 
+    {/* Favicon - use avatar image */}
+    <link rel="icon" href={siteConfig.favicon} type="image/jpeg" />
+    <link rel="apple-touch-icon" href={siteConfig.favicon} />
+    <link rel="shortcut icon" href={siteConfig.favicon} type="image/jpeg" />
+
     {/* Open Graph Tags */}
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={pageDescription} />
