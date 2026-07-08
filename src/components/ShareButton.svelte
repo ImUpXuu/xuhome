@@ -5,6 +5,7 @@
   export let description: string = '';
   export let url: string = '';
   export let image: string = '';
+  export let date: string = '';
 
   let expanded = false;
   let pageViews = 0;
@@ -120,7 +121,14 @@
       const tLines = wrapText(ctx, title || '', maxW);
       let y = 140;
       tLines.slice(0, 3).forEach((l, i) => ctx.fillText(l, rightX, y + i * 34));
-      y += Math.min(tLines.length, 3) * 34 + 10;
+      y += Math.min(tLines.length, 3) * 34 + 8;
+
+      // Date (bold, below title)
+      if (date) {
+        ctx.fillStyle = '#0284c7'; ctx.font = 'bold 16px "Noto Sans SC", sans-serif';
+        ctx.fillText(date, rightX, y + 20);
+        y += 34;
+      }
 
       // Description
       if (description) {
@@ -134,21 +142,40 @@
       y += 4;
       ctx.strokeStyle = '#0284c7'; ctx.lineWidth = 1; ctx.setLineDash([4, 3]);
       ctx.beginPath(); ctx.moveTo(rightX, y); ctx.lineTo(W - 60, y); ctx.stroke(); ctx.setLineDash([]);
-      y += 16;
+      y += 14;
 
-      // 100-char preview
-      const previewText = (description || '').length > 100 ? (description || '').slice(0, 100) + '...' : (description || '');
-      if (previewText) {
-        ctx.fillStyle = '#475569'; ctx.font = '13px "Noto Sans SC", sans-serif';
-        const pLines = wrapText(ctx, previewText, maxW);
-        pLines.slice(0, 4).forEach((l, i) => ctx.fillText(l, rightX, y + i * 20));
-        y += Math.min(pLines.length, 4) * 20 + 10;
-      }
+      // Personal card
+      const cardW = Math.min(260, maxW);
+      const cardH = 72;
+      const cardX = rightX;
+      const cardY = y;
+      // Card shadow
+      ctx.fillStyle = '#0284c7'; ctx.shadowColor = '#0284c7'; ctx.shadowBlur = 0;
+      ctx.fillRect(cardX + 3, cardY + 3, cardW, cardH);
+      ctx.shadowBlur = 0;
+      // Card background
+      ctx.fillStyle = '#faf8f5'; ctx.strokeStyle = '#0284c7'; ctx.lineWidth = 3;
+      ctx.fillRect(cardX, cardY, cardW, cardH); ctx.strokeRect(cardX, cardY, cardW, cardH);
+      // Avatar
+      const avatarSize = 44;
+      const avatarX = cardX + 14, avatarY = cardY + 14;
+      ctx.save(); ctx.beginPath(); ctx.arc(avatarX + avatarSize / 2, avatarY + avatarSize / 2, avatarSize / 2, 0, Math.PI * 2); ctx.clip();
+      try {
+        const avImg = await loadImage('https://upxuu.com/images/me.jpg');
+        ctx.drawImage(avImg, avatarX, avatarY, avatarSize, avatarSize);
+      } catch { ctx.fillStyle = '#0284c7'; ctx.beginPath(); ctx.arc(avatarX + avatarSize / 2, avatarY + avatarSize / 2, avatarSize / 2, 0, Math.PI * 2); ctx.fill(); }
+      ctx.restore();
+      // Name
+      ctx.fillStyle = '#1e293b'; ctx.font = 'bold 18px "Noto Sans SC", sans-serif'; ctx.textAlign = 'left';
+      ctx.fillText('UPXUU', cardX + 68, cardY + 30);
+      // Blog link
+      ctx.fillStyle = '#0ea5e9'; ctx.font = '13px "JetBrains Mono", monospace';
+      ctx.fillText('UPXUU.COM', cardX + 68, cardY + 54);
+      y += cardH + 12;
 
       // Views
       ctx.fillStyle = '#94a3b8'; ctx.font = '13px "Noto Sans SC", sans-serif';
-      ctx.fillText('\uD83D\uDC41 ' + pageViews + ' views', rightX, y + 18);
-      y += 28;
+      ctx.fillText('\uD83D\uDC41 ' + pageViews + ' views', rightX, y + 16);
 
       // Bottom accent
       ctx.fillStyle = '#fde68a'; ctx.fillRect(28, H - 40, W - 56, 6);
@@ -167,9 +194,9 @@
         ctx.drawImage(qrImg, qrX, qrY, qrSize, qrSize);
       } catch {}
 
-      // Date
+      // Footer text
       ctx.fillStyle = '#94a3b8'; ctx.font = '11px "Noto Sans SC", sans-serif'; ctx.textAlign = 'right';
-      ctx.fillText('UpXuu \u00B7 ' + new Date().toLocaleDateString('zh-CN'), 850, H - 44);
+      ctx.fillText('UpXuu \u00B7 ' + (date || new Date().toLocaleDateString('zh-CN')), 850, H - 44);
 
       posterDataUrl = canvas.toDataURL('image/png');
       showPoster = true;

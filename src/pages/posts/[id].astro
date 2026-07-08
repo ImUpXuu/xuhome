@@ -147,6 +147,7 @@ const allTalksData = await getProcessedTalks();
                   description={post.description}
                   url={Astro.url.href}
                   image={post.img}
+                  date={post.date}
                   client:only="svelte"
                 />
               </div>
