@@ -246,7 +246,7 @@ const allTalksData = await getProcessedTalks();
 
       {/* Left Sidebar - AFTER main content in DOM for SEO */}
       <aside class="hidden lg:flex w-[260px] shrink-0 flex-col gap-6 sticky top-[100px] animate-card-entrance opacity-0 lg:order-1" style="animation-delay: 0.06s">
-        <LeftSidebar posts={allPosts} tags={allTags} />
+        <LeftSidebar posts={allPosts} tags={allTags} showTags={false} />
       </aside>
 
       {/* Right Desktop Sticky TOC Side Menu */}
@@ -475,9 +475,8 @@ const allTalksData = await getProcessedTalks();
     setupImageCaptions();
     setupFancybox();
     enhanceCodeBlocks();
-    // Native dynamic TOC headers observers/scrollers
-    const desktopNavLinks = Array.from(document.querySelectorAll('.toc-nav-link'));
-    const mobileNavLinks = Array.from(document.querySelectorAll('.mobile-toc-nav-link'));
+    // Desktop TOC highlight via IntersectionObserver
+    const tocNavLinks = Array.from(document.querySelectorAll('.toc-nav-link'));
     const articleHeadings = Array.from(document.querySelectorAll('.prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6'));
     let activeId = '';
     let isNavigating = false;
@@ -486,20 +485,17 @@ const allTalksData = await getProcessedTalks();
       heading.classList.add('group', 'hover:bg-yellow-100/50', 'transition-colors', 'cursor-pointer', 'relative', 'scroll-mt-28');
     });
 
-    // Track headings and their positions for more reliable detection
     function updateTOCHighlight(id) {
       if (!id || id === activeId) return;
       activeId = id;
 
-      const links = [...desktopNavLinks, ...mobileNavLinks];
-      links.forEach(link => {
+      tocNavLinks.forEach(link => {
         const dataId = link.getAttribute('data-id');
         const isActive = dataId === id;
         
         if (isActive) {
           link.classList.add('active-toc-link');
           
-          // Enhanced auto-centering of active TOC item
           const parentContainer = link.closest('.overflow-y-auto');
           if (parentContainer) {
             const containerHeight = parentContainer.clientHeight;
@@ -594,13 +590,11 @@ const allTalksData = await getProcessedTalks();
             window.history.pushState(null, '', '#' + id);
             setTimeout(() => { isNavigating = false; }, 1000);
           }
-          closeMobileToc();
         });
       });
     }
 
-    setupLinksClick(desktopNavLinks);
-    setupLinksClick(mobileNavLinks);
+    setupLinksClick(tocNavLinks);
   }
 
   // Initial run
@@ -611,7 +605,7 @@ const allTalksData = await getProcessedTalks();
 </script>
 
 <style is:global>
-  .toc-nav-link.active-toc-link, .mobile-toc-nav-link.active-toc-link {
+  .toc-nav-link.active-toc-link {
     border-left-width: 4px;
     border-color: #0ea5e9;
     background-color: rgb(224 242 254 / 0.6);
