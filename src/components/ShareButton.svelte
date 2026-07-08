@@ -14,9 +14,6 @@
   let posterError = '';
 
   const encodedUrl = encodeURI(url || window.location.href);
-  const truncatedDesc = (description || '').length > 100
-    ? (description || '').slice(0, 100) + '...'
-    : (description || '');
 
   onMount(async () => {
     try {
@@ -47,49 +44,7 @@
     navigator.clipboard.writeText(title + '\n' + description + '\n' + url).then(() => alert('已复制，打开微信粘贴给好友'));
   }
 
-  async function generatePoster() {
-    generatingPoster = true; posterError = ''; posterDataUrl = null;
-    try {
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d')!;
-      const width = 900, height = 600;
-      canvas.width = width; canvas.height = height;
-      ctx.fillStyle = '#faf8f5'; ctx.fillRect(0, 0, width, height);
-      ctx.strokeStyle = '#0284c7'; ctx.lineWidth = 8; ctx.strokeRect(20, 20, width - 40, height - 40);
-      ctx.fillStyle = '#fde68a'; ctx.fillRect(28, 28, width - 56, 6);
-      ctx.fillStyle = '#0284c7'; ctx.font = 'bold 22px "Fredoka", "Noto Sans SC", sans-serif'; ctx.textAlign = 'left';
-      ctx.fillText("UPXUU'S BLOG SHARING!", 50, 80);
-      let textX = 60;
-      if (image) {
-        try {
-          const img = await loadImage(image);
-          const imgH = Math.min(380, 380 * (img.height / img.width));
-          ctx.fillStyle = '#0284c7'; ctx.fillRect(56, 126, 388, imgH + 8);
-          ctx.save(); ctx.beginPath(); ctx.rect(60, 130, 380, imgH); ctx.clip(); ctx.drawImage(img, 60, 130, 380, imgH); ctx.restore();
-          textX = 480;
-        } catch {}
-      }
-      ctx.fillStyle = '#1e293b'; ctx.font = 'bold 26px "Noto Sans SC", sans-serif'; ctx.textAlign = 'left';
-      const titleLines = wrapText(ctx, title || '', width - textX - 60);
-      titleLines.slice(0, 4).forEach((l, i) => ctx.fillText(l, textX, 170 + i * 36));
-      const titleBottom = 170 + Math.min(titleLines.length, 4) * 36 + 20;
-      if (description) {
-        ctx.fillStyle = '#64748b'; ctx.font = '16px "Noto Sans SC", sans-serif';
-        const descLines = wrapText(ctx, description, width - textX - 60);
-        descLines.slice(0, 4).forEach((l, i) => ctx.fillText(l, textX, titleBottom + 10 + i * 26));
-      }
-      ctx.fillStyle = '#fde68a'; ctx.fillRect(28, height - 34, width - 56, 6);
-      ctx.fillStyle = '#0ea5e9'; ctx.font = '14px "JetBrains Mono", monospace'; ctx.textAlign = 'left';
-      ctx.fillText(url, 50, height - 70);
-      ctx.fillStyle = '#94a3b8'; ctx.font = '12px "Noto Sans SC", sans-serif'; ctx.textAlign = 'right';
-      ctx.fillText('UpXuu \u00B7 ' + new Date().toLocaleDateString('zh-CN'), 850, height - 70);
-      posterDataUrl = canvas.toDataURL('image/png');
-    } catch { posterError = '生成失败'; } finally { generatingPoster = false; }
-  }
-
-  function downloadPoster() { if (posterDataUrl) { const a = document.createElement('a'); a.href = posterDataUrl; a.download = 'poster-' + Date.now() + '.png'; a.click(); } }
-
-  function loadImage(src: string): Promise<HTMLImageElement> {
+  async function loadImage(src: string): Promise<HTMLImageElement> {
     return new Promise((resolve, reject) => {
       const img = new Image();
       img.crossOrigin = 'anonymous';
@@ -104,6 +59,91 @@
     for (const c of text) { const test = cur + c; if (ctx.measureText(test).width > maxWidth && cur) { lines.push(cur); cur = c; } else cur = test; }
     if (cur) lines.push(cur); return lines.length ? lines : [text];
   }
+
+  async function generatePoster() {
+    generatingPoster = true; posterError = ''; posterDataUrl = null;
+    try {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d')!;
+      const width = 900, height = 600;
+      canvas.width = width; canvas.height = height;
+
+      // Background
+      ctx.fillStyle = '#faf8f5'; ctx.fillRect(0, 0, width, height);
+      ctx.strokeStyle = '#0284c7'; ctx.lineWidth = 8; ctx.strokeRect(20, 20, width - 40, height - 40);
+      ctx.fillStyle = '#fde68a'; ctx.fillRect(28, 28, width - 56, 6);
+
+      // Header
+      ctx.fillStyle = '#0284c7';
+      ctx.font = 'bold 20px "Fredoka", "Noto Sans SC", sans-serif'; ctx.textAlign = 'left';
+      ctx.fillText("UPXUU'S BLOG SHARING!", 50, 75);
+
+      // Decorative line
+      ctx.strokeStyle = '#0284c7'; ctx.lineWidth = 2; ctx.setLineDash([6, 4]);
+      ctx.beginPath(); ctx.moveTo(50, 95); ctx.lineTo(850, 95); ctx.stroke(); ctx.setLineDash([]);
+
+      let textX = 60;
+      let hasImage = false;
+
+      // Left column: article image
+      if (image) {
+        try {
+          const img = await loadImage(image);
+          const imgH = Math.min(420, 420 * (img.height / img.width));
+          ctx.fillStyle = '#0284c7'; ctx.fillRect(56, 110, 382, imgH + 4);
+          ctx.save(); ctx.beginPath(); ctx.rect(60, 112, 374, imgH); ctx.clip();
+          ctx.drawImage(img, 60, 112, 374, imgH); ctx.restore();
+          textX = 480; hasImage = true;
+        } catch {}
+      }
+
+      const maxTextW = width - textX - 60;
+
+      // Title
+      ctx.fillStyle = '#1e293b'; ctx.font = 'bold 24px "Noto Sans SC", sans-serif'; ctx.textAlign = 'left';
+      const titleLines = wrapText(ctx, title || '', maxTextW);
+      let y = 150;
+      titleLines.slice(0, 3).forEach((l, i) => ctx.fillText(l, textX, y + i * 34));
+      y += Math.min(titleLines.length, 3) * 34 + 12;
+
+      // Description (100 chars)
+      if (description) {
+        const descText = description.length > 100 ? description.slice(0, 100) + '...' : description;
+        ctx.fillStyle = '#64748b'; ctx.font = '14px "Noto Sans SC", sans-serif';
+        const descLines = wrapText(ctx, descText, maxTextW);
+        descLines.slice(0, 8).forEach((l, i) => ctx.fillText(l, textX, y + i * 22));
+        y += Math.min(descLines.length, 8) * 22 + 8;
+      }
+
+      // Views count
+      ctx.fillStyle = '#94a3b8'; ctx.font = '13px "Noto Sans SC", sans-serif'; ctx.textAlign = 'left';
+      ctx.fillText('\uD83D\uDC41 ' + pageViews + ' views', textX, y + 18);
+      y += 30;
+
+      // Bottom accent bar
+      ctx.fillStyle = '#fde68a'; ctx.fillRect(28, height - 40, width - 56, 6);
+
+      // URL
+      ctx.fillStyle = '#0ea5e9'; ctx.font = '13px "JetBrains Mono", monospace'; ctx.textAlign = 'left';
+      ctx.fillText(url, 50, height - 58);
+
+      // QR code on bottom right
+      try {
+        const qrImg = await loadImage('https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=' + encodeURIComponent(url));
+        ctx.drawImage(qrImg, width - 130, height - 130, 100, 100);
+      } catch {}
+
+      // Date at bottom right
+      ctx.fillStyle = '#94a3b8'; ctx.font = '11px "Noto Sans SC", sans-serif'; ctx.textAlign = 'right';
+      ctx.fillText('UpXuu \u00B7 ' + new Date().toLocaleDateString('zh-CN'), 850, height - 44);
+
+      posterDataUrl = canvas.toDataURL('image/png');
+    } catch { posterError = '生成失败'; } finally { generatingPoster = false; }
+  }
+
+  function downloadPoster() {
+    if (posterDataUrl) { const a = document.createElement('a'); a.href = posterDataUrl; a.download = 'poster-' + Date.now() + '.png'; a.click(); }
+  }
 </script>
 
 <button
@@ -117,23 +157,7 @@
 </button>
 
 {#if expanded}
-  <div class="mt-3 border-t-2 border-dashed border-[#0284c7]/20 pt-3 space-y-3">
-    <div class="flex items-start gap-4">
-      <div class="flex-1 space-y-2">
-        {#if truncatedDesc}
-          <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed line-clamp-3">{truncatedDesc}</p>
-        {/if}
-        <div class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 dark:text-slate-400">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-            <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-          </svg>
-          {pageViews}
-        </div>
-      </div>
-      <img src={'https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=' + encodeURIComponent(url)} alt="QR" class="w-16 h-16 sm:w-20 sm:h-20 border border-[#0284c7]/20 rounded-sm shrink-0" loading="lazy" />
-    </div>
-
+  <div class="mt-3 border-t-2 border-dashed border-[#0284c7]/20 pt-3 space-y-2">
     <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
       <button on:click={generatePoster} disabled={generatingPoster} class="flex items-center gap-2 p-2.5 bg-white dark:bg-slate-700 border-2 border-[#0284c7] rounded-sm shadow-[2px_2px_0px_0px_#0284c7] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all text-xs font-black text-[#0284c7] cursor-pointer disabled:opacity-50">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
