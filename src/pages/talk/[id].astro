@@ -32,6 +32,7 @@ const { talk } = Astro.props;
       description={talk.content?.substring(0, 150) || ''}
       url={Astro.url.href}
       image={''}
+      date={talk.date || ''}
       client:only="svelte"
     />
   </div>
