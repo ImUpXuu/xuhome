@@ -92,13 +92,13 @@ const years = Object.keys(yearsMap).sort((a, b) => b.localeCompare(a));
       </div>
     </div>
     
-    {/* Right Sidebar: Year-Month Axis */}
-    <div class="w-full lg:w-[260px] shrink-0 flex flex-col gap-6 sticky top-[100px] order-1 lg:order-2 animate-card-entrance opacity-0" style="animation-delay: 0.1s">
+    {/* Right Sidebar: Year-Month Axis (desktop only) */}
+    <div class="hidden lg:flex w-[260px] shrink-0 flex-col gap-6 sticky top-[100px] order-1 lg:order-2 animate-card-entrance opacity-0" style="animation-delay: 0.1s">
       <div class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] p-5 shadow-[6px_6px_0px_0px_#f59e0b] rounded-sm max-h-[80vh] flex flex-col overflow-hidden">
         <h3 class="font-black text-[#0284c7] dark:text-[#0ea5e9] text-lg mb-4 flex items-center gap-2 shrink-0 border-b-2 border-dashed border-[#0284c7]/20 pb-2">
           {i18nConfig.archive.timelineTitle}
         </h3>
-        <div class="overflow-y-auto custom-scrollbar pr-2 flex-1 relative" id="archive-nav">
+        <div class="overflow-y-auto custom-scrollbar pr-2 flex-1 relative" id="archive-nav-desktop">
           <div class="border-l-2 border-[#0284c7]/20 ml-2 space-y-4 py-2">
             {years.map(year => (
               <div class="relative pl-4 group">
@@ -121,15 +121,75 @@ const years = Object.keys(yearsMap).sort((a, b) => b.localeCompare(a));
         </div>
       </div>
     </div>
+
+    {/* Mobile timeline drawer */}
+    <div id="mobile-timeline-drawer" class="fixed inset-0 z-50 pointer-events-none lg:!hidden" style="opacity: 0; transition: opacity 0.3s ease;">
+      <div class="absolute inset-0 bg-black/30" id="mobile-timeline-overlay" style="opacity: 0; transition: opacity 0.3s ease;"></div>
+      <div id="mobile-timeline-panel" class="absolute bottom-0 left-0 right-0 bg-white dark:bg-slate-800 border-t-[10px] border-[#0284c7] rounded-t-3xl shadow-[0_-20px_60px_-10px_rgba(0,0,0,0.3)] max-h-[70vh] flex flex-col overflow-hidden pointer-events-auto" style="transform: translateY(100%); transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);">
+        <div class="flex items-center justify-between p-4 border-b-4 border-[#0284c7] shrink-0">
+          <h3 class="font-black text-[#0284c7] text-lg">{i18nConfig.archive.timelineTitle}</h3>
+          <button id="mobile-timeline-close" class="w-9 h-9 flex items-center justify-center border-2 border-[#0284c7] bg-[#fde68a] rounded-sm shadow-[2px_2px_0px_0px_#0284c7] active:translate-y-0.5 active:shadow-none transition-all cursor-pointer">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 stroke-[3] text-[#0284c7]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+          </button>
+        </div>
+        <div class="overflow-y-auto custom-scrollbar p-4 flex-1 relative" id="archive-nav-mobile">
+          <div class="border-l-2 border-[#0284c7]/20 ml-2 space-y-4 py-2">
+            {years.map(year => (
+              <div class="relative pl-4 group">
+                <div class="absolute -left-[5px] top-2 w-2 h-2 bg-[#0284c7] rounded-full"></div>
+                <div class="font-black text-base text-[#0284c7] mb-2">{year}</div>
+                <div class="space-y-1">
+                  {yearsMap[year].map(key => (
+                    <a 
+                      href={`#archive-${key}`} 
+                      class="block font-bold text-xs text-slate-500 dark:text-slate-400 hover:text-[#0ea5e9] hover:translate-x-1 transition-all py-1 archive-nav-link"
+                      data-target={`archive-${key}`}
+                    >
+                      {key.includes('年') ? key.substring(5) : key} ({archiveMap[key].length})
+                    </a>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {/* Floating toggle button (mobile only) */}
+    <button id="mobile-timeline-btn" class="fixed bottom-6 left-6 z-40 lg:!hidden w-14 h-14 bg-[#fde68a] border-4 border-[#0284c7] shadow-[4px_4px_0px_0px_#0284c7] rounded-full flex items-center justify-center cursor-pointer hover:shadow-[2px_2px_0px_0px_#0284c7] hover:translate-x-0.5 hover:translate-y-0.5 active:translate-y-1 active:shadow-none transition-all duration-150">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-[#0284c7]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+      </svg>
+    </button>
     
   </div>
 </Layout>
+
+<style>
+  .mt-drawer-open #mobile-timeline-drawer {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
+  .mt-drawer-open #mobile-timeline-overlay {
+    opacity: 1 !important;
+  }
+  .mt-drawer-open #mobile-timeline-panel {
+    transform: translateY(0) !important;
+  }
+</style>
 
 <script>
   function setupArchiveNav() {
     const navLinks = Array.from(document.querySelectorAll('.archive-nav-link'));
     const sections = navLinks.map(link => document.getElementById(link.getAttribute('data-target') || ''));
     let activeId = '';
+
+    function scrollContainerFor(link) {
+      const desktop = document.getElementById('archive-nav-desktop');
+      if (desktop && desktop.contains(link)) return desktop;
+      return document.getElementById('archive-nav-mobile');
+    }
 
     function updateHighlight() {
       const scrollPos = window.scrollY + 150;
@@ -139,7 +199,7 @@ const years = Object.keys(yearsMap).sort((a, b) => b.localeCompare(a));
         if (section && section.offsetTop <= scrollPos) {
           current = section.id;
         } else {
-          break; // Stop at the first section below our scroll position
+          break;
         }
       }
       
@@ -151,9 +211,7 @@ const years = Object.keys(yearsMap).sort((a, b) => b.localeCompare(a));
           if (link.getAttribute('data-target') === current) {
             link.classList.add('text-[#0ea5e9]', 'font-black', 'scale-105');
             link.classList.remove('text-slate-500', 'font-bold');
-            
-            // basic scroll into view logic for the nav
-            const container = document.getElementById('archive-nav');
+            const container = scrollContainerFor(link);
             if (container) {
               const rect = link.getBoundingClientRect();
               const containerRect = container.getBoundingClientRect();
@@ -176,13 +234,13 @@ const years = Object.keys(yearsMap).sort((a, b) => b.localeCompare(a));
       window.addEventListener('scroll', updateHighlight, { passive: true });
       setTimeout(updateHighlight, 100);
       
-      // smooth scroll on click
       navLinks.forEach(link => {
         link.addEventListener('click', (e) => {
           e.preventDefault();
           const targetId = link.getAttribute('data-target');
           const targetSection = document.getElementById(targetId || '');
           if (targetSection) {
+            closeMobileTimeline();
             window.scrollTo({
               top: targetSection.offsetTop - 100,
               behavior: 'smooth'
@@ -194,6 +252,30 @@ const years = Object.keys(yearsMap).sort((a, b) => b.localeCompare(a));
     }
   }
 
+  function openMobileTimeline() {
+    document.body.classList.add('mt-drawer-open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeMobileTimeline() {
+    document.body.classList.remove('mt-drawer-open');
+    document.body.style.overflow = '';
+  }
+
+  function setupMobileTimeline() {
+    const btn = document.getElementById('mobile-timeline-btn');
+    const overlay = document.getElementById('mobile-timeline-overlay');
+    const closeBtn = document.getElementById('mobile-timeline-close');
+    if (btn) btn.addEventListener('click', openMobileTimeline);
+    if (overlay) overlay.addEventListener('click', closeMobileTimeline);
+    if (closeBtn) closeBtn.addEventListener('click', closeMobileTimeline);
+  }
+
   setupArchiveNav();
-  document.addEventListener('astro:page-load', setupArchiveNav);
+  setupMobileTimeline();
+  document.addEventListener('astro:page-load', () => {
+    closeMobileTimeline();
+    setupArchiveNav();
+    setupMobileTimeline();
+  });
 </script>
