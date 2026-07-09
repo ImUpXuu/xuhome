@@ -1,213 +1,117 @@
 ---
-
+import { welcomeConfig, siteConfig } from '../config/site';
 ---
 
-<script>
-  import { welcomeConfig, siteConfig } from '../config/site';
-
-  const VISIT_SESSION_KEY = welcomeConfig.sessionKey;
-
-  let autoCloseTimer: ReturnType<typeof setTimeout> | null = null;
-  let hasShownToast = false;
+<script define:vars={{ welcomeConfig, siteConfig }}>
+(function() {
+  var VISIT_SESSION_KEY = welcomeConfig.sessionKey;
+  var autoCloseTimer = null;
+  var hasShownToast = false;
 
   function createWelcomeToast() {
-    const toast = document.createElement('div');
+    var toast = document.createElement('div');
     toast.id = 'welcome-toast';
     toast.setAttribute('data-nosnippet', 'true');
     toast.setAttribute('aria-hidden', 'true');
     toast.className = 'fixed bottom-4 left-2 right-2 sm:left-4 sm:right-auto z-[2000] translate-y-[calc(100%+20px)] opacity-0 transition-all duration-500 ease-out';
-    toast.innerHTML = `
-      <div class="bg-[#faf8f5] dark:bg-slate-800 border-2 border-[#0284c7] shadow-[4px_4px_0px_0px_#0284c7] rounded-sm p-2 sm:p-0">
-        <div class="flex flex-wrap items-center gap-x-2 gap-y-1 px-2 sm:px-3 py-1.5 sm:py-0 sm:h-9">
-          <span class="text-xs font-black text-[#0284c7]">👋</span>
-          <span id="welcome-message" class="text-xs font-bold text-slate-700 dark:text-slate-200">加载中...</span>
-          <span class="text-slate-300 dark:text-slate-600 text-xs font-black hidden sm:inline">|</span>
-          <span id="welcome-stats" class="text-xs font-bold text-slate-500 dark:text-slate-400"></span>
-          <div class="flex items-center gap-1.5 ml-auto sm:ml-1 shrink-0">
-            <a href="${siteConfig.socials.qqGroup}" target="_blank" rel="noopener noreferrer" class="text-[10px] font-black text-blue-500 hover:text-[#0284c7] dark:hover:text-blue-400 transition-colors shrink-0 uppercase tracking-wider">QQ群</a>
-            <span class="text-slate-300 dark:text-slate-600 text-[10px] font-black">|</span>
-            <a href="${siteConfig.socials.subscribe}" class="text-[10px] font-black text-green-500 hover:text-[#0284c7] dark:hover:text-green-400 transition-colors shrink-0 uppercase tracking-wider">订阅</a>
-            <span class="text-slate-300 dark:text-slate-600 text-[10px] font-black">|</span>
-            <a href="javascript:void(0)" class="js-copy-rss text-[10px] font-black text-orange-500 hover:text-[#0284c7] dark:hover:text-orange-400 transition-colors shrink-0 uppercase tracking-wider">RSS</a>
-            <button
-              class="js-close-toast text-slate-400 hover:text-[#0284c7] dark:hover:text-white transition-colors shrink-0 ml-1"
-              aria-label="关闭"
-            >
-              <svg class="w-3 h-3 stroke-[3]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path>
-              </svg>
-            </button>
-          </div>
-        </div>
-      </div>
-    `;
+    toast.innerHTML = [
+      '<div class="bg-[#faf8f5] dark:bg-slate-800 border-2 border-[#0284c7] shadow-[4px_4px_0px_0px_#0284c7] rounded-sm p-2 sm:p-0">',
+      '  <div class="flex flex-wrap items-center gap-x-2 gap-y-1 px-2 sm:px-3 py-1.5 sm:py-0 sm:h-9">',
+      '    <span class="text-xs font-black text-[#0284c7]">👋</span>',
+      '    <span id="welcome-message" class="text-xs font-bold text-slate-700 dark:text-slate-200">加载中...</span>',
+      '    <span class="text-slate-300 dark:text-slate-600 text-xs font-black hidden sm:inline">|</span>',
+      '    <span id="welcome-stats" class="text-xs font-bold text-slate-500 dark:text-slate-400"></span>',
+      '    <div class="flex items-center gap-1.5 ml-auto sm:ml-1 shrink-0">',
+      '      <a href="' + siteConfig.socials.qqGroup + '" target="_blank" rel="noopener noreferrer" class="text-[10px] font-black text-blue-500 hover:text-[#0284c7] dark:hover:text-blue-400 transition-colors shrink-0 uppercase tracking-wider">QQ群</a>',
+      '      <span class="text-slate-300 dark:text-slate-600 text-[10px] font-black">|</span>',
+      '      <a href="' + siteConfig.socials.subscribe + '" class="text-[10px] font-black text-green-500 hover:text-[#0284c7] dark:hover:text-green-400 transition-colors shrink-0 uppercase tracking-wider">订阅</a>',
+      '      <span class="text-slate-300 dark:text-slate-600 text-[10px] font-black">|</span>',
+      '      <a href="javascript:void(0)" class="js-copy-rss text-[10px] font-black text-orange-500 hover:text-[#0284c7] dark:hover:text-orange-400 transition-colors shrink-0 uppercase tracking-wider">RSS</a>',
+      '      <button class="js-close-toast text-slate-400 hover:text-[#0284c7] dark:hover:text-white transition-colors shrink-0 ml-1" aria-label="关闭">',
+      '        <svg class="w-3 h-3 stroke-[3]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path></svg>',
+      '      </button>',
+      '    </div>',
+      '  </div>',
+      '</div>'
+    ].join('\n');
     document.body.appendChild(toast);
 
-    // Bind close button via event listener (not onclick, which fails in module scripts)
-    const closeBtn = toast.querySelector('.js-close-toast');
-    if (closeBtn) {
-      closeBtn.addEventListener('click', closeWelcomeToast);
-    }
+    var closeBtn = toast.querySelector('.js-close-toast');
+    if (closeBtn) closeBtn.addEventListener('click', closeWelcomeToast);
 
-    // Bind RSS copy button
-    const rssBtn = toast.querySelector('.js-copy-rss');
-    if (rssBtn) {
-      rssBtn.addEventListener('click', copyRssLink);
-    }
+    var rssBtn = toast.querySelector('.js-copy-rss');
+    if (rssBtn) rssBtn.addEventListener('click', copyRssLink);
 
     return toast;
   }
 
   function closeWelcomeToast() {
-    // Clear auto-close timer if user manually closes
-    if (autoCloseTimer) {
-      clearTimeout(autoCloseTimer);
-      autoCloseTimer = null;
-    }
-    const toast = document.getElementById('welcome-toast');
+    if (autoCloseTimer) { clearTimeout(autoCloseTimer); autoCloseTimer = null; }
+    var toast = document.getElementById('welcome-toast');
     if (toast) {
       toast.classList.remove('translate-y-0', 'opacity-100');
       toast.classList.add('translate-y-[calc(100%+20px)]', 'opacity-0');
-      setTimeout(() => {
-        toast.remove();
-      }, 500);
+      setTimeout(function() { toast.remove(); }, 500);
     }
   }
 
   async function fetchLocationAndWeather() {
     try {
-      const response = await fetch(welcomeConfig.weatherApi);
-      const data = await response.json();
-
-      const messageEl = document.getElementById('welcome-message');
-      if (!messageEl) return;
-
-      const city = data.city || '';
-      const district = data.district || '';
-      const weather = data.weather || '';
-      const temp = data.temperature ?? '';
-
-      const loc = district ? `${city}${district}` : city;
-      const weatherText = weather && temp !== '' ? `${weather} ${temp}°C` : '';
-      const parts = [`Hi！来自${loc || '远方'}的朋友`];
+      var res = await fetch(welcomeConfig.weatherApi);
+      var data = await res.json();
+      var msgEl = document.getElementById('welcome-message');
+      if (!msgEl) return;
+      var loc = (data.district ? data.city + data.district : data.city) || '远方';
+      var weatherText = data.weather ? data.weather + ' ' + data.temperature + '°C' : '';
+      var parts = ['Hi！来自' + loc + '的朋友'];
       if (weatherText) parts.push(weatherText);
-      messageEl.textContent = parts.join(' · ');
-
-      if (data.alerts && data.alerts.length > 0) {
-        const toastInner = messageEl.closest('[class*="bg-"]');
-        if (toastInner) {
-          const btn = document.createElement('button');
-          btn.className = 'text-[10px] font-black text-red-500 hover:text-red-600 transition-colors shrink-0 ml-1';
-          btn.textContent = `⚠${data.alerts.length}条预警`;
-          btn.onclick = () => {
-            const info = data.alerts[0];
-            window.alert(`${info.title}\n\n${info.text}`);
-          };
-          toastInner.querySelector('.flex-wrap')?.appendChild(btn);
-        }
-      }
+      msgEl.textContent = parts.join(' · ');
     } catch {
-      const messageEl = document.getElementById('welcome-message');
-      if (messageEl) {
-        messageEl.textContent = welcomeConfig.fallbackMessage;
-      }
+      var msgEl = document.getElementById('welcome-message');
+      if (msgEl) msgEl.textContent = welcomeConfig.fallbackMessage;
     }
   }
 
   async function fetchStats() {
     try {
-      const [statsRes, activeRes] = await Promise.allSettled([
-        fetch(siteConfig.analytics.statsApi.alltime),
-        fetch(siteConfig.analytics.statsApi.active)
-      ]);
-
-      let text = '';
-
-      if (statsRes.status === 'fulfilled') {
-        const data = await statsRes.value.json();
-        if (data) {
-          const pv = typeof data.pageviews === 'object' ? (data.pageviews?.value ?? 0) : (data.pageviews ?? 0);
-          text += `你是第 ${pv.toLocaleString()} 位访客`;
-        }
-      }
-
-      if (activeRes.status === 'fulfilled') {
-        const data = await activeRes.value.json();
-        let active = 0;
-        if (Array.isArray(data)) {
-          active = data.length;
-        } else if (data) {
-          active = data.total ?? data.visitors ?? data.totals?.visitors?.value ?? data.totals?.pageviews?.value ?? data.sessions?.length ?? 0;
-        }
-        if (active > 0) {
-          text += (text ? ' · ' : '') + `${active} 人在线`;
-        }
-      }
-
-      const statsEl = document.getElementById('welcome-stats');
-      if (statsEl) {
-        statsEl.textContent = text || '';
-      }
-    } catch {
-      const statsEl = document.getElementById('welcome-stats');
-      if (statsEl) statsEl.textContent = '';
-    }
+      var alltimeRes = await fetch(siteConfig.analytics.statsApi.alltime);
+      var alltimeData = await alltimeRes.json();
+      var pv = alltimeData ? (typeof alltimeData.pageviews === 'object' ? (alltimeData.pageviews?.value ?? 0) : (alltimeData.pageviews ?? 0)) : 0;
+      var text = pv ? '你是第 ' + pv.toLocaleString() + ' 位访客' : '';
+      var statsEl = document.getElementById('welcome-stats');
+      if (statsEl) statsEl.textContent = text;
+    } catch {}
   }
 
   async function showWelcomeToast() {
     if (hasShownToast) return;
-
-    const toast = createWelcomeToast();
-
-    // Show toast with animation
-    setTimeout(() => {
+    var toast = createWelcomeToast();
+    setTimeout(function() {
       toast.classList.remove('translate-y-[calc(100%+20px)]', 'opacity-0');
       toast.classList.add('translate-y-0', 'opacity-100');
     }, 100);
-
     hasShownToast = true;
-
-    // Auto-close timer starts immediately, doesn't wait for fetches
-    autoCloseTimer = setTimeout(() => {
-      closeWelcomeToast();
-    }, welcomeConfig.duration);
-
-    // Fetch weather and stats in background
+    autoCloseTimer = setTimeout(closeWelcomeToast, welcomeConfig.duration);
     Promise.allSettled([fetchLocationAndWeather(), fetchStats()]);
   }
 
-  function shouldShowWelcome() {
-    return !sessionStorage.getItem(VISIT_SESSION_KEY);
-  }
-
-  function markAsVisited() {
+  function init() {
+    if (sessionStorage.getItem(VISIT_SESSION_KEY)) return;
     sessionStorage.setItem(VISIT_SESSION_KEY, 'true');
+    showWelcomeToast();
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', async () => {
-      if (shouldShowWelcome()) {
-        markAsVisited();
-        await showWelcomeToast();
-      }
-    });
-  } else if (shouldShowWelcome()) {
-    markAsVisited();
-    await showWelcomeToast();
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
   }
 
-  (window as any).closeWelcomeToast = closeWelcomeToast;
+  window.closeWelcomeToast = closeWelcomeToast;
 
-  (window as any).copyRssLink = async () => {
-    try {
-      await navigator.clipboard.writeText(window.location.origin + '/rss.xml');
-    } catch {
-      const input = document.createElement('input');
-      input.value = window.location.origin + '/rss.xml';
-      document.body.appendChild(input);
-      input.select();
-      document.execCommand('copy');
-      document.body.removeChild(input);
-    }
-  };
+  function copyRssLink() {
+    try { navigator.clipboard.writeText(window.location.origin + '/rss.xml'); } catch { }
+  }
+  window.copyRssLink = copyRssLink;
+})();
 </script>
