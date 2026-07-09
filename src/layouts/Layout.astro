@@ -53,21 +53,22 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
     <script is:inline>
     (function() {
       var host = window.location.hostname;
-      if (host === 'upxuu.com' || host === 'localhost' || host.endsWith('.vercel.app')) return;
-      var s = document.createElement('style');
-      s.textContent = 'html{background:#0f172a!important}body{visibility:hidden!important}#xuwarn{position:fixed;inset:0;z-index:999999;display:flex;align-items:center;justify-content:center;padding:24px;font-family:sans-serif}';
-      document.documentElement.appendChild(s);
-      var obs = new MutationObserver(function() {
-        if (!document.body) return;
-        obs.disconnect();
-        var d = document.createElement('div');
-        d.id = 'xuwarn';
-        d.innerHTML = '<div style="max-width:480px;width:100%;background:#faf8f5;border:8px solid #0284c7;padding:32px 24px;text-align:center;box-shadow:12px 12px 0 0 #0284c7;overflow-y:auto;max-height:90vh"><div style="font-size:48px;margin-bottom:8px">\uD83D\uDEAB</div><h1 style="font-size:20px;font-weight:900;color:#dc2626;margin:0 0 16px;line-height:1.4">非法反代站点 / Illegal Proxy Site</h1><p style="font-size:15px;font-weight:700;color:#1e293b;margin:0 0 6px;line-height:1.5">你正在访问的网站是非法反代，并非原始博客。</p><p style="font-size:15px;font-weight:700;color:#1e293b;margin:0 0 16px;line-height:1.5">This site is an illegal proxy and not the original blog.</p><p style="font-size:15px;font-weight:700;color:#dc2626;margin:0 0 6px;line-height:1.5">目前正在进行 DMCA 申诉，侵权站点将被处理。</p><p style="font-size:15px;font-weight:700;color:#dc2626;margin:0 0 20px;line-height:1.5">DMCA takedown is in progress against this infringing site.</p><p style="font-size:15px;font-weight:700;color:#1e293b;margin:0 0 16px;line-height:1.5">请立即前往原站点 / Please visit the original site:<br><a href="https://upxuu.com" style="color:#0284c7;font-weight:900;font-size:20px;text-decoration:underline">UPXUU.COM</a></p><div style="border-top:3px dashed #0284c7;padding-top:16px;font-size:14px;font-weight:700;color:#64748b">— UpXuu</div></div>';
-        document.body.innerHTML = '';
-        document.body.appendChild(d);
-        document.body.style.visibility = '';
-      });
-      obs.observe(document.documentElement, { childList: true, subtree: true });
+      if (host === 'upxuu.com' || host === 'www.upxuu.com' || host === 'localhost' || host.endsWith('.vercel.app')) return;
+      function show() {
+        if (!document.body) { setTimeout(show, 50); return; }
+        var t = document.createElement('div');
+        t.id = 'xuwarn';
+        t.style.cssText = 'position:fixed;bottom:0;left:0;right:0;z-index:999999;font-family:sans-serif;padding:12px;transform:translateY(120%);opacity:0;transition:all 0.5s ease-out';
+        t.innerHTML = '<div style="background:#faf8f5;border:4px solid #dc2626;padding:14px 16px;box-shadow:6px 6px 0 0 #dc2626;max-width:560px;margin:0 auto;position:relative"><button id="xuwarn-close" style="position:absolute;top:6px;right:8px;background:none;border:none;font-size:18px;cursor:pointer;color:#94a3b8;padding:0;line-height:1">\u2716</button><div style="font-size:14px;font-weight:900;color:#dc2626;margin-bottom:4px;padding-right:24px">\u26A0\uFE0F 非法反代 / Illegal Proxy</div><div style="font-size:12px;font-weight:700;color:#1e293b;line-height:1.5">唯一官方域名 UPXUU.COM \u00B7 其他域名皆为盗版 \u00B7 DMCA 申诉中</div><div style="font-size:12px;font-weight:700;color:#475569;line-height:1.5">Official domain UPXUU.COM \u00B7 Others are pirated \u00B7 DMCA in progress</div><div style="margin-top:8px;font-size:12px;font-weight:700;color:#64748b">— UpXuu</div></div>';
+        document.body.appendChild(t);
+        setTimeout(function() { t.style.transform = 'translateY(0)'; t.style.opacity = '1'; }, 100);
+        (t.querySelector('#xuwarn-close') || {}).onclick = function() {
+          t.style.transform = 'translateY(120%)'; t.style.opacity = '0';
+          setTimeout(function() { t.remove(); }, 500);
+        };
+      }
+      if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', show); }
+      else { show(); }
     })();
     </script>
     
