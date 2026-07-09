@@ -39,7 +39,9 @@ const {
 const pageTitle = title 
   ? `${title}${seoConfig.titleTemplate}` 
   : `${siteConfig.title} - ${siteConfig.subtitle.split(' / ')[0]}`;
-const pageDescription = description || seoConfig.defaultDescription;
+const pageDescription = (description || seoConfig.defaultDescription).length < 10 
+  ? seoConfig.defaultDescription 
+  : (description || seoConfig.defaultDescription);
 
 const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
 ---
@@ -113,6 +115,7 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
     
     <title>{pageTitle}</title>
     <meta name="description" content={pageDescription} />
+    
     <meta name="keywords" content={seoConfig.keywords.join(", ")} />
     <meta name="author" content={siteConfig.author} />
     <meta name="robots" content={seoConfig.robots} />
