@@ -343,7 +343,7 @@ export const i18nConfig = {
     /** 首页浏览器标题（传给 Layout 的 title） */
     title: "首页",
     /** 首页 SEO 描述 */
-    description: "UpXuu的个人博客 - 记录生活、学习、编程与思考的原创文章。",
+    description: "UpXuu的个人博客 - 记录生活、学习、编程与思考的原创文章。包含技术教程、日常随笔、开源项目分享等内容。",
     /** 首页文章列表区块标题 */
     sectionTitle: "最新文章",
   },
