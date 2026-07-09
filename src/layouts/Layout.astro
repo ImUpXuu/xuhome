@@ -62,7 +62,7 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
         obs.disconnect();
         var d = document.createElement('div');
         d.id = 'xuwarn';
-        d.innerHTML = '<div style="max-width:480px;width:100%;background:#faf8f5;border:8px solid #0284c7;padding:32px 24px;text-align:center;box-shadow:12px 12px 0 0 #0284c7"><div style="font-size:48px;margin-bottom:8px">\uD83D\uDEAB</div><h1 style="font-size:20px;font-weight:900;color:#dc2626;margin:0 0 16px;line-height:1.4">非法反代站点</h1><p style="font-size:16px;font-weight:700;color:#1e293b;margin:0 0 12px;line-height:1.6">你正在访问的网站是非法反代，并非原始博客。</p><p style="font-size:16px;font-weight:700;color:#1e293b;margin:0 0 20px;line-height:1.6">请立即前往原站点：<a href="https://upxuu.com" style="color:#0284c7;font-weight:900;font-size:18px;text-decoration:underline">UPXUU.COM</a></p><div style="border-top:3px dashed #0284c7;padding-top:16px;font-size:14px;font-weight:700;color:#64748b">— UpXuu</div></div>';
+        d.innerHTML = '<div style="max-width:480px;width:100%;background:#faf8f5;border:8px solid #0284c7;padding:32px 24px;text-align:center;box-shadow:12px 12px 0 0 #0284c7;overflow-y:auto;max-height:90vh"><div style="font-size:48px;margin-bottom:8px">\uD83D\uDEAB</div><h1 style="font-size:20px;font-weight:900;color:#dc2626;margin:0 0 16px;line-height:1.4">非法反代站点 / Illegal Proxy Site</h1><p style="font-size:15px;font-weight:700;color:#1e293b;margin:0 0 6px;line-height:1.5">你正在访问的网站是非法反代，并非原始博客。</p><p style="font-size:15px;font-weight:700;color:#1e293b;margin:0 0 16px;line-height:1.5">This site is an illegal proxy and not the original blog.</p><p style="font-size:15px;font-weight:700;color:#dc2626;margin:0 0 6px;line-height:1.5">目前正在进行 DMCA 申诉，侵权站点将被处理。</p><p style="font-size:15px;font-weight:700;color:#dc2626;margin:0 0 20px;line-height:1.5">DMCA takedown is in progress against this infringing site.</p><p style="font-size:15px;font-weight:700;color:#1e293b;margin:0 0 16px;line-height:1.5">请立即前往原站点 / Please visit the original site:<br><a href="https://upxuu.com" style="color:#0284c7;font-weight:900;font-size:20px;text-decoration:underline">UPXUU.COM</a></p><div style="border-top:3px dashed #0284c7;padding-top:16px;font-size:14px;font-weight:700;color:#64748b">— UpXuu</div></div>';
         document.body.innerHTML = '';
         document.body.appendChild(d);
         document.body.style.visibility = '';
@@ -276,7 +276,7 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
       <footer class="w-full bg-[#faf8f5] dark:bg-slate-900 border-t-4 border-[#0284c7] select-none">
         <div class="max-w-5xl mx-auto px-4 py-5 text-center text-xs font-mono text-slate-500 dark:text-slate-400 leading-relaxed space-y-2">
           <div class="font-bold text-red-500 text-[11px] sm:text-xs">
-            ⚠ 唯一官方域名 <a href="https://upxuu.com" class="underline font-black hover:text-red-600">UPXUU.COM</a> · 任何其他域名皆为盗版 | Official: <a href="https://upxuu.com" class="underline font-black hover:text-red-600">UPXUU.COM</a> · All others are pirated
+            ⚠ 唯一官方域名 <a href="https://upxuu.com" class="underline font-black hover:text-red-600">UPXUU.COM</a> · 其他域名皆为盗版 · DMCA 申诉中 | Official: <a href="https://upxuu.com" class="underline font-black hover:text-red-600">UPXUU.COM</a> · Others are pirated · DMCA in progress
           </div>
           <div class="font-bold">
             <span class="text-slate-700 dark:text-slate-300">{infoConfig.footer.copyrightText}</span>
