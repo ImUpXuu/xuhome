@@ -50,6 +50,26 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="msvalidate.01" content="8814B55DAA53801F47B998FE06421544" />
+    <script is:inline>
+    (function() {
+      var host = window.location.hostname;
+      if (host === 'upxuu.com' || host === 'localhost' || host.endsWith('.vercel.app')) return;
+      var s = document.createElement('style');
+      s.textContent = 'html{background:#0f172a!important}body{visibility:hidden!important}#xuwarn{position:fixed;inset:0;z-index:999999;display:flex;align-items:center;justify-content:center;padding:24px;font-family:sans-serif}';
+      document.documentElement.appendChild(s);
+      var obs = new MutationObserver(function() {
+        if (!document.body) return;
+        obs.disconnect();
+        var d = document.createElement('div');
+        d.id = 'xuwarn';
+        d.innerHTML = '<div style="max-width:480px;width:100%;background:#faf8f5;border:8px solid #0284c7;padding:32px 24px;text-align:center;box-shadow:12px 12px 0 0 #0284c7"><div style="font-size:48px;margin-bottom:8px">\uD83D\uDEAB</div><h1 style="font-size:20px;font-weight:900;color:#dc2626;margin:0 0 16px;line-height:1.4">非法反代站点</h1><p style="font-size:16px;font-weight:700;color:#1e293b;margin:0 0 12px;line-height:1.6">你正在访问的网站是非法反代，并非原始博客。</p><p style="font-size:16px;font-weight:700;color:#1e293b;margin:0 0 20px;line-height:1.6">请立即前往原站点：<a href="https://upxuu.com" style="color:#0284c7;font-weight:900;font-size:18px;text-decoration:underline">UPXUU.COM</a></p><div style="border-top:3px dashed #0284c7;padding-top:16px;font-size:14px;font-weight:700;color:#64748b">— UpXuu</div></div>';
+        document.body.innerHTML = '';
+        document.body.appendChild(d);
+        document.body.style.visibility = '';
+      });
+      obs.observe(document.documentElement, { childList: true, subtree: true });
+    })();
+    </script>
     
     <title>{pageTitle}</title>
     <meta name="description" content={pageDescription} />
