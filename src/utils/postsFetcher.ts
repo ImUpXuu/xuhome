@@ -5,6 +5,7 @@ export interface PostItem {
   slug: string;
   title: string;
   date: string;
+  dateISO: string;
   content: string;
   description: string;
   img: string;
@@ -76,6 +77,7 @@ export async function getProcessedPosts(): Promise<PostItem[]> {
       slug: customSlug,
       title: data.title || '无标题文章',
       date: parsedDate,
+      dateISO: parsedDate.replace(' ', 'T'),
       content: post.body || '',
       description: (() => {
         let desc = data.description || data.summary || '';
