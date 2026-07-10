@@ -50,16 +50,14 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
 <html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="msvalidate.01" content="8814B55DAA53801F47B998FE06421544" />
-    
     <title>{pageTitle}</title>
     <meta name="description" content={pageDescription} />
-    
     <meta name="keywords" content={seoConfig.keywords.join(", ")} />
     <meta name="author" content={siteConfig.author} />
     <meta name="robots" content={seoConfig.robots} />
     <link rel="canonical" href={canonicalURL} />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="msvalidate.01" content="8814B55DAA53801F47B998FE06421544" />
     <script is:inline>
     (function() {
       var host = window.location.hostname;
