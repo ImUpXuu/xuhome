@@ -164,7 +164,7 @@ export const seoConfig = {
   /** 标题后缀（拼接到每个页面 title 之后） */
   titleTemplate: " - UpXuu",
   /** 默认页面描述 */
-  defaultDescription: "UpXuu的个人博客 - 记录生活、学习、编程与思考。",
+  defaultDescription: "UpXuu 的个人博客，记录一位独立开发者的生活随笔、编程实践与技术思考。涵盖 Web 开发、Astro 建站、开源项目与日常感悟，用文字连接数字世界的每一份热爱。",
   /** 默认 OG 图片 URL */
   defaultImage: "https://upxuu.com/images/me.jpg",
   /** SEO 关键词 */
@@ -343,7 +343,7 @@ export const i18nConfig = {
     /** 首页浏览器标题（传给 Layout 的 title） */
     title: "首页",
     /** 首页 SEO 描述 */
-    description: "UpXuu的个人博客 - 记录生活、学习、编程与思考的原创文章。包含技术教程、日常随笔、开源项目分享等内容。",
+    description: "UpXuu 的个人博客，分享 Web 开发、Astro 建站与开源项目实践的技术文章，以及一名初中生的日常随笔与生活思考。原创内容覆盖前端开发、Vite 生态、AI 应用与中考纪实，适合开发者与年轻创作者阅读。",
     /** 首页文章列表区块标题 */
     sectionTitle: "最新文章",
   },
