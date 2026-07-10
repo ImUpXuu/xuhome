@@ -1,7 +1,0 @@
-packages:
-  - '.'
-onlyBuiltDependencies:
-  - esbuild
-  - sharp
-  - protobufjs
-  - '@google/genai'
