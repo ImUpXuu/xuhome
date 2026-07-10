@@ -15,12 +15,7 @@ jobs:
           version: 9
       - run: pnpm install
       - run: pnpm build
-      - uses: easingthemes/ssh-deploy@main
+      - uses: actions/upload-artifact@v4
         with:
-          SSH_PRIVATE_KEY: ${{ secrets.DEPLOY_KEY }}
-          ARGS: -avz --delete
-          SOURCE: dist/
-          REMOTE_HOST: ${{ secrets.HOST }}
-          REMOTE_USER: root
-          TARGET: /var/www/upxuu
-      - run: ssh root@${{ secrets.HOST }} "systemctl reload nginx || :"
+          name: dist
+          path: dist/
