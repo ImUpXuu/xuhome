@@ -1,11 +1,17 @@
 ---
-import type { PostItem } from '../utils/postsFetcher';
 import CalendarWidget from './CalendarWidget.svelte';
 import SidebarTags from './SidebarTags.astro';
 import AuthorCard from './AuthorCard.astro';
 
+interface CalendarPost {
+  slug: string;
+  title: string;
+  date: string;
+  description: string;
+}
+
 export interface Props {
-  posts: PostItem[];
+  posts: CalendarPost[];
   tags: { name: string; count: number }[];
   activeTag?: string | null;
   showCalendar?: boolean;

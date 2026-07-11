@@ -72,7 +72,7 @@ const tags = Object.entries(tagMap)
       transition:name="sidebar-left"
     >
       <div class="hidden xl:block">
-        <CalendarWidget posts={catPosts} client:idle />
+        <CalendarWidget posts={catPosts.map(p => ({ slug: p.slug, title: p.title, date: p.date, description: p.description }))} client:idle />
       </div>
       <SidebarTags tags={tags} activeTag={null} />
     </aside>
