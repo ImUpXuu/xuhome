@@ -1,12 +1,22 @@
 <script lang="ts">
   import PageViews from './PageViews.svelte';
-  import type { PostItem } from '../utils/postsFetcher';
   import { onMount } from 'svelte';
   import { flip } from 'svelte/animate';
   import { fade } from 'svelte/transition';
   import { siteConfig, i18nConfig } from '../config/site';
 
-  export let posts: PostItem[] = [];
+  interface SearchablePost {
+    id: string;
+    slug: string;
+    title: string;
+    date: string;
+    description: string;
+    img: string;
+    tags: string[];
+    category: string;
+  }
+
+  export let posts: SearchablePost[] = [];
   export let postsPerPage: number = 10;
 
   let searchQuery = '';
@@ -46,7 +56,6 @@
     return (
       post.title?.toLowerCase().includes(q) ||
       post.description?.toLowerCase().includes(q) ||
-      post.content?.toLowerCase().includes(q) ||
       post.category?.toLowerCase().includes(q) ||
       (post.tags && post.tags.some(tag => tag.toLowerCase().includes(q)))
     );
