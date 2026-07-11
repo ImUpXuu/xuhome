@@ -9,6 +9,7 @@ interface Props {
 
 const { categories, activeCategory } = Astro.props;
 const allPosts = await getProcessedPosts();
+const calendarPosts = allPosts.map(p => ({ slug: p.slug, title: p.title, date: p.date, description: p.description }));
 ---
 
 <script>
@@ -105,7 +106,7 @@ const allPosts = await getProcessedPosts();
             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
-        <CalendarWidget posts={allPosts} client:idle />
+        <CalendarWidget posts={calendarPosts} client:idle />
       </div>
     </dialog>
   </>

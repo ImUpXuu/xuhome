@@ -1,8 +1,14 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import type { PostItem } from '../utils/postsFetcher';
 
-  export let posts: PostItem[] = [];
+  interface CalendarPost {
+    slug: string;
+    title: string;
+    date: string;
+    description: string;
+  }
+
+  export let posts: CalendarPost[] = [];
 
   let currentDate = new Date();
   let selectedDate: Date | null = null;
@@ -25,7 +31,7 @@
     acc[key] = acc[key] || [];
     acc[key].push(p);
     return acc;
-  }, {} as Record<string, PostItem[]>);
+  }, {} as Record<string, CalendarPost[]>);
 
   function prevMonth() {
     currentDate = new Date(currentYear, currentMonth - 1, 1);

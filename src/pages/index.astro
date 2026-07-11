@@ -55,7 +55,7 @@ const tags = Object.entries(tagMap)
       class="w-full xl:w-[260px] shrink-0 flex flex-col gap-4 sm:gap-6 xl:sticky xl:top-[100px] order-2 xl:order-1"
       style="animation-delay: 0.06s"
     >
-      <LeftSidebar posts={allPosts} tags={tags} showTags={false} />
+      <LeftSidebar posts={allPosts.map(p => ({ slug: p.slug, title: p.title, date: p.date, description: p.description }))} tags={tags} showTags={false} />
     </aside>
 
     {/* Right Sidebar */}
