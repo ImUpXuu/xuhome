@@ -24,6 +24,11 @@ jobs:
 
       - run: pnpm install --no-frozen-lockfile
 
+      - name: Approve build scripts
+        run: pnpm approve-builds esbuild sharp protobufjs @google/genai
+
+      - run: pnpm install
+
       - run: pnpm build
 
       - name: Setup SSH key
