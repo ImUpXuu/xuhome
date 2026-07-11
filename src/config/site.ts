@@ -162,7 +162,7 @@ export const seoConfig = {
   /** 默认页面标题（无 title 时使用） */
   defaultTitle: "UpXuu's blog",
   /** 标题后缀（拼接到每个页面 title 之后） */
-  titleTemplate: " - UpXuu",
+  titleTemplate: " - UpXuu's blog",
   /** 默认页面描述 */
   defaultDescription: "UpXuu 的个人博客，记录一位独立开发者的生活随笔、编程实践与技术思考。涵盖 Web 开发、Astro 建站、开源项目与日常感悟，用文字连接数字世界的每一份热爱。",
   /** 默认 OG 图片 URL */
