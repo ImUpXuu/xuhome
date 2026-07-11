@@ -1,21 +1,49 @@
-name: Deploy
+name: Build & Deploy
+
 on:
   push:
     branches: [main]
+  workflow_dispatch:
+
+env:
+  SERVER_HOST: 38.76.185.215
+  TARGET_DIR: /var/www/upxuu
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 9
-      - run: pnpm install
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
       - run: pnpm build
-      - uses: actions/upload-artifact@v4
-        with:
-          name: dist
-          path: dist/
+
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SERVER_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H ${{ env.SERVER_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Ensure target directory exists
+        run: |
+          ssh -i ~/.ssh/deploy_key \
+            "${{ secrets.SERVER_USER }}@${{ env.SERVER_HOST }}" \
+            "mkdir -p ${{ env.TARGET_DIR }}"
+
+      - name: Rsync dist to server
+        run: |
+          rsync -avz --delete \
+            -e "ssh -i ~/.ssh/deploy_key" \
+            dist/ \
+            "${{ secrets.SERVER_USER }}@${{ env.SERVER_HOST }}:${{ env.TARGET_DIR }}/"

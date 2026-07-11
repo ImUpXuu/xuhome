@@ -50,7 +50,6 @@
     "vite": "^6.2.3"
   },
   "devDependencies": {
-    "@astrojs/node": "^10.1.2",
     "@types/express": "^4.17.21",
     "@types/node": "^22.14.0",
     "@types/react-syntax-highlighter": "^15.5.13",
