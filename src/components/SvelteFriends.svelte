@@ -64,7 +64,7 @@
              <img src={siteConfig.avatar} alt={siteConfig.author} class="w-full h-full object-cover" />
            </div>
         </div>
-        <h1 class="text-2xl font-black text-[#0284c7] text-center tracking-wider mb-2">{siteConfig.author}</h1>
+        <h1 class="text-xl font-black text-[#0284c7] text-center tracking-wider mb-2">{siteConfig.author}</h1>
         <div class="h-0 border-b-2 border-dashed border-[#0284c7]/30 my-3 w-4/5 mx-auto"></div>
         
         <div class="text-sm font-bold text-slate-600 text-center mb-4 leading-relaxed">
@@ -79,7 +79,7 @@
       <!-- Title bar header -->
       <div class="border-b-4 border-[#0284c7] pb-6 mb-6 md:mb-8 text-center md:text-left flex flex-col md:flex-row justify-between items-center gap-4">
         <div>
-          <h1 class="text-2xl sm:text-3xl md:text-4xl font-black text-[#0284c7] mb-3 leading-tight uppercase font-sans">Friends 友情链接</h1>
+          <h1 class="text-xl sm:text-2xl md:text-3xl font-black text-[#0284c7] mb-3 leading-tight uppercase font-sans">Friends 友情链接</h1>
           <div class="flex flex-wrap items-center gap-2.5 sm:gap-4 justify-center md:justify-start">
             <span class="text-slate-500 font-bold font-mono text-xs bg-slate-100 px-20 py-0.5 border border-slate-200 rounded-sm">那些人，那些事</span>
             <span class="text-[10px] sm:text-xs font-mono font-bold text-[#f59e0b] bg-amber-50 px-2 py-0.5 border border-[#f59e0b] rounded-sm">
