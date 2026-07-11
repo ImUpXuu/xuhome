@@ -5,10 +5,15 @@
 
   let searchTerm = "";
   let copied = false;
+  let shuffled: Friend[] = [];
+
+  onMount(() => {
+    shuffled = [...friendsConfig].sort(() => Math.random() - 0.5);
+  });
 
   $: filteredFriends = searchTerm.trim() === "" 
-    ? friendsConfig 
-    : friendsConfig.filter(f => 
+    ? shuffled 
+    : shuffled.filter(f => 
         f.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         f.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
         f.url.toLowerCase().includes(searchTerm.toLowerCase())
