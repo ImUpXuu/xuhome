@@ -58,67 +58,6 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
     <link rel="canonical" href={canonicalURL} />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="msvalidate.01" content="8814B55DAA53801F47B998FE06421544" />
-    <script is:inline>
-    (function() {
-      var host = window.location.hostname;
-      if (host === 'upxuu.com' || host === 'www.upxuu.com' || host === 'localhost' || host.endsWith('.vercel.app')) return;
-      function show() {
-        if (!document.body) { setTimeout(show, 50); return; }
-        var t = document.createElement('div');
-        t.id = 'xuwarn';
-        t.style.cssText = 'position:fixed;bottom:0;left:0;right:0;z-index:999999;font-family:sans-serif;padding:8px 12px;transform:translateY(120%);opacity:0;transition:all 0.5s ease-out';
-        t.innerHTML = '<div style="background:#dc2626;border:3px solid #991b1b;padding:0;max-width:580px;margin:0 auto;position:relative;overflow:hidden;border-radius:2px">' +
-          '<div id="xuwarn-bar" style="display:flex;align-items:center;gap:8px;padding:8px 36px 8px 12px;cursor:pointer">' +
-            '<span style="font-size:14px">\u26A0\uFE0F</span>' +
-            '<span style="font-size:12px;font-weight:900;color:#fff;flex:1">非法反代站点 \u00B7 DMCA申诉中 | Illegal Proxy \u00B7 DMCA in progress</span>' +
-            '<span id="xuwarn-arrow" style="font-size:14px;color:#fff;transition:transform 0.3s">\u25BC</span>' +
-          '</div>' +
-          '<div id="xuwarn-body" style="display:none;background:#faf8f5;padding:14px 16px;border-top:3px solid #991b1b;max-height:70vh;overflow-y:auto;font-size:12px;font-weight:700;color:#1e293b;line-height:1.7">' +
-            '<button id="xuwarn-close" style="position:absolute;top:8px;right:10px;background:none;border:none;font-size:18px;cursor:pointer;color:#94a3b8;padding:0;line-height:1;z-index:1">\u2716</button>' +
-            '<div style="margin-bottom:8px"><span style="font-size:14px;font-weight:900;color:#dc2626">\u26A0\uFE0F 关于 qas458.com 盗用本站内容的声明</span><br><span style="font-size:11px;color:#64748b">Notice Regarding Content Theft by qas458.com</span></div>' +
-            '<div style="border:2px dashed #dc2626;background:#fff;padding:10px 12px;margin-bottom:8px">' +
-              '<div style="margin-bottom:4px;font-size:13px;font-weight:900;color:#dc2626">中文声明</div>' +
-              '2026年7月9日<br><br>' +
-              '本人于 14:00 发现 qas458.com 通过 Cloudflare Worker 技术全站镜像 upxuu.com，实时同步所有文章、图片及页面内容，未获任何授权。<br><br>' +
-              '发现后，本人于 14:30 启动强制重定向，将所有访问 qas458.com 的用户引导至 upxuu.com，并弹窗提醒该站为钓鱼站点。<br><br>' +
-              '但考虑到重定向可能影响搜索引擎对 upxuu.com 的正常收录和排名评估，本人于 18:00 取消重定向，正式向 <b>Google</b>、<b>Cloudflare</b> 和 <b>Bing</b> 分别提交 DMCA 侵权投诉，请求将该盗版站所有页面从搜索结果中移除。<br><br>' +
-              'qas458.com 的行为已严重侵犯本人版权，并误导用户、损害本站品牌声誉。本人保留进一步追究法律责任的权利。<br><br>' +
-              '请广大用户通过 <a href="https://upxuu.com" style="color:#0284c7;font-weight:900;text-decoration:underline">upxuu.com</a> 访问正版内容，切勿在盗版站提交任何个人信息。' +
-            '</div>' +
-            '<div style="border:2px dashed #0284c7;background:#fff;padding:10px 12px;margin-bottom:8px">' +
-              '<div style="margin-bottom:4px;font-size:13px;font-weight:900;color:#0284c7">English Notice</div>' +
-              'July 9, 2026<br><br>' +
-              'At 14:00, I discovered that qas458.com had mirrored the entire upxuu.com website using Cloudflare Worker technology, synchronizing all articles, images, and page content in real-time without any authorization.<br><br>' +
-              'At 14:30, I implemented a forced redirect, routing all visitors from qas458.com to upxuu.com, with a popup warning that the site is a phishing/proxy site.<br><br>' +
-              'However, considering that redirects may affect how search engines index and rank upxuu.com, I removed the redirect at 18:00 and formally filed DMCA takedown complaints with <b>Google</b>, <b>Cloudflare</b>, and <b>Bing</b>, requesting removal of all pages from this infringing site from search results.<br><br>' +
-              'The actions of qas458.com constitute a serious infringement of my copyright, mislead users, and damage the brand reputation of this site. I reserve the right to pursue further legal action.<br><br>' +
-              'Please visit <a href="https://upxuu.com" style="color:#0284c7;font-weight:900;text-decoration:underline">upxuu.com</a> for authentic content and do not submit any personal information on the infringing site.' +
-            '</div>' +
-            '<div style="text-align:right;font-size:13px;font-weight:900;color:#1e293b">upxuu.com<br>2026\u5E747\u67089\u65E5</div>' +
-          '</div>' +
-        '</div>';
-        document.body.appendChild(t);
-        setTimeout(function() { t.style.transform = 'translateY(0)'; t.style.opacity = '1'; }, 100);
-        var bar = t.querySelector('#xuwarn-bar');
-        var body = t.querySelector('#xuwarn-body');
-        var arrow = t.querySelector('#xuwarn-arrow');
-        var expanded = false;
-        bar.onclick = function() {
-          expanded = !expanded;
-          body.style.display = expanded ? 'block' : 'none';
-          arrow.style.transform = expanded ? 'rotate(180deg)' : '';
-        };
-        (t.querySelector('#xuwarn-close') || {}).onclick = function(e) {
-          e.stopPropagation();
-          t.style.transform = 'translateY(120%)'; t.style.opacity = '0';
-          setTimeout(function() { t.remove(); }, 500);
-        };
-      }
-      if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', show); }
-      else { show(); }
-    })();
-    </script>
-
     {/* Favicon - use avatar image */}
     <link rel="icon" href={siteConfig.avatar} />
     <link rel="apple-touch-icon" href={siteConfig.avatar} />
