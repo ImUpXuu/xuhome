@@ -85,6 +85,9 @@
             <span class="text-[10px] sm:text-xs font-mono font-bold text-[#f59e0b] bg-amber-50 px-2 py-0.5 border border-[#f59e0b] rounded-sm">
               共计 {friendsConfig.length} 位好友
             </span>
+            <span class="text-[10px] sm:text-xs font-mono font-bold text-green-600 bg-green-50 px-2 py-0.5 border border-green-400 rounded-sm">
+              随机排序 (:
+            </span>
           </div>
         </div>
 
