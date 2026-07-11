@@ -19,11 +19,18 @@
         f.url.toLowerCase().includes(searchTerm.toLowerCase())
       );
 
-  function copyTemplate() {
-    const text = `=== 友链申请信息 ===\n名称: UpXuu's blog\n链接: https://upxuu.com\n头像: https://upxuu.com/images/me.jpg\n介绍: 逐光而上\n====================`;
+  let copiedLabel = "";
+
+  function copyText(text: string, label: string) {
     navigator.clipboard.writeText(text);
     copied = true;
-    setTimeout(() => copied = false, 2000);
+    copiedLabel = label;
+    setTimeout(() => { copied = false; copiedLabel = ""; }, 2000);
+  }
+
+  function copyTemplate() {
+    const text = `=== 友链申请信息 ===\n名称: UpXuu's blog\n链接: https://upxuu.com\n头像: https://upxuu.com/images/me.jpg\n介绍: 逐光而上\n====================`;
+    copyText(text, "全部");
   }
 
   // Fallback unique avatars gradient builder based on name hashes
@@ -209,36 +216,34 @@
           </span>
           
           <ul class="space-y-1.5 text-xs text-slate-600 list-none leading-loose">
-            <li>
+            <li on:click={() => copyText("UpXuu's blog", "站点名称")} class="cursor-pointer hover:bg-slate-100 rounded-sm px-1 -mx-1 transition-colors">
               <strong class="text-slate-800">站点名称：</strong> UpXuu's blog
             </li>
-            <li>
+            <li on:click={() => copyText("https://upxuu.com", "站点域名")} class="cursor-pointer hover:bg-slate-100 rounded-sm px-1 -mx-1 transition-colors">
               <strong class="text-slate-800">站点域名：</strong> https://upxuu.com
             </li>
-            <li>
+            <li on:click={() => copyText("https://upxuu.com/images/me.jpg", "站点头像")} class="cursor-pointer hover:bg-slate-100 rounded-sm px-1 -mx-1 transition-colors">
               <strong class="text-slate-800">站点头像：</strong> https://upxuu.com/images/me.jpg
             </li>
-            <li>
+            <li on:click={() => copyText("逐光而上", "站点简介")} class="cursor-pointer hover:bg-slate-100 rounded-sm px-1 -mx-1 transition-colors">
               <strong class="text-slate-800">站点简介：</strong> 逐光而上
             </li>
           </ul>
 
-          <button
-            on:click={copyTemplate}
-            class="mt-4 w-full py-2 bg-[#0ea5e9] text-white border-3 border-slate-800 hover:bg-[#0284c7] transition-all cursor-pointer font-black rounded-sm shadow-[3px_3px_0px_0px_rgba(2,132,199,0.3)] flex items-center justify-center gap-1.5 uppercase text-xs hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none"
-          >
-            {#if copied}
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-emerald-300 stroke-[3]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-              </svg>
-              <span>已复制到剪贴板！</span>
-            {:else}
+          <div class="flex items-center gap-2 mt-4">
+            <button
+              on:click={copyTemplate}
+              class="flex-1 py-2 bg-[#0ea5e9] text-white border-3 border-slate-800 hover:bg-[#0284c7] transition-all cursor-pointer font-black rounded-sm shadow-[3px_3px_0px_0px_rgba(2,132,199,0.3)] flex items-center justify-center gap-1.5 uppercase text-xs hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none"
+            >
               <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 stroke-[3]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
               </svg>
-              <span>快速复制本站格式</span>
+              <span>复制全部</span>
+            </button>
+            {#if copied}
+              <span class="text-[10px] font-black text-emerald-600 shrink-0 animate-pulse">已复制 {copiedLabel}</span>
             {/if}
-          </button>
+          </div>
         </div>
       </div>
     </div>
