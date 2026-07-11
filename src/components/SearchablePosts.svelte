@@ -220,41 +220,40 @@
     {#if totalPages > 1}
       <div class="flex flex-col items-center gap-6 mt-12 pb-12">
         <div class="flex flex-wrap justify-center items-center gap-2 sm:gap-3">
-          <a
-            href={currentPage > 1 ? (currentPage === 2 ? "/" : `/page/${currentPage - 1}`) : undefined}
-            on:click|preventDefault={prevPage}
+          <button
+            on:click={prevPage}
+            disabled={currentPage === 1}
             aria-label="Previous Page"
             class="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-white dark:bg-slate-700 border-3 sm:border-4 border-[#0284c7] rounded-sm {currentPage === 1 ? 'opacity-30 cursor-not-allowed' : 'hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer shadow-[3px_3px_0px_0px_#0284c7] sm:shadow-[4px_4px_0px_0px_#0284c7]'} "
           >
             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 sm:w-6 sm:h-6 stroke-[3]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
             </svg>
-          </a>
+          </button>
 
           <!-- Page numbers hidden on small screens, show only arrows -->
           <div class="hidden sm:flex items-center gap-2 sm:gap-3">
             {#if pageNumbers[0] > 1}
-              <a href="/" on:click|preventDefault={() => goToPage(1)} class="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-white dark:bg-slate-700 border-3 sm:border-4 border-[#0284c7] rounded-sm font-black text-sm sm:text-base text-[#0284c7] hover:bg-[#0ea5e9] hover:text-white transition-colors shadow-[3px_3px_0px_0px_#0284c7] sm:shadow-[4px_4px_0px_0px_#0284c7] cursor-pointer">1</a>
+              <button on:click={() => goToPage(1)} class="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-white dark:bg-slate-700 border-3 sm:border-4 border-[#0284c7] rounded-sm font-black text-sm sm:text-base text-[#0284c7] hover:bg-[#0ea5e9] hover:text-white transition-colors shadow-[3px_3px_0px_0px_#0284c7] sm:shadow-[4px_4px_0px_0px_#0284c7] cursor-pointer">1</button>
               {#if pageNumbers[0] > 2}
                 <span class="text-[#0284c7] font-black px-1">...</span>
               {/if}
             {/if}
 
             {#each pageNumbers as p}
-              <a
-                href={p === 1 ? "/" : `/page/${p}`}
-                on:click|preventDefault={() => goToPage(p)}
+              <button
+                on:click={() => goToPage(p)}
                 class="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center border-3 sm:border-4 border-[#0284c7] rounded-sm font-black text-sm sm:text-base transition-all cursor-pointer shadow-[3px_3px_0px_0px_#0284c7] sm:shadow-[4px_4px_0px_0px_#0284c7] active:translate-y-1 active:shadow-none {currentPage === p ? 'bg-[#0284c7] text-white' : 'bg-white dark:bg-slate-700 text-[#0284c7] hover:bg-[#ebf3ff] dark:hover:bg-slate-600'}"
               >
                 {p}
-              </a>
+              </button>
             {/each}
 
             {#if pageNumbers[pageNumbers.length - 1] < totalPages}
               {#if pageNumbers[pageNumbers.length - 1] < totalPages - 1}
                 <span class="text-[#0284c7] font-black px-1">...</span>
               {/if}
-              <a href={`/page/${totalPages}`} on:click|preventDefault={() => goToPage(totalPages)} class="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-white dark:bg-slate-700 border-3 sm:border-4 border-[#0284c7] rounded-sm font-black text-sm sm:text-base text-[#0284c7] hover:bg-[#0ea5e9] hover:text-white transition-colors shadow-[3px_3px_0px_0px_#0284c7] sm:shadow-[4px_4px_0px_0px_#0284c7] cursor-pointer">{totalPages}</a>
+              <button on:click={() => goToPage(totalPages)} class="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-white dark:bg-slate-700 border-3 sm:border-4 border-[#0284c7] rounded-sm font-black text-sm sm:text-base text-[#0284c7] hover:bg-[#0ea5e9] hover:text-white transition-colors shadow-[3px_3px_0px_0px_#0284c7] sm:shadow-[4px_4px_0px_0px_#0284c7] cursor-pointer">{totalPages}</button>
             {/if}
           </div>
 
@@ -263,16 +262,16 @@
             {currentPage} / {totalPages}
           </div>
 
-          <a
-            href={currentPage < totalPages ? `/page/${currentPage + 1}` : undefined}
-            on:click|preventDefault={nextPage}
+          <button
+            on:click={nextPage}
+            disabled={currentPage === totalPages}
             aria-label="Next Page"
             class="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-white dark:bg-slate-700 border-3 sm:border-4 border-[#0284c7] rounded-sm {currentPage === totalPages ? 'opacity-30 cursor-not-allowed' : 'hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer shadow-[3px_3px_0px_0px_#0284c7] sm:shadow-[4px_4px_0px_0px_#0284c7] active:translate-y-1 active:shadow-none'}"
           >
             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 sm:w-6 sm:h-6 stroke-[3]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
             </svg>
-          </a>
+          </button>
         </div>
 
         <!-- Jump to page input -->
