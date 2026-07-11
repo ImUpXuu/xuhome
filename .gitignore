@@ -1,5 +1,6 @@
 node_modules/
 build/
+public/*.txt
 waline*.json
 dist/
 .astro/
