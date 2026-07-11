@@ -795,8 +795,8 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
       show(anchor, href);
     }, true);
 
-    document.addEventListener('astro:page-load', dismiss);
-    document.addEventListener('astro:before-preparation', dismiss);
+    document.addEventListener('astro:page-load', function() { dismiss(); popover = null; });
+    document.addEventListener('astro:before-preparation', function() { dismiss(); popover = null; });
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Escape' && popover && popover.style.pointerEvents === 'auto') dismiss();
     });
