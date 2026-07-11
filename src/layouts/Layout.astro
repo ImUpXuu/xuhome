@@ -315,37 +315,23 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
       </footer>
     </div>
 
-<script>
-  import { siteConfig } from '../config/site';
-
+<script is:inline>
   function initFooter() {
     Promise.allSettled([
-      fetch(siteConfig.analytics.statsApi.alltime, { signal: AbortSignal.timeout(5000) }),
-      fetch(siteConfig.analytics.statsApi.active, { signal: AbortSignal.timeout(5000) })
+      fetch('https://vapi.upxuu.com/statsapi/alltime', { signal: AbortSignal.timeout(5000) }),
+      fetch('https://vapi.upxuu.com/api/active', { signal: AbortSignal.timeout(5000) })
     ]).then(async ([statsRes, activeRes]) => {
       let pv = 0, uv = 0, vt = 0, active = 0;
       if (statsRes.status === 'fulfilled') {
-        try {
-          const d = await statsRes.value.json();
-          pv = typeof d.pageviews === 'object' ? (d.pageviews?.value ?? 0) : (d.pageviews ?? 0);
-          uv = typeof d.visitors === 'object' ? (d.visitors?.value ?? 0) : (d.visitors ?? 0);
-          vt = typeof d.visits === 'object' ? (d.visits?.value ?? 0) : (d.visits ?? 0);
-        } catch {}
+        try { const d = await statsRes.value.json(); pv = typeof d.pageviews === 'object' ? (d.pageviews?.value ?? 0) : (d.pageviews ?? 0); uv = typeof d.visitors === 'object' ? (d.visitors?.value ?? 0) : (d.visitors ?? 0); vt = typeof d.visits === 'object' ? (d.visits?.value ?? 0) : (d.visits ?? 0); } catch {}
       }
       if (activeRes.status === 'fulfilled') {
-        try {
-          const d = await activeRes.value.json();
-          active = Array.isArray(d) ? d.length : (d.total ?? d.visitors ?? 0);
-        } catch {}
+        try { const d = await activeRes.value.json(); active = Array.isArray(d) ? d.length : (d.total ?? d.visitors ?? 0); } catch {}
       }
-      const pvEl = document.getElementById('stat-pv');
-      if (pvEl) pvEl.textContent = pv.toLocaleString();
-      const uvEl = document.getElementById('stat-uv');
-      if (uvEl) uvEl.textContent = uv.toLocaleString();
-      const vtEl = document.getElementById('stat-vt');
-      if (vtEl) vtEl.textContent = vt.toLocaleString();
-      const olEl = document.getElementById('stat-online');
-      if (olEl) olEl.textContent = String(active);
+      const pvEl = document.getElementById('stat-pv'); if (pvEl) pvEl.textContent = pv.toLocaleString();
+      const uvEl = document.getElementById('stat-uv'); if (uvEl) uvEl.textContent = uv.toLocaleString();
+      const vtEl = document.getElementById('stat-vt'); if (vtEl) vtEl.textContent = vt.toLocaleString();
+      const olEl = document.getElementById('stat-online'); if (olEl) olEl.textContent = String(active);
     });
   }
 
@@ -383,7 +369,7 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
 
   if (!window._uptimeStarted) {
     window._uptimeStarted = true;
-    const start = siteConfig.startTime;
+    const start = new Date(2025, 8, 30, 20, 20, 0);
     setInterval(function() {
       const el = document.getElementById('uptime-display');
       if (!el) return;
@@ -542,12 +528,10 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
 </script>
 
 <!-- External link confirmation popover -->
-<script>
-  import { siteConfig } from '../config/site';
-
+<script is:inline>
   (function() {
-    const SITE_HOST = new URL(siteConfig.url).hostname;
-    const TRUSTED = siteConfig.trustedDomains;
+    const SITE_HOST = 'upxuu.com';
+    var TRUSTED = ['github.com','bilibili.com','space.bilibili.com','icp.gov.moe'];
     let popover = null;
     let countdownTimer = null;
     let pendingUrl = '';
