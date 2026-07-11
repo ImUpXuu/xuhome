@@ -319,33 +319,34 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
   import { siteConfig } from '../config/site';
 
   function initFooter() {
-    (async function() {
-      try {
-        const [statsRes, activeRes] = await Promise.allSettled([
-          fetch(siteConfig.analytics.statsApi.alltime),
-          fetch(siteConfig.analytics.statsApi.active)
-        ]);
-        let pv = 0, uv = 0, vt = 0, active = 0;
-        if (statsRes.status === 'fulfilled') {
+    Promise.allSettled([
+      fetch(siteConfig.analytics.statsApi.alltime, { signal: AbortSignal.timeout(5000) }),
+      fetch(siteConfig.analytics.statsApi.active, { signal: AbortSignal.timeout(5000) })
+    ]).then(async ([statsRes, activeRes]) => {
+      let pv = 0, uv = 0, vt = 0, active = 0;
+      if (statsRes.status === 'fulfilled') {
+        try {
           const d = await statsRes.value.json();
           pv = typeof d.pageviews === 'object' ? (d.pageviews?.value ?? 0) : (d.pageviews ?? 0);
           uv = typeof d.visitors === 'object' ? (d.visitors?.value ?? 0) : (d.visitors ?? 0);
           vt = typeof d.visits === 'object' ? (d.visits?.value ?? 0) : (d.visits ?? 0);
-        }
-        if (activeRes.status === 'fulfilled') {
+        } catch {}
+      }
+      if (activeRes.status === 'fulfilled') {
+        try {
           const d = await activeRes.value.json();
           active = Array.isArray(d) ? d.length : (d.total ?? d.visitors ?? 0);
-        }
-        const pvEl = document.getElementById('stat-pv');
-        if (pvEl) pvEl.textContent = pv.toLocaleString();
-        const uvEl = document.getElementById('stat-uv');
-        if (uvEl) uvEl.textContent = uv.toLocaleString();
-        const vtEl = document.getElementById('stat-vt');
-        if (vtEl) vtEl.textContent = vt.toLocaleString();
-        const olEl = document.getElementById('stat-online');
-        if (olEl) olEl.textContent = String(active);
-      } catch {}
-    })();
+        } catch {}
+      }
+      const pvEl = document.getElementById('stat-pv');
+      if (pvEl) pvEl.textContent = pv.toLocaleString();
+      const uvEl = document.getElementById('stat-uv');
+      if (uvEl) uvEl.textContent = uv.toLocaleString();
+      const vtEl = document.getElementById('stat-vt');
+      if (vtEl) vtEl.textContent = vt.toLocaleString();
+      const olEl = document.getElementById('stat-online');
+      if (olEl) olEl.textContent = String(active);
+    });
   }
 
   // Show real page performance metrics (load time + transfer size)
@@ -469,75 +470,12 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
   const bottomLoader = document.getElementById('bottom-loader');
   const bottomLoaderBar = bottomLoader?.querySelector('div');
 
-  // PerformanceObserver-based real resource tracking
-  let resourceObserver = null;
-  let navStartTime = 0;
-  let pendingResources = new Set();
-  let loadedCount = 0;
-  let totalCount = 0;
   let loaderActive = false;
 
   function setProgress(pct) {
     const clamped = Math.max(0, Math.min(100, pct));
-    // Top loader
-    if (navLoaderBar) {
-      navLoaderBar.style.width = clamped + '%';
-    }
-    // Bottom loader: reflect same real progress
-    if (bottomLoaderBar) {
-      bottomLoaderBar.style.width = clamped + '%';
-    }
-  }
-
-  function startResourceTracking() {
-    if (resourceObserver) {
-      resourceObserver.disconnect();
-    }
-    navStartTime = performance.now();
-    pendingResources = new Set();
-    loadedCount = 0;
-    totalCount = 0;
-    setProgress(0);
-
-    try {
-      resourceObserver = new PerformanceObserver((list) => {
-        if (!loaderActive) return;
-        for (const entry of list.getEntries()) {
-          // Only track resources loaded AFTER navigation started
-          if (entry.startTime < navStartTime) continue;
-          // Only track meaningful resources
-          if (entry.initiatorType === 'fetch' || entry.initiatorType === 'xmlhttprequest') continue;
-          const key = entry.name;
-          if (!pendingResources.has(key)) {
-            pendingResources.add(key);
-            totalCount++;
-          }
-          // transferSize can be 0 for cached/304 — count as loaded instantly
-          if (entry.transferSize > 0 || entry.duration > 0) {
-            if (pendingResources.has(key)) {
-              pendingResources.delete(key);
-              loadedCount++;
-            }
-          }
-        }
-        // Calculate real progress (reserve 5%-95% range while loading)
-        // Cached resources are counted as loaded instantly
-        const remaining = pendingResources.size;
-        if (totalCount > 0) {
-          const realPct = Math.round((loadedCount / totalCount) * 90); // 0-90% for resources
-          setProgress(5 + realPct); // Start at 5%, resource loading covers 5%-95%
-        } else {
-          // No resources detected yet, show 10%
-          setProgress(10);
-        }
-      });
-      resourceObserver.observe({ type: 'resource', buffered: false });
-    } catch (e) {
-      // PerformanceObserver not supported — fall through to fake progress
-    }
-
-    // Also track document readiness
-    loaderActive = true;
+    if (navLoaderBar) navLoaderBar.style.width = clamped + '%';
+    if (bottomLoaderBar) bottomLoaderBar.style.width = clamped + '%';
   }
 
   function startNavLoader() {
@@ -545,40 +483,15 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
       clearTimeout(navLoaderTimer);
       navLoader.classList.remove('hidden');
       navLoaderBar.style.transition = 'width 0.3s ease-out';
+      navLoaderBar.style.width = '3%';
     }
 
-    // Bottom loader: slide up
     if (bottomLoader && bottomLoaderBar) {
       clearTimeout(bottomLoaderTimer);
       bottomLoader.style.transform = 'translateY(0)';
-      bottomLoaderBar.style.width = '0%';
+      bottomLoaderBar.style.width = '3%';
       bottomLoaderBar.style.transition = 'width 0.3s ease-out';
     }
-
-    setProgress(3);
-    startResourceTracking();
-
-    // Fallback timer: if no resources are detected within 2s, simulate steady progress
-    clearTimeout(window.__loaderFallbackTimer);
-    window.__loaderFallbackTimer = setTimeout(() => {
-      if (!loaderActive) return;
-      if (totalCount === 0) {
-        // No resources detected — simulate incremental progress up to 85%
-        let fakeProgress = 10;
-        window.__loaderFallbackInterval = setInterval(() => {
-          if (!loaderActive) {
-            clearInterval(window.__loaderFallbackInterval);
-            return;
-          }
-          fakeProgress += Math.random() * 8 + 2;
-          if (fakeProgress >= 85) {
-            fakeProgress = 85;
-            clearInterval(window.__loaderFallbackInterval);
-          }
-          setProgress(fakeProgress);
-        }, 400);
-      }
-    }, 2000);
   }
 
   function completeNavLoader() {
@@ -591,27 +504,22 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
       resourceObserver = null;
     }
 
-    // Jump to 100%
-    if (navLoaderBar) setProgress(100);
-    if (bottomLoaderBar) setProgress(100);
+    requestAnimationFrame(() => {
+      if (navLoaderBar) { navLoaderBar.style.width = '100%'; navLoaderBar.style.transition = 'width 0.15s ease-out'; }
+      if (bottomLoaderBar) { bottomLoaderBar.style.width = '100%'; bottomLoaderBar.style.transition = 'width 0.15s ease-out'; }
 
-    if (navLoader && navLoaderBar) {
-      clearTimeout(navLoaderTimer);
-      navLoaderBar.style.transition = 'width 0.2s ease-out';
-      navLoaderBar.style.width = '100%';
-      navLoaderTimer = setTimeout(() => {
-        navLoader.classList.add('hidden');
-        navLoaderBar.style.width = '0%';
-      }, 300);
-    }
+      if (navLoader) {
+        clearTimeout(navLoaderTimer);
+        navLoaderTimer = setTimeout(() => {
+          navLoader.classList.add('hidden');
+          if (navLoaderBar) navLoaderBar.style.width = '0%';
+        }, 300);
+      }
 
-    // Bottom loader: finish then slide down
-    if (bottomLoader && bottomLoaderBar) {
-      clearTimeout(bottomLoaderTimer);
-      bottomLoaderBar.style.transition = 'width 0.2s ease-out';
-      bottomLoaderBar.style.width = '100%';
-      bottomLoaderTimer = setTimeout(() => {
-        bottomLoader.style.transform = 'translateY(100%)';
+      if (bottomLoader) {
+        clearTimeout(bottomLoaderTimer);
+        bottomLoaderTimer = setTimeout(() => {
+          bottomLoader.style.transform = 'translateY(100%)';
         setTimeout(() => {
           bottomLoaderBar.style.width = '0%';
         }, 300);
