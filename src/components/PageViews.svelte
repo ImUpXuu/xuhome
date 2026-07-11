@@ -8,7 +8,7 @@
   onMount(async () => {
     try {
       const p = path.startsWith('/') ? path : `/posts/${path}`;
-      const res = await fetch(`https://vapi.upxuu.com/statsapi/alltime?path=${encodeURIComponent(p)}`);
+      const res = await fetch(`https://vapi.upxuu.com/statsapi/alltime?path=${encodeURIComponent(p)}`, { signal: AbortSignal.timeout(5000) });
       const data = await res.json();
       if (data) {
         views = typeof data.pageviews === 'object' ? (data.pageviews?.value ?? 0) : (data.pageviews ?? 0);
