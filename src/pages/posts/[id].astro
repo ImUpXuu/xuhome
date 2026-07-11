@@ -1,6 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { getProcessedPosts, getProcessedTalks } from '../../utils/postsFetcher';
+import { getProcessedPosts } from '../../utils/postsFetcher';
 import { getCollection } from 'astro:content';
 import { siteConfig, i18nConfig, contentConfig } from '../../config/site';
 import { calculateReadingTime } from '../../utils/readingTime';
@@ -9,7 +9,7 @@ import { calculateReadingTime } from '../../utils/readingTime';
 import { AiSummary } from '../../components/AiSummary';
 import { AiChat } from '../../components/AiChat';
 import { WalineComment } from '../../components/WalineComment';
-import { TalkTicker } from '../../components/TalkTicker';
+
 import ShareButton from '../../components/ShareButton.svelte';
 import PageViews from '../../components/PageViews.svelte';
 import LeftSidebar from '../../components/LeftSidebar.astro';
@@ -72,8 +72,8 @@ const relatedPosts = (() => {
   return scored;
 })();
 
-const allTalksData = await getProcessedTalks();
 ---
+
 
 <Layout 
   title={post.title}
@@ -242,8 +242,7 @@ const allTalksData = await getProcessedTalks();
           )}
         </div>
 
-        {/* Talk ticker and Waline integration */}
-        <TalkTicker talks={allTalksData} client:only="react" />
+        {/* Waline Comments */}
         <WalineComment client:idle />
       </div>
 
