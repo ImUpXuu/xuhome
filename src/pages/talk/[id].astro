@@ -2,7 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import { getProcessedTalks } from '../../utils/postsFetcher';
 import SvelteTalkDetail from '../../components/SvelteTalkDetail.svelte';
-import CommentSystem from '../../components/CommentSystem.astro';
+import { WalineComment } from '../../components/WalineComment';
 import ShareButton from '../../components/ShareButton.svelte';
 import '@fancyapps/ui/dist/fancybox/fancybox.css';
 import { i18nConfig } from '../../config/site';
@@ -36,5 +36,5 @@ const { talk } = Astro.props;
       client:only="svelte"
     />
   </div>
-  <CommentSystem />
+  <WalineComment client:idle />
 </Layout>
