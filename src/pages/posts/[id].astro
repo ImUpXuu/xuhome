@@ -8,7 +8,7 @@ import { calculateReadingTime } from '../../utils/readingTime';
 // Import React elements to hydrate
 import { AiSummary } from '../../components/AiSummary';
 import { AiChat } from '../../components/AiChat';
-import CommentSystem from '../../components/CommentSystem.astro';
+import { WalineComment } from '../../components/WalineComment';
 
 import ShareButton from '../../components/ShareButton.svelte';
 import PageViews from '../../components/PageViews.svelte';
@@ -242,8 +242,8 @@ const relatedPosts = (() => {
           )}
         </div>
 
-        {/* Comments */}
-        <CommentSystem />
+        {/* Waline Comments */}
+        <WalineComment client:idle />
       </div>
 
       {/* Left Sidebar - AFTER main content in DOM for SEO */}

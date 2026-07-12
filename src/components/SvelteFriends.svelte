@@ -251,6 +251,7 @@
       </div>
     </div>
 
-
+    <!-- Waline comments placeholder (handled in Astro page) -->
+    <div id="waline-placeholder"></div>
   </div>
 </div>
