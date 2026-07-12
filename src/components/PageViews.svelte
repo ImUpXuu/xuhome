@@ -7,11 +7,13 @@
 
   onMount(async () => {
     try {
-      const p = path.startsWith('/') ? path : `/posts/${path}`;
-      const res = await fetch(`https://vapi.upxuu.com/statsapi/alltime?path=${encodeURIComponent(p)}`, { signal: AbortSignal.timeout(5000) });
+      var p = path.startsWith('/') ? path : '/posts/' + path;
+      if (!p.endsWith('/')) p += '/';
+      const res = await fetch('https://123.bluecat.qzz.io/api/stats?p=' + encodeURIComponent(p), { signal: AbortSignal.timeout(5000) });
       const data = await res.json();
       if (data) {
-        views = typeof data.pageviews === 'object' ? (data.pageviews?.value ?? 0) : (data.pageviews ?? 0);
+        var v = data[p];
+        views = v !== undefined ? v : 0;
       }
     } catch {}
     loading = false;

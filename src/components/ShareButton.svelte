@@ -19,11 +19,13 @@
 
   onMount(async () => {
     try {
-      const p = new URL(url || window.location.href).pathname;
-      const res = await fetch('https://vapi.upxuu.com/statsapi/alltime?path=' + encodeURIComponent(p), { signal: AbortSignal.timeout(5000) });
+      var p = new URL(url || window.location.href).pathname;
+      if (!p.endsWith('/')) p += '/';
+      const res = await fetch('https://123.bluecat.qzz.io/api/stats?p=' + encodeURIComponent(p), { signal: AbortSignal.timeout(5000) });
       const data = await res.json();
       if (data) {
-        pageViews = typeof data.pageviews === 'object' ? (data.pageviews?.value ?? 0) : (data.pageviews ?? 0);
+        var v = data[p];
+        pageViews = v !== undefined ? v : 0;
       }
     } catch {}
   });
