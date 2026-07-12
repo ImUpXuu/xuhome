@@ -432,7 +432,7 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
       if (!p.endsWith('/')) p += '/';
       if (p === _last) return;
       _last = p;
-      fetch('https://123.bluecat.qzz.io/api/track', {
+      fetch('https://beat.345696.xyz/api/track', {
         method: 'POST',
         body: JSON.stringify({ p: p }),
         headers: { 'Content-Type': 'application/json' }
