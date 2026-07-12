@@ -1,7 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import SvelteFriends from '../components/SvelteFriends.svelte';
-import { WalineComment } from '../components/WalineComment';
+import CommentSystem from '../components/CommentSystem.astro';
 import { i18nConfig } from '../config/site';
 ---
 
@@ -12,5 +12,5 @@ import { i18nConfig } from '../config/site';
   <div data-ext-bypass>
     <SvelteFriends client:load />
   </div>
-  <WalineComment client:idle />
+  <CommentSystem />
 </Layout>

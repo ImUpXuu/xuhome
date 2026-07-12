@@ -144,9 +144,6 @@
     </div>
   </div>
 
-  <!-- Waline comments placeholder -->
-  <div id="waline-placeholder"></div>
-
   <div class="mt-8 text-center flex justify-center pb-12 select-none">
       <a href="/talks" class="px-6 py-3 border-4 border-[#0284c7] text-[#0284c7] bg-white dark:bg-slate-700 font-black hover:bg-[#0284c7] hover:text-white transition-all cursor-pointer rounded-sm shadow-[6px_6px_0px_0px_#0284c7] uppercase tracking-widest text-sm flex items-center justify-center hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none">
         返回列表 / Back to Talks
