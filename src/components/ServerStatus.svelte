@@ -209,11 +209,11 @@
     </div>
     <div class="bg-[#faf8f5] border-2 border-[#0284c7]/20 rounded-sm px-3 py-2">
       <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">CPU 使用率</div>
-      <div class="text-lg font-black" style="color: {cpuColor}" class:font-mono>{currentCpu.toFixed(1)} <span class="text-xs text-slate-400">%</span></div>
+      <div class="text-lg font-black font-mono" style="color: {cpuColor}">{currentCpu.toFixed(1)} <span class="text-xs text-slate-400">%</span></div>
     </div>
     <div class="bg-[#faf8f5] border-2 border-[#0284c7]/20 rounded-sm px-3 py-2">
       <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">内存使用率</div>
-      <div class="text-lg font-black" style="color: {memColor}" class:font-mono>{currentMem.toFixed(1)} <span class="text-xs text-slate-400">%</span></div>
+      <div class="text-lg font-black font-mono" style="color: {memColor}">{currentMem.toFixed(1)} <span class="text-xs text-slate-400">%</span></div>
     </div>
   </div>
 
