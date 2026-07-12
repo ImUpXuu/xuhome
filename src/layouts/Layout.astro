@@ -321,10 +321,6 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
             <span>传输 <span id="perf-size" class="font-bold text-[#0284c7]">-</span></span>
           </div>
           <div id="footer-stats-mon" class="text-[10px] sm:text-xs text-slate-400 dark:text-slate-500">
-            <span>CPU <span id="mon-cpu" class="font-bold text-[#0284c7]">-</span></span>
-            <span class="mx-1">|</span>
-            <span>内存 <span id="mon-mem" class="font-bold text-[#0284c7]">-</span></span>
-            <span class="mx-1">|</span>
             <span>带宽 <span id="mon-down" class="font-bold text-[#10b981]">-</span>↓ <span id="mon-up" class="font-bold text-[#f59e0b]">-</span>↑</span>
             <span class="mx-1">|</span>
             <span>负载 <span id="mon-load" class="font-bold">-</span></span>
@@ -402,29 +398,24 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
 
   var MONITOR_API = 'https://monitor-api.upxuu.com';
   function initMonitor() {
-    function updateLoad(score, el) {
-      if (!el) return;
-      if (score <= 5) { el.textContent = score.toFixed(1); el.style.color = '#10b981'; }
-      else if (score <= 8) { el.textContent = score.toFixed(1); el.style.color = '#f59e0b'; }
-      else { el.textContent = score.toFixed(1); el.style.color = '#ef4444'; }
+    function getLoadLevel(dl) {
+      if (dl <= 5) return { text: dl.toFixed(2) + ' 正常', color: '#10b981' };
+      if (dl <= 8) return { text: dl.toFixed(2) + ' 较高', color: '#f59e0b' };
+      return { text: dl.toFixed(2) + ' 过高', color: '#ef4444' };
     }
-    function fetchStats() {
-      var cpuEl = document.getElementById('mon-cpu');
-      var memEl = document.getElementById('mon-mem');
+    function fetchBW() {
       var downEl = document.getElementById('mon-down');
       var upEl = document.getElementById('mon-up');
       var loadEl = document.getElementById('mon-load');
-      fetch(MONITOR_API + '/api/stats/current', { signal: AbortSignal.timeout(5000) }).then(function(r) { return r.json(); }).then(function(j) {
-        if (cpuEl) cpuEl.textContent = (j.cpu?.cpu ?? 0).toFixed(1) + '%';
-        if (memEl) memEl.textContent = (j.memory?.memory ?? 0).toFixed(1) + '%';
-        if (downEl) downEl.textContent = (j.network?.download ?? 0).toFixed(2);
-        if (upEl) upEl.textContent = (j.network?.upload ?? 0).toFixed(2);
-        var load = ((j.cpu?.cpu ?? 0) + (j.memory?.memory ?? 0)) / 20;
-        updateLoad(load, loadEl);
+      fetch(MONITOR_API + '/api/traffic/current', { signal: AbortSignal.timeout(5000) }).then(function(r) { return r.json(); }).then(function(j) {
+        var dl = j.download || 0, ul = j.upload || 0;
+        if (downEl) downEl.textContent = dl.toFixed(2);
+        if (upEl) upEl.textContent = ul.toFixed(2);
+        if (loadEl) { var lv = getLoadLevel(dl); loadEl.textContent = lv.text; loadEl.style.color = lv.color; }
       }).catch(function(){});
     }
-    fetchStats();
-    setInterval(fetchStats, 15000);
+    fetchBW();
+    setInterval(fetchBW, 15000);
   }
 
   document.addEventListener('astro:page-load', () => {
