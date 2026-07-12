@@ -436,25 +436,20 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
         <path stroke-linecap="round" stroke-linejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" />
       </svg>
     </button>
+    <script src="https://123.bluecat.qzz.io/beat.js"></script>
   </body>
 </html>
 
 <script is:inline data-astro-rerun>
 {
-  (function() {
-    var _p = window.location.pathname;
-    if (!_p.endsWith('/')) _p += '/';
-    console.log('[beat] page:', _p);
-    var _old = document.getElementById('__beat_js');
-    if (_old) { console.log('[beat] remove old script'); _old.remove(); }
-    var _s = document.createElement('script');
-    _s.id = '__beat_js';
-    _s.src = 'https://123.bluecat.qzz.io/beat.js?_=' + Date.now();
-    _s.onload = function() { console.log('[beat] script loaded OK for:', _p); };
-    _s.onerror = function() { console.error('[beat] script LOAD FAILED for:', _p); };
-    document.head.appendChild(_s);
-    console.log('[beat] script appended to head');
-  })();
+  try {
+    var _r = document.getElementById('__beat');
+    if (_r) _r.remove();
+    var _b = document.createElement('script');
+    _b.id = '__beat';
+    _b.src = 'https://123.bluecat.qzz.io/beat.js?_=' + Date.now();
+    document.head.appendChild(_b);
+  } catch(e) {}
 
   function setupGlobalScrollBar() {
     const indicator = document.getElementById('scroll-bar-indicator');
