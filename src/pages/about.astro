@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import { siteConfig, aboutConfig } from '../config/site';
 import { Content } from '../config/about.md';
+import ServerStatus from '../components/ServerStatus.svelte';
 
 const skills = aboutConfig.skills;
 
@@ -276,6 +277,8 @@ function fmtPlayCount(n: number): string {
             </div>
           </div>
         </div>
+
+        <ServerStatus client:load />
 
       </div>
 

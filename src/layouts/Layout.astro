@@ -320,6 +320,9 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
             <span class="mx-1">·</span>
             <span>传输 <span id="perf-size" class="font-bold text-[#0284c7]">-</span></span>
           </div>
+          <div id="footer-bandwidth" class="text-[10px] sm:text-xs text-slate-400 dark:text-slate-500">
+            <span>带宽 <span id="bw-down" class="font-bold text-[#10b981]">-</span> ↓ <span id="bw-up" class="font-bold text-[#f59e0b]">-</span> ↑ <span class="text-slate-500">|</span> 平均 <span id="bw-avg" class="font-bold text-[#0284c7]">-</span></span>
+          </div>
         </div>
       </footer>
     </div>
@@ -391,9 +394,23 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
     }, 10);
   }
 
+  var MONITOR_API = 'https://monitor-api.upxuu.com';
+  function initBandwidth() {
+    function fetchBW() {
+      var downEl = document.getElementById('bw-down');
+      var upEl = document.getElementById('bw-up');
+      var avgEl = document.getElementById('bw-avg');
+      fetch(MONITOR_API + '/api/traffic/current', { signal: AbortSignal.timeout(5000) }).then(function(r) { return r.json(); }).then(function(j) { if (downEl) downEl.textContent = j.download.toFixed(2); if (upEl) upEl.textContent = j.upload.toFixed(2); }).catch(function(){});
+      fetch(MONITOR_API + '/api/traffic/average?minutes=1', { signal: AbortSignal.timeout(5000) }).then(function(r) { return r.json(); }).then(function(j) { if (avgEl) avgEl.textContent = j.avg_download.toFixed(2) + '/' + j.avg_upload.toFixed(2); }).catch(function(){});
+    }
+    fetchBW();
+    setInterval(fetchBW, 120000);
+  }
+
   document.addEventListener('astro:page-load', () => {
     initFooter();
     showPerfMetrics();
+    initBandwidth();
   });
 </script>
     </div>
