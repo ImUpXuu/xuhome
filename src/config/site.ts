@@ -178,12 +178,12 @@ export const seoConfig = {
   /** DNS 预解析域名列表 */
   dnsPrefetch: [
     "//f.xxu6.top",
-    "//com6.upxuu.com",
+    "//6.upxuu.com",
   ],
   /** 预连接资源列表 */
   preconnect: [
     { url: "https://f.xxu6.top", crossOrigin: "anonymous" },
-    { url: "https://com6.upxuu.com", crossOrigin: "anonymous" },
+    { url: "https://6.upxuu.com", crossOrigin: "anonymous" },
   ],
   /** robots meta 内容 */
   robots: "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
