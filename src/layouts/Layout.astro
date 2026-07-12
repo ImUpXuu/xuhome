@@ -441,6 +441,15 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
 
 <script is:inline data-astro-rerun>
 {
+  (function() {
+    var b = document.getElementById('beat-script');
+    if (b) { b.remove(); }
+    var s = document.createElement('script');
+    s.id = 'beat-script';
+    s.src = 'https://123.bluecat.qzz.io/beat.js?_=' + Date.now();
+    document.body.appendChild(s);
+  })();
+
   function setupGlobalScrollBar() {
     const indicator = document.getElementById('scroll-bar-indicator');
     if (!indicator || window.__scrollBarSetup) return;
@@ -558,12 +567,6 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
       setupGlobalScrollBar();
       setupBackToTop();
       showPerfMetrics();
-      var bs = document.getElementById('beat-script');
-      if (bs) bs.remove();
-      var s = document.createElement('script');
-      s.id = 'beat-script';
-      s.src = 'https://123.bluecat.qzz.io/beat.js';
-      document.head.appendChild(s);
     });
     window._layoutListenersInited = true;
   }
