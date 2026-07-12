@@ -426,9 +426,12 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
 </script>
 <script is:inline>
   (function() {
+    var _last = '';
     function send() {
       var p = location.pathname;
       if (!p.endsWith('/')) p += '/';
+      if (p === _last) return;
+      _last = p;
       fetch('https://123.bluecat.qzz.io/api/track', {
         method: 'POST',
         body: JSON.stringify({ p: p }),
@@ -437,10 +440,10 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
     }
     send();
     var _push = history.pushState;
-    history.pushState = function() { _push.apply(history, arguments); send(); };
+    history.pushState = function() { _push.apply(history, arguments); setTimeout(send, 0); };
     var _replace = history.replaceState;
-    history.replaceState = function() { _replace.apply(history, arguments); send(); };
-    window.addEventListener('popstate', send);
+    history.replaceState = function() { _replace.apply(history, arguments); setTimeout(send, 0); };
+    window.addEventListener('popstate', function() { setTimeout(send, 0); });
   })();
 </script>
     </div>
