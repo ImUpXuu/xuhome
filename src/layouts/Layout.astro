@@ -9,10 +9,12 @@ import WelcomeToast from '../components/WelcomeToast.astro';
 import { PageBanner } from '../components/PageBanner';
 import { execSync } from 'child_process';
 import fs from 'fs';
+import path from 'path';
 import '../index.css';
 
-const bgFiles = fs.readdirSync('public/images/background').filter(f => /^\d+\.webp$/.test(f));
-const bgCount = bgFiles.length;
+const BGPATH = path.join(process.cwd(), 'public', 'images', 'background');
+let bgCount = 0;
+try { bgCount = fs.readdirSync(BGPATH).filter(f => /^\d+\.webp$/.test(f)).length; } catch {};
 
 interface Props {
   title?: string;
@@ -441,11 +443,10 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
 </script>
 <script src="https://beat.345696.xyz/beat.js"></script>
 <div id="bg-wall"></div>
-<script is:inline>
+<script is:inline define:vars={{ bgCount }}>
   (function(){
-    var n = {bgCount};
-    if (n > 0) {
-      var i = Math.floor(Math.random() * n) + 1;
+    if (bgCount > 0) {
+      var i = Math.floor(Math.random() * bgCount) + 1;
       document.getElementById('bg-wall').style.backgroundImage = 'url(/images/background/' + i + '.webp)';
     }
   })();
