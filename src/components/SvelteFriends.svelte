@@ -97,7 +97,7 @@
             type="text"
             placeholder="搜索好友、博客名称..."
             bind:value={searchTerm}
-            class="w-full pl-9 pr-4 py-2 text-xs sm:text-sm font-bold bg-[rgba(250,248,245,0.18)] text-slate-700 border-3 border-[#0284c7] rounded-sm focus:outline-none focus:bg-white focus:shadow-[2px_2px_0px_0px_#0284c7] transition-all placeholder-slate-400"
+            class="w-full pl-9 pr-4 py-2 text-xs sm:text-sm font-bold bg-[rgba(250,248,245,0.35)] text-slate-700 border-3 border-[#0284c7] rounded-sm focus:outline-none focus:bg-white focus:shadow-[2px_2px_0px_0px_#0284c7] transition-all placeholder-slate-400"
           />
           <svg xmlns="http://www.w3.org/2000/svg" class="absolute left-3 top-2.5 w-4 h-4 text-slate-400 stroke-[3]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -213,7 +213,7 @@
         </div>
 
         <!-- Form elements to copy -->
-        <div class="bg-[rgba(250,248,245,0.18)] border-3 border-dashed border-[#0284c7] p-4 rounded-sm relative">
+        <div class="bg-[rgba(250,248,245,0.35)] border-3 border-dashed border-[#0284c7] p-4 rounded-sm relative">
           <span class="absolute -top-3 right-4 bg-white border-2 border-[#0284c7] px-2 py-0.5 text-[9px] text-[#0284c7] font-bold shadow-[1px_1px_0px_0px_#0284c7] select-none">
             本站信息 INFO
           </span>

@@ -194,7 +194,7 @@ const relatedPosts = (() => {
                 {relatedPosts.map(rp => (
                   <a
                     href={`/posts/${encodeURIComponent(rp.slug)}`}
-                    class="group bg-[rgba(250,248,245,0.18)] dark:bg-slate-700 border-2 border-[#0284c7] px-3 py-2 rounded-sm shadow-[3px_3px_0px_0px_#0284c7] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all duration-200 inline-flex items-center gap-2"
+                    class="group bg-[rgba(250,248,245,0.35)] dark:bg-slate-700 border-2 border-[#0284c7] px-3 py-2 rounded-sm shadow-[3px_3px_0px_0px_#0284c7] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all duration-200 inline-flex items-center gap-2"
                   >
                     <span class="text-xs font-black text-slate-700 dark:text-slate-200 group-hover:text-[#0ea5e9] transition-colors whitespace-nowrap">{rp.title}</span>
                     <span class="text-[9px] font-bold text-slate-400 font-mono shrink-0">{rp.date}</span>
