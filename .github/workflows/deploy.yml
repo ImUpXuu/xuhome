@@ -6,12 +6,13 @@ on:
   workflow_dispatch:
 
 env:
-  SERVER_HOST: 38.76.185.215
   TARGET_DIR: /var/www/upxuu
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
+    outputs:
+      commit: ${{ steps.commit.outputs.sha }}
     steps:
       - uses: actions/checkout@v4
 
@@ -26,22 +27,44 @@ jobs:
 
       - run: pnpm build
 
+      - name: Save commit SHA
+        id: commit
+        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        host: [38.76.185.215, 154.219.110.223]
+      fail-fast: false
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
       - name: Setup SSH key
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.SERVER_SSH_KEY }}" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
-          ssh-keyscan -H ${{ env.SERVER_HOST }} >> ~/.ssh/known_hosts
+          ssh-keyscan -H ${{ matrix.host }} >> ~/.ssh/known_hosts
 
-      - name: Ensure target directory exists
+      - name: Ensure directory exists on ${{ matrix.host }}
         run: |
           ssh -i ~/.ssh/deploy_key \
-            "${{ secrets.SERVER_USER }}@${{ env.SERVER_HOST }}" \
+            "${{ secrets.SERVER_USER }}@${{ matrix.host }}" \
             "mkdir -p ${{ env.TARGET_DIR }}"
 
-      - name: Rsync dist to server
+      - name: Sync to ${{ matrix.host }}
         run: |
           rsync -avz --delete \
             -e "ssh -i ~/.ssh/deploy_key" \
             dist/ \
-            "${{ secrets.SERVER_USER }}@${{ env.SERVER_HOST }}:${{ env.TARGET_DIR }}/"
+            "${{ secrets.SERVER_USER }}@${{ matrix.host }}:${{ env.TARGET_DIR }}/"
