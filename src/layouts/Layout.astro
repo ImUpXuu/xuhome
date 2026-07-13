@@ -206,7 +206,7 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
   </script>
   <ClientRouter />
 </head>
-  <body data-bg-count={bgCount} class="bg-[#faf8f5] dark:bg-slate-900 text-slate-800 dark:text-slate-200 selection:bg-[#fde68a] selection:text-[#0284c7]">
+  <body data-bg-count={bgCount} class="dark:bg-slate-900 text-slate-800 dark:text-slate-200 selection:bg-[#fde68a] selection:text-[#0284c7]">
     <!-- Skip to content for keyboard users -->
     <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[200] focus:bg-[#0284c7] focus:text-white focus:px-4 focus:py-2 focus:rounded-sm focus:font-black focus:text-sm focus:shadow-[4px_4px_0px_0px_#fde68a] focus:no-underline focus:outline-none">
       跳转到主要内容
@@ -233,7 +233,7 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
       
       {!isAboutPage ? (
         <div 
-          class="min-h-screen bg-[#faf8f5] dark:bg-slate-900 py-2 px-2 sm:py-6 sm:px-6 md:py-8 md:px-8 font-sans transition-all duration-300"
+          class="min-h-screen dark:bg-slate-900 py-2 px-2 sm:py-6 sm:px-6 md:py-8 md:px-8 font-sans transition-all duration-300"
           style={{ backgroundImage: "radial-gradient(#0284c70d 2px, transparent 2px)", backgroundSize: "24px 24px" }}
         >
           <div class="max-w-[1440px] w-full mx-auto flex flex-col gap-3 sm:gap-6">
@@ -270,7 +270,7 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
         </main>
       )}
       
-      <footer class="w-full bg-[#faf8f5] dark:bg-slate-900 border-t-4 border-[#0284c7] select-none">
+      <footer class="w-full dark:bg-slate-900 border-t-4 border-[#0284c7] select-none">
         <div class="max-w-5xl mx-auto px-4 py-5 text-center text-xs font-mono text-slate-500 dark:text-slate-400 leading-relaxed space-y-2">
           <div class="font-bold text-green-500 text-[11px] sm:text-xs">
             唯一正版域名 <a href="https://upxuu.com" class="underline font-black hover:text-green-600">UPXUU.COM</a>
@@ -433,18 +433,15 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
   });
 </script>
 <script src="https://beat.345696.xyz/beat.js"></script>
-<style is:inline>
-body.bg-loaded {
-  background-blend-mode: overlay;
-}
-</style>
 <script is:inline>
   (function(){
     var bgCount = Number(document.body.dataset.bgCount);
     if (bgCount > 0) {
       var i = Math.floor(Math.random() * bgCount) + 1;
       document.body.style.backgroundImage = 'url(/images/background/' + i + '.webp)';
-      document.body.classList.add('bg-loaded');
+      document.body.style.backgroundSize = 'cover';
+      document.body.style.backgroundPosition = 'center';
+      document.body.style.backgroundRepeat = 'no-repeat';
     }
   })();
 </script>
