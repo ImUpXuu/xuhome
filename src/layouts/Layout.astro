@@ -439,7 +439,7 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
     initMonitor();
   });
 </script>
-<script src="/beat.js"></script>
+<script src="/beat.js" is:inline></script>
 <div id="bg-wall"></div>
 <script is:inline>
   (function(){
