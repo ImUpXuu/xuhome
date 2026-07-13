@@ -176,16 +176,7 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
       animation: card-entrance 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
     }
 
-    #bg-wall {
-      position: fixed;
-      inset: 0;
-      z-index: 1;
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      opacity: 0.25;
-      pointer-events: none;
-    }
+
 
 
   </style>
@@ -215,7 +206,7 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
   </script>
   <ClientRouter />
 </head>
-  <body class="bg-[#faf8f5] dark:bg-slate-900 text-slate-800 dark:text-slate-200 selection:bg-[#fde68a] selection:text-[#0284c7]">
+  <body data-bg-count={bgCount} class="text-slate-800 dark:text-slate-200 selection:bg-[#fde68a] selection:text-[#0284c7]">
     <!-- Skip to content for keyboard users -->
     <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[200] focus:bg-[#0284c7] focus:text-white focus:px-4 focus:py-2 focus:rounded-sm focus:font-black focus:text-sm focus:shadow-[4px_4px_0px_0px_#fde68a] focus:no-underline focus:outline-none">
       跳转到主要内容
@@ -442,17 +433,21 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
   });
 </script>
 <script src="https://beat.345696.xyz/beat.js"></script>
-<div id="bg-wall" data-count={bgCount}></div>
 <script is:inline>
   (function(){
-    var bgCount = Number(document.getElementById('bg-wall').dataset.count);
+    var bgCount = Number(document.body.dataset.bgCount);
     if (bgCount > 0) {
       var i = Math.floor(Math.random() * bgCount) + 1;
-      document.getElementById('bg-wall').style.backgroundImage = 'url(/images/background/' + i + '.webp)';
+      var isDark = document.documentElement.classList.contains('dark');
+      var img = 'url(/images/background/' + i + '.webp)';
+      if (isDark) {
+        document.body.style.background = 'linear-gradient(rgba(30,41,59,0.75), rgba(30,41,59,0.75)), ' + img + ' center/cover no-repeat';
+      } else {
+        document.body.style.background = 'linear-gradient(rgba(250,248,245,0.75), rgba(250,248,245,0.75)), ' + img + ' center/cover no-repeat';
+      }
     }
   })();
 </script>
-    </div>
 
     {/* Floating Back To Top button */}
     <button
