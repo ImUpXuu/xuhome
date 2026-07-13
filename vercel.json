@@ -34,6 +34,19 @@
           "value": "GET, OPTIONS"
         }
       ]
+    },
+    {
+      "source": "/(rss|sitemap|sitemap-index)\\.xml",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Content-Type",
+          "value": "application/xml; charset=utf-8"
+        }
+      ]
     }
   ]
 }
