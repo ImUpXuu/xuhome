@@ -1,1 +1,16 @@
----import Layout from '../layouts/Layout.astro';import SvelteFriends from '../components/SvelteFriends.svelte';import { WalineComment } from '../components/WalineComment';import { i18nConfig } from '../config/site';---<Layout   title={i18nConfig.friends.title}  description={i18nConfig.friends.description}>  <div data-ext-bypass>    <SvelteFriends client:load />  </div>  <WalineComment client:idle /></Layout>
+---
+import Layout from '../layouts/Layout.astro';
+import SvelteFriends from '../components/SvelteFriends.svelte';
+import { WalineComment } from '../components/WalineComment';
+import { i18nConfig } from '../config/site';
+---
+
+<Layout 
+  title={i18nConfig.friends.title}
+  description={i18nConfig.friends.description}
+>
+  <div data-ext-bypass>
+    <SvelteFriends client:load />
+  </div>
+  <WalineComment client:idle />
+</Layout>

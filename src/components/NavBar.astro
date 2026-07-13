@@ -1,1 +1,481 @@
----import { siteConfig, navConfig, i18nConfig } from '../config/site';const { pathname } = Astro.url;// 从配置中获取导航�?const nav = navConfig.desktop;const ext = navConfig.external;const mob = navConfig.mobileMore;const isTalkPage = pathname === '/talks' || pathname.startsWith('/talks/');const isPostPage = pathname === '/' || pathname.startsWith('/page/') || pathname.startsWith('/posts/') || pathname.startsWith('/category/') || pathname.startsWith('/tag/');const isAboutPage = pathname === '/about';const isFriendsPage = pathname === '/friends' || pathname === '/links';const isArchivePage = pathname === '/archive';---<div class="fixed top-0 left-0 right-0 z-[100] bg-white dark:bg-slate-800 border-b-4 border-[#0284c7] px-3 py-2 sm:px-6 sm:py-3 shadow-[0px_4px_0px_0px_rgba(30,58,138,0.1)] dark:shadow-[0px_4px_0px_0px_rgba(2,132,199,0.2)]" transition:name="navbar" transition:persist>  <div class="max-w-[1440px] mx-auto flex justify-between items-center gap-2">    <a href="/" class="flex items-center gap-1.5 sm:gap-2 text-[#0284c7] shrink-0 hover:opacity-80 transition-opacity min-w-0">      <span class="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center bg-[#fde68a] border-2 border-[#0284c7] font-black text-lg transform -skew-x-12 shadow-[1.5px_1.5px_0px_0px_#0284c7] sm:shadow-[2px_2px_0px_0px_#0284c7] overflow-hidden shrink-0">        <img src={siteConfig.avatar} alt={siteConfig.author} class="w-full h-full object-cover transform skew-x-12" referrer-policy="no-referrer" />      </span>      <span class="font-black tracking-widest uppercase inline-block truncate text-sm sm:text-base">{siteConfig.title}</span>    </a>        <div class="flex items-center gap-1 sm:gap-3 pb-1 -mb-1 min-w-0 justify-end relative">      <a        href={nav[0].href}        class={`px-1.5 py-0.5 sm:px-3 sm:py-1.5 border-2 border-[#0284c7] flex items-center gap-0.5 sm:gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[10px] sm:text-xs tracking-wider shrink-0 whitespace-nowrap ${          isPostPage ? 'bg-[#0ea5e9] text-white shadow-[1px_1px_0px_0px_#0284c7] sm:shadow-[2px_2px_0px_0px_#0284c7]' : 'text-[#0284c7] shadow-[1px_1px_0px_0px_#f59e0b] sm:shadow-[2px_2px_0px_0px_#f59e0b] bg-[rgba(250,248,245,0.75)]'        }`}      >        <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 sm:w-4 sm:h-4 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">          <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />        </svg>        <span>{nav[0].name}</span>      </a>      <a        href={nav[1].href}        class={`px-1.5 py-0.5 sm:px-3 sm:py-1.5 border-2 border-[#0284c7] flex items-center gap-0.5 sm:gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[10px] sm:text-xs tracking-wider shrink-0 whitespace-nowrap ${          isTalkPage ? 'bg-[#0ea5e9] text-white shadow-[1px_1px_0px_0px_#0284c7] sm:shadow-[2px_2px_0px_0px_#0284c7]' : 'text-[#0284c7] shadow-[1px_1px_0px_0px_#fde68a] sm:shadow-[2px_2px_0px_0px_#fde68a] bg-[rgba(250,248,245,0.75)]'        }`}      >        <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 sm:w-4 sm:h-4 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">          <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />        </svg>        <span>{nav[1].name}</span>      </a>            <a        href={nav[2].href}        class={`hidden sm:flex px-1.5 py-0.5 sm:px-3 sm:py-1.5 border-2 border-[#0284c7] items-center gap-0.5 sm:gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[10px] sm:text-xs tracking-wider shrink-0 whitespace-nowrap ${          isFriendsPage ? 'bg-[#0ea5e9] text-white shadow-[1px_1px_0px_0px_#0284c7] sm:shadow-[2px_2px_0px_0px_#0284c7]' : 'text-[#0284c7] shadow-[1px_1px_0px_0px_#fde68a] sm:shadow-[2px_2px_0px_0px_#fde68a] bg-[rgba(250,248,245,0.75)]'        }`}      >        <svg xmlns="http://www.w3.org/2000/svg" class={`w-3 h-3 sm:w-4 sm:h-4 ${isFriendsPage ? 'fill-white stroke-white' : 'stroke-red-500 fill-red-400'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />        </svg>        <span>{nav[2].name}</span>      </a>      <a        href={nav[3].href}        class={`hidden md:flex px-1.5 py-0.5 sm:px-3 sm:py-1.5 border-2 border-[#0284c7] items-center gap-0.5 sm:gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[10px] sm:text-xs tracking-wider shrink-0 whitespace-nowrap ${          isAboutPage ? 'bg-[#0ea5e9] text-white shadow-[1px_1px_0px_0px_#0284c7] sm:shadow-[2px_2px_0px_0px_#0284c7]' : 'text-[#0284c7] shadow-[1px_1px_0px_0px_#fde68a] sm:shadow-[2px_2px_0px_0px_#fde68a] bg-[rgba(250,248,245,0.75)]'        }`}      >        <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 sm:w-4 sm:h-4 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">          <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />        </svg>        <span>{nav[3].name}</span>      </a>      <a        href={nav[4].href}        class={`hidden lg:flex px-1.5 py-0.5 sm:px-3 sm:py-1.5 border-2 border-[#0284c7] items-center gap-0.5 sm:gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[10px] sm:text-xs tracking-wider shrink-0 whitespace-nowrap ${          isArchivePage ? 'bg-[#0ea5e9] text-white shadow-[1px_1px_0px_0px_#0284c7] sm:shadow-[2px_2px_0px_0px_#0284c7]' : 'text-[#0284c7] shadow-[1px_1px_0px_0px_#fde68a] sm:shadow-[2px_2px_0px_0px_#fde68a] bg-[rgba(250,248,245,0.75)]'        }`}      >        <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 sm:w-4 sm:h-4 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">          <path stroke-linecap="round" stroke-linejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />        </svg>        <span>{nav[4].name}</span>      </a>      <a        href={nav[5].href}        class={`hidden lg:flex px-1.5 py-0.5 sm:px-3 sm:py-1.5 border-2 border-[#0284c7] items-center gap-0.5 sm:gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[10px] sm:text-xs tracking-wider shrink-0 whitespace-nowrap ${          Astro.url.pathname.startsWith('/stats') ? 'bg-[#0ea5e9] text-white shadow-[1px_1px_0px_0px_#0284c7] sm:shadow-[2px_2px_0px_0px_#0284c7]' : 'text-[#0284c7] shadow-[1px_1px_0px_0px_#fde68a] sm:shadow-[2px_2px_0px_0px_#fde68a] bg-[rgba(250,248,245,0.75)]'        }`}      >        <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 sm:w-4 sm:h-4 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">          <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />        </svg>        <span>{nav[5].name}</span>      </a>      <a        href={ext[0].href}        target="_blank" rel="noopener noreferrer"        class={`hidden xl:flex px-1.5 py-0.5 sm:px-3 sm:py-1.5 border-2 border-[#0284c7] items-center gap-0.5 sm:gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[10px] sm:text-xs tracking-wider shrink-0 whitespace-nowrap text-[#0284c7] shadow-[1px_1px_0px_0px_#fde68a] sm:shadow-[2px_2px_0px_0px_#fde68a] bg-[rgba(250,248,245,0.75)]`}      >        <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 sm:w-4 sm:h-4 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">          <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />        </svg>        <span>{ext[0].name}</span>      </a>      <button        id="dark-mode-toggle"        data-theme-toggle        class="px-1.5 py-0.5 sm:px-3 sm:py-1.5 border-2 border-[#0284c7] flex items-center gap-0.5 sm:gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[10px] sm:text-xs tracking-wider shrink-0 whitespace-nowrap text-[#0284c7] shadow-[1px_1px_0px_0px_#fde68a] sm:shadow-[2px_2px_0px_0px_#fde68a] bg-[rgba(250,248,245,0.75)] dark:bg-slate-700 dark:hover:bg-[#0ea5e9]"        aria-label={i18nConfig.common.toggleDarkMode}      >        <svg class="theme-sun w-3 h-3 sm:w-4 sm:h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">          <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m8.66-13.66l-.71.71M4.05 19.95l-.71.71M21 12h-1M4 12H3m15.66 7.66l-.71-.71M4.05 4.05l-.71-.71M16 12a4 4 0 11-8 0 4 4 0 018 0z" />        </svg>        <svg class="theme-moon w-3 h-3 sm:w-4 sm:h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">          <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />        </svg>      </button>      <div class="hidden sm:block relative self-center">        <button          id="desktop-more-toggle"          class="px-1.5 py-0.5 sm:px-3 sm:py-1.5 border-2 border-[#0284c7] flex items-center gap-0.5 sm:gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[10px] sm:text-xs tracking-wider shrink-0 whitespace-nowrap text-[#0284c7] shadow-[1px_1px_0px_0px_#fde68a] sm:shadow-[2px_2px_0px_0px_#fde68a] bg-[rgba(250,248,245,0.75)] dark:bg-slate-700"        >          <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 sm:w-4 sm:h-4 stroke-[3]" fill="none" viewBox="0 0 24 24" stroke="currentColor">            <path stroke-linecap="round" stroke-linejoin="round" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />          </svg>          <span class="hidden md:inline">{i18nConfig.common.more}</span>        </button>        <div id="desktop-more-dropdown" class="absolute right-0 mt-3 w-32 bg-white dark:bg-slate-800 border-3 border-[#0284c7] shadow-[3px_3px_0px_0px_#0284c7] rounded-sm p-1.5 flex flex-col gap-1.5 z-[110] transform rotate-0.5 hidden">          <a href={ext[0].href} target="_blank" rel="noopener noreferrer" class="xl:hidden p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider bg-[#ebf3ff] dark:bg-slate-700 text-[#0284c7] select-none">            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">              <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />            </svg>            {ext[0].name}          </a>          <a href={mob[1].href} class="md:hidden p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none bg-[rgba(250,248,245,0.75)] dark:bg-slate-700 text-[#0284c7]">            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">              <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />            </svg>            {mob[1].name}          </a>          <a href={mob[2].href} class="lg:hidden p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none bg-[rgba(250,248,245,0.75)] dark:bg-slate-700 text-[#0284c7]">            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">              <path stroke-linecap="round" stroke-linejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />            </svg>            {mob[2].name}          </a>          <a href={mob[3].href} class="lg:hidden p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none bg-[rgba(250,248,245,0.75)] dark:bg-slate-700 text-[#0284c7]">            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">              <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />            </svg>            {mob[3].name}          </a>          <a href={ext[1].href} target="_blank" class="p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none bg-[rgba(250,248,245,0.75)] dark:bg-slate-700 text-[#0284c7]">            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />            </svg>            {ext[1].name}          </a>        </div>      </div>      {/* Search button for mobile */}      <div class="block sm:hidden relative self-center mr-0.5">        <button          id="mobile-search-toggle"          class="p-1 px-[5px] border-2 border-[#0284c7] transition-all rounded-sm font-black flex items-center justify-center cursor-pointer shadow-[1px_1px_0px_0px_#0284c7] active:translate-x-0.5 active:translate-y-0.5 active:shadow-none bg-[rgba(250,248,245,0.75)] text-[#0284c7]"        >          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 stroke-[3]" fill="none" viewBox="0 0 24 24" stroke="currentColor">            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />          </svg>        </button>      </div>      {/* Hamburger menu for mobile */}      <div class="block sm:hidden relative self-center">        <button          id="mobile-menu-toggle"          aria-expanded="false"          aria-controls="mobile-menu-dropdown"          aria-label={i18nConfig.common.openMenu}          class="p-1 px-1 border-2 border-[#0284c7] transition-all rounded-sm font-black flex items-center justify-center cursor-pointer shadow-[1px_1px_0px_0px_#0284c7] active:translate-x-0.5 active:translate-y-0.5 active:shadow-none bg-[rgba(250,248,245,0.75)] dark:bg-slate-700 text-[#0284c7]"        >          <svg id="menu-icon-open" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />          </svg>          <svg id="menu-icon-close" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 stroke-[2.5] hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />          </svg>        </button>                <div id="mobile-menu-dropdown" class="absolute right-0 mt-3 w-36 bg-white dark:bg-slate-800 border-3 border-[#0284c7] shadow-[3px_3px_0px_0px_#0284c7] rounded-sm p-1.5 flex flex-col gap-1.5 z-[110] transform rotate-0.5 hidden">          <button            id="mobile-dark-mode-toggle"            data-theme-toggle            class="p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none bg-[rgba(250,248,245,0.75)] dark:bg-slate-700 text-[#0284c7] w-full"          >            <svg class="theme-moon w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">              <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />            </svg>            <svg class="theme-sun w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">              <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m8.66-13.66l-.71.71M4.05 19.95l-.71.71M21 12h-1M4 12H3m15.66 7.66l-.71-.71M4.05 4.05l-.71-.71M16 12a4 4 0 11-8 0 4 4 0 018 0z" />            </svg>            <span id="mobile-dark-mode-label">{i18nConfig.common.darkMode}</span>          </button>          <a            href={mob[0].href}            class={`p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none ${              isFriendsPage ? "bg-[#0ea5e9] text-white" : "bg-[rgba(250,248,245,0.75)] dark:bg-slate-700 text-[#0284c7]"            }`}          >            <svg xmlns="http://www.w3.org/2000/svg" class={`w-3.5 h-3.5 ${isFriendsPage ? "fill-white text-white" : "fill-red-400 text-red-500"}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />            </svg>            <span>{mob[0].name}</span>          </a>          <a href={mob[1].href} class={`p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none ${isAboutPage ? "bg-[#0ea5e9] text-white" : "bg-[rgba(250,248,245,0.75)] dark:bg-slate-700 text-[#0284c7]"}`}>            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>{mob[1].name}          </a>          <a            href={ext[0].href}            target="_blank"            rel="noopener noreferrer"            class="p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider bg-[#ebf3ff] dark:bg-slate-700 text-[#0284c7] select-none"          >            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-[#0ea5e9] stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">              <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />            </svg>            <span>{ext[0].name}</span>          </a>          <a href={mob[2].href} class={`p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none ${isArchivePage ? "bg-[#0ea5e9] text-white" : "bg-[rgba(250,248,245,0.75)] dark:bg-slate-700 text-[#0284c7]"}`}>            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">              <path stroke-linecap="round" stroke-linejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />            </svg>            {mob[2].name}          </a>          <a href={mob[3].href} class="p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none bg-[rgba(250,248,245,0.75)] dark:bg-slate-700 text-[#0284c7]">            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>{mob[3].name}          </a>          <a href={ext[1].href} target="_blank" class="p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none bg-[rgba(250,248,245,0.75)] dark:bg-slate-700 text-[#0284c7]">            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>{ext[1].name}          </a>        </div>      </div>    </div>  </div>    {/* Mobile slide-down search dialog */}  <div id="mobile-search-dialog" class="absolute left-0 right-0 top-full bg-[rgba(250,248,245,0.75)] dark:bg-slate-800 border-b-4 border-[#0284c7] px-4 py-3 shadow-[0px_6px_0px_0px_rgba(2,132,199,0.15)] flex flex-col gap-2 z-[90] hidden">    <div class="relative w-full">      <input        type="text"        id="mobile-search-input"        placeholder={i18nConfig.search.placeholder}        class="w-full bg-white dark:bg-slate-700 border-3 border-[#0284c7] font-extrabold focus:outline-none px-4 py-2.5 rounded-sm text-sm text-[#0284c7] dark:text-slate-200 placeholder-slate-400 shadow-[2px_2px_0px_0px_#0284c7] outline-none"      />      <div class="absolute right-4 top-1/2 -translate-y-1/2 text-[#0284c7] flex items-center gap-2">        <button           id="mobile-search-clear"          class="text-slate-400 hover:text-[#0284c7] font-bold text-xs uppercase cursor-pointer hidden"        >          {i18nConfig.search.clear}        </button>        <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5 pointer-events-none stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />        </svg>      </div>    </div>  </div></div>{/* Spacer to prevent content from going under the fixed navbar */}<div style="height: var(--navbar-height)"></div><script is:inline data-astro-rerun define:vars={{  openMenuText: i18nConfig.common.openMenu,  closeMenuText: i18nConfig.common.closeMenu,  lightModeText: i18nConfig.common.lightMode,  darkModeText: i18nConfig.common.darkMode,}}>  function closeNavDropdowns() {    const mobileMenuDropdown = document.getElementById('mobile-menu-dropdown');    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');    const menuIconOpen = document.getElementById('menu-icon-open');    const menuIconClose = document.getElementById('menu-icon-close');    const desktopMoreDropdown = document.getElementById('desktop-more-dropdown');    const desktopMoreToggle = document.getElementById('desktop-more-toggle');    if (mobileMenuDropdown && !mobileMenuDropdown.classList.contains('hidden')) {      mobileMenuDropdown.classList.add('hidden');      if (menuIconOpen) menuIconOpen.classList.remove('hidden');      if (menuIconClose) menuIconClose.classList.add('hidden');      if (mobileMenuToggle) {        mobileMenuToggle.classList.remove('bg-[#fde68a]');        mobileMenuToggle.classList.add('bg-[rgba(250,248,245,0.75)]');        mobileMenuToggle.setAttribute('aria-expanded', 'false');        mobileMenuToggle.setAttribute('aria-label', openMenuText);      }    }    if (desktopMoreDropdown && !desktopMoreDropdown.classList.contains('hidden')) {      desktopMoreDropdown.classList.add('hidden');      if (desktopMoreToggle) {        desktopMoreToggle.classList.remove('bg-[#fde68a]');        desktopMoreToggle.classList.add('bg-[rgba(250,248,245,0.75)]');      }    }  }  // Theme handling: single source of truth, persisted in localStorage  function applyTheme(dark) {    const root = document.documentElement;    if (dark) root.classList.add('dark');    else root.classList.remove('dark');    try { localStorage.setItem('theme', dark ? 'dark' : 'light'); } catch {}    updateThemeUI(dark);    window.dispatchEvent(new CustomEvent('theme-change', { detail: { dark } }));  }  function updateThemeUI(dark) {    const label = document.getElementById('mobile-dark-mode-label');    const sun = document.getElementById('dark-mode-sun');    const moon = document.getElementById('dark-mode-moon');    if (label) label.textContent = dark ? lightModeText : darkModeText;    if (sun) sun.classList.toggle('hidden', !dark);    if (moon) moon.classList.toggle('hidden', dark);  }  function isDarkTheme() {    return document.documentElement.classList.contains('dark');  }  // Sync theme: restore from localStorage first, then update UI  // Astro View Transitions can strip the dark class from <html>, so we force it back  function initThemeUI() {    try {      const saved = localStorage.getItem('theme');      if (saved === 'dark') {        document.documentElement.classList.add('dark');      } else if (saved === 'light') {        document.documentElement.classList.remove('dark');      }    } catch {}    updateThemeUI(isDarkTheme());  }  // Bind theme toggle once globally �?use document (not body) so it survives view transitions  if (!window.__themeToggleBound) {    document.addEventListener('click', (e) => {      const btn = e.target.closest('[data-theme-toggle]');      if (!btn) return;      e.preventDefault();      e.stopPropagation();      applyTheme(!isDarkTheme());    });    window.__themeToggleBound = true;  }  // Bind navbar interactions once globally �?use document for all listeners  if (!window.__navBarBound) {    // Desktop more dropdown    document.addEventListener('click', (e) => {      const desktopMoreToggle = document.getElementById('desktop-more-toggle');      const desktopMoreDropdown = document.getElementById('desktop-more-dropdown');      if (!desktopMoreToggle || !desktopMoreDropdown) return;      if (e.target.closest('#desktop-more-toggle')) {        e.stopPropagation();        const isOpen = !desktopMoreDropdown.classList.contains('hidden');        closeNavDropdowns();        if (!isOpen) {          desktopMoreDropdown.classList.remove('hidden');          desktopMoreToggle.classList.add('bg-[#fde68a]');          desktopMoreToggle.classList.remove('bg-[rgba(250,248,245,0.75)]');        }        return;      }      if (e.target.closest('#desktop-more-dropdown')) return;      closeNavDropdowns();    });    // Mobile menu toggle    document.addEventListener('click', (e) => {      const mobileMenuToggle = document.getElementById('mobile-menu-toggle');      const mobileMenuDropdown = document.getElementById('mobile-menu-dropdown');      const menuIconOpen = document.getElementById('menu-icon-open');      const menuIconClose = document.getElementById('menu-icon-close');      const mobileSearchDialog = document.getElementById('mobile-search-dialog');      if (!mobileMenuToggle || !mobileMenuDropdown) return;      if (!e.target.closest('#mobile-menu-toggle')) return;      e.stopPropagation();      const isOpen = !mobileMenuDropdown.classList.contains('hidden');      closeNavDropdowns();      if (!isOpen) {        mobileMenuDropdown.classList.remove('hidden');        if (menuIconOpen) menuIconOpen.classList.add('hidden');        if (menuIconClose) menuIconClose.classList.remove('hidden');        mobileMenuToggle.classList.add('bg-[#fde68a]');        mobileMenuToggle.classList.remove('bg-[rgba(250,248,245,0.75)]');        mobileMenuToggle.setAttribute('aria-expanded', 'true');        mobileMenuToggle.setAttribute('aria-label', closeMenuText);        if (mobileSearchDialog) mobileSearchDialog.classList.add('hidden');      }    });    // Mobile search toggle    document.addEventListener('click', (e) => {      const mobileSearchToggle = document.getElementById('mobile-search-toggle');      const mobileSearchDialog = document.getElementById('mobile-search-dialog');      const mobileSearchInput = document.getElementById('mobile-search-input');      if (!mobileSearchToggle || !mobileSearchDialog) return;      if (!e.target.closest('#mobile-search-toggle')) return;      e.stopPropagation();      const isOpen = !mobileSearchDialog.classList.contains('hidden');      if (isOpen) {        mobileSearchDialog.classList.add('hidden');        mobileSearchToggle.classList.remove('bg-[#fde68a]');        mobileSearchToggle.classList.add('bg-[rgba(250,248,245,0.75)]');      } else {        mobileSearchDialog.classList.remove('hidden');        mobileSearchToggle.classList.add('bg-[#fde68a]');        mobileSearchToggle.classList.remove('bg-[rgba(250,248,245,0.75)]');        closeNavDropdowns();        setTimeout(() => mobileSearchInput?.focus(), 50);      }    });    // Close dropdowns on Escape    document.addEventListener('keydown', (e) => {      if (e.key === 'Escape') closeNavDropdowns();    });    window.__navBarBound = true;  }  // Mobile search input behavior: refresh bindings on each page load because the input node is new  function setupMobileSearchInput() {    const mobileSearchInput = document.getElementById('mobile-search-input');    const mobileSearchClear = document.getElementById('mobile-search-clear');    if (!mobileSearchInput) return;    const urlParams = new URLSearchParams(window.location.search);    const initialQ = urlParams.get('q') || '';    mobileSearchInput.value = initialQ;    if (initialQ && mobileSearchClear) mobileSearchClear.classList.remove('hidden');    mobileSearchInput.addEventListener('input', (e) => {      const val = e.target.value.trim();      if (mobileSearchClear) mobileSearchClear.classList.toggle('hidden', !val);      window.dispatchEvent(new CustomEvent('blog-search', { detail: { query: val } }));    });    mobileSearchInput.addEventListener('keydown', (e) => {      if (e.key !== 'Enter') return;      const val = mobileSearchInput.value.trim();      const isBlogHome = window.location.pathname === '/' || window.location.pathname.startsWith('/page/') || window.location.pathname.startsWith('/category/') || window.location.pathname.startsWith('/tag/');      if (!isBlogHome) {        window.location.href = val ? `/?q=${encodeURIComponent(val)}` : '/';      }    });    if (mobileSearchClear) {      mobileSearchClear.addEventListener('click', () => {        mobileSearchInput.value = '';        mobileSearchClear.classList.add('hidden');        window.dispatchEvent(new CustomEvent('blog-search', { detail: { query: '' } }));      });    }  }  function initNavBar() {    closeNavDropdowns();    setupMobileSearchInput();    initThemeUI();  }  initNavBar();</script>
+---
+import { siteConfig, navConfig, i18nConfig } from '../config/site';
+
+const { pathname } = Astro.url;
+
+// 从配置中获取导航项
+const nav = navConfig.desktop;
+const ext = navConfig.external;
+const mob = navConfig.mobileMore;
+
+const isTalkPage = pathname === '/talks' || pathname.startsWith('/talks/');
+const isPostPage = pathname === '/' || pathname.startsWith('/page/') || pathname.startsWith('/posts/') || pathname.startsWith('/category/') || pathname.startsWith('/tag/');
+const isAboutPage = pathname === '/about';
+const isFriendsPage = pathname === '/friends' || pathname === '/links';
+const isArchivePage = pathname === '/archive';
+---
+
+<div class="fixed top-0 left-0 right-0 z-[100] bg-white dark:bg-slate-800 border-b-4 border-[#0284c7] px-3 py-2 sm:px-6 sm:py-3 shadow-[0px_4px_0px_0px_rgba(30,58,138,0.1)] dark:shadow-[0px_4px_0px_0px_rgba(2,132,199,0.2)]" transition:name="navbar" transition:persist>
+  <div class="max-w-[1440px] mx-auto flex justify-between items-center gap-2">
+    <a href="/" class="flex items-center gap-1.5 sm:gap-2 text-[#0284c7] shrink-0 hover:opacity-80 transition-opacity min-w-0">
+      <span class="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center bg-[#fde68a] border-2 border-[#0284c7] font-black text-lg transform -skew-x-12 shadow-[1.5px_1.5px_0px_0px_#0284c7] sm:shadow-[2px_2px_0px_0px_#0284c7] overflow-hidden shrink-0">
+        <img src={siteConfig.avatar} alt={siteConfig.author} class="w-full h-full object-cover transform skew-x-12" referrer-policy="no-referrer" />
+      </span>
+      <span class="font-black tracking-widest uppercase inline-block truncate text-sm sm:text-base">{siteConfig.title}</span>
+    </a>
+    
+    <div class="flex items-center gap-1 sm:gap-3 pb-1 -mb-1 min-w-0 justify-end relative">
+      <a
+        href={nav[0].href}
+        class={`px-1.5 py-0.5 sm:px-3 sm:py-1.5 border-2 border-[#0284c7] flex items-center gap-0.5 sm:gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[10px] sm:text-xs tracking-wider shrink-0 whitespace-nowrap ${
+          isPostPage ? 'bg-[#0ea5e9] text-white shadow-[1px_1px_0px_0px_#0284c7] sm:shadow-[2px_2px_0px_0px_#0284c7]' : 'text-[#0284c7] shadow-[1px_1px_0px_0px_#f59e0b] sm:shadow-[2px_2px_0px_0px_#f59e0b] bg-[rgba(250,248,245,0.75)]'
+        }`}
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 sm:w-4 sm:h-4 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+        </svg>
+        <span>{nav[0].name}</span>
+      </a>
+      <a
+        href={nav[1].href}
+        class={`px-1.5 py-0.5 sm:px-3 sm:py-1.5 border-2 border-[#0284c7] flex items-center gap-0.5 sm:gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[10px] sm:text-xs tracking-wider shrink-0 whitespace-nowrap ${
+          isTalkPage ? 'bg-[#0ea5e9] text-white shadow-[1px_1px_0px_0px_#0284c7] sm:shadow-[2px_2px_0px_0px_#0284c7]' : 'text-[#0284c7] shadow-[1px_1px_0px_0px_#fde68a] sm:shadow-[2px_2px_0px_0px_#fde68a] bg-[rgba(250,248,245,0.75)]'
+        }`}
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 sm:w-4 sm:h-4 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+        </svg>
+        <span>{nav[1].name}</span>
+      </a>
+      
+      <a
+        href={nav[2].href}
+        class={`hidden sm:flex px-1.5 py-0.5 sm:px-3 sm:py-1.5 border-2 border-[#0284c7] items-center gap-0.5 sm:gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[10px] sm:text-xs tracking-wider shrink-0 whitespace-nowrap ${
+          isFriendsPage ? 'bg-[#0ea5e9] text-white shadow-[1px_1px_0px_0px_#0284c7] sm:shadow-[2px_2px_0px_0px_#0284c7]' : 'text-[#0284c7] shadow-[1px_1px_0px_0px_#fde68a] sm:shadow-[2px_2px_0px_0px_#fde68a] bg-[rgba(250,248,245,0.75)]'
+        }`}
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class={`w-3 h-3 sm:w-4 sm:h-4 ${isFriendsPage ? 'fill-white stroke-white' : 'stroke-red-500 fill-red-400'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+        </svg>
+        <span>{nav[2].name}</span>
+      </a>
+
+      <a
+        href={nav[3].href}
+        class={`hidden md:flex px-1.5 py-0.5 sm:px-3 sm:py-1.5 border-2 border-[#0284c7] items-center gap-0.5 sm:gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[10px] sm:text-xs tracking-wider shrink-0 whitespace-nowrap ${
+          isAboutPage ? 'bg-[#0ea5e9] text-white shadow-[1px_1px_0px_0px_#0284c7] sm:shadow-[2px_2px_0px_0px_#0284c7]' : 'text-[#0284c7] shadow-[1px_1px_0px_0px_#fde68a] sm:shadow-[2px_2px_0px_0px_#fde68a] bg-[rgba(250,248,245,0.75)]'
+        }`}
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 sm:w-4 sm:h-4 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+        </svg>
+        <span>{nav[3].name}</span>
+      </a>
+
+      <a
+        href={nav[4].href}
+        class={`hidden lg:flex px-1.5 py-0.5 sm:px-3 sm:py-1.5 border-2 border-[#0284c7] items-center gap-0.5 sm:gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[10px] sm:text-xs tracking-wider shrink-0 whitespace-nowrap ${
+          isArchivePage ? 'bg-[#0ea5e9] text-white shadow-[1px_1px_0px_0px_#0284c7] sm:shadow-[2px_2px_0px_0px_#0284c7]' : 'text-[#0284c7] shadow-[1px_1px_0px_0px_#fde68a] sm:shadow-[2px_2px_0px_0px_#fde68a] bg-[rgba(250,248,245,0.75)]'
+        }`}
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 sm:w-4 sm:h-4 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+        </svg>
+        <span>{nav[4].name}</span>
+      </a>
+
+      <a
+        href={nav[5].href}
+        class={`hidden lg:flex px-1.5 py-0.5 sm:px-3 sm:py-1.5 border-2 border-[#0284c7] items-center gap-0.5 sm:gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[10px] sm:text-xs tracking-wider shrink-0 whitespace-nowrap ${
+          Astro.url.pathname.startsWith('/stats') ? 'bg-[#0ea5e9] text-white shadow-[1px_1px_0px_0px_#0284c7] sm:shadow-[2px_2px_0px_0px_#0284c7]' : 'text-[#0284c7] shadow-[1px_1px_0px_0px_#fde68a] sm:shadow-[2px_2px_0px_0px_#fde68a] bg-[rgba(250,248,245,0.75)]'
+        }`}
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 sm:w-4 sm:h-4 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+        </svg>
+        <span>{nav[5].name}</span>
+      </a>
+
+      <a
+        href={ext[0].href}
+        target="_blank" rel="noopener noreferrer"
+        class={`hidden xl:flex px-1.5 py-0.5 sm:px-3 sm:py-1.5 border-2 border-[#0284c7] items-center gap-0.5 sm:gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[10px] sm:text-xs tracking-wider shrink-0 whitespace-nowrap text-[#0284c7] shadow-[1px_1px_0px_0px_#fde68a] sm:shadow-[2px_2px_0px_0px_#fde68a] bg-[rgba(250,248,245,0.75)]`}
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 sm:w-4 sm:h-4 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+        </svg>
+        <span>{ext[0].name}</span>
+      </a>
+
+      <button
+        id="dark-mode-toggle"
+        data-theme-toggle
+        class="px-1.5 py-0.5 sm:px-3 sm:py-1.5 border-2 border-[#0284c7] flex items-center gap-0.5 sm:gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[10px] sm:text-xs tracking-wider shrink-0 whitespace-nowrap text-[#0284c7] shadow-[1px_1px_0px_0px_#fde68a] sm:shadow-[2px_2px_0px_0px_#fde68a] bg-[rgba(250,248,245,0.75)] dark:bg-slate-700 dark:hover:bg-[#0ea5e9]"
+        aria-label={i18nConfig.common.toggleDarkMode}
+      >
+        <svg class="theme-sun w-3 h-3 sm:w-4 sm:h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m8.66-13.66l-.71.71M4.05 19.95l-.71.71M21 12h-1M4 12H3m15.66 7.66l-.71-.71M4.05 4.05l-.71-.71M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+        </svg>
+        <svg class="theme-moon w-3 h-3 sm:w-4 sm:h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+        </svg>
+      </button>
+
+      <div class="hidden sm:block relative self-center">
+        <button
+          id="desktop-more-toggle"
+          class="px-1.5 py-0.5 sm:px-3 sm:py-1.5 border-2 border-[#0284c7] flex items-center gap-0.5 sm:gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[10px] sm:text-xs tracking-wider shrink-0 whitespace-nowrap text-[#0284c7] shadow-[1px_1px_0px_0px_#fde68a] sm:shadow-[2px_2px_0px_0px_#fde68a] bg-[rgba(250,248,245,0.75)] dark:bg-slate-700"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 sm:w-4 sm:h-4 stroke-[3]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+          </svg>
+          <span class="hidden md:inline">{i18nConfig.common.more}</span>
+        </button>
+        <div id="desktop-more-dropdown" class="absolute right-0 mt-3 w-32 bg-white dark:bg-slate-800 border-3 border-[#0284c7] shadow-[3px_3px_0px_0px_#0284c7] rounded-sm p-1.5 flex flex-col gap-1.5 z-[110] transform rotate-0.5 hidden">
+          <a href={ext[0].href} target="_blank" rel="noopener noreferrer" class="xl:hidden p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider bg-[#ebf3ff] dark:bg-slate-700 text-[#0284c7] select-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+            </svg>
+            {ext[0].name}
+          </a>
+          <a href={mob[1].href} class="md:hidden p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none bg-[rgba(250,248,245,0.75)] dark:bg-slate-700 text-[#0284c7]">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+            {mob[1].name}
+          </a>
+          <a href={mob[2].href} class="lg:hidden p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none bg-[rgba(250,248,245,0.75)] dark:bg-slate-700 text-[#0284c7]">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+            </svg>
+            {mob[2].name}
+          </a>
+          <a href={mob[3].href} class="lg:hidden p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none bg-[rgba(250,248,245,0.75)] dark:bg-slate-700 text-[#0284c7]">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            </svg>
+            {mob[3].name}
+          </a>
+          <a href={ext[1].href} target="_blank" class="p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none bg-[rgba(250,248,245,0.75)] dark:bg-slate-700 text-[#0284c7]">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+            {ext[1].name}
+          </a>
+        </div>
+      </div>
+
+      {/* Search button for mobile */}
+      <div class="block sm:hidden relative self-center mr-0.5">
+        <button
+          id="mobile-search-toggle"
+          class="p-1 px-[5px] border-2 border-[#0284c7] transition-all rounded-sm font-black flex items-center justify-center cursor-pointer shadow-[1px_1px_0px_0px_#0284c7] active:translate-x-0.5 active:translate-y-0.5 active:shadow-none bg-[rgba(250,248,245,0.75)] text-[#0284c7]"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 stroke-[3]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </button>
+      </div>
+
+      {/* Hamburger menu for mobile */}
+      <div class="block sm:hidden relative self-center">
+        <button
+          id="mobile-menu-toggle"
+          aria-expanded="false"
+          aria-controls="mobile-menu-dropdown"
+          aria-label={i18nConfig.common.openMenu}
+          class="p-1 px-1 border-2 border-[#0284c7] transition-all rounded-sm font-black flex items-center justify-center cursor-pointer shadow-[1px_1px_0px_0px_#0284c7] active:translate-x-0.5 active:translate-y-0.5 active:shadow-none bg-[rgba(250,248,245,0.75)] dark:bg-slate-700 text-[#0284c7]"
+        >
+          <svg id="menu-icon-open" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+          <svg id="menu-icon-close" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 stroke-[2.5] hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+        
+        <div id="mobile-menu-dropdown" class="absolute right-0 mt-3 w-36 bg-white dark:bg-slate-800 border-3 border-[#0284c7] shadow-[3px_3px_0px_0px_#0284c7] rounded-sm p-1.5 flex flex-col gap-1.5 z-[110] transform rotate-0.5 hidden">
+          <button
+            id="mobile-dark-mode-toggle"
+            data-theme-toggle
+            class="p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none bg-[rgba(250,248,245,0.75)] dark:bg-slate-700 text-[#0284c7] w-full"
+          >
+            <svg class="theme-moon w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+            </svg>
+            <svg class="theme-sun w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m8.66-13.66l-.71.71M4.05 19.95l-.71.71M21 12h-1M4 12H3m15.66 7.66l-.71-.71M4.05 4.05l-.71-.71M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+            <span id="mobile-dark-mode-label">{i18nConfig.common.darkMode}</span>
+          </button>
+          <a
+            href={mob[0].href}
+            class={`p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none ${
+              isFriendsPage ? "bg-[#0ea5e9] text-white" : "bg-[rgba(250,248,245,0.75)] dark:bg-slate-700 text-[#0284c7]"
+            }`}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class={`w-3.5 h-3.5 ${isFriendsPage ? "fill-white text-white" : "fill-red-400 text-red-500"}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+            </svg>
+            <span>{mob[0].name}</span>
+          </a>
+          <a href={mob[1].href} class={`p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none ${isAboutPage ? "bg-[#0ea5e9] text-white" : "bg-[rgba(250,248,245,0.75)] dark:bg-slate-700 text-[#0284c7]"}`}>
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>{mob[1].name}
+          </a>
+          <a
+            href={ext[0].href}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider bg-[#ebf3ff] dark:bg-slate-700 text-[#0284c7] select-none"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-[#0ea5e9] stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+            </svg>
+            <span>{ext[0].name}</span>
+          </a>
+          <a href={mob[2].href} class={`p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none ${isArchivePage ? "bg-[#0ea5e9] text-white" : "bg-[rgba(250,248,245,0.75)] dark:bg-slate-700 text-[#0284c7]"}`}>
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+            </svg>
+            {mob[2].name}
+          </a>
+          <a href={mob[3].href} class="p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none bg-[rgba(250,248,245,0.75)] dark:bg-slate-700 text-[#0284c7]">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>{mob[3].name}
+          </a>
+          <a href={ext[1].href} target="_blank" class="p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none bg-[rgba(250,248,245,0.75)] dark:bg-slate-700 text-[#0284c7]">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>{ext[1].name}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  {/* Mobile slide-down search dialog */}
+  <div id="mobile-search-dialog" class="absolute left-0 right-0 top-full bg-[rgba(250,248,245,0.75)] dark:bg-slate-800 border-b-4 border-[#0284c7] px-4 py-3 shadow-[0px_6px_0px_0px_rgba(2,132,199,0.15)] flex flex-col gap-2 z-[90] hidden">
+    <div class="relative w-full">
+      <input
+        type="text"
+        id="mobile-search-input"
+        placeholder={i18nConfig.search.placeholder}
+        class="w-full bg-white dark:bg-slate-700 border-3 border-[#0284c7] font-extrabold focus:outline-none px-4 py-2.5 rounded-sm text-sm text-[#0284c7] dark:text-slate-200 placeholder-slate-400 shadow-[2px_2px_0px_0px_#0284c7] outline-none"
+      />
+      <div class="absolute right-4 top-1/2 -translate-y-1/2 text-[#0284c7] flex items-center gap-2">
+        <button 
+          id="mobile-search-clear"
+          class="text-slate-400 hover:text-[#0284c7] font-bold text-xs uppercase cursor-pointer hidden"
+        >
+          {i18nConfig.search.clear}
+        </button>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5 pointer-events-none stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+      </div>
+    </div>
+  </div>
+</div>
+{/* Spacer to prevent content from going under the fixed navbar */}
+<div style="height: var(--navbar-height)"></div>
+
+<script is:inline data-astro-rerun define:vars={{
+  openMenuText: i18nConfig.common.openMenu,
+  closeMenuText: i18nConfig.common.closeMenu,
+  lightModeText: i18nConfig.common.lightMode,
+  darkModeText: i18nConfig.common.darkMode,
+}}>
+  function closeNavDropdowns() {
+    const mobileMenuDropdown = document.getElementById('mobile-menu-dropdown');
+    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+    const menuIconOpen = document.getElementById('menu-icon-open');
+    const menuIconClose = document.getElementById('menu-icon-close');
+    const desktopMoreDropdown = document.getElementById('desktop-more-dropdown');
+    const desktopMoreToggle = document.getElementById('desktop-more-toggle');
+
+    if (mobileMenuDropdown && !mobileMenuDropdown.classList.contains('hidden')) {
+      mobileMenuDropdown.classList.add('hidden');
+      if (menuIconOpen) menuIconOpen.classList.remove('hidden');
+      if (menuIconClose) menuIconClose.classList.add('hidden');
+      if (mobileMenuToggle) {
+        mobileMenuToggle.classList.remove('bg-[#fde68a]');
+        mobileMenuToggle.classList.add('bg-[rgba(250,248,245,0.75)]');
+        mobileMenuToggle.setAttribute('aria-expanded', 'false');
+        mobileMenuToggle.setAttribute('aria-label', openMenuText);
+      }
+    }
+
+    if (desktopMoreDropdown && !desktopMoreDropdown.classList.contains('hidden')) {
+      desktopMoreDropdown.classList.add('hidden');
+      if (desktopMoreToggle) {
+        desktopMoreToggle.classList.remove('bg-[#fde68a]');
+        desktopMoreToggle.classList.add('bg-[rgba(250,248,245,0.75)]');
+      }
+    }
+  }
+
+  // Theme handling: single source of truth, persisted in localStorage
+  function applyTheme(dark) {
+    const root = document.documentElement;
+    if (dark) root.classList.add('dark');
+    else root.classList.remove('dark');
+    try { localStorage.setItem('theme', dark ? 'dark' : 'light'); } catch {}
+    updateThemeUI(dark);
+    window.dispatchEvent(new CustomEvent('theme-change', { detail: { dark } }));
+  }
+
+  function updateThemeUI(dark) {
+    const label = document.getElementById('mobile-dark-mode-label');
+    const sun = document.getElementById('dark-mode-sun');
+    const moon = document.getElementById('dark-mode-moon');
+    if (label) label.textContent = dark ? lightModeText : darkModeText;
+    if (sun) sun.classList.toggle('hidden', !dark);
+    if (moon) moon.classList.toggle('hidden', dark);
+  }
+
+  function isDarkTheme() {
+    return document.documentElement.classList.contains('dark');
+  }
+
+  // Sync theme: restore from localStorage first, then update UI
+  // Astro View Transitions can strip the dark class from <html>, so we force it back
+  function initThemeUI() {
+    try {
+      const saved = localStorage.getItem('theme');
+      if (saved === 'dark') {
+        document.documentElement.classList.add('dark');
+      } else if (saved === 'light') {
+        document.documentElement.classList.remove('dark');
+      }
+    } catch {}
+    updateThemeUI(isDarkTheme());
+  }
+
+  // Bind theme toggle once globally — use document (not body) so it survives view transitions
+  if (!window.__themeToggleBound) {
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-theme-toggle]');
+      if (!btn) return;
+      e.preventDefault();
+      e.stopPropagation();
+      applyTheme(!isDarkTheme());
+    });
+    window.__themeToggleBound = true;
+  }
+
+  // Bind navbar interactions once globally — use document for all listeners
+  if (!window.__navBarBound) {
+    // Desktop more dropdown
+    document.addEventListener('click', (e) => {
+      const desktopMoreToggle = document.getElementById('desktop-more-toggle');
+      const desktopMoreDropdown = document.getElementById('desktop-more-dropdown');
+      if (!desktopMoreToggle || !desktopMoreDropdown) return;
+      if (e.target.closest('#desktop-more-toggle')) {
+        e.stopPropagation();
+        const isOpen = !desktopMoreDropdown.classList.contains('hidden');
+        closeNavDropdowns();
+        if (!isOpen) {
+          desktopMoreDropdown.classList.remove('hidden');
+          desktopMoreToggle.classList.add('bg-[#fde68a]');
+          desktopMoreToggle.classList.remove('bg-[rgba(250,248,245,0.75)]');
+        }
+        return;
+      }
+      if (e.target.closest('#desktop-more-dropdown')) return;
+      closeNavDropdowns();
+    });
+
+    // Mobile menu toggle
+    document.addEventListener('click', (e) => {
+      const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+      const mobileMenuDropdown = document.getElementById('mobile-menu-dropdown');
+      const menuIconOpen = document.getElementById('menu-icon-open');
+      const menuIconClose = document.getElementById('menu-icon-close');
+      const mobileSearchDialog = document.getElementById('mobile-search-dialog');
+      if (!mobileMenuToggle || !mobileMenuDropdown) return;
+      if (!e.target.closest('#mobile-menu-toggle')) return;
+      e.stopPropagation();
+      const isOpen = !mobileMenuDropdown.classList.contains('hidden');
+      closeNavDropdowns();
+      if (!isOpen) {
+        mobileMenuDropdown.classList.remove('hidden');
+        if (menuIconOpen) menuIconOpen.classList.add('hidden');
+        if (menuIconClose) menuIconClose.classList.remove('hidden');
+        mobileMenuToggle.classList.add('bg-[#fde68a]');
+        mobileMenuToggle.classList.remove('bg-[rgba(250,248,245,0.75)]');
+        mobileMenuToggle.setAttribute('aria-expanded', 'true');
+        mobileMenuToggle.setAttribute('aria-label', closeMenuText);
+        if (mobileSearchDialog) mobileSearchDialog.classList.add('hidden');
+      }
+    });
+
+    // Mobile search toggle
+    document.addEventListener('click', (e) => {
+      const mobileSearchToggle = document.getElementById('mobile-search-toggle');
+      const mobileSearchDialog = document.getElementById('mobile-search-dialog');
+      const mobileSearchInput = document.getElementById('mobile-search-input');
+      if (!mobileSearchToggle || !mobileSearchDialog) return;
+      if (!e.target.closest('#mobile-search-toggle')) return;
+      e.stopPropagation();
+      const isOpen = !mobileSearchDialog.classList.contains('hidden');
+      if (isOpen) {
+        mobileSearchDialog.classList.add('hidden');
+        mobileSearchToggle.classList.remove('bg-[#fde68a]');
+        mobileSearchToggle.classList.add('bg-[rgba(250,248,245,0.75)]');
+      } else {
+        mobileSearchDialog.classList.remove('hidden');
+        mobileSearchToggle.classList.add('bg-[#fde68a]');
+        mobileSearchToggle.classList.remove('bg-[rgba(250,248,245,0.75)]');
+        closeNavDropdowns();
+        setTimeout(() => mobileSearchInput?.focus(), 50);
+      }
+    });
+
+    // Close dropdowns on Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeNavDropdowns();
+    });
+
+    window.__navBarBound = true;
+  }
+
+  // Mobile search input behavior: refresh bindings on each page load because the input node is new
+  function setupMobileSearchInput() {
+    const mobileSearchInput = document.getElementById('mobile-search-input');
+    const mobileSearchClear = document.getElementById('mobile-search-clear');
+    if (!mobileSearchInput) return;
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const initialQ = urlParams.get('q') || '';
+    mobileSearchInput.value = initialQ;
+    if (initialQ && mobileSearchClear) mobileSearchClear.classList.remove('hidden');
+
+    mobileSearchInput.addEventListener('input', (e) => {
+      const val = e.target.value.trim();
+      if (mobileSearchClear) mobileSearchClear.classList.toggle('hidden', !val);
+      window.dispatchEvent(new CustomEvent('blog-search', { detail: { query: val } }));
+    });
+
+    mobileSearchInput.addEventListener('keydown', (e) => {
+      if (e.key !== 'Enter') return;
+      const val = mobileSearchInput.value.trim();
+      const isBlogHome = window.location.pathname === '/' || window.location.pathname.startsWith('/page/') || window.location.pathname.startsWith('/category/') || window.location.pathname.startsWith('/tag/');
+      if (!isBlogHome) {
+        window.location.href = val ? `/?q=${encodeURIComponent(val)}` : '/';
+      }
+    });
+
+    if (mobileSearchClear) {
+      mobileSearchClear.addEventListener('click', () => {
+        mobileSearchInput.value = '';
+        mobileSearchClear.classList.add('hidden');
+        window.dispatchEvent(new CustomEvent('blog-search', { detail: { query: '' } }));
+      });
+    }
+  }
+
+  function initNavBar() {
+    closeNavDropdowns();
+    setupMobileSearchInput();
+    initThemeUI();
+  }
+
+  initNavBar();
+</script>

@@ -1,1 +1,28 @@
----import Layout from '../../layouts/Layout.astro';import { getProcessedPosts, getProcessedTalks } from '../../utils/postsFetcher';import TalksFeed from '../../components/TalksFeed.svelte';import LeftSidebar from '../../components/LeftSidebar.astro';import { i18nConfig } from '../../config/site';const allTalks = await getProcessedTalks();const allPosts = await getProcessedPosts();const tagMap: Record<string, number> = {};allPosts.forEach(p => { if (p.tags) { p.tags.forEach(t => { tagMap[t] = (tagMap[t] || 0) + 1; }); } });const allTags = Object.entries(tagMap).map(([name, count]) => ({ name, count })).sort((a, b) => b.count - a.count);---<Layout   title={i18nConfig.talks.title}  isTalk={true}  postsCount={allTalks.length}>  <div class="flex flex-col xl:flex-row gap-4 sm:gap-6 xl:gap-8 items-start justify-center">    <div class="w-full xl:flex-1 min-w-0 order-1 xl:order-2">      <TalksFeed talks={allTalks} client:load />    </div>    <div class="w-full xl:w-[260px] shrink-0 flex flex-col gap-4 sm:gap-6 xl:sticky xl:top-[100px] order-2 xl:order-1">      <LeftSidebar posts={allPosts.map(p => ({ slug: p.slug, title: p.title, date: p.date, description: p.description }))} tags={allTags} />    </div>  </div></Layout>
+---
+import Layout from '../../layouts/Layout.astro';
+import { getProcessedPosts, getProcessedTalks } from '../../utils/postsFetcher';
+import TalksFeed from '../../components/TalksFeed.svelte';
+import LeftSidebar from '../../components/LeftSidebar.astro';
+import { i18nConfig } from '../../config/site';
+
+const allTalks = await getProcessedTalks();
+const allPosts = await getProcessedPosts();
+const tagMap: Record<string, number> = {};
+allPosts.forEach(p => { if (p.tags) { p.tags.forEach(t => { tagMap[t] = (tagMap[t] || 0) + 1; }); } });
+const allTags = Object.entries(tagMap).map(([name, count]) => ({ name, count })).sort((a, b) => b.count - a.count);
+---
+
+<Layout 
+  title={i18nConfig.talks.title}
+  isTalk={true}
+  postsCount={allTalks.length}
+>
+  <div class="flex flex-col xl:flex-row gap-4 sm:gap-6 xl:gap-8 items-start justify-center">
+    <div class="w-full xl:flex-1 min-w-0 order-1 xl:order-2">
+      <TalksFeed talks={allTalks} client:load />
+    </div>
+    <div class="w-full xl:w-[260px] shrink-0 flex flex-col gap-4 sm:gap-6 xl:sticky xl:top-[100px] order-2 xl:order-1">
+      <LeftSidebar posts={allPosts.map(p => ({ slug: p.slug, title: p.title, date: p.date, description: p.description }))} tags={allTags} />
+    </div>
+  </div>
+</Layout>
