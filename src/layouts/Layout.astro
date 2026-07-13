@@ -438,10 +438,10 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
     var bgCount = Number(document.body.dataset.bgCount);
     if (bgCount > 0) {
       var i = Math.floor(Math.random() * bgCount) + 1;
-      document.body.style.backgroundImage = 'url(/images/background/' + i + '.webp)';
-      document.body.style.backgroundSize = 'contain';
+      document.body.style.backgroundImage = 'radial-gradient(circle, rgba(253,246,227,0.15) 1px, transparent 1px), url(/images/background/' + i + '.webp)';
+      document.body.style.backgroundSize = '24px 24px, cover';
       document.body.style.backgroundPosition = 'center';
-      document.body.style.backgroundRepeat = 'no-repeat';
+      document.body.style.backgroundRepeat = 'repeat, no-repeat';
       document.body.style.backgroundAttachment = 'fixed';
     }
   })();

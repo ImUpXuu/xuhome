@@ -48,15 +48,15 @@
     </h3>
     {#if loaded}
       <div class="space-y-3">
-        <div class="flex items-center justify-between bg-[rgba(250,248,245,0.75)] dark:bg-slate-700 border-2 border-[#0284c7]/20 rounded-sm px-3 py-2">
+        <div class="flex items-center justify-between bg-[rgba(250,248,245,0.25)] dark:bg-slate-700 border-2 border-[#0284c7]/20 rounded-sm px-3 py-2">
           <span class="text-xs font-bold text-slate-600 dark:text-slate-300">访问量</span>
           <span class="font-black text-[#0284c7] font-mono text-sm">{pageviews.toLocaleString()}</span>
         </div>
-        <div class="flex items-center justify-between bg-[rgba(250,248,245,0.75)] dark:bg-slate-700 border-2 border-[#0284c7]/20 rounded-sm px-3 py-2">
+        <div class="flex items-center justify-between bg-[rgba(250,248,245,0.25)] dark:bg-slate-700 border-2 border-[#0284c7]/20 rounded-sm px-3 py-2">
           <span class="text-xs font-bold text-slate-600 dark:text-slate-300">访客数</span>
           <span class="font-black text-[#0284c7] font-mono text-sm">{uniques.toLocaleString()}</span>
         </div>
-        <div class="flex items-center justify-between bg-[rgba(250,248,245,0.75)] dark:bg-slate-700 border-2 border-[#0284c7]/20 rounded-sm px-3 py-2">
+        <div class="flex items-center justify-between bg-[rgba(250,248,245,0.25)] dark:bg-slate-700 border-2 border-[#0284c7]/20 rounded-sm px-3 py-2">
           <span class="text-xs font-bold text-slate-600 dark:text-slate-300">访问次数</span>
           <span class="font-black text-[#0284c7] font-mono text-sm">{visits.toLocaleString()}</span>
         </div>

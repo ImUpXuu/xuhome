@@ -310,7 +310,7 @@ html {
   --waline-theme-color: #0284c7 !important;
   --waline-active-color: #0ea5e9 !important;
   --waline-color: #2d3748 !important;
-  --waline-bgcolor: rgba(250,248,245,0.75) !important;
+  --waline-bgcolor: rgba(250,248,245,0.25) !important;
   --waline-bgcolor-light: #fff !important;
   --waline-bgcolor-hover: #fde68a !important;
   --waline-border-color: #0284c7 !important;
@@ -319,7 +319,7 @@ html {
   --waline-code-bgcolor: #0284c7 !important;
   --waline-bq-color: #0284c7 !important;
   --waline-avatar-radius: 4px !important;
-  --waline-info-bgcolor: rgba(250,248,245,0.75) !important;
+  --waline-info-bgcolor: rgba(250,248,245,0.25) !important;
   --waline-info-color: #475569 !important;
   --waline-info-font-size: 0.75rem !important;
 }

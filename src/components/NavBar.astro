@@ -28,7 +28,7 @@ const isArchivePage = pathname === '/archive';
       <a
         href={nav[0].href}
         class={`px-1.5 py-0.5 sm:px-3 sm:py-1.5 border-2 border-[#0284c7] flex items-center gap-0.5 sm:gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[10px] sm:text-xs tracking-wider shrink-0 whitespace-nowrap ${
-          isPostPage ? 'bg-[#0ea5e9] text-white shadow-[1px_1px_0px_0px_#0284c7] sm:shadow-[2px_2px_0px_0px_#0284c7]' : 'text-[#0284c7] shadow-[1px_1px_0px_0px_#f59e0b] sm:shadow-[2px_2px_0px_0px_#f59e0b] bg-[rgba(250,248,245,0.75)]'
+          isPostPage ? 'bg-[#0ea5e9] text-white shadow-[1px_1px_0px_0px_#0284c7] sm:shadow-[2px_2px_0px_0px_#0284c7]' : 'text-[#0284c7] shadow-[1px_1px_0px_0px_#f59e0b] sm:shadow-[2px_2px_0px_0px_#f59e0b] bg-[rgba(250,248,245,0.25)]'
         }`}
       >
         <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 sm:w-4 sm:h-4 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -39,7 +39,7 @@ const isArchivePage = pathname === '/archive';
       <a
         href={nav[1].href}
         class={`px-1.5 py-0.5 sm:px-3 sm:py-1.5 border-2 border-[#0284c7] flex items-center gap-0.5 sm:gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[10px] sm:text-xs tracking-wider shrink-0 whitespace-nowrap ${
-          isTalkPage ? 'bg-[#0ea5e9] text-white shadow-[1px_1px_0px_0px_#0284c7] sm:shadow-[2px_2px_0px_0px_#0284c7]' : 'text-[#0284c7] shadow-[1px_1px_0px_0px_#fde68a] sm:shadow-[2px_2px_0px_0px_#fde68a] bg-[rgba(250,248,245,0.75)]'
+          isTalkPage ? 'bg-[#0ea5e9] text-white shadow-[1px_1px_0px_0px_#0284c7] sm:shadow-[2px_2px_0px_0px_#0284c7]' : 'text-[#0284c7] shadow-[1px_1px_0px_0px_#fde68a] sm:shadow-[2px_2px_0px_0px_#fde68a] bg-[rgba(250,248,245,0.25)]'
         }`}
       >
         <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 sm:w-4 sm:h-4 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -51,7 +51,7 @@ const isArchivePage = pathname === '/archive';
       <a
         href={nav[2].href}
         class={`hidden sm:flex px-1.5 py-0.5 sm:px-3 sm:py-1.5 border-2 border-[#0284c7] items-center gap-0.5 sm:gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[10px] sm:text-xs tracking-wider shrink-0 whitespace-nowrap ${
-          isFriendsPage ? 'bg-[#0ea5e9] text-white shadow-[1px_1px_0px_0px_#0284c7] sm:shadow-[2px_2px_0px_0px_#0284c7]' : 'text-[#0284c7] shadow-[1px_1px_0px_0px_#fde68a] sm:shadow-[2px_2px_0px_0px_#fde68a] bg-[rgba(250,248,245,0.75)]'
+          isFriendsPage ? 'bg-[#0ea5e9] text-white shadow-[1px_1px_0px_0px_#0284c7] sm:shadow-[2px_2px_0px_0px_#0284c7]' : 'text-[#0284c7] shadow-[1px_1px_0px_0px_#fde68a] sm:shadow-[2px_2px_0px_0px_#fde68a] bg-[rgba(250,248,245,0.25)]'
         }`}
       >
         <svg xmlns="http://www.w3.org/2000/svg" class={`w-3 h-3 sm:w-4 sm:h-4 ${isFriendsPage ? 'fill-white stroke-white' : 'stroke-red-500 fill-red-400'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -63,7 +63,7 @@ const isArchivePage = pathname === '/archive';
       <a
         href={nav[3].href}
         class={`hidden md:flex px-1.5 py-0.5 sm:px-3 sm:py-1.5 border-2 border-[#0284c7] items-center gap-0.5 sm:gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[10px] sm:text-xs tracking-wider shrink-0 whitespace-nowrap ${
-          isAboutPage ? 'bg-[#0ea5e9] text-white shadow-[1px_1px_0px_0px_#0284c7] sm:shadow-[2px_2px_0px_0px_#0284c7]' : 'text-[#0284c7] shadow-[1px_1px_0px_0px_#fde68a] sm:shadow-[2px_2px_0px_0px_#fde68a] bg-[rgba(250,248,245,0.75)]'
+          isAboutPage ? 'bg-[#0ea5e9] text-white shadow-[1px_1px_0px_0px_#0284c7] sm:shadow-[2px_2px_0px_0px_#0284c7]' : 'text-[#0284c7] shadow-[1px_1px_0px_0px_#fde68a] sm:shadow-[2px_2px_0px_0px_#fde68a] bg-[rgba(250,248,245,0.25)]'
         }`}
       >
         <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 sm:w-4 sm:h-4 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -75,7 +75,7 @@ const isArchivePage = pathname === '/archive';
       <a
         href={nav[4].href}
         class={`hidden lg:flex px-1.5 py-0.5 sm:px-3 sm:py-1.5 border-2 border-[#0284c7] items-center gap-0.5 sm:gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[10px] sm:text-xs tracking-wider shrink-0 whitespace-nowrap ${
-          isArchivePage ? 'bg-[#0ea5e9] text-white shadow-[1px_1px_0px_0px_#0284c7] sm:shadow-[2px_2px_0px_0px_#0284c7]' : 'text-[#0284c7] shadow-[1px_1px_0px_0px_#fde68a] sm:shadow-[2px_2px_0px_0px_#fde68a] bg-[rgba(250,248,245,0.75)]'
+          isArchivePage ? 'bg-[#0ea5e9] text-white shadow-[1px_1px_0px_0px_#0284c7] sm:shadow-[2px_2px_0px_0px_#0284c7]' : 'text-[#0284c7] shadow-[1px_1px_0px_0px_#fde68a] sm:shadow-[2px_2px_0px_0px_#fde68a] bg-[rgba(250,248,245,0.25)]'
         }`}
       >
         <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 sm:w-4 sm:h-4 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -87,7 +87,7 @@ const isArchivePage = pathname === '/archive';
       <a
         href={nav[5].href}
         class={`hidden lg:flex px-1.5 py-0.5 sm:px-3 sm:py-1.5 border-2 border-[#0284c7] items-center gap-0.5 sm:gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[10px] sm:text-xs tracking-wider shrink-0 whitespace-nowrap ${
-          Astro.url.pathname.startsWith('/stats') ? 'bg-[#0ea5e9] text-white shadow-[1px_1px_0px_0px_#0284c7] sm:shadow-[2px_2px_0px_0px_#0284c7]' : 'text-[#0284c7] shadow-[1px_1px_0px_0px_#fde68a] sm:shadow-[2px_2px_0px_0px_#fde68a] bg-[rgba(250,248,245,0.75)]'
+          Astro.url.pathname.startsWith('/stats') ? 'bg-[#0ea5e9] text-white shadow-[1px_1px_0px_0px_#0284c7] sm:shadow-[2px_2px_0px_0px_#0284c7]' : 'text-[#0284c7] shadow-[1px_1px_0px_0px_#fde68a] sm:shadow-[2px_2px_0px_0px_#fde68a] bg-[rgba(250,248,245,0.25)]'
         }`}
       >
         <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 sm:w-4 sm:h-4 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -99,7 +99,7 @@ const isArchivePage = pathname === '/archive';
       <a
         href={ext[0].href}
         target="_blank" rel="noopener noreferrer"
-        class={`hidden xl:flex px-1.5 py-0.5 sm:px-3 sm:py-1.5 border-2 border-[#0284c7] items-center gap-0.5 sm:gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[10px] sm:text-xs tracking-wider shrink-0 whitespace-nowrap text-[#0284c7] shadow-[1px_1px_0px_0px_#fde68a] sm:shadow-[2px_2px_0px_0px_#fde68a] bg-[rgba(250,248,245,0.75)]`}
+        class={`hidden xl:flex px-1.5 py-0.5 sm:px-3 sm:py-1.5 border-2 border-[#0284c7] items-center gap-0.5 sm:gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[10px] sm:text-xs tracking-wider shrink-0 whitespace-nowrap text-[#0284c7] shadow-[1px_1px_0px_0px_#fde68a] sm:shadow-[2px_2px_0px_0px_#fde68a] bg-[rgba(250,248,245,0.25)]`}
       >
         <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 sm:w-4 sm:h-4 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
@@ -110,7 +110,7 @@ const isArchivePage = pathname === '/archive';
       <button
         id="dark-mode-toggle"
         data-theme-toggle
-        class="px-1.5 py-0.5 sm:px-3 sm:py-1.5 border-2 border-[#0284c7] flex items-center gap-0.5 sm:gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[10px] sm:text-xs tracking-wider shrink-0 whitespace-nowrap text-[#0284c7] shadow-[1px_1px_0px_0px_#fde68a] sm:shadow-[2px_2px_0px_0px_#fde68a] bg-[rgba(250,248,245,0.75)] dark:bg-slate-700 dark:hover:bg-[#0ea5e9]"
+        class="px-1.5 py-0.5 sm:px-3 sm:py-1.5 border-2 border-[#0284c7] flex items-center gap-0.5 sm:gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[10px] sm:text-xs tracking-wider shrink-0 whitespace-nowrap text-[#0284c7] shadow-[1px_1px_0px_0px_#fde68a] sm:shadow-[2px_2px_0px_0px_#fde68a] bg-[rgba(250,248,245,0.25)] dark:bg-slate-700 dark:hover:bg-[#0ea5e9]"
         aria-label={i18nConfig.common.toggleDarkMode}
       >
         <svg class="theme-sun w-3 h-3 sm:w-4 sm:h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
@@ -124,7 +124,7 @@ const isArchivePage = pathname === '/archive';
       <div class="hidden sm:block relative self-center">
         <button
           id="desktop-more-toggle"
-          class="px-1.5 py-0.5 sm:px-3 sm:py-1.5 border-2 border-[#0284c7] flex items-center gap-0.5 sm:gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[10px] sm:text-xs tracking-wider shrink-0 whitespace-nowrap text-[#0284c7] shadow-[1px_1px_0px_0px_#fde68a] sm:shadow-[2px_2px_0px_0px_#fde68a] bg-[rgba(250,248,245,0.75)] dark:bg-slate-700"
+          class="px-1.5 py-0.5 sm:px-3 sm:py-1.5 border-2 border-[#0284c7] flex items-center gap-0.5 sm:gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[10px] sm:text-xs tracking-wider shrink-0 whitespace-nowrap text-[#0284c7] shadow-[1px_1px_0px_0px_#fde68a] sm:shadow-[2px_2px_0px_0px_#fde68a] bg-[rgba(250,248,245,0.25)] dark:bg-slate-700"
         >
           <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 sm:w-4 sm:h-4 stroke-[3]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
@@ -138,25 +138,25 @@ const isArchivePage = pathname === '/archive';
             </svg>
             {ext[0].name}
           </a>
-          <a href={mob[1].href} class="md:hidden p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none bg-[rgba(250,248,245,0.75)] dark:bg-slate-700 text-[#0284c7]">
+          <a href={mob[1].href} class="md:hidden p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none bg-[rgba(250,248,245,0.25)] dark:bg-slate-700 text-[#0284c7]">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
             {mob[1].name}
           </a>
-          <a href={mob[2].href} class="lg:hidden p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none bg-[rgba(250,248,245,0.75)] dark:bg-slate-700 text-[#0284c7]">
+          <a href={mob[2].href} class="lg:hidden p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none bg-[rgba(250,248,245,0.25)] dark:bg-slate-700 text-[#0284c7]">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
             </svg>
             {mob[2].name}
           </a>
-          <a href={mob[3].href} class="lg:hidden p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none bg-[rgba(250,248,245,0.75)] dark:bg-slate-700 text-[#0284c7]">
+          <a href={mob[3].href} class="lg:hidden p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none bg-[rgba(250,248,245,0.25)] dark:bg-slate-700 text-[#0284c7]">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
             </svg>
             {mob[3].name}
           </a>
-          <a href={ext[1].href} target="_blank" class="p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none bg-[rgba(250,248,245,0.75)] dark:bg-slate-700 text-[#0284c7]">
+          <a href={ext[1].href} target="_blank" class="p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none bg-[rgba(250,248,245,0.25)] dark:bg-slate-700 text-[#0284c7]">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
             </svg>
@@ -169,7 +169,7 @@ const isArchivePage = pathname === '/archive';
       <div class="block sm:hidden relative self-center mr-0.5">
         <button
           id="mobile-search-toggle"
-          class="p-1 px-[5px] border-2 border-[#0284c7] transition-all rounded-sm font-black flex items-center justify-center cursor-pointer shadow-[1px_1px_0px_0px_#0284c7] active:translate-x-0.5 active:translate-y-0.5 active:shadow-none bg-[rgba(250,248,245,0.75)] text-[#0284c7]"
+          class="p-1 px-[5px] border-2 border-[#0284c7] transition-all rounded-sm font-black flex items-center justify-center cursor-pointer shadow-[1px_1px_0px_0px_#0284c7] active:translate-x-0.5 active:translate-y-0.5 active:shadow-none bg-[rgba(250,248,245,0.25)] text-[#0284c7]"
         >
           <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 stroke-[3]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -184,7 +184,7 @@ const isArchivePage = pathname === '/archive';
           aria-expanded="false"
           aria-controls="mobile-menu-dropdown"
           aria-label={i18nConfig.common.openMenu}
-          class="p-1 px-1 border-2 border-[#0284c7] transition-all rounded-sm font-black flex items-center justify-center cursor-pointer shadow-[1px_1px_0px_0px_#0284c7] active:translate-x-0.5 active:translate-y-0.5 active:shadow-none bg-[rgba(250,248,245,0.75)] dark:bg-slate-700 text-[#0284c7]"
+          class="p-1 px-1 border-2 border-[#0284c7] transition-all rounded-sm font-black flex items-center justify-center cursor-pointer shadow-[1px_1px_0px_0px_#0284c7] active:translate-x-0.5 active:translate-y-0.5 active:shadow-none bg-[rgba(250,248,245,0.25)] dark:bg-slate-700 text-[#0284c7]"
         >
           <svg id="menu-icon-open" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
@@ -198,7 +198,7 @@ const isArchivePage = pathname === '/archive';
           <button
             id="mobile-dark-mode-toggle"
             data-theme-toggle
-            class="p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none bg-[rgba(250,248,245,0.75)] dark:bg-slate-700 text-[#0284c7] w-full"
+            class="p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none bg-[rgba(250,248,245,0.25)] dark:bg-slate-700 text-[#0284c7] w-full"
           >
             <svg class="theme-moon w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
@@ -211,7 +211,7 @@ const isArchivePage = pathname === '/archive';
           <a
             href={mob[0].href}
             class={`p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none ${
-              isFriendsPage ? "bg-[#0ea5e9] text-white" : "bg-[rgba(250,248,245,0.75)] dark:bg-slate-700 text-[#0284c7]"
+              isFriendsPage ? "bg-[#0ea5e9] text-white" : "bg-[rgba(250,248,245,0.25)] dark:bg-slate-700 text-[#0284c7]"
             }`}
           >
             <svg xmlns="http://www.w3.org/2000/svg" class={`w-3.5 h-3.5 ${isFriendsPage ? "fill-white text-white" : "fill-red-400 text-red-500"}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -219,7 +219,7 @@ const isArchivePage = pathname === '/archive';
             </svg>
             <span>{mob[0].name}</span>
           </a>
-          <a href={mob[1].href} class={`p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none ${isAboutPage ? "bg-[#0ea5e9] text-white" : "bg-[rgba(250,248,245,0.75)] dark:bg-slate-700 text-[#0284c7]"}`}>
+          <a href={mob[1].href} class={`p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none ${isAboutPage ? "bg-[#0ea5e9] text-white" : "bg-[rgba(250,248,245,0.25)] dark:bg-slate-700 text-[#0284c7]"}`}>
             <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>{mob[1].name}
           </a>
           <a
@@ -233,16 +233,16 @@ const isArchivePage = pathname === '/archive';
             </svg>
             <span>{ext[0].name}</span>
           </a>
-          <a href={mob[2].href} class={`p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none ${isArchivePage ? "bg-[#0ea5e9] text-white" : "bg-[rgba(250,248,245,0.75)] dark:bg-slate-700 text-[#0284c7]"}`}>
+          <a href={mob[2].href} class={`p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none ${isArchivePage ? "bg-[#0ea5e9] text-white" : "bg-[rgba(250,248,245,0.25)] dark:bg-slate-700 text-[#0284c7]"}`}>
             <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
             </svg>
             {mob[2].name}
           </a>
-          <a href={mob[3].href} class="p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none bg-[rgba(250,248,245,0.75)] dark:bg-slate-700 text-[#0284c7]">
+          <a href={mob[3].href} class="p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none bg-[rgba(250,248,245,0.25)] dark:bg-slate-700 text-[#0284c7]">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>{mob[3].name}
           </a>
-          <a href={ext[1].href} target="_blank" class="p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none bg-[rgba(250,248,245,0.75)] dark:bg-slate-700 text-[#0284c7]">
+          <a href={ext[1].href} target="_blank" class="p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none bg-[rgba(250,248,245,0.25)] dark:bg-slate-700 text-[#0284c7]">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>{ext[1].name}
           </a>
         </div>
@@ -251,7 +251,7 @@ const isArchivePage = pathname === '/archive';
   </div>
   
   {/* Mobile slide-down search dialog */}
-  <div id="mobile-search-dialog" class="absolute left-0 right-0 top-full bg-[rgba(250,248,245,0.75)] dark:bg-slate-800 border-b-4 border-[#0284c7] px-4 py-3 shadow-[0px_6px_0px_0px_rgba(2,132,199,0.15)] flex flex-col gap-2 z-[90] hidden">
+  <div id="mobile-search-dialog" class="absolute left-0 right-0 top-full bg-[rgba(250,248,245,0.25)] dark:bg-slate-800 border-b-4 border-[#0284c7] px-4 py-3 shadow-[0px_6px_0px_0px_rgba(2,132,199,0.15)] flex flex-col gap-2 z-[90] hidden">
     <div class="relative w-full">
       <input
         type="text"
@@ -296,7 +296,7 @@ const isArchivePage = pathname === '/archive';
       if (menuIconClose) menuIconClose.classList.add('hidden');
       if (mobileMenuToggle) {
         mobileMenuToggle.classList.remove('bg-[#fde68a]');
-        mobileMenuToggle.classList.add('bg-[rgba(250,248,245,0.75)]');
+        mobileMenuToggle.classList.add('bg-[rgba(250,248,245,0.25)]');
         mobileMenuToggle.setAttribute('aria-expanded', 'false');
         mobileMenuToggle.setAttribute('aria-label', openMenuText);
       }
@@ -306,7 +306,7 @@ const isArchivePage = pathname === '/archive';
       desktopMoreDropdown.classList.add('hidden');
       if (desktopMoreToggle) {
         desktopMoreToggle.classList.remove('bg-[#fde68a]');
-        desktopMoreToggle.classList.add('bg-[rgba(250,248,245,0.75)]');
+        desktopMoreToggle.classList.add('bg-[rgba(250,248,245,0.25)]');
       }
     }
   }
@@ -374,7 +374,7 @@ const isArchivePage = pathname === '/archive';
         if (!isOpen) {
           desktopMoreDropdown.classList.remove('hidden');
           desktopMoreToggle.classList.add('bg-[#fde68a]');
-          desktopMoreToggle.classList.remove('bg-[rgba(250,248,245,0.75)]');
+          desktopMoreToggle.classList.remove('bg-[rgba(250,248,245,0.25)]');
         }
         return;
       }
@@ -399,7 +399,7 @@ const isArchivePage = pathname === '/archive';
         if (menuIconOpen) menuIconOpen.classList.add('hidden');
         if (menuIconClose) menuIconClose.classList.remove('hidden');
         mobileMenuToggle.classList.add('bg-[#fde68a]');
-        mobileMenuToggle.classList.remove('bg-[rgba(250,248,245,0.75)]');
+        mobileMenuToggle.classList.remove('bg-[rgba(250,248,245,0.25)]');
         mobileMenuToggle.setAttribute('aria-expanded', 'true');
         mobileMenuToggle.setAttribute('aria-label', closeMenuText);
         if (mobileSearchDialog) mobileSearchDialog.classList.add('hidden');
@@ -418,11 +418,11 @@ const isArchivePage = pathname === '/archive';
       if (isOpen) {
         mobileSearchDialog.classList.add('hidden');
         mobileSearchToggle.classList.remove('bg-[#fde68a]');
-        mobileSearchToggle.classList.add('bg-[rgba(250,248,245,0.75)]');
+        mobileSearchToggle.classList.add('bg-[rgba(250,248,245,0.25)]');
       } else {
         mobileSearchDialog.classList.remove('hidden');
         mobileSearchToggle.classList.add('bg-[#fde68a]');
-        mobileSearchToggle.classList.remove('bg-[rgba(250,248,245,0.75)]');
+        mobileSearchToggle.classList.remove('bg-[rgba(250,248,245,0.25)]');
         closeNavDropdowns();
         setTimeout(() => mobileSearchInput?.focus(), 50);
       }

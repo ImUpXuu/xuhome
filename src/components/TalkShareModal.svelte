@@ -225,7 +225,7 @@
     on:click={handleBackdropClick}
   >
     <div
-      class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] sm:w-[420px] max-h-[85vh] bg-[rgba(250,248,245,0.75)] border-[10px] border-[#0284c7] rounded-sm shadow-[8px_8px_0px_0px_#0284c7] overflow-y-auto"
+      class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] sm:w-[420px] max-h-[85vh] bg-[rgba(250,248,245,0.25)] border-[10px] border-[#0284c7] rounded-sm shadow-[8px_8px_0px_0px_#0284c7] overflow-y-auto"
       on:click|stopPropagation
     >
       <div class="flex items-center justify-between p-5 border-b-4 border-[#0284c7] bg-white sticky top-0 z-10">

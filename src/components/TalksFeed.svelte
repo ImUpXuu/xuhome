@@ -178,7 +178,7 @@
       {#each allTags as tag}
         <button
           on:click={() => handleTagSelect(tag)}
-          class="text-xs px-2.5 py-1 rounded-sm font-bold transition-all border-2 border-[#0284c7] shadow-[2px_2px_0px_0px_#0284c7] cursor-pointer flex items-center gap-1 {selectedTag === tag ? 'bg-[#f59e0b] text-white' : 'bg-[rgba(250,248,245,0.75)] dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-[#fde68a] hover:translate-y-[-1px]'}"
+          class="text-xs px-2.5 py-1 rounded-sm font-bold transition-all border-2 border-[#0284c7] shadow-[2px_2px_0px_0px_#0284c7] cursor-pointer flex items-center gap-1 {selectedTag === tag ? 'bg-[#f59e0b] text-white' : 'bg-[rgba(250,248,245,0.25)] dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-[#fde68a] hover:translate-y-[-1px]'}"
         >
           <span>#{tag}</span>
         </button>
@@ -214,7 +214,7 @@
         <!-- Share Button -->
         <button
           on:click={(e) => openShare(talk, e)}
-          class="absolute top-4 right-4 p-1.5 sm:p-2 border-2 border-[#0284c7] text-xs font-black rounded-sm transition-all cursor-pointer z-10 flex items-center justify-center gap-1 shadow-[2px_2px_0px_0px_#0284c7] h-8 sm:h-9 bg-[rgba(250,248,245,0.75)] dark:bg-slate-700 text-[#0284c7] hover:bg-[#fde68a] hover:-translate-y-0.5 active:translate-y-0 active:shadow-none"
+          class="absolute top-4 right-4 p-1.5 sm:p-2 border-2 border-[#0284c7] text-xs font-black rounded-sm transition-all cursor-pointer z-10 flex items-center justify-center gap-1 shadow-[2px_2px_0px_0px_#0284c7] h-8 sm:h-9 bg-[rgba(250,248,245,0.25)] dark:bg-slate-700 text-[#0284c7] hover:bg-[#fde68a] hover:-translate-y-0.5 active:translate-y-0 active:shadow-none"
           title="分享 / Share"
         >
           <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 stroke-[3]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
