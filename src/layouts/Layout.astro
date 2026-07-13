@@ -424,28 +424,7 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
     initMonitor();
   });
 </script>
-<script is:inline>
-  (function() {
-    var _last = '';
-    function send() {
-      var p = location.pathname;
-      if (!p.endsWith('/')) p += '/';
-      if (p === _last) return;
-      _last = p;
-      fetch('https://beat.345696.xyz/api/track', {
-        method: 'POST',
-        body: JSON.stringify({ p: p }),
-        headers: { 'Content-Type': 'application/json' }
-      });
-    }
-    send();
-    var _push = history.pushState;
-    history.pushState = function() { _push.apply(history, arguments); setTimeout(send, 0); };
-    var _replace = history.replaceState;
-    history.replaceState = function() { _replace.apply(history, arguments); setTimeout(send, 0); };
-    window.addEventListener('popstate', function() { setTimeout(send, 0); });
-  })();
-</script>
+<script src="/beat.js"></script>
     </div>
 
     {/* Floating Back To Top button */}
