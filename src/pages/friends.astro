@@ -9,8 +9,6 @@ import { i18nConfig } from '../config/site';
   title={i18nConfig.friends.title}
   description={i18nConfig.friends.description}
 >
-  <div data-ext-bypass>
-    <SvelteFriends client:load />
-  </div>
+  <SvelteFriends client:load />
   <WalineComment client:idle />
 </Layout>
