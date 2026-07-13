@@ -8,7 +8,11 @@ import CustomCursor from '../components/CustomCursor.svelte';
 import WelcomeToast from '../components/WelcomeToast.astro';
 import { PageBanner } from '../components/PageBanner';
 import { execSync } from 'child_process';
+import fs from 'fs';
 import '../index.css';
+
+const bgFiles = fs.readdirSync('public/images/background').filter(f => /^\d+\.webp$/.test(f));
+const bgCount = bgFiles.length;
 
 interface Props {
   title?: string;
@@ -168,6 +172,17 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
     }
     .animate-card-entrance {
       animation: card-entrance 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    #bg-wall {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      opacity: 0.12;
+      pointer-events: none;
     }
 
 
@@ -425,6 +440,16 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
   });
 </script>
 <script src="/beat.js"></script>
+<div id="bg-wall"></div>
+<script is:inline>
+  (function(){
+    var n = {bgCount};
+    if (n > 0) {
+      var i = Math.floor(Math.random() * n) + 1;
+      document.getElementById('bg-wall').style.backgroundImage = 'url(/images/background/' + i + '.webp)';
+    }
+  })();
+</script>
     </div>
 
     {/* Floating Back To Top button */}
