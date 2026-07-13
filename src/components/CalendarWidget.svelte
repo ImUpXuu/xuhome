@@ -134,7 +134,7 @@
         {#each selectedDateEvents as event}
           <a 
             href={`/posts/${event.slug}`}
-            class="p-2 text-left bg-[rgba(250,248,245,0.25)] dark:bg-slate-700 hover:bg-[#fffbeb] dark:hover:bg-slate-600 border-2 border-[#0284c7] hover:shadow-none hover:translate-y-[1px] rounded-sm transition-all cursor-pointer group block"
+            class="p-2 text-left bg-[rgba(250,248,245,0.18)] dark:bg-slate-700 hover:bg-[#fffbeb] dark:hover:bg-slate-600 border-2 border-[#0284c7] hover:shadow-none hover:translate-y-[1px] rounded-sm transition-all cursor-pointer group block"
           >
             <h4 class="text-xs font-black text-[#0284c7] line-clamp-1 group-hover:text-[#0ea5e9] transition-colors mb-1 flex items-center gap-1">
               <span class="w-1.5 h-1.5 bg-[#0284c7] rounded-sm inline-block"></span>

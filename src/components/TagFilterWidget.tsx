@@ -22,7 +22,7 @@ export function TagFilterWidget({
           className={`text-xs font-bold px-2 py-1 border-2 rounded-sm transition-colors ${
             selectedTag === null
               ? "bg-[#0284c7] text-white border-[#0284c7] shadow-[2px_2px_0px_0px_#f59e0b]"
-              : "bg-[rgba(250,248,245,0.25)] text-[#0284c7] border-[#0284c7]/20 hover:border-[#0284c7] hover:bg-[#fde68a]"
+              : "bg-[rgba(250,248,245,0.18)] text-[#0284c7] border-[#0284c7]/20 hover:border-[#0284c7] hover:bg-[#fde68a]"
           }`}
         >
           全部
@@ -34,7 +34,7 @@ export function TagFilterWidget({
             className={`text-xs font-bold px-2 py-1 border-2 rounded-sm transition-colors ${
               selectedTag === tag
                 ? "bg-[#0ea5e9] text-white border-[#0284c7] shadow-[2px_2px_0px_0px_#0284c7]"
-                : "bg-[rgba(250,248,245,0.25)] text-[#0284c7] border-[#0284c7]/20 hover:border-[#0284c7] hover:bg-[#fde68a]"
+                : "bg-[rgba(250,248,245,0.18)] text-[#0284c7] border-[#0284c7]/20 hover:border-[#0284c7] hover:bg-[#fde68a]"
             }`}
           >
             {tag}

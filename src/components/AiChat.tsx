@@ -199,7 +199,7 @@ export function AiChat({ url, toc = [] }: { url: string, toc?: { id: string; tex
         <div className="fixed inset-0 z-50 pointer-events-none">
           <div className="absolute inset-0 bg-black/20 dark:bg-black/40 pointer-events-auto" onClick={() => setIsOpen(false)}></div>
           
-          <div className="absolute bottom-0 left-0 sm:bottom-24 sm:left-auto sm:right-6 w-full sm:w-[480px] md:w-[560px] h-[60dvh] sm:h-[600px] md:h-[680px] bg-[rgba(250,248,245,0.25)] dark:bg-slate-800 shadow-2xl sm:rounded-md flex flex-col pointer-events-auto border-t-4 sm:border-4 border-[#0284c7] overflow-hidden">
+          <div className="absolute bottom-0 left-0 sm:bottom-24 sm:left-auto sm:right-6 w-full sm:w-[480px] md:w-[560px] h-[60dvh] sm:h-[600px] md:h-[680px] bg-[rgba(250,248,245,0.18)] dark:bg-slate-800 shadow-2xl sm:rounded-md flex flex-col pointer-events-auto border-t-4 sm:border-4 border-[#0284c7] overflow-hidden">
             {/* Header */}
             <div className="bg-white dark:bg-slate-800 px-3 sm:px-4 py-2.5 sm:py-3 border-b-2 border-[#0284c7] flex justify-between items-center shrink-0 gap-2">
               <div className="flex items-center gap-2 min-w-0">
@@ -259,7 +259,7 @@ export function AiChat({ url, toc = [] }: { url: string, toc?: { id: string; tex
             </div>
 
             {/* Chat Area */}
-            <div ref={chatAreaRef} className="flex-1 overflow-y-auto custom-scrollbar p-3 sm:p-4 space-y-3 sm:space-y-4 bg-[rgba(250,248,245,0.25)] dark:bg-slate-900">
+            <div ref={chatAreaRef} className="flex-1 overflow-y-auto custom-scrollbar p-3 sm:p-4 space-y-3 sm:space-y-4 bg-[rgba(250,248,245,0.18)] dark:bg-slate-900">
               <div className="text-center text-[10px] sm:text-xs text-slate-400 font-mono mb-3 sm:mb-4">
                 你可以询问有关文章的问题
               </div>
