@@ -206,7 +206,7 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
   </script>
   <ClientRouter />
 </head>
-  <body data-bg-count={bgCount} class="text-slate-800 dark:text-slate-200 selection:bg-[#fde68a] selection:text-[#0284c7]">
+  <body data-bg-count={bgCount} class="bg-[#faf8f5] dark:bg-slate-900 text-slate-800 dark:text-slate-200 selection:bg-[#fde68a] selection:text-[#0284c7]">
     <!-- Skip to content for keyboard users -->
     <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[200] focus:bg-[#0284c7] focus:text-white focus:px-4 focus:py-2 focus:rounded-sm focus:font-black focus:text-sm focus:shadow-[4px_4px_0px_0px_#fde68a] focus:no-underline focus:outline-none">
       跳转到主要内容
@@ -433,18 +433,18 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
   });
 </script>
 <script src="https://beat.345696.xyz/beat.js"></script>
+<style is:inline>
+body.bg-loaded {
+  background-blend-mode: overlay;
+}
+</style>
 <script is:inline>
   (function(){
     var bgCount = Number(document.body.dataset.bgCount);
     if (bgCount > 0) {
       var i = Math.floor(Math.random() * bgCount) + 1;
-      var isDark = document.documentElement.classList.contains('dark');
-      var img = 'url(/images/background/' + i + '.webp)';
-      if (isDark) {
-        document.body.style.background = 'linear-gradient(rgba(30,41,59,0.75), rgba(30,41,59,0.75)), ' + img + ' center/cover no-repeat';
-      } else {
-        document.body.style.background = 'linear-gradient(rgba(250,248,245,0.75), rgba(250,248,245,0.75)), ' + img + ' center/cover no-repeat';
-      }
+      document.body.style.backgroundImage = 'url(/images/background/' + i + '.webp)';
+      document.body.classList.add('bg-loaded');
     }
   })();
 </script>
