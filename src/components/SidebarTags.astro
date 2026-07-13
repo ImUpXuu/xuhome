@@ -23,7 +23,7 @@ const { tags, activeTag } = Astro.props;
           class={`tag-item text-xs px-2.5 py-1 rounded-sm font-bold transition-all border-2 flex items-center gap-1 border-[#0284c7] ${
             activeTag === tag.name
               ? "bg-[#f59e0b] text-white"
-              : "bg-[rgba(250,248,245,0.18)] dark:bg-slate-700 text-slate-650 dark:text-slate-200 hover:bg-[#fde68a] hover:translate-y-[-1px]"
+              : "bg-[rgba(250,248,245,0.35)] dark:bg-slate-700 text-slate-650 dark:text-slate-200 hover:bg-[#fde68a] hover:translate-y-[-1px]"
           } ${idx >= 18 && !activeTag ? 'hidden' : ''}`}
         >
           <span>{tag.name}</span>
@@ -35,7 +35,7 @@ const { tags, activeTag } = Astro.props;
     {tags.length > 18 && !activeTag && (
       <button
         id="toggle-tags-btn"
-        class="w-full mt-4 flex items-center justify-center gap-1 text-xs font-black text-[#0284c7] hover:text-[#0ea5e9] hover:bg-[#fde68a] transition-all py-1.5 bg-[rgba(250,248,245,0.18)] dark:bg-slate-700 border-2 border-dashed border-[#0284c7]/20 rounded-sm cursor-pointer"
+        class="w-full mt-4 flex items-center justify-center gap-1 text-xs font-black text-[#0284c7] hover:text-[#0ea5e9] hover:bg-[#fde68a] transition-all py-1.5 bg-[rgba(250,248,245,0.35)] dark:bg-slate-700 border-2 border-dashed border-[#0284c7]/20 rounded-sm cursor-pointer"
       >
         <span>展开更多...</span>
         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor" id="toggle-tags-chevron">
