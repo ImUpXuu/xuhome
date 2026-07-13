@@ -442,9 +442,10 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
   });
 </script>
 <script src="https://beat.345696.xyz/beat.js"></script>
-<div id="bg-wall"></div>
-<script is:inline define:vars={{ bgCount }}>
+<div id="bg-wall" data-count={bgCount}></div>
+<script is:inline>
   (function(){
+    var bgCount = Number(document.getElementById('bg-wall').dataset.count);
     if (bgCount > 0) {
       var i = Math.floor(Math.random() * bgCount) + 1;
       document.getElementById('bg-wall').style.backgroundImage = 'url(/images/background/' + i + '.webp)';
