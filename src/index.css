@@ -377,3 +377,11 @@ html {
   --waline-info-color: #94a3b8 !important;
 }
 
+/* Glassmorphism: semi-transparent UI backgrounds so background image shows through */
+.bg-white { background-color: rgba(255,255,255,0.25) !important; }
+.bg-slate-50 { background-color: rgba(248,250,252,0.25) !important; }
+.bg-slate-100 { background-color: rgba(241,245,249,0.25) !important; }
+.dark .dark\:bg-slate-700, .dark .bg-slate-700 { background-color: rgba(51,65,85,0.85) !important; }
+.dark .dark\:bg-slate-800, .dark .bg-slate-800 { background-color: rgba(30,41,59,0.85) !important; }
+.dark .dark\:bg-slate-900, .dark .bg-slate-900 { background-color: rgba(15,23,42,0.85) !important; }
+
