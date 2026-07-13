@@ -1,9 +1,1 @@
----
-import Layout from '../layouts/Layout.astro';
-import StatsDashboard from '../components/StatsDashboard.svelte';
-import { i18nConfig } from '../config/site';
----
-
-<Layout title={i18nConfig.stats.title}>
-  <StatsDashboard client:load />
-</Layout>
+---import Layout from '../layouts/Layout.astro';import StatsDashboard from '../components/StatsDashboard.svelte';import { i18nConfig } from '../config/site';---<Layout title={i18nConfig.stats.title}>  <StatsDashboard client:load /></Layout>
