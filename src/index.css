@@ -310,7 +310,7 @@ html {
   --waline-theme-color: #0284c7 !important;
   --waline-active-color: #0ea5e9 !important;
   --waline-color: #2d3748 !important;
-  --waline-bgcolor: rgba(250,248,245,0.35) !important;
+  --waline-bgcolor: rgba(250,248,245,0.55) !important;
   --waline-bgcolor-light: #fff !important;
   --waline-bgcolor-hover: #fde68a !important;
   --waline-border-color: #0284c7 !important;
@@ -319,7 +319,7 @@ html {
   --waline-code-bgcolor: #0284c7 !important;
   --waline-bq-color: #0284c7 !important;
   --waline-avatar-radius: 4px !important;
-  --waline-info-bgcolor: rgba(250,248,245,0.35) !important;
+  --waline-info-bgcolor: rgba(250,248,245,0.55) !important;
   --waline-info-color: #475569 !important;
   --waline-info-font-size: 0.75rem !important;
 }
@@ -377,11 +377,22 @@ html {
   --waline-info-color: #94a3b8 !important;
 }
 
-/* Glassmorphism: semi-transparent UI backgrounds so background image shows through */
+/* Beige film + texture overlay on top of background image */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(circle, rgba(253,246,227,0.25) 1px, transparent 1px), linear-gradient(rgba(250,248,245,0.4), rgba(250,248,245,0.4));
+  background-size: 24px 24px, cover;
+  pointer-events: none;
+}
+
+/* Glassmorphism: semi-transparent UI backgrounds */
 body { font-weight: 500 !important; }
-.bg-white { background-color: rgba(255,255,255,0.35) !important; }
-.bg-slate-50 { background-color: rgba(248,250,252,0.35) !important; }
-.bg-slate-100 { background-color: rgba(241,245,249,0.35) !important; }
+.bg-white { background-color: rgba(255,255,255,0.55) !important; }
+.bg-slate-50 { background-color: rgba(248,250,252,0.55) !important; }
+.bg-slate-100 { background-color: rgba(241,245,249,0.55) !important; }
 .dark .dark\:bg-slate-700, .dark .bg-slate-700 { background-color: rgba(51,65,85,0.85) !important; }
 .dark .dark\:bg-slate-800, .dark .bg-slate-800 { background-color: rgba(30,41,59,0.85) !important; }
 .dark .dark\:bg-slate-900, .dark .bg-slate-900 { background-color: rgba(15,23,42,0.85) !important; }

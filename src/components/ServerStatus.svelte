@@ -166,25 +166,25 @@
   </h2>
 
   <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 mb-4">
-    <div class="bg-[rgba(250,248,245,0.35)] border-2 border-[#0284c7]/20 rounded-sm px-3 py-2">
+    <div class="bg-[rgba(250,248,245,0.55)] border-2 border-[#0284c7]/20 rounded-sm px-3 py-2">
       <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">实时下载</div>
       <div class="text-lg font-black text-[#10b981] font-mono">{currentDown.toFixed(2)} <span class="text-xs text-slate-400">MB/s</span></div>
     </div>
-    <div class="bg-[rgba(250,248,245,0.35)] border-2 border-[#0284c7]/20 rounded-sm px-3 py-2">
+    <div class="bg-[rgba(250,248,245,0.55)] border-2 border-[#0284c7]/20 rounded-sm px-3 py-2">
       <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">实时上传</div>
       <div class="text-lg font-black text-[#f59e0b] font-mono">{currentUp.toFixed(2)} <span class="text-xs text-slate-400">MB/s</span></div>
     </div>
-    <div class="bg-[rgba(250,248,245,0.35)] border-2 border-[#0284c7]/20 rounded-sm px-3 py-2">
+    <div class="bg-[rgba(250,248,245,0.55)] border-2 border-[#0284c7]/20 rounded-sm px-3 py-2">
       <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">60m 平均</div>
       <div class="text-lg font-black text-[#0284c7] font-mono">{avgDown.toFixed(2)} <span class="text-xs text-slate-400">MB/s</span></div>
     </div>
-    <div class="bg-[rgba(250,248,245,0.35)] border-2 border-[#0284c7]/20 rounded-sm px-3 py-2">
+    <div class="bg-[rgba(250,248,245,0.55)] border-2 border-[#0284c7]/20 rounded-sm px-3 py-2">
       <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">60m 峰值</div>
       <div class="text-lg font-black text-[#ef4444] font-mono">{maxDown.toFixed(2)} <span class="text-xs text-slate-400">MB/s</span></div>
     </div>
   </div>
 
-  <div class="bg-[rgba(250,248,245,0.35)] border-2 border-[#0284c7]/20 rounded-sm p-2">
+  <div class="bg-[rgba(250,248,245,0.55)] border-2 border-[#0284c7]/20 rounded-sm p-2">
     <div class="text-[10px] font-bold text-slate-400 mb-1 uppercase tracking-wider">
       <span class="inline-flex items-center gap-2">
         <span class="w-2 h-2 rounded-full bg-[#10b981]"></span> 下载
