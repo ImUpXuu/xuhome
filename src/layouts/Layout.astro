@@ -195,15 +195,6 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
       }
     })();
   </script>
-  <script is:inline>
-  (function() {
-    var host = location.hostname;
-    if (host === 'upxuu.com' || host.endsWith('.upxuu.com') || host === 'localhost' || host.endsWith('.vercel.app')) return;
-    var path = location.pathname + location.search;
-    alert('\u4f60\u8bbf\u95ee\u7684\u7ad9\u70b9 ' + host + ' \u4e3a\u94c9\u9c7c\u7f51\u7ad9\uff0c\u4f60\u5df2\u88ab\u91cd\u5b9a\u5411\u81f3 upxuu.com\n\nThe site ' + host + ' is a phishing website. You have been redirected to upxuu.com.');
-    location.replace('https://upxuu.com' + path);
-  })();
-  </script>
   <ClientRouter />
 </head>
   <body data-bg-count={bgCount} class="dark:bg-slate-900 text-slate-900 dark:text-slate-100 selection:bg-[#fde68a] selection:text-[#0284c7]">
