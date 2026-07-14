@@ -377,17 +377,6 @@ html {
   --waline-info-color: #94a3b8 !important;
 }
 
-/* Beige film + texture overlay on top of background image */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  background: radial-gradient(circle, rgba(253,246,227,0.25) 1px, transparent 1px), linear-gradient(rgba(250,248,245,0.4), rgba(250,248,245,0.4));
-  background-size: 24px 24px, cover;
-  pointer-events: none;
-}
-
 /* Glassmorphism: semi-transparent UI backgrounds */
 body { font-weight: 500 !important; }
 .bg-white { background-color: rgba(255,255,255,0.55) !important; }
