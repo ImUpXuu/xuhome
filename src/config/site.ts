@@ -56,8 +56,8 @@ export const siteConfig = {
     ],
     /** 站点统计 API（页脚访问量/在线人数、欢迎提示调用） */
     statsApi: {
-      alltime: 'https://vapi.upxuu.com/statsapi/alltime',
-      active: 'https://vapi.upxuu.com/api/active',
+      alltime: 'https://blogapi.476543.xyz/statsapi/alltime',
+      active: 'https://blogapi.476543.xyz/api/active',
     },
   },
 
