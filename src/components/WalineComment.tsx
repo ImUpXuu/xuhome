@@ -27,6 +27,7 @@ export function WalineComment() {
         dark: 'html.dark',
         search: false,
         imageUploader: false,
+        placeholder: '写几个字证明你来过~',
       });
     }
 
@@ -43,6 +44,9 @@ export function WalineComment() {
         <div className="absolute -top-2 -right-3 w-4 h-4 bg-[#fde68a] border-2 border-[#0284c7] shadow-[2px_2px_0px_0px_#0284c7] rounded-sm transform rotate-12"></div>
       </h3>
       <div ref={containerRef} />
+      <p className="text-[10px] sm:text-xs text-slate-400 dark:text-slate-500 text-center mt-3 font-medium">
+        （因不知名因素，海外IP暂时无法加载评论，请关闭代理）
+      </p>
     </div>
   );
 }
