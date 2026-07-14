@@ -10,7 +10,7 @@ import { PageBanner } from '../components/PageBanner';
 import { execSync } from 'child_process';
 import '../index.css';
 
-let bgCount = 4;
+let bgCount = 6;
 
 interface Props {
   title?: string;
@@ -409,12 +409,15 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
       var bgCount = Number(document.body && document.body.dataset.bgCount) || 0;
       if (bgCount <= 0) return;
 
+      var isMobile = window.innerWidth < 768;
+      var min = isMobile ? 4 : 1;
+      var max = isMobile ? 6 : 3;
       var i = 0;
       try {
         i = parseInt(sessionStorage.getItem(KEY) || '0', 10) || 0;
       } catch (e) {}
-      if (i < 1 || i > bgCount) {
-        i = Math.floor(Math.random() * bgCount) + 1;
+      if (i < min || i > max) {
+        i = Math.floor(Math.random() * (max - min + 1)) + min;
         try { sessionStorage.setItem(KEY, String(i)); } catch (e) {}
       }
 
