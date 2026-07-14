@@ -402,7 +402,6 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
 <script is:inline>
   (function () {
     var KEY = 'xuhome-bg-idx';
-    var BEAT_SRC = 'https://beat.345696.xyz/beat.js';
 
     function applySiteBg() {
       var el = document.getElementById('site-bg');
@@ -430,26 +429,24 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
       el.style.backgroundAttachment = 'fixed, fixed, fixed';
     }
 
-    // Reload beat.js on every page (incl. View Transitions) so PV is recorded
-    function loadBeat() {
-      // Dedup: skip if already loaded for current path
-      if (document.getElementById('beat-script') && window.__xuhomeBeatPath === window.location.pathname) return;
-      window.__xuhomeBeatPath = window.location.pathname;
-      var old = document.getElementById('beat-script');
-      if (old) old.remove();
-      var s = document.createElement('script');
-      s.id = 'beat-script';
-      s.src = BEAT_SRC + (BEAT_SRC.indexOf('?') >= 0 ? '&' : '?') + '_=' + Date.now();
-      s.async = true;
-      document.head.appendChild(s);
+    // Send page view beacon manually on every navigation
+    // (beat.js loads once in <head>; its pushState hook may not fire
+    //  reliably with Astro View Transitions, so we send directly)
+    function trackPage() {
+      var url = 'https://beat.345696.xyz/api/track?p=' + encodeURIComponent(location.pathname) + location.hash;
+      if (navigator.sendBeacon) {
+        navigator.sendBeacon(url);
+      } else {
+        new Image().src = url;
+      }
     }
 
     function onPage() {
       applySiteBg();
-      loadBeat();
+      trackPage();
     }
 
-    onPage();
+    applySiteBg();
     if (!window.__xuhomeBgBeatInited) {
       window.__xuhomeBgBeatInited = true;
       document.addEventListener('astro:after-swap', applySiteBg);
