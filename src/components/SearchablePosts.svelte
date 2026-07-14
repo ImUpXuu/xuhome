@@ -149,7 +149,7 @@
       {#if searchQuery}
         <button 
           on:click={clearSearch}
-          class="text-slate-400 hover:text-[#0284c7] font-black text-xs uppercase cursor-pointer"
+          class="text-slate-500 hover:text-[#0284c7] font-black text-xs uppercase cursor-pointer"
         >
           {i18nConfig.search.clear}
         </button>
@@ -181,13 +181,13 @@
               <h2 class="text-sm sm:text-base md:text-xl font-black text-[#0284c7] mb-1 md:mb-2 group-hover:text-[#0ea5e9] transition-colors line-clamp-1 md:line-clamp-2 leading-snug">
                 {post.title}
               </h2>
-              <p class="text-[11px] sm:text-xs md:text-sm text-slate-600 dark:text-slate-300 font-medium line-clamp-2 leading-relaxed">
+              <p class="text-[11px] sm:text-xs md:text-sm text-slate-700 dark:text-slate-300 font-medium line-clamp-2 leading-relaxed">
                 {post.description}
               </p>
             </a>
             
             <div class="mt-2 md:mt-3.5 flex flex-wrap items-center gap-2 shrink-0">
-              <span class="text-xs md:text-sm font-extrabold text-slate-400 dark:text-slate-500 shrink-0">{post.date}</span>
+              <span class="text-xs md:text-sm font-extrabold text-slate-500 dark:text-slate-400 shrink-0">{post.date}</span>
               <PageViews path={post.slug} />
               {#if post.category}
                 <a 
@@ -201,7 +201,7 @@
                 {#each post.tags.slice(0, 2) as tag}
                   <a 
                     href={`/tag/${tag}`}
-                    class="bg-white dark:bg-slate-700 border-2 border-[#0284c7] text-slate-500 dark:text-slate-300 px-2 py-0.5 shadow-[1px_1px_0px_0px_#0284c7] font-bold text-[10px] md:text-xs hover:bg-[#0284c7] hover:text-white transition-colors cursor-pointer shrink-0"
+                    class="bg-white dark:bg-slate-700 border-2 border-[#0284c7] text-slate-600 dark:text-slate-300 px-2 py-0.5 shadow-[1px_1px_0px_0px_#0284c7] font-bold text-[10px] md:text-xs hover:bg-[#0284c7] hover:text-white transition-colors cursor-pointer shrink-0"
                   >
                     #{tag}
                   </a>
