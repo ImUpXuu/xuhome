@@ -198,6 +198,13 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
   <ClientRouter />
 </head>
   <body data-bg-count={bgCount} class="dark:bg-slate-900 text-slate-900 dark:text-slate-100 selection:bg-[#fde68a] selection:text-[#0284c7]">
+    {/* Persistent full-page bg layer (survives View Transitions) */}
+    <div
+      id="site-bg"
+      transition:persist="site-bg"
+      class="fixed inset-0 -z-10 pointer-events-none"
+      aria-hidden="true"
+    ></div>
     <!-- Skip to content for keyboard users -->
     <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[200] focus:bg-[#0284c7] focus:text-white focus:px-4 focus:py-2 focus:rounded-sm focus:font-black focus:text-sm focus:shadow-[4px_4px_0px_0px_#fde68a] focus:no-underline focus:outline-none">
       跳转到主要内容
@@ -424,21 +431,38 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
   });
 </script>
 <script src="https://beat.345696.xyz/beat.js"></script>
-<script is:inline data-astro-rerun>
-  (function(){
-    var bgCount = Number(document.body.dataset.bgCount);
-    if (bgCount > 0) {
-      var i = Math.floor(Math.random() * bgCount) + 1;
-      // layers top → bottom: texture dots, beige film, photo
-      document.body.style.backgroundImage =
+<script is:inline>
+  (function () {
+    var KEY = 'xuhome-bg-idx';
+    function applySiteBg() {
+      var el = document.getElementById('site-bg');
+      if (!el) return;
+      var bgCount = Number(document.body && document.body.dataset.bgCount) || 0;
+      if (bgCount <= 0) return;
+
+      var i = 0;
+      try {
+        i = parseInt(sessionStorage.getItem(KEY) || '0', 10) || 0;
+      } catch (e) {}
+      if (i < 1 || i > bgCount) {
+        i = Math.floor(Math.random() * bgCount) + 1;
+        try { sessionStorage.setItem(KEY, String(i)); } catch (e) {}
+      }
+
+      // top → bottom: texture, beige film, photo
+      el.style.backgroundImage =
         'radial-gradient(circle, rgba(253,246,227,0.35) 1px, transparent 1px),' +
         'linear-gradient(rgba(250,248,245,0.45), rgba(250,248,245,0.45)),' +
         'url(/images/background/' + i + '.webp)';
-      document.body.style.backgroundSize = '24px 24px, cover, cover';
-      document.body.style.backgroundPosition = '0 0, center, center';
-      document.body.style.backgroundRepeat = 'repeat, no-repeat, no-repeat';
-      document.body.style.backgroundAttachment = 'fixed, fixed, fixed';
+      el.style.backgroundSize = '24px 24px, cover, cover';
+      el.style.backgroundPosition = '0 0, center, center';
+      el.style.backgroundRepeat = 'repeat, no-repeat, no-repeat';
+      el.style.backgroundAttachment = 'fixed, fixed, fixed';
     }
+
+    applySiteBg();
+    document.addEventListener('astro:after-swap', applySiteBg);
+    document.addEventListener('astro:page-load', applySiteBg);
   })();
 </script>
 
