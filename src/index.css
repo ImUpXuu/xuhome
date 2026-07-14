@@ -309,18 +309,18 @@ html {
 :root {
   --waline-theme-color: #0284c7 !important;
   --waline-active-color: #0ea5e9 !important;
-  --waline-color: #2d3748 !important;
-  --waline-bgcolor: rgba(250,248,245,0.55) !important;
-  --waline-bgcolor-light: #fff !important;
+  --waline-color: #334155 !important;
+  --waline-bgcolor: rgba(250,248,245,0.65) !important;
+  --waline-bgcolor-light: rgba(250,248,245,0.65) !important;
   --waline-bgcolor-hover: #fde68a !important;
   --waline-border-color: #0284c7 !important;
-  --waline-disable-bgcolor: #e2e8f0 !important;
-  --waline-disable-color: #94a3b8 !important;
+  --waline-disable-bgcolor: rgba(226,232,240,0.55) !important;
+  --waline-disable-color: #475569 !important;
   --waline-code-bgcolor: #0284c7 !important;
   --waline-bq-color: #0284c7 !important;
   --waline-avatar-radius: 4px !important;
-  --waline-info-bgcolor: rgba(250,248,245,0.55) !important;
-  --waline-info-color: #475569 !important;
+  --waline-info-bgcolor: rgba(250,248,245,0.65) !important;
+  --waline-info-color: #64748b !important;
   --waline-info-font-size: 0.75rem !important;
 }
 
@@ -328,7 +328,7 @@ html {
   border: 3px solid #0284c7;
   box-shadow: 4px 4px 0px 0px #f59e0b;
   border-radius: 4px;
-  background-color: #white;
+  background-color: var(--waline-bgcolor) !important;
 }
 
 .waline-custom-theme .wl-btn {
@@ -355,7 +355,7 @@ html {
   border-radius: 4px;
   margin-bottom: 24px;
   padding: 12px;
-  background-color: #fff;
+  background-color: var(--waline-bgcolor) !important;
 }
 
 .waline-custom-theme .wl-avatar {
@@ -365,16 +365,45 @@ html {
 
 /* Dark mode Waline overrides */
 .dark {
-  --waline-bgcolor: #1e293b !important;
-  --waline-bgcolor-light: #334155 !important;
+  --waline-theme-color: #0284c7 !important;
+  --waline-active-color: #0ea5e9 !important;
   --waline-color: #e2e8f0 !important;
+  --waline-bgcolor: rgba(30,41,59,0.85) !important;
+  --waline-bgcolor-light: rgba(51,65,85,0.85) !important;
+  --waline-bgcolor-hover: #334155 !important;
   --waline-border-color: #0284c7 !important;
-  --waline-disable-bgcolor: #334155 !important;
+  --waline-disable-bgcolor: rgba(51,65,85,0.55) !important;
   --waline-disable-color: #64748b !important;
   --waline-code-bgcolor: #0f172a !important;
   --waline-bq-color: #0284c7 !important;
-  --waline-info-bgcolor: #1e293b !important;
+  --waline-info-bgcolor: rgba(30,41,59,0.85) !important;
   --waline-info-color: #94a3b8 !important;
+}
+
+/* Waline dark mode text overrides for inner elements */
+.dark .waline-custom-theme .wl-comment {
+  color: #e2e8f0 !important;
+}
+.dark .waline-custom-theme .wl-nick {
+  color: #38bdf8 !important;
+}
+.dark .waline-custom-theme .wl-time {
+  color: #94a3b8 !important;
+}
+.dark .waline-custom-theme .wl-content {
+  color: #cbd5e1 !important;
+}
+.dark .waline-custom-theme .wl-header span {
+  color: #e2e8f0 !important;
+}
+.dark .waline-custom-theme .wl-info {
+  color: #94a3b8 !important;
+}
+.dark .waline-custom-theme .wl-preview {
+  color: #cbd5e1 !important;
+}
+.dark .waline-custom-theme .wl-count {
+  color: #94a3b8 !important;
 }
 
 /* Glassmorphism: semi-transparent UI backgrounds */
