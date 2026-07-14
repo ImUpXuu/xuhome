@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - "src/content/posts/**/*.md"
+  workflow_dispatch:
 
 jobs:
   indexnow:
@@ -17,54 +18,95 @@ jobs:
       - name: Get changed post files
         id: changed
         run: |
-          CHANGED=$(git diff --name-only HEAD~1 HEAD | grep 'src/content/posts/.*\.md$' | tr '\n' ' ')
-          echo "changed=${CHANGED}" >> $GITHUB_OUTPUT
+          set -e
+          if git rev-parse --verify HEAD~1 >/dev/null 2>&1; then
+            CHANGED=$(git diff --name-only --diff-filter=ACMR HEAD~1 HEAD -- 'src/content/posts/**/*.md' || true)
+          else
+            CHANGED=$(git ls-files 'src/content/posts/**/*.md' || true)
+          fi
+          # collapse to single line for output
+          CHANGED_LINE=$(echo "$CHANGED" | tr '\n' ' ' | sed 's/[[:space:]]*$//')
+          echo "changed=$CHANGED_LINE" >> "$GITHUB_OUTPUT"
+          echo "Changed files:"
+          echo "$CHANGED"
 
-      - name: Build URLs and submit
+      - name: Build URLs and submit to IndexNow
+        if: steps.changed.outputs.changed != ''
+        env:
+          INDEXNOW_KEY: ${{ secrets.INDEXNOW_SECRET }}
         run: |
-          SITE_URL="https://upxuu.com"
+          set -euo pipefail
+
+          if [ -z "${INDEXNOW_KEY:-}" ]; then
+            echo "INDEXNOW_SECRET is not set"
+            exit 1
+          fi
+
+          SITE_HOST="upxuu.com"
+          SITE_URL="https://${SITE_HOST}"
+          KEY_LOCATION="${SITE_URL}/${INDEXNOW_KEY}.txt"
           CHANGED="${{ steps.changed.outputs.changed }}"
 
-          if [ -z "$CHANGED" ]; then
-            echo "No post files changed"
-            echo "result=no_changes" >> $GITHUB_OUTPUT
+          echo "Changed files: $CHANGED"
+          echo "Key location: $KEY_LOCATION"
+
+          URLS_JSON=$(python3 - <<'PY' "$CHANGED" "$SITE_URL"
+          import json, sys, urllib.parse
+          from pathlib import Path
+
+          changed = sys.argv[1].split()
+          site = sys.argv[2].rstrip("/")
+          urls = []
+          for f in changed:
+              if not f.endswith(".md"):
+                  continue
+              if not f.startswith("src/content/posts/"):
+                  continue
+              slug = Path(f).stem
+              # encode each path segment (Chinese filenames etc.)
+              encoded = urllib.parse.quote(slug, safe="")
+              urls.append(f"{site}/posts/{encoded}")
+          print(json.dumps(urls, ensure_ascii=False))
+          PY
+          )
+
+          COUNT=$(python3 -c "import json,sys; print(len(json.loads(sys.argv[1])))" "$URLS_JSON")
+          if [ "$COUNT" -eq 0 ]; then
+            echo "No valid post URLs to submit"
             exit 0
           fi
 
-          echo "Changed files: $CHANGED"
-          echo ""
+          echo "Submitting $COUNT URL(s):"
+          python3 -c "import json,sys; [print(' -', u) for u in json.loads(sys.argv[1])]" "$URLS_JSON"
 
-          URLS="["
-          first=true
-          for file in $CHANGED; do
-            slug=$(basename "$file" .md)
-            url="${SITE_URL}/posts/${slug}/"
-            echo "  Found: ${url}"
-            if [ "$first" = true ]; then
-              first=false
-            else
-              URLS="${URLS},"
-            fi
-            URLS="${URLS}\"${url}\""
-          done
-          URLS="${URLS}]"
+          BODY=$(python3 - <<'PY' "$SITE_HOST" "$INDEXNOW_KEY" "$KEY_LOCATION" "$URLS_JSON"
+          import json, sys
+          host, key, key_location, urls_json = sys.argv[1:5]
+          payload = {
+              "host": host,
+              "key": key,
+              "keyLocation": key_location,
+              "urlList": json.loads(urls_json),
+          }
+          print(json.dumps(payload, ensure_ascii=False))
+          PY
+          )
 
-          SECRET="${{ secrets.INDEXNOW_SECRET }}"
-          KEY_LOCATION="${SITE_URL}/${SECRET}.txt"
-
-          echo ""
-          echo "Submitting to IndexNow..."
-          echo ""
-
-          RESPONSE=$(curl -s -w "\n%{http_code}" -X POST \
-            "https://api.indexnow.org/IndexNow" \
+          RESPONSE=$(curl -sS -w "\n%{http_code}" -X POST \
+            "https://api.indexnow.org/indexnow" \
             -H "Content-Type: application/json; charset=utf-8" \
-            -H "Host: api.indexnow.org" \
-            -d "{\"host\":\"upxuu.com\",\"key\":\"${SECRET}\",\"keyLocation\":\"${KEY_LOCATION}\",\"urlList\":${URLS}}")
+            -d "$BODY")
 
           HTTP_CODE=$(echo "$RESPONSE" | tail -n1)
-          BODY=$(echo "$RESPONSE" | sed '$d')
+          RESP_BODY=$(echo "$RESPONSE" | sed '$d')
 
           echo "HTTP Status: $HTTP_CODE"
-          echo "Response: $BODY"
-          echo "result=HTTP_${HTTP_CODE}" >> $GITHUB_OUTPUT
+          echo "Response: $RESP_BODY"
+
+          # 200 success; 202 accepted
+          if [ "$HTTP_CODE" != "200" ] && [ "$HTTP_CODE" != "202" ]; then
+            echo "IndexNow submission failed"
+            exit 1
+          fi
+
+          echo "IndexNow submission succeeded"
