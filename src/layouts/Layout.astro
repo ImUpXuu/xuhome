@@ -8,13 +8,9 @@ import CustomCursor from '../components/CustomCursor.svelte';
 import WelcomeToast from '../components/WelcomeToast.astro';
 import { PageBanner } from '../components/PageBanner';
 import { execSync } from 'child_process';
-import fs from 'fs';
-import path from 'path';
 import '../index.css';
 
-const BGPATH = path.join(process.cwd(), 'public', 'images', 'background');
-let bgCount = 0;
-try { bgCount = fs.readdirSync(BGPATH).filter(f => /^\d+\.webp$/.test(f)).length; } catch {};
+let bgCount = 4;
 
 interface Props {
   title?: string;
@@ -427,7 +423,7 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
       el.style.backgroundImage =
         'radial-gradient(circle, rgba(253,246,227,0.35) 1px, transparent 1px),' +
         'linear-gradient(rgba(250,248,245,0.45), rgba(250,248,245,0.45)),' +
-        'url(/images/background/' + i + '.webp)';
+        'url(https://img.476543.xyz/img/2026/7/' + i + '.webp)';
       el.style.backgroundSize = '24px 24px, cover, cover';
       el.style.backgroundPosition = '0 0, center, center';
       el.style.backgroundRepeat = 'repeat, no-repeat, no-repeat';
