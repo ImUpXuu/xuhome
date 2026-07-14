@@ -458,5 +458,17 @@
     "url": "https://blog.umrc.cn",
     "avatar": "https://oss.umrc.cn/ico/favicon.ico",
     "description": "一个小小的世界"
+  },
+  {
+    "name": "Fiee's Blog",
+    "url": "https://www.aifiee.cn",
+    "avatar": "https://aifiee-blog.oss-cn-beijing.aliyuncs.com/blog/images/1782719333889_1414.jpg",
+    "description": "长风破浪会有时，直挂云帆济沧海"
+  },
+  {
+    "name": "Amiya的书桌",
+    "url": "https://blog.sayori.org/",
+    "avatar": "https://blog.sayori.org/assets/profile/avatar-sayori.jpg",
+    "description": "Amiya_desi的博客站，会记录一个真实的想要分享的人，欢迎！"
   }
 ]
