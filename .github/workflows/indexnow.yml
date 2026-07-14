@@ -48,7 +48,8 @@ jobs:
           CHANGED="${{ steps.changed.outputs.changed }}"
 
           echo "Changed files: $CHANGED"
-          echo "Key location: $KEY_LOCATION"
+          # do not echo the raw key; only show that keyLocation host path is configured
+          echo "Key location host: ${SITE_HOST}/<secret>.txt"
 
           URLS_JSON=$(python3 - <<'PY' "$CHANGED" "$SITE_URL"
           import json, sys, urllib.parse
