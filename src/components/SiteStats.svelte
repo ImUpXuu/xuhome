@@ -12,8 +12,8 @@
   onMount(async () => {
     try {
       const [statsRes, activeRes] = await Promise.allSettled([
-        fetch('https://vapi.upxuu.com/statsapi/alltime', { signal: AbortSignal.timeout(5000) }),
-        fetch('https://vapi.upxuu.com/api/active', { signal: AbortSignal.timeout(5000) })
+        fetch('https://blogapi.476543.xyz/statsapi/alltime', { signal: AbortSignal.timeout(5000) }),
+        fetch('https://blogapi.476543.xyz/api/active', { signal: AbortSignal.timeout(5000) })
       ]);
 
       if (statsRes.status === 'fulfilled') {

@@ -75,7 +75,7 @@
     loadingMetrics = true;
     const { startAt, endAt } = getRangeTimestamps();
     const m = (type) =>
-      fetch(`https://vapi.upxuu.com/api/metrics?type=${type}&startAt=${startAt}&endAt=${endAt}`)
+      fetch(`https://blogapi.476543.xyz/api/metrics?type=${type}&startAt=${startAt}&endAt=${endAt}`)
         .then(r => r.json()).catch(() => []);
     const [br, os, dev, co] = await Promise.all([m('browser'), m('os'), m('device'), m('country')]);
     browsers = br; osList = os; devices = dev; countries = co;
@@ -84,20 +84,20 @@
 
   onMount(async () => {
     // 1. All-time
-    fetch('https://vapi.upxuu.com/statsapi/alltime')
+    fetch('https://blogapi.476543.xyz/statsapi/alltime')
       .then(r => r.json()).then(d => {
         if (d) { total.pageviews = val(d.pageviews); total.visitors = val(d.visitors); total.visits = val(d.visits); }
       }).catch(() => {}).finally(() => loadingAlltime = false);
 
     // 2. Today
     const tr = getTodayRange();
-    fetch(`https://vapi.upxuu.com/api/stats?startAt=${tr.startAt}&endAt=${tr.endAt}`)
+    fetch(`https://blogapi.476543.xyz/api/stats?startAt=${tr.startAt}&endAt=${tr.endAt}`)
       .then(r => r.json()).then(d => {
         if (d) { today.pageviews = val(d.pageviews); today.visitors = val(d.visitors); today.visits = val(d.visits); today.bounces = val(d.bounces); today.totalTime = val(d.totalTime); }
       }).catch(() => {}).finally(() => loadingToday = false);
 
     // 3. Hourly
-    fetch('https://vapi.upxuu.com/statsapi/last24h?timezone=Asia/Shanghai')
+    fetch('https://blogapi.476543.xyz/statsapi/last24h?timezone=Asia/Shanghai')
       .then(r => r.json()).then(d => {
         if (Array.isArray(d)) {
           hourlyData = d;

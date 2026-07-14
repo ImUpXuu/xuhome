@@ -330,8 +330,8 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
 <script is:inline>
   function initFooter() {
     Promise.allSettled([
-      fetch('https://vapi.upxuu.com/statsapi/alltime', { signal: AbortSignal.timeout(5000) }),
-      fetch('https://vapi.upxuu.com/api/active', { signal: AbortSignal.timeout(5000) })
+      fetch('https://blogapi.476543.xyz/statsapi/alltime', { signal: AbortSignal.timeout(5000) }),
+      fetch('https://blogapi.476543.xyz/api/active', { signal: AbortSignal.timeout(5000) })
     ]).then(async ([statsRes, activeRes]) => {
       let pv = 0, uv = 0, vt = 0, active = 0;
       if (statsRes.status === 'fulfilled') {
