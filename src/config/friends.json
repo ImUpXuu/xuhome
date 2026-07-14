@@ -452,5 +452,11 @@
     "url": "https://linzihao.cn/",
     "avatar": "https://linzihao.cn/img/touxiang.jpg",
     "description": "一个努力写日记的博客站长。"
+  },
+  {
+    "name": "摆烂的小站",
+    "url": "https://blog.umrc.cn",
+    "avatar": "https://oss.umrc.cn/ico/favicon.ico",
+    "description": "一个小小的世界"
   }
 ]
