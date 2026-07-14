@@ -430,10 +430,11 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
     initMonitor();
   });
 </script>
-<script src="https://beat.345696.xyz/beat.js"></script>
 <script is:inline>
   (function () {
     var KEY = 'xuhome-bg-idx';
+    var BEAT_SRC = 'https://beat.345696.xyz/beat.js';
+
     function applySiteBg() {
       var el = document.getElementById('site-bg');
       if (!el) return;
@@ -460,9 +461,28 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
       el.style.backgroundAttachment = 'fixed, fixed, fixed';
     }
 
-    applySiteBg();
-    document.addEventListener('astro:after-swap', applySiteBg);
-    document.addEventListener('astro:page-load', applySiteBg);
+    // Reload beat.js on every page (incl. View Transitions) so PV is recorded
+    function loadBeat() {
+      var old = document.getElementById('beat-script');
+      if (old) old.remove();
+      var s = document.createElement('script');
+      s.id = 'beat-script';
+      s.src = BEAT_SRC + (BEAT_SRC.indexOf('?') >= 0 ? '&' : '?') + '_=' + Date.now();
+      s.async = true;
+      document.head.appendChild(s);
+    }
+
+    function onPage() {
+      applySiteBg();
+      loadBeat();
+    }
+
+    onPage();
+    if (!window.__xuhomeBgBeatInited) {
+      window.__xuhomeBgBeatInited = true;
+      document.addEventListener('astro:after-swap', applySiteBg);
+      document.addEventListener('astro:page-load', onPage);
+    }
   })();
 </script>
 
