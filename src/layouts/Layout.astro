@@ -432,6 +432,9 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
 
     // Reload beat.js on every page (incl. View Transitions) so PV is recorded
     function loadBeat() {
+      // Dedup: skip if already loaded for current path
+      if (document.getElementById('beat-script') && window.__xuhomeBeatPath === window.location.pathname) return;
+      window.__xuhomeBeatPath = window.location.pathname;
       var old = document.getElementById('beat-script');
       if (old) old.remove();
       var s = document.createElement('script');
