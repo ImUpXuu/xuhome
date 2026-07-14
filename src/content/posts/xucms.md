@@ -167,7 +167,7 @@ fun getAllDraftKeys(): Set<String>
 ```
 ┌─────────────────────────┐
 │ 服务器地址              │
-│ https://edit.upxuu.com  │
+│ https://img.476543.xyz  │
 │                         │
 │ 管理员密码              │
 │ ********                │
