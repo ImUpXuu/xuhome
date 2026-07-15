@@ -8,7 +8,7 @@ const { tags, activeTag } = Astro.props;
 ---
 
 {tags.length > 0 && (
-  <div class="bg-white dark:bg-slate-800 border-2 border-[#0284c7]/30 p-5 rounded-sm w-full animate-card-entrance opacity-0" style="animation-delay: 0.1s">
+  <div class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] p-5 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm w-full animate-card-entrance opacity-0" style="animation-delay: 0.1s">
     <h3 class="font-black text-[#0284c7] text-lg mb-4 flex items-center gap-2 border-b-2 border-dashed border-[#0284c7]/20 pb-2">
       <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
