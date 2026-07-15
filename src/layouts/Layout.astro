@@ -220,10 +220,14 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
         <span class="bg-brick"></span>
       </div>
       <span class="bg-loader-text">loading</span>
-      <div class="bg-mini-bar"><i></i></div>
+      <div class="bg-mini-bar"><i id="site-bg-loader-bar"></i></div>
+      <span class="bg-loader-meta" id="site-bg-loader-meta" hidden>0 / 0 · 0%</span>
     </div>
-    <!-- Tiny top bar only while real resources are loading -->
-    <div id="resource-progress" transition:persist="resource-progress" aria-hidden="true"><i></i></div>
+    <!-- Tiny top bar + count only while real resources are loading -->
+    <div id="resource-progress" transition:persist="resource-progress" aria-hidden="true">
+      <i></i>
+      <span id="resource-progress-meta" hidden>0 / 0 · 0%</span>
+    </div>
     <!-- Skip to content for keyboard users -->
     <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[200] focus:bg-[#0284c7] focus:text-white focus:px-4 focus:py-2 focus:rounded-sm focus:font-black focus:text-sm focus:shadow-[4px_4px_0px_0px_#fde68a] focus:no-underline focus:outline-none">
       跳转到主要内容
@@ -538,22 +542,39 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
     function setProgressUI(done, total) {
       var top = document.getElementById('resource-progress');
       var topBar = top && top.querySelector('i');
+      var topMeta = document.getElementById('resource-progress-meta');
+      var entryBar = document.getElementById('site-bg-loader-bar');
+      var entryMeta = document.getElementById('site-bg-loader-meta');
       // never show empty 0/0
       if (!total || total <= 0) {
         if (top) top.classList.remove('is-on');
         if (topBar) topBar.style.width = '0%';
+        if (topMeta) { topMeta.hidden = true; topMeta.textContent = ''; }
+        if (entryBar) entryBar.style.width = '0%';
+        if (entryMeta) { entryMeta.hidden = true; entryMeta.textContent = ''; }
         return;
       }
       var pct = Math.min(100, Math.round((done / total) * 100));
+      var label = done + ' / ' + total + ' · ' + pct + '%';
       if (topBar) topBar.style.width = pct + '%';
+      if (entryBar) entryBar.style.width = pct + '%';
+      if (topMeta) { topMeta.hidden = false; topMeta.textContent = label; }
+      if (entryMeta) { entryMeta.hidden = false; entryMeta.textContent = label; }
       if (top) {
         if (done < total) {
           top.classList.add('is-on');
         } else {
+          // snap to 100% then hide
+          if (topBar) topBar.style.width = '100%';
+          if (entryBar) entryBar.style.width = '100%';
+          if (topMeta) topMeta.textContent = total + ' / ' + total + ' · 100%';
+          if (entryMeta) entryMeta.textContent = total + ' / ' + total + ' · 100%';
           clearTimeout(hideTimer);
           hideTimer = setTimeout(function () {
             if (top) top.classList.remove('is-on');
-          }, 280);
+            if (topMeta) topMeta.hidden = true;
+            if (entryMeta) entryMeta.hidden = true;
+          }, 320);
         }
       }
     }
