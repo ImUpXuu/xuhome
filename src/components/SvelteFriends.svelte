@@ -60,16 +60,16 @@
   <div class="hidden lg:flex w-[260px] shrink-0 flex-col gap-6 sticky top-[100px] select-none">
      <div class="bg-white border-4 border-[#0284c7] p-5 shadow-[6px_6px_0px_0px_#f59e0b] rounded-sm transform -rotate-1">
         <div class="flex items-center justify-center mb-4">
-           <div class="w-24 h-24 rounded-sm bg-[#0ea5e9] border-4 border-[#0284c7] shadow-[4px_4px_0px_0px_#0284c7] overflow-hidden flex items-center justify-center">
-             <img src={siteConfig.avatar} alt={siteConfig.author} class="w-full h-full object-cover" />
-           </div>
-        </div>
-        <h1 class="text-xl font-black text-[#0284c7] text-center tracking-wider mb-2">{siteConfig.author}</h1>
-        <div class="h-0 border-b-2 border-dashed border-[#0284c7]/30 my-3 w-4/5 mx-auto"></div>
-        
-        <div class="text-sm font-bold text-slate-600 text-center mb-4 leading-relaxed">
-           {siteConfig.description}
-        </div>
+            <div class="w-16 h-16 rounded-sm bg-[#0ea5e9] border-3 border-[#0284c7] shadow-[3px_3px_0px_0px_#0284c7] overflow-hidden flex items-center justify-center">
+              <img src={siteConfig.avatar} alt={siteConfig.author} class="w-full h-full object-cover" />
+            </div>
+         </div>
+         <h1 class="text-base font-black text-[#0284c7] text-center tracking-wider mb-1">{siteConfig.author}</h1>
+         <div class="h-0 border-b-2 border-dashed border-[#0284c7]/30 my-2 w-4/5 mx-auto"></div>
+         
+         <div class="text-xs font-bold text-slate-600 text-center mb-3 leading-relaxed">
+            {siteConfig.description}
+         </div>
      </div>
   </div>
 
@@ -112,11 +112,11 @@
             href={friend.url}
             target="_blank"
             rel="noopener noreferrer"
-            class="group bg-white border-4 border-[#0284c7] p-4 shadow-[5px_5px_0px_0px_#0284c7] hover:shadow-[8px_8px_0px_0px_#f59e0b] hover:border-[#f59e0b] hover:-translate-x-1 hover:-translate-y-1 rounded-sm flex items-start gap-4 transition-all duration-300 select-none cursor-pointer"
+            class="group bg-white border-4 border-[#0284c7] p-3 sm:p-4 shadow-[5px_5px_0px_0px_#0284c7] hover:shadow-[8px_8px_0px_0px_#f59e0b] hover:border-[#f59e0b] hover:-translate-x-1 hover:-translate-y-1 rounded-sm flex items-start gap-3 transition-all duration-300 select-none cursor-pointer"
             id={`friend-${friend.name.replace(/\s+/g, '-').toLowerCase()}`}
           >
             {#if imgErrors.has(friend.name) || !friend.avatar}
-              <div class="w-14 h-14 rounded-full border-3 border-[#0284c7] bg-gradient-to-br {getGradient(friend.name)} flex items-center justify-center text-white font-black text-xl shadow-[2px_2px_0px_0px_#0284c7] select-none shrink-0 uppercase">
+              <div class="w-10 h-10 rounded-full border-3 border-[#0284c7] bg-gradient-to-br {getGradient(friend.name)} flex items-center justify-center text-white font-black text-base shadow-[2px_2px_0px_0px_#0284c7] select-none shrink-0 uppercase">
                 {friend.name.charAt(0)}
               </div>
             {:else}
@@ -124,13 +124,13 @@
                 <img
                   src={friend.avatar}
                   alt={friend.name}
-                  width="56"
-                  height="56"
+                  width="40"
+                  height="40"
                   loading="lazy"
                   decoding="async"
                   referrerpolicy="no-referrer"
                   on:error={() => handleImgError(friend.name)}
-                  class="w-14 h-14 rounded-full border-3 border-[#0284c7] object-cover bg-white shadow-[2px_2px_0px_0px_#0284c7]"
+                  class="w-10 h-10 rounded-full border-3 border-[#0284c7] object-cover bg-white shadow-[2px_2px_0px_0px_#0284c7]"
                 />
                 <div class="absolute inset-0 rounded-full border border-black/10 pointer-events-none" />
               </div>
