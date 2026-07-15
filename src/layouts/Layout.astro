@@ -219,8 +219,14 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
         <span class="bg-brick"></span>
         <span class="bg-brick"></span>
       </div>
-      <span class="bg-loader-text">loading</span>
+      <span class="bg-loader-text">loading..</span>
+      <div class="res-progress-wrap">
+        <div class="res-progress"><i id="site-bg-loader-bar"></i></div>
+        <div class="res-progress-meta" id="site-bg-loader-meta">0 / 0</div>
+      </div>
     </div>
+    <!-- Resource load progress (top) -->
+    <div id="resource-progress" transition:persist="resource-progress" aria-hidden="true"><i></i></div>
     <!-- Skip to content for keyboard users -->
     <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[200] focus:bg-[#0284c7] focus:text-white focus:px-4 focus:py-2 focus:rounded-sm focus:font-black focus:text-sm focus:shadow-[4px_4px_0px_0px_#fde68a] focus:no-underline focus:outline-none">
       跳转到主要内容
@@ -455,39 +461,46 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
         el.style.backgroundRepeat = 'repeat, no-repeat, no-repeat';
         el.style.backgroundAttachment = attach + ', ' + attach + ', ' + attach;
         el.classList.add('is-ready');
-        if (loader) loader.classList.remove('is-on');
       }
 
       // Already painted this URL this session → no loader flash
       if (el.dataset.bgUrl === url && el.classList.contains('is-ready')) {
-        if (loader) loader.classList.remove('is-on');
         return;
       }
 
       el.classList.remove('is-ready');
       if (loader) loader.classList.add('is-on');
 
-      var img = new Image();
-      img.onload = function () {
-        el.dataset.bgUrl = url;
-        paintBg();
-      };
-      img.onerror = function () {
-        // Fail open: still show film/texture without photo
-        el.style.backgroundImage =
-          'radial-gradient(circle, rgba(253,246,227,0.35) 1px, transparent 1px),' +
-          'linear-gradient(rgba(250,248,245,0.55), rgba(250,248,245,0.55))';
-        el.style.backgroundSize = '24px 24px, cover';
-        el.style.backgroundPosition = '0 0, center';
-        el.style.backgroundRepeat = 'repeat, no-repeat';
-        el.style.backgroundAttachment = attach + ', ' + attach;
-        el.classList.add('is-ready');
-        if (loader) loader.classList.remove('is-on');
-      };
-      img.src = url;
-      if (img.complete) {
-        el.dataset.bgUrl = url;
-        paintBg();
+      var bgPromise = new Promise(function (resolve) {
+        var img = new Image();
+        img.onload = function () {
+          el.dataset.bgUrl = url;
+          paintBg();
+          resolve();
+        };
+        img.onerror = function () {
+          el.style.backgroundImage =
+            'radial-gradient(circle, rgba(253,246,227,0.35) 1px, transparent 1px),' +
+            'linear-gradient(rgba(250,248,245,0.55), rgba(250,248,245,0.55))';
+          el.style.backgroundSize = '24px 24px, cover';
+          el.style.backgroundPosition = '0 0, center';
+          el.style.backgroundRepeat = 'repeat, no-repeat';
+          el.style.backgroundAttachment = attach + ', ' + attach;
+          el.classList.add('is-ready');
+          resolve();
+        };
+        img.src = url;
+        if (img.complete) {
+          el.dataset.bgUrl = url;
+          paintBg();
+          resolve();
+        }
+      });
+      if (typeof window.__xuhomeTrackResource === 'function') {
+        window.__xuhomeTrackResource(bgPromise);
+      } else {
+        window.__xuhomePendingRes = window.__xuhomePendingRes || [];
+        window.__xuhomePendingRes.push(bgPromise);
       }
     }
 
@@ -518,6 +531,77 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
 </script>
 <script is:inline>
   (function () {
+    var totalRes = 0;
+    var doneRes = 0;
+    var hideTimer = null;
+
+    function setProgressUI(done, total) {
+      var pct = total > 0 ? Math.min(100, Math.round((done / total) * 100)) : 100;
+      var top = document.getElementById('resource-progress');
+      var topBar = top && top.querySelector('i');
+      var loader = document.getElementById('site-bg-loader');
+      var bar = document.getElementById('site-bg-loader-bar');
+      var meta = document.getElementById('site-bg-loader-meta');
+      if (topBar) topBar.style.width = pct + '%';
+      if (bar) bar.style.width = pct + '%';
+      if (meta) meta.textContent = done + ' / ' + total + ' · ' + pct + '%';
+      if (top) {
+        if (total > 0 && done < total) top.classList.add('is-on');
+        else {
+          clearTimeout(hideTimer);
+          hideTimer = setTimeout(function () {
+            if (top) top.classList.remove('is-on');
+          }, 350);
+        }
+      }
+      if (loader) {
+        // keep entry loader visible while resources remain (incl. bg)
+        if (total > 0 && done < total) loader.classList.add('is-on');
+      }
+    }
+
+    function bumpDone() {
+      doneRes = Math.min(totalRes, doneRes + 1);
+      setProgressUI(doneRes, totalRes);
+      if (doneRes >= totalRes && totalRes > 0) {
+        var loader = document.getElementById('site-bg-loader');
+        var siteBg = document.getElementById('site-bg');
+        if (siteBg && siteBg.classList.contains('is-ready') && loader) {
+          setTimeout(function () { loader.classList.remove('is-on'); }, 200);
+        }
+      }
+    }
+
+    function trackResource(promiseLike) {
+      totalRes += 1;
+      setProgressUI(doneRes, totalRes);
+      Promise.resolve(promiseLike).then(bumpDone, bumpDone);
+    }
+
+    function trackImg(img) {
+      if (!img || img.dataset.resTracked === '1') return;
+      if ((img.getAttribute('src') || '').indexOf('data:') === 0) return;
+      img.dataset.resTracked = '1';
+      if (img.complete && img.naturalWidth > 0) {
+        totalRes += 1;
+        doneRes += 1;
+        setProgressUI(doneRes, totalRes);
+        return;
+      }
+      trackResource(new Promise(function (resolve) {
+        img.addEventListener('load', resolve, { once: true });
+        img.addEventListener('error', resolve, { once: true });
+      }));
+    }
+
+    window.__xuhomeTrackResource = trackResource;
+    window.__xuhomeTrackImg = trackImg;
+    if (window.__xuhomePendingRes && window.__xuhomePendingRes.length) {
+      var pending = window.__xuhomePendingRes.slice();
+      window.__xuhomePendingRes = [];
+      for (var pi = 0; pi < pending.length; pi++) trackResource(pending[pi]);
+    }
+
     function markLoaded(img) {
       img.classList.add('is-loaded');
       var wrap = img.closest('.img-soft-wrap');
@@ -533,21 +617,24 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
         '<span class="bg-brick"></span>' +
         '<span class="bg-brick"></span>' +
         '<span class="bg-brick"></span>' +
-        '</span>';
+        '</span>' +
+        '<span class="bg-loader-text">loading..</span>' +
+        '<span class="img-progress"><i></i></span>';
       wrap.appendChild(ov);
     }
     function enhance(img) {
       if (!img || img.tagName !== 'IMG') return;
-      if (img.dataset.imgSoft === '1') {
-        // re-bind if fancybox re-parented without is-loaded
-        if (img.complete && img.naturalWidth > 0) markLoaded(img);
-        return;
-      }
+      // skip tiny trackers / icons
+      if (img.width === 1 && img.height === 1) return;
       if (img.closest('svg')) return;
       if (!img.getAttribute('src') && !img.getAttribute('data-src')) return;
       if ((img.getAttribute('src') || '').indexOf('data:') === 0) return;
-      // skip decorative 1x1 trackers
-      if (img.width === 1 && img.height === 1) return;
+
+      if (img.dataset.imgSoft === '1') {
+        if (img.complete && img.naturalWidth > 0) markLoaded(img);
+        trackImg(img);
+        return;
+      }
 
       img.dataset.imgSoft = '1';
       img.classList.add('img-soft');
@@ -562,6 +649,7 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
         wrap.appendChild(img);
       }
       ensureOverlay(wrap);
+      trackImg(img);
 
       if (img.complete && img.naturalWidth > 0) {
         markLoaded(img);
@@ -577,7 +665,32 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
       for (var i = 0; i < list.length; i++) enhance(list[i]);
     }
     window.__xuhomeEnhanceImages = scan;
+
+    // Track stylesheet + bg as resources on first paint
+    function trackInitialResources() {
+      // stylesheets (fonts etc.)
+      try {
+        var sheets = document.styleSheets;
+        for (var i = 0; i < sheets.length; i++) {
+          var href = sheets[i].href;
+          if (!href) continue;
+          trackResource(fetch(href, { mode: 'no-cors', cache: 'force-cache' }).catch(function () {}));
+        }
+      } catch (e) {}
+      // performance resource entries already loaded
+      try {
+        var entries = performance.getEntriesByType('resource') || [];
+        // don't double-count heavily; just seed progress if late
+        if (entries.length && totalRes === 0) {
+          totalRes = Math.max(totalRes, Math.min(entries.length, 12));
+          doneRes = Math.min(doneRes + Math.floor(entries.length * 0.4), totalRes);
+          setProgressUI(doneRes, totalRes);
+        }
+      } catch (e) {}
+    }
+
     function boot() {
+      trackInitialResources();
       scan(document);
       if (!window.__xuhomeImgSoftObs) {
         window.__xuhomeImgSoftObs = true;
@@ -602,7 +715,13 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
     } else {
       boot();
     }
-    document.addEventListener('astro:page-load', function () { scan(document); });
+    document.addEventListener('astro:page-load', function () {
+      // reset counters softly on SPA navigations
+      totalRes = 0;
+      doneRes = 0;
+      setProgressUI(0, 0);
+      scan(document);
+    });
   })();
 </script>
 
