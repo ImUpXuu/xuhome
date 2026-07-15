@@ -9,7 +9,7 @@
   export let talksPerPage: number = 10;
 
   let selectedTag: string | null = null;
-  let currentPage = 1;
+  let visibleCount = talksPerPage;
   let shareTalk: TalkItem | null = null;
   let showShareModal = false;
 
@@ -24,33 +24,16 @@
     selectedTag ? t.tags && t.tags.includes(selectedTag) : true
   );
 
-  $: totalPages = Math.ceil(filteredTalks.length / talksPerPage) || 1;
-  $: safePage = Math.min(currentPage, totalPages);
-  $: startIndex = (safePage - 1) * talksPerPage;
-  $: displayedTalks = filteredTalks.slice(startIndex, startIndex + talksPerPage);
+  $: displayedTalks = filteredTalks.slice(0, visibleCount);
+  $: hasMore = visibleCount < filteredTalks.length;
 
   function handleTagSelect(tag: string | null) {
     selectedTag = selectedTag === tag ? null : tag;
-    currentPage = 1;
-    scrollToTop();
+    visibleCount = talksPerPage;
   }
 
-  function nextPage() {
-    if (currentPage < totalPages) {
-      currentPage += 1;
-      scrollToTop();
-    }
-  }
-
-  function prevPage() {
-    if (currentPage > 1) {
-      currentPage -= 1;
-      scrollToTop();
-    }
-  }
-
-  function scrollToTop() {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  function loadMore() {
+    visibleCount = Math.min(visibleCount + talksPerPage, filteredTalks.length);
   }
 
   // Parse markdown helper
@@ -292,28 +275,13 @@
       </div>
     {/each}
 
-    {#if totalPages > 1}
-      <div class="flex justify-center gap-3 mt-8 pb-12">
+    {#if hasMore}
+      <div class="flex justify-center mt-8 pb-12">
         <button
-          on:click={prevPage}
-          disabled={currentPage === 1}
-          class="w-10 h-10 flex items-center justify-center bg-white dark:bg-slate-700 border-3 border-[#0284c7] rounded-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer shadow-[4px_4px_0px_0px_#0284c7] disabled:shadow-none"
+          on:click={loadMore}
+          class="px-6 py-2.5 bg-white dark:bg-slate-700 border-3 border-[#0284c7] rounded-sm font-black text-sm text-[#0284c7] uppercase tracking-wider hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer shadow-[4px_4px_0px_0px_#0284c7] active:translate-y-1 active:shadow-none"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 stroke-[3]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
-          </svg>
-        </button>
-        <div class="h-10 px-4 flex items-center justify-center font-black font-mono text-[#0284c7] bg-[#fde68a] dark:bg-amber-700/50 border-3 border-[#0284c7] shadow-[4px_4px_0px_0px_#0284c7] rounded-sm select-none">
-          {currentPage} / {totalPages}
-        </div>
-        <button
-          on:click={nextPage}
-          disabled={currentPage === totalPages}
-          class="w-10 h-10 flex items-center justify-center bg-white border-3 border-[#0284c7] rounded-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer shadow-[4px_4px_0px_0px_#0284c7] disabled:shadow-none active:translate-y-1 active:shadow-none"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-          </svg>
+          加载更多
         </button>
       </div>
     {/if}

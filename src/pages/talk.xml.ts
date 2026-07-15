@@ -29,7 +29,13 @@ export async function GET(context: APIContext) {
       return {
         title: talk.data.title,
         pubDate: talk.data.date,
-        description: body.substring(0, 200).replace(/[#*`_\[\]()\-]/g, '').trim() || '',
+        description: body
+          .replace(/!\[.*?\]\(.*?\)/g, '')
+          .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
+          .replace(/[#*`_~>|\-]/g, '')
+          .replace(/\s+/g, ' ')
+          .trim()
+          .slice(0, 150) || '',
         link: permalink,
         guid: permalink,
         content: sanitizeHtml(parser.render(cleaned), {

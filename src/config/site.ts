@@ -352,6 +352,8 @@ export const i18nConfig = {
     title: "说说",
     /** 说说页区块标题 */
     sectionTitle: "说说",
+    /** 说说列表页 SEO 描述 */
+    description: "UpXuu 的说说微动态——生活碎碎念、随手记录与日常分享。",
   },
   /** 说说详情页 */
   talk: {
