@@ -61,8 +61,8 @@ jobs:
             name: server-1
           - host: 154.219.110.223
             name: server-2
-          # - host: 新服务器IP
-          #   name: server-3
+          - host: 8.220.197.92
+            name: server-3
       fail-fast: false
     name: deploy → ${{ matrix.name }} (${{ matrix.host }})
     steps:
