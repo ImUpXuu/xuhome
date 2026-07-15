@@ -60,8 +60,8 @@
   <div class="hidden lg:flex w-[260px] shrink-0 flex-col gap-6 sticky top-[100px] select-none">
      <div class="bg-white border-4 border-[#0284c7] p-5 shadow-[6px_6px_0px_0px_#f59e0b] rounded-sm transform -rotate-1">
         <div class="flex items-center justify-center mb-4">
-            <div class="w-16 h-16 rounded-sm bg-[#0ea5e9] border-3 border-[#0284c7] shadow-[3px_3px_0px_0px_#0284c7] overflow-hidden flex items-center justify-center">
-              <img src={siteConfig.avatar} alt={siteConfig.author} class="w-full h-full object-cover" />
+            <div class="w-16 h-16 rounded-sm bg-[#0ea5e9] border-3 border-[#0284c7] shadow-[3px_3px_0px_0px_#0284c7] overflow-hidden flex items-center justify-center" style="width:64px;height:64px">
+              <img src={siteConfig.avatar} alt={siteConfig.author} class="w-full h-full object-cover" style="width:100%;height:100%;object-fit:cover" />
             </div>
          </div>
          <h1 class="text-base font-black text-[#0284c7] text-center tracking-wider mb-1">{siteConfig.author}</h1>
@@ -116,11 +116,11 @@
             id={`friend-${friend.name.replace(/\s+/g, '-').toLowerCase()}`}
           >
             {#if imgErrors.has(friend.name) || !friend.avatar}
-              <div class="w-10 h-10 rounded-full border-3 border-[#0284c7] bg-gradient-to-br {getGradient(friend.name)} flex items-center justify-center text-white font-black text-base shadow-[2px_2px_0px_0px_#0284c7] select-none shrink-0 uppercase">
+              <div class="w-10 h-10 rounded-full border-3 border-[#0284c7] bg-gradient-to-br {getGradient(friend.name)} flex items-center justify-center text-white font-black text-base shadow-[2px_2px_0px_0px_#0284c7] select-none shrink-0 uppercase" style="width:40px;height:40px">
                 {friend.name.charAt(0)}
               </div>
             {:else}
-              <div class="relative shrink-0 select-none">
+              <div class="relative shrink-0 select-none" style="width:40px;height:40px">
                 <img
                   src={friend.avatar}
                   alt={friend.name}
@@ -130,7 +130,8 @@
                   decoding="async"
                   referrerpolicy="no-referrer"
                   on:error={() => handleImgError(friend.name)}
-                  class="w-10 h-10 rounded-full border-3 border-[#0284c7] object-cover bg-white shadow-[2px_2px_0px_0px_#0284c7]"
+                  class="rounded-full border-3 border-[#0284c7] object-cover bg-white shadow-[2px_2px_0px_0px_#0284c7]"
+                  style="width:40px;height:40px;object-fit:cover"
                 />
                 <div class="absolute inset-0 rounded-full border border-black/10 pointer-events-none" />
               </div>
