@@ -1,5 +1,5 @@
 /* @license SPDX-License-Identifier: Apache-2.0 */
-@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Noto+Sans+SC:wght@300..900&family=JetBrains+Mono:wght@400;500;600&display=swap');
+/* Fonts loaded via <link> in Layout.astro (avoids CSS @import render-blocking) */
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 @custom-variant dark (&:where(.dark, .dark *));
@@ -55,7 +55,7 @@ html {
   max-width: 100%;
 }
 
-/* Custom Scrollbar */
+/* Panel / list scrollbar (used by TOC, archive, AI chat, etc.) */
 .custom-scrollbar::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -71,149 +71,23 @@ html {
   background: #94a3b8; /* slate-400 */
 }
 
-/* Custom Hand-Drawn Bold Toy Block Styling */
-.toy-brick-blue {
-  background-color: #0284c7; /* rich bold blue */
-  border: 4px solid #fdfbf7; /* bold contrast wireframe line */
-  border-radius: 4px;
-  box-shadow: 8px 8px 0px 0px #0ea5e9;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-}
-
-.toy-brick-blue:hover {
-  transform: translate(-3px, -3px);
-  box-shadow: 11px 11px 0px 0px #0ea5e9;
-}
-
-.toy-brick-light {
-  background-color: #fdfbf7;
-  border: 4px solid #0284c7;
-  border-radius: 4px;
-  box-shadow: 8px 8px 0px 0px #0284c7;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-}
-
-.toy-brick-light:hover {
-  transform: translate(-3px, -3px);
-  box-shadow: 11px 11px 0px 0px #0284c7;
-}
-
-/* Beige line helper */
-.border-beige-handdrawn {
-  border: 4px solid #0284c7;
-  border-radius: 4px;
-}
-
-/* Custom scrollbars for toy box elements */
+/* Global page scrollbar (brutalist) */
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
 }
-
 ::-webkit-scrollbar-track {
   background: #fdfbf7;
   border-left: 2px solid #0284c7;
 }
-
 ::-webkit-scrollbar-thumb {
   background: #0284c7;
   border: 2px solid #fdfbf7;
   border-radius: 4px;
 }
-
 ::-webkit-scrollbar-thumb:hover {
   background: #0ea5e9;
 }
-
-/* Special skewed badge classes as seen in theme specification */
-.badge-skew {
-  transform: skewX(-12deg);
-}
-
-/* Custom Global Hand-Drawn Cursor */
-@keyframes drop-brick {
-  0% { transform: translateY(-60px) scale(1.1) rotate(-15deg); opacity: 0; box-shadow: 0px 0px 0px 0px #0284c7; }
-  50% { opacity: 1; }
-  80% { transform: translateY(5px) scale(0.95) rotate(5deg); box-shadow: 4px 4px 0px 0px #0284c7; }
-  100% { transform: translateY(0) scale(1) rotate(0deg); opacity: 1; box-shadow: 8px 8px 0px 0px #0284c7; }
-}
-
-@keyframes slide-out-down {
-  from { opacity: 1; transform: translateY(0); }
-  to { opacity: 0; transform: translateY(20px); }
-}
-
-.animation-delay-200 {
-  animation-delay: 150ms;
-}
-
-.animation-delay-400 {
-  animation-delay: 300ms;
-}
-
-.loader-brick-container {
-  position: relative;
-  width: 80px;
-  height: 80px;
-  display: flex;
-  justify-content: center;
-  align-items: flex-end;
-}
-
-.loader-brick {
-  position: absolute;
-  border: 4px solid #0284c7;
-  border-radius: 4px;
-  opacity: 0;
-  animation: drop-brick 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-}
-
-.loader-brick::before, .loader-brick::after {
-  content: '';
-  position: absolute;
-  top: -8px;
-  width: 12px;
-  height: 6px;
-  border: 4px solid #0284c7;
-  border-bottom: none;
-  border-radius: 2px 2px 0 0;
-}
-
-.loader-brick-1 {
-  width: 60px;
-  height: 25px;
-  background-color: #0ea5e9;
-  bottom: 0px;
-  z-index: 10;
-  animation-delay: 0.1s;
-}
-.loader-brick-1::before { left: 8px; background-color: #0ea5e9; }
-.loader-brick-1::after { right: 8px; background-color: #0ea5e9; }
-
-.loader-brick-2 {
-  width: 40px;
-  height: 25px;
-  background-color: #fde68a;
-  bottom: 21px; /* overlapping borders slightly */
-  left: 20px;
-  z-index: 9;
-  animation-delay: 0.4s;
-}
-.loader-brick-2::before { left: 10px; background-color: #fde68a; }
-.loader-brick-2::after { display: none; }
-
-.loader-brick-3 {
-  width: 25px;
-  height: 25px;
-  background-color: #f87171;
-  bottom: 42px;
-  left: 28px;
-  z-index: 8;
-  animation-delay: 0.7s;
-}
-.loader-brick-3::before { left: 3px; background-color: #f87171; }
-.loader-brick-3::after { display: none; }
-
 
 /* Talk Content styles */
 .talk-content {
