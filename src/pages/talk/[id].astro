@@ -19,17 +19,31 @@ export async function getStaticPaths() {
 
 const { id } = Astro.params;
 const { talk } = Astro.props;
+
+/** SEO description: plain text, first 150 chars only */
+function talkSeoDescription(raw: string, max = 150): string {
+  const plain = (raw || '')
+    .replace(/!\[.*?\]\(.*?\)/g, '')
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
+    .replace(/[#*`_~>|]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+  if (plain.length <= max) return plain;
+  return plain.slice(0, max);
+}
+
+const seoDescription = talkSeoDescription(talk.content || '');
 ---
 
 <Layout 
   title={talk.title || i18nConfig.talk.detailFallbackTitle}
-  description={talk.content.substring(0, 150)}
+  description={seoDescription}
 >
   <SvelteTalkDetail talk={talk} client:load />
   <div class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] p-4 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm flex items-center justify-center mt-6">
     <ShareButton
       title={talk.title || ''}
-      description={talk.content?.substring(0, 150) || ''}
+      description={seoDescription}
       url={Astro.url.href}
       image={''}
       date={talk.date || ''}
