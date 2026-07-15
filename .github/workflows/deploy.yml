@@ -53,9 +53,18 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     strategy:
+      # 加服务器：复制一段 include，改 host / name 即可
+      # 所有机器共用 secrets.SERVER_SSH_KEY（私钥）+ secrets.SERVER_USER
       matrix:
-        host: [38.76.185.215, 154.219.110.223]
+        include:
+          - host: 38.76.185.215
+            name: server-1
+          - host: 154.219.110.223
+            name: server-2
+          # - host: 新服务器IP
+          #   name: server-3
       fail-fast: false
+    name: deploy → ${{ matrix.name }} (${{ matrix.host }})
     steps:
       - uses: actions/download-artifact@v4
         with:
@@ -65,19 +74,22 @@ jobs:
       - name: Setup SSH key
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SERVER_SSH_KEY }}" > ~/.ssh/deploy_key
+          # 保留私钥换行；去掉 Windows 可能带来的 \r
+          printf '%s\n' "${{ secrets.SERVER_SSH_KEY }}" | tr -d '\r' > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
-          ssh-keyscan -H ${{ matrix.host }} >> ~/.ssh/known_hosts
+          ssh-keyscan -H ${{ matrix.host }} >> ~/.ssh/known_hosts 2>/dev/null
 
       - name: Ensure directory exists on ${{ matrix.host }}
         run: |
           ssh -i ~/.ssh/deploy_key \
+            -o StrictHostKeyChecking=yes \
+            -o ConnectTimeout=15 \
             "${{ secrets.SERVER_USER }}@${{ matrix.host }}" \
             "mkdir -p ${{ env.TARGET_DIR }}"
 
       - name: Sync to ${{ matrix.host }}
         run: |
           rsync -avz --delete \
-            -e "ssh -i ~/.ssh/deploy_key" \
+            -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=yes -o ConnectTimeout=15" \
             dist/ \
             "${{ secrets.SERVER_USER }}@${{ matrix.host }}:${{ env.TARGET_DIR }}/"
