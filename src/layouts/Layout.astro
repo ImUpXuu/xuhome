@@ -213,6 +213,14 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
       class="fixed inset-0 -z-10 pointer-events-none"
       aria-hidden="true"
     ></div>
+    <div id="site-bg-loader" transition:persist="site-bg-loader" aria-hidden="true">
+      <div class="bg-bricks">
+        <span class="bg-brick"></span>
+        <span class="bg-brick"></span>
+        <span class="bg-brick"></span>
+      </div>
+      <span class="bg-loader-text">loading</span>
+    </div>
     <!-- Skip to content for keyboard users -->
     <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[200] focus:bg-[#0284c7] focus:text-white focus:px-4 focus:py-2 focus:rounded-sm focus:font-black focus:text-sm focus:shadow-[4px_4px_0px_0px_#fde68a] focus:no-underline focus:outline-none">
       跳转到主要内容
@@ -433,15 +441,54 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
         try { sessionStorage.setItem(KEY, String(i)); } catch (e) {}
       }
 
-      // top → bottom: texture, beige film, photo
-      el.style.backgroundImage =
-        'radial-gradient(circle, rgba(253,246,227,0.35) 1px, transparent 1px),' +
-        'linear-gradient(rgba(250,248,245,0.45), rgba(250,248,245,0.45)),' +
-        'url(https://img.476543.xyz/img/2026/7/' + i + '.webp)';
-      el.style.backgroundSize = '24px 24px, cover, cover';
-      el.style.backgroundPosition = '0 0, center, center';
-      el.style.backgroundRepeat = 'repeat, no-repeat, no-repeat';
-      el.style.backgroundAttachment = 'fixed, fixed, fixed';
+      var url = 'https://img.476543.xyz/img/2026/7/' + i + '.webp';
+      var loader = document.getElementById('site-bg-loader');
+      var attach = isMobile ? 'scroll' : 'fixed';
+
+      function paintBg() {
+        el.style.backgroundImage =
+          'radial-gradient(circle, rgba(253,246,227,0.35) 1px, transparent 1px),' +
+          'linear-gradient(rgba(250,248,245,0.45), rgba(250,248,245,0.45)),' +
+          'url(' + url + ')';
+        el.style.backgroundSize = '24px 24px, cover, cover';
+        el.style.backgroundPosition = '0 0, center, center';
+        el.style.backgroundRepeat = 'repeat, no-repeat, no-repeat';
+        el.style.backgroundAttachment = attach + ', ' + attach + ', ' + attach;
+        el.classList.add('is-ready');
+        if (loader) loader.classList.remove('is-on');
+      }
+
+      // Already painted this URL this session → no loader flash
+      if (el.dataset.bgUrl === url && el.classList.contains('is-ready')) {
+        if (loader) loader.classList.remove('is-on');
+        return;
+      }
+
+      el.classList.remove('is-ready');
+      if (loader) loader.classList.add('is-on');
+
+      var img = new Image();
+      img.onload = function () {
+        el.dataset.bgUrl = url;
+        paintBg();
+      };
+      img.onerror = function () {
+        // Fail open: still show film/texture without photo
+        el.style.backgroundImage =
+          'radial-gradient(circle, rgba(253,246,227,0.35) 1px, transparent 1px),' +
+          'linear-gradient(rgba(250,248,245,0.55), rgba(250,248,245,0.55))';
+        el.style.backgroundSize = '24px 24px, cover';
+        el.style.backgroundPosition = '0 0, center';
+        el.style.backgroundRepeat = 'repeat, no-repeat';
+        el.style.backgroundAttachment = attach + ', ' + attach;
+        el.classList.add('is-ready');
+        if (loader) loader.classList.remove('is-on');
+      };
+      img.src = url;
+      if (img.complete) {
+        el.dataset.bgUrl = url;
+        paintBg();
+      }
     }
 
     // Send page view beacon manually on every navigation
@@ -467,6 +514,60 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
       document.addEventListener('astro:after-swap', applySiteBg);
       document.addEventListener('astro:page-load', onPage);
     }
+  })();
+</script>
+<script is:inline>
+  (function () {
+    function markLoaded(img) {
+      img.classList.add('is-loaded');
+    }
+    function enhance(img) {
+      if (img.dataset.imgSoft === '1') return;
+      if (img.closest('svg, picture source')) return;
+      // Skip tiny icons / data / already handled
+      if (!img.getAttribute('src') && !img.getAttribute('data-src')) return;
+      if ((img.getAttribute('src') || '').indexOf('data:') === 0) return;
+      img.dataset.imgSoft = '1';
+      img.classList.add('img-soft');
+      if (img.complete && img.naturalWidth > 0) {
+        markLoaded(img);
+        return;
+      }
+      img.addEventListener('load', function () { markLoaded(img); }, { once: true });
+      img.addEventListener('error', function () { markLoaded(img); }, { once: true });
+    }
+    function scan(root) {
+      var list = (root || document).querySelectorAll
+        ? (root || document).querySelectorAll('img')
+        : [];
+      for (var i = 0; i < list.length; i++) enhance(list[i]);
+    }
+    function boot() {
+      scan(document);
+      if (!window.__xuhomeImgSoftObs) {
+        window.__xuhomeImgSoftObs = true;
+        try {
+          var mo = new MutationObserver(function (muts) {
+            for (var i = 0; i < muts.length; i++) {
+              var nodes = muts[i].addedNodes;
+              for (var j = 0; j < nodes.length; j++) {
+                var n = nodes[j];
+                if (n.nodeType !== 1) continue;
+                if (n.tagName === 'IMG') enhance(n);
+                else if (n.querySelectorAll) scan(n);
+              }
+            }
+          });
+          mo.observe(document.documentElement, { childList: true, subtree: true });
+        } catch (e) {}
+      }
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', boot);
+    } else {
+      boot();
+    }
+    document.addEventListener('astro:page-load', function () { scan(document); });
   })();
 </script>
 

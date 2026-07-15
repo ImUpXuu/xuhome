@@ -109,7 +109,7 @@
               class="w-full overflow-hidden rounded-sm border-2 border-[#0284c7] hover:border-[#f59e0b] shadow-[2px_2px_0px_0px_rgba(2,132,199,0.15)] hover:shadow-[3px_3px_0px_0px_#0284c7] transition-all cursor-pointer bg-slate-50 relative {images.length === 1 ? 'aspect-video sm:aspect-[4/3] max-h-80' : 'aspect-square'}"
               on:click={(e) => openLightbox(images, idx, e)}
             >
-              <img src={src} alt="talk detail graphic asset" class="w-full h-full object-cover transition-transform duration-550 hover:scale-[1.06]" loading="lazy" />
+              <img src={src} alt="talk detail graphic asset" class="w-full h-full object-cover transition-transform duration-550 hover:scale-[1.06]" loading="lazy" decoding="async" />
             </div>
           {/each}
         </div>
