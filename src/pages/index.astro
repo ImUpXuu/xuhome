@@ -46,7 +46,7 @@ const tags = Object.entries(tagMap)
   <div class="flex flex-col xl:flex-row gap-4 sm:gap-6 xl:gap-8 items-start justify-center">
     {/* Center Articles Feed - FIRST in DOM for SEO */}
     <div class="w-full xl:flex-1 min-w-0 flex flex-col gap-4 order-1 xl:order-2">
-      <SearchablePosts posts={allPosts.map(p => ({ id: p.id, slug: p.slug, title: p.title, date: p.date, description: p.description, img: p.img, tags: p.tags, category: p.category }))} client:load />
+      <SearchablePosts posts={allPosts.map(p => ({ id: p.id, slug: p.slug, title: p.title, date: p.date, description: p.description, img: p.img, tags: p.tags, category: p.category }))} client:idle />
     </div>
 
     {/* Left Sidebar - AFTER content in DOM, visually on left via order-1 */}
