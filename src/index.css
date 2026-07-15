@@ -289,10 +289,14 @@ body { font-weight: 500 !important; }
 .dark .dark\:bg-slate-800, .dark .bg-slate-800 { background-color: rgba(30,41,59,0.85) !important; }
 .dark .dark\:bg-slate-900, .dark .bg-slate-900 { background-color: rgba(15,23,42,0.85) !important; }
 
-/* Progressive image load: visible img + brick overlay (like site-bg loader) */
+/* Progressive image load: visible img + brick overlay (in-article, not lightbox) */
 @keyframes brick-bounce {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-4px); }
+}
+@keyframes bar-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 .img-soft-wrap {
   position: relative;
@@ -303,7 +307,6 @@ body { font-weight: 500 !important; }
   max-width: 100%;
   background: #e2e8f0;
 }
-/* fill fixed-size parents (post cards, avatars) */
 .img-soft-wrap:has(> img.h-full),
 .img-soft-wrap:has(> img.object-cover) {
   height: 100%;
@@ -316,8 +319,8 @@ body { font-weight: 500 !important; }
   display: block;
   width: 100%;
   height: auto;
-  opacity: 0.45;
-  filter: saturate(0.85);
+  opacity: 0.4;
+  filter: saturate(0.8) brightness(0.98);
   transition: opacity 0.35s ease, filter 0.35s ease;
 }
 .img-soft-wrap > img.h-full,
@@ -335,12 +338,15 @@ body { font-weight: 500 !important; }
   inset: 0;
   z-index: 2;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 10px;
   pointer-events: none;
-  background: rgba(250, 248, 245, 0.28);
+  background: rgba(250, 248, 245, 0.42);
   opacity: 1;
   transition: opacity 0.3s ease;
+  padding: 12px;
 }
 .img-soft-wrap.is-loaded .img-soft-overlay {
   opacity: 0;
@@ -348,15 +354,15 @@ body { font-weight: 500 !important; }
 }
 .img-soft-overlay .bg-bricks {
   display: flex;
-  gap: 4px;
+  gap: 6px;
   align-items: flex-end;
 }
 .img-soft-overlay .bg-brick {
-  width: 12px;
-  height: 12px;
-  border: 2px solid #0284c7;
+  width: 18px;
+  height: 18px;
+  border: 3px solid #0284c7;
   border-radius: 2px;
-  box-shadow: 2px 2px 0 0 #0284c7;
+  box-shadow: 3px 3px 0 0 #0284c7;
   animation: brick-bounce 0.7s ease-in-out infinite;
 }
 .img-soft-overlay .bg-brick:nth-child(1) {
@@ -371,7 +377,53 @@ body { font-weight: 500 !important; }
   background: #f87171;
   animation-delay: 0.24s;
 }
-/* prose / fancybox anchors keep layout */
+.img-soft-overlay .bg-loader-text {
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #0284c7;
+  background: rgba(250, 248, 245, 0.92);
+  border: 2px solid #0284c7;
+  padding: 3px 10px;
+  box-shadow: 2px 2px 0 0 #0284c7;
+}
+.img-soft-overlay .img-progress {
+  width: min(160px, 70%);
+  height: 8px;
+  border: 2px solid #0284c7;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 2px 2px 0 0 #0284c7;
+  overflow: hidden;
+}
+.img-soft-overlay .img-progress > i {
+  display: block;
+  height: 100%;
+  width: 35%;
+  background: linear-gradient(90deg, #0ea5e9, #fde68a, #0284c7, #0ea5e9);
+  background-size: 200% 100%;
+  animation: bar-shimmer 1s linear infinite;
+}
+/* article images: larger loader panel */
+.prose .img-soft-overlay {
+  background: rgba(250, 248, 245, 0.5);
+  gap: 12px;
+}
+.prose .img-soft-overlay .bg-brick {
+  width: 22px;
+  height: 22px;
+  border-width: 3px;
+  box-shadow: 3px 3px 0 0 #0284c7;
+}
+.prose .img-soft-overlay .bg-loader-text {
+  font-size: 12px;
+  padding: 4px 12px;
+}
+.prose .img-soft-overlay .img-progress {
+  width: min(220px, 72%);
+  height: 10px;
+}
 .prose .img-soft-wrap,
 .prose a .img-soft-wrap {
   margin: 0 auto;
@@ -381,18 +433,18 @@ body { font-weight: 500 !important; }
   display: block;
 }
 
-/* Tiny brutalist loader for full-page background */
+/* Full-page entry loader (bg + resources) */
 #site-bg-loader {
   position: fixed;
   left: 50%;
   top: 42%;
   transform: translate(-50%, -50%);
-  z-index: 5;
+  z-index: 50;
   pointer-events: none;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
   opacity: 0;
   transition: opacity 0.25s ease;
 }
@@ -401,15 +453,15 @@ body { font-weight: 500 !important; }
 }
 #site-bg-loader .bg-bricks {
   display: flex;
-  gap: 4px;
+  gap: 6px;
   align-items: flex-end;
 }
 #site-bg-loader .bg-brick {
-  width: 14px;
-  height: 14px;
-  border: 2px solid #0284c7;
+  width: 22px;
+  height: 22px;
+  border: 3px solid #0284c7;
   border-radius: 2px;
-  box-shadow: 2px 2px 0 0 #0284c7;
+  box-shadow: 3px 3px 0 0 #0284c7;
   animation: brick-bounce 0.7s ease-in-out infinite;
 }
 #site-bg-loader .bg-brick:nth-child(1) {
@@ -425,15 +477,72 @@ body { font-weight: 500 !important; }
   animation-delay: 0.24s;
 }
 #site-bg-loader .bg-loader-text {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 900;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: #0284c7;
-  background: rgba(250, 248, 245, 0.85);
+  background: rgba(250, 248, 245, 0.92);
+  border: 2px solid #0284c7;
+  padding: 4px 12px;
+  box-shadow: 2px 2px 0 0 #0284c7;
+}
+#site-bg-loader .res-progress-wrap {
+  width: min(240px, 70vw);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: stretch;
+}
+#site-bg-loader .res-progress {
+  height: 12px;
+  border: 3px solid #0284c7;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 3px 3px 0 0 #0284c7;
+  overflow: hidden;
+}
+#site-bg-loader .res-progress > i {
+  display: block;
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #0ea5e9, #fde68a, #0284c7);
+  transition: width 0.2s ease;
+}
+#site-bg-loader .res-progress-meta {
+  font-size: 11px;
+  font-weight: 900;
+  color: #0284c7;
+  text-align: center;
+  letter-spacing: 0.06em;
+  background: rgba(250, 248, 245, 0.9);
   border: 2px solid #0284c7;
   padding: 2px 8px;
   box-shadow: 2px 2px 0 0 #0284c7;
+}
+/* top global resource bar */
+#resource-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  z-index: 120;
+  pointer-events: none;
+  background: transparent;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+#resource-progress.is-on {
+  opacity: 1;
+}
+#resource-progress > i {
+  display: block;
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #0284c7, #0ea5e9, #f59e0b);
+  transition: width 0.2s ease;
+  box-shadow: 0 0 8px rgba(2, 132, 199, 0.45);
 }
 #site-bg.is-ready {
   opacity: 1;
