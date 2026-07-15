@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { MessageSquare, X, Cpu, ChevronDown, Loader2, Send, Sparkles } from "lucide-react";
 import ReactMarkdown from "react-markdown";
-import { contentConfig } from "../config/site";
+import { contentConfig } from "../../config/site";
 
 const CHAT_MODELS = contentConfig.aiChatModels;
 
