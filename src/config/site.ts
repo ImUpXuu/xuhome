@@ -52,7 +52,6 @@ export const siteConfig = {
   analytics: {
     umami: [
       { src: "https://stats.upxuu.com/script.js", id: "cd983d6c-e011-489d-903f-4757ce41c14d" },
-      { src: "https://cloud.umami.is/script.js", id: "9f42cc31-08eb-4829-8af7-06527a02f6c9" },
     ],
     /** 站点统计 API（页脚访问量/在线人数、欢迎提示调用） */
     statsApi: {
