@@ -137,6 +137,9 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
     {seoConfig.preconnect.map(conn => (
       <link rel="preconnect" href={conn.url} crossorigin={conn.crossOrigin === "anonymous" ? "anonymous" : undefined} />
     ))}
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Noto+Sans+SC:wght@300..900&family=JetBrains+Mono:wght@400;500;600&display=swap" />
 
     {siteConfig.analytics.umami.map(u => (
       <script defer src={u.src} data-website-id={u.id}></script>
