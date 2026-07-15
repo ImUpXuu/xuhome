@@ -520,15 +520,49 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
   (function () {
     function markLoaded(img) {
       img.classList.add('is-loaded');
+      var wrap = img.closest('.img-soft-wrap');
+      if (wrap) wrap.classList.add('is-loaded');
+    }
+    function ensureOverlay(wrap) {
+      if (wrap.querySelector('.img-soft-overlay')) return;
+      var ov = document.createElement('span');
+      ov.className = 'img-soft-overlay';
+      ov.setAttribute('aria-hidden', 'true');
+      ov.innerHTML =
+        '<span class="bg-bricks">' +
+        '<span class="bg-brick"></span>' +
+        '<span class="bg-brick"></span>' +
+        '<span class="bg-brick"></span>' +
+        '</span>';
+      wrap.appendChild(ov);
     }
     function enhance(img) {
-      if (img.dataset.imgSoft === '1') return;
-      if (img.closest('svg, picture source')) return;
-      // Skip tiny icons / data / already handled
+      if (!img || img.tagName !== 'IMG') return;
+      if (img.dataset.imgSoft === '1') {
+        // re-bind if fancybox re-parented without is-loaded
+        if (img.complete && img.naturalWidth > 0) markLoaded(img);
+        return;
+      }
+      if (img.closest('svg')) return;
       if (!img.getAttribute('src') && !img.getAttribute('data-src')) return;
       if ((img.getAttribute('src') || '').indexOf('data:') === 0) return;
+      // skip decorative 1x1 trackers
+      if (img.width === 1 && img.height === 1) return;
+
       img.dataset.imgSoft = '1';
       img.classList.add('img-soft');
+
+      var wrap = img.closest('.img-soft-wrap');
+      if (!wrap) {
+        wrap = document.createElement('span');
+        wrap.className = 'img-soft-wrap';
+        var parent = img.parentNode;
+        if (!parent) return;
+        parent.insertBefore(wrap, img);
+        wrap.appendChild(img);
+      }
+      ensureOverlay(wrap);
+
       if (img.complete && img.naturalWidth > 0) {
         markLoaded(img);
         return;
@@ -542,6 +576,7 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
         : [];
       for (var i = 0; i < list.length; i++) enhance(list[i]);
     }
+    window.__xuhomeEnhanceImages = scan;
     function boot() {
       scan(document);
       if (!window.__xuhomeImgSoftObs) {
