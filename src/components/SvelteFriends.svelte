@@ -124,6 +124,10 @@
                 <img
                   src={friend.avatar}
                   alt={friend.name}
+                  width="56"
+                  height="56"
+                  loading="lazy"
+                  decoding="async"
                   referrerpolicy="no-referrer"
                   on:error={() => handleImgError(friend.name)}
                   class="w-14 h-14 rounded-full border-3 border-[#0284c7] object-cover bg-white shadow-[2px_2px_0px_0px_#0284c7]"

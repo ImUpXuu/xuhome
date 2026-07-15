@@ -289,3 +289,117 @@ body { font-weight: 500 !important; }
 .dark .dark\:bg-slate-800, .dark .bg-slate-800 { background-color: rgba(30,41,59,0.85) !important; }
 .dark .dark\:bg-slate-900, .dark .bg-slate-900 { background-color: rgba(15,23,42,0.85) !important; }
 
+/* Progressive image load: skeleton → fade in (no blocking spinner) */
+@keyframes img-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+@keyframes brick-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+img.img-soft {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  background-color: #e2e8f0;
+  background-image: linear-gradient(
+    90deg,
+    #e2e8f0 0%,
+    #f8fafc 45%,
+    #e2e8f0 90%
+  );
+  background-size: 200% 100%;
+}
+img.img-soft:not(.is-loaded) {
+  animation: img-shimmer 1.15s linear infinite;
+}
+img.img-soft.is-loaded {
+  opacity: 1;
+  background: none;
+  animation: none;
+}
+.dark img.img-soft:not(.is-loaded) {
+  background-color: #334155;
+  background-image: linear-gradient(
+    90deg,
+    #334155 0%,
+    #475569 45%,
+    #334155 90%
+  );
+}
+
+/* Tiny brutalist loader for full-page background */
+#site-bg-loader {
+  position: fixed;
+  left: 50%;
+  top: 42%;
+  transform: translate(-50%, -50%);
+  z-index: 5;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+#site-bg-loader.is-on {
+  opacity: 1;
+}
+#site-bg-loader .bg-bricks {
+  display: flex;
+  gap: 4px;
+  align-items: flex-end;
+}
+#site-bg-loader .bg-brick {
+  width: 14px;
+  height: 14px;
+  border: 2px solid #0284c7;
+  border-radius: 2px;
+  box-shadow: 2px 2px 0 0 #0284c7;
+  animation: brick-bounce 0.7s ease-in-out infinite;
+}
+#site-bg-loader .bg-brick:nth-child(1) {
+  background: #0ea5e9;
+  animation-delay: 0s;
+}
+#site-bg-loader .bg-brick:nth-child(2) {
+  background: #fde68a;
+  animation-delay: 0.12s;
+}
+#site-bg-loader .bg-brick:nth-child(3) {
+  background: #f87171;
+  animation-delay: 0.24s;
+}
+#site-bg-loader .bg-loader-text {
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #0284c7;
+  background: rgba(250, 248, 245, 0.85);
+  border: 2px solid #0284c7;
+  padding: 2px 8px;
+  box-shadow: 2px 2px 0 0 #0284c7;
+}
+#site-bg.is-ready {
+  opacity: 1;
+  transition: opacity 0.5s ease;
+}
+#site-bg:not(.is-ready) {
+  opacity: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  img.img-soft {
+    opacity: 1;
+    animation: none !important;
+    transition: none;
+  }
+  #site-bg-loader .bg-brick {
+    animation: none;
+  }
+  #site-bg {
+    opacity: 1 !important;
+  }
+}
+
