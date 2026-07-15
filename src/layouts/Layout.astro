@@ -219,13 +219,10 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
         <span class="bg-brick"></span>
         <span class="bg-brick"></span>
       </div>
-      <span class="bg-loader-text">loading..</span>
-      <div class="res-progress-wrap">
-        <div class="res-progress"><i id="site-bg-loader-bar"></i></div>
-        <div class="res-progress-meta" id="site-bg-loader-meta">0 / 0</div>
-      </div>
+      <span class="bg-loader-text">loading</span>
+      <div class="bg-mini-bar"><i></i></div>
     </div>
-    <!-- Resource load progress (top) -->
+    <!-- Tiny top bar only while real resources are loading -->
     <div id="resource-progress" transition:persist="resource-progress" aria-hidden="true"><i></i></div>
     <!-- Skip to content for keyboard users -->
     <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[200] focus:bg-[#0284c7] focus:text-white focus:px-4 focus:py-2 focus:rounded-sm focus:font-black focus:text-sm focus:shadow-[4px_4px_0px_0px_#fde68a] focus:no-underline focus:outline-none">
@@ -461,10 +458,12 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
         el.style.backgroundRepeat = 'repeat, no-repeat, no-repeat';
         el.style.backgroundAttachment = attach + ', ' + attach + ', ' + attach;
         el.classList.add('is-ready');
+        if (loader) loader.classList.remove('is-on');
       }
 
-      // Already painted this URL this session → no loader flash
+      // Already painted this URL → no loader flash
       if (el.dataset.bgUrl === url && el.classList.contains('is-ready')) {
+        if (loader) loader.classList.remove('is-on');
         return;
       }
 
@@ -487,6 +486,7 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
           el.style.backgroundRepeat = 'repeat, no-repeat';
           el.style.backgroundAttachment = attach + ', ' + attach;
           el.classList.add('is-ready');
+          if (loader) loader.classList.remove('is-on');
           resolve();
         };
         img.src = url;
@@ -536,40 +536,31 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
     var hideTimer = null;
 
     function setProgressUI(done, total) {
-      var pct = total > 0 ? Math.min(100, Math.round((done / total) * 100)) : 100;
       var top = document.getElementById('resource-progress');
       var topBar = top && top.querySelector('i');
-      var loader = document.getElementById('site-bg-loader');
-      var bar = document.getElementById('site-bg-loader-bar');
-      var meta = document.getElementById('site-bg-loader-meta');
+      // never show empty 0/0
+      if (!total || total <= 0) {
+        if (top) top.classList.remove('is-on');
+        if (topBar) topBar.style.width = '0%';
+        return;
+      }
+      var pct = Math.min(100, Math.round((done / total) * 100));
       if (topBar) topBar.style.width = pct + '%';
-      if (bar) bar.style.width = pct + '%';
-      if (meta) meta.textContent = done + ' / ' + total + ' · ' + pct + '%';
       if (top) {
-        if (total > 0 && done < total) top.classList.add('is-on');
-        else {
+        if (done < total) {
+          top.classList.add('is-on');
+        } else {
           clearTimeout(hideTimer);
           hideTimer = setTimeout(function () {
             if (top) top.classList.remove('is-on');
-          }, 350);
+          }, 280);
         }
-      }
-      if (loader) {
-        // keep entry loader visible while resources remain (incl. bg)
-        if (total > 0 && done < total) loader.classList.add('is-on');
       }
     }
 
     function bumpDone() {
       doneRes = Math.min(totalRes, doneRes + 1);
       setProgressUI(doneRes, totalRes);
-      if (doneRes >= totalRes && totalRes > 0) {
-        var loader = document.getElementById('site-bg-loader');
-        var siteBg = document.getElementById('site-bg');
-        if (siteBg && siteBg.classList.contains('is-ready') && loader) {
-          setTimeout(function () { loader.classList.remove('is-on'); }, 200);
-        }
-      }
     }
 
     function trackResource(promiseLike) {
@@ -582,12 +573,8 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
       if (!img || img.dataset.resTracked === '1') return;
       if ((img.getAttribute('src') || '').indexOf('data:') === 0) return;
       img.dataset.resTracked = '1';
-      if (img.complete && img.naturalWidth > 0) {
-        totalRes += 1;
-        doneRes += 1;
-        setProgressUI(doneRes, totalRes);
-        return;
-      }
+      // already cached → don't invent a fake pending resource
+      if (img.complete && img.naturalWidth > 0) return;
       trackResource(new Promise(function (resolve) {
         img.addEventListener('load', resolve, { once: true });
         img.addEventListener('error', resolve, { once: true });
@@ -618,13 +605,12 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
         '<span class="bg-brick"></span>' +
         '<span class="bg-brick"></span>' +
         '</span>' +
-        '<span class="bg-loader-text">loading..</span>' +
+        '<span class="bg-loader-text">loading</span>' +
         '<span class="img-progress"><i></i></span>';
       wrap.appendChild(ov);
     }
     function enhance(img) {
       if (!img || img.tagName !== 'IMG') return;
-      // skip tiny trackers / icons
       if (img.width === 1 && img.height === 1) return;
       if (img.closest('svg')) return;
       if (!img.getAttribute('src') && !img.getAttribute('data-src')) return;
@@ -666,31 +652,7 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
     }
     window.__xuhomeEnhanceImages = scan;
 
-    // Track stylesheet + bg as resources on first paint
-    function trackInitialResources() {
-      // stylesheets (fonts etc.)
-      try {
-        var sheets = document.styleSheets;
-        for (var i = 0; i < sheets.length; i++) {
-          var href = sheets[i].href;
-          if (!href) continue;
-          trackResource(fetch(href, { mode: 'no-cors', cache: 'force-cache' }).catch(function () {}));
-        }
-      } catch (e) {}
-      // performance resource entries already loaded
-      try {
-        var entries = performance.getEntriesByType('resource') || [];
-        // don't double-count heavily; just seed progress if late
-        if (entries.length && totalRes === 0) {
-          totalRes = Math.max(totalRes, Math.min(entries.length, 12));
-          doneRes = Math.min(doneRes + Math.floor(entries.length * 0.4), totalRes);
-          setProgressUI(doneRes, totalRes);
-        }
-      } catch (e) {}
-    }
-
     function boot() {
-      trackInitialResources();
       scan(document);
       if (!window.__xuhomeImgSoftObs) {
         window.__xuhomeImgSoftObs = true;
@@ -716,7 +678,6 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
       boot();
     }
     document.addEventListener('astro:page-load', function () {
-      // reset counters softly on SPA navigations
       totalRes = 0;
       doneRes = 0;
       setProgressUI(0, 0);
