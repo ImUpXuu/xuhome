@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Sparkles, Settings2, Cpu, Loader2, ChevronDown, ChevronRight, MessageCircle } from "lucide-react";
 import ReactMarkdown from "react-markdown";
-import { contentConfig } from "../config/site";
+import { contentConfig } from "../../config/site";
 
 const SUMMARY_MODELS = contentConfig.aiSummaryModels;
 
