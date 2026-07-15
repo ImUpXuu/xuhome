@@ -392,9 +392,9 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
       const days = Math.floor(diff / 86400);
       const hours = Math.floor((diff % 86400) / 3600);
       const mins = Math.floor((diff % 3600) / 60);
-      const secs = diff % 60;
-      el.textContent = days + '\u5929' + String(hours).padStart(2,'0') + '\u5c0f\u65f6' + String(mins).padStart(2,'0') + '\u5206' + secs.toFixed(2).padStart(5,'0') + '\u79d2';
-    }, 10);
+      const secs = Math.floor(diff % 60);
+      el.textContent = days + '\u5929' + String(hours).padStart(2,'0') + '\u5c0f\u65f6' + String(mins).padStart(2,'0') + '\u5206' + String(secs).padStart(2,'0') + '\u79d2';
+    }, 1000);
   }
 
   document.addEventListener('astro:page-load', () => {
