@@ -28,9 +28,9 @@ gamma官网：https://gamma.app/
 
 `帮我生成一个关于低碳生活的，以青少年行动和我国的措施为主体`就没了！ 最后再完善一下，到处为图片，合并 完成✅ 就是这么简单
 
-![image-20260419154248158](https://img.upxuu.com/img/2026/4/19/1776584568905_281.png)
+![image-20260419154248158](https://img.476543.xyz/img/2026/4/19/1776584568905_281.png)
 
-![image-20260419154340106](https://img.upxuu.com/img/2026/4/19/1776584620342_483.png)
+![image-20260419154340106](https://img.476543.xyz/img/2026/4/19/1776584620342_483.png)
 
 
 
@@ -38,4 +38,4 @@ gamma官网：https://gamma.app/
 
 当然我们的成员职责都是编的哈哈 all made with Gamma（确信
 
-![pictures (2](https://img.upxuu.com/img/2026/4/19/1776584942328_753.png)
+![pictures (2](https://img.476543.xyz/img/2026/4/19/1776584942328_753.png)

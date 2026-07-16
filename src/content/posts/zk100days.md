@@ -1,7 +1,7 @@
 ---
 title: "我做了一个100天的梦..."
 published: 2026-03-14 18:24:00
-image: "https://img.upxuu.com/image/20260315214606_913.jpg"
+image: "https://img.476543.xyz/image/20260315214606_913.jpg"
 description: "地生中考将近，我做了一个100day的梦..."
 category: "学习"
 sticky: 10
