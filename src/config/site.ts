@@ -340,7 +340,7 @@ export const i18nConfig = {
   /** 首页 */
   home: {
     /** 首页浏览器标题（传给 Layout 的 title） */
-    title: "首页",
+    title: "UPXUU的博客",
     /** 首页 SEO 描述 */
     description: "UpXuu 的个人博客，分享 Web 开发、Astro 建站与开源项目实践的技术文章，以及一名初中生的日常随笔与生活思考。原创内容覆盖前端开发、Vite 生态、AI 应用与中考纪实，适合开发者与年轻创作者阅读。",
     /** 首页文章列表区块标题 */
