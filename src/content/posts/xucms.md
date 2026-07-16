@@ -29,7 +29,7 @@ Splash → Login → Main (底部四 tab)
 
 登录后会进主界面，底部导航四个页签：文章列表、说说编辑、图库、设置。右下角有个 FAB，一键新建文章或说说。
 
-![XUCMS 主界面](https://img.upxuu.com/img/2026/6/7/20260607180158_060.png)
+![XUCMS 主界面](https://img.476543.xyz/img/2026/6/7/20260607180158_060.png)
 
 ```kotlin
 sealed class Screen(val route: String) {
@@ -124,7 +124,7 @@ class FrontmatterParser {
 
 切到源码模式可以直接手写 Markdown，满足硬核需求。
 
-![文章编辑页 - 超级简洁](https://img.upxuu.com/img/2026/6/7/20260607180241_025.png)
+![文章编辑页 - 超级简洁](https://img.476543.xyz/img/2026/6/7/20260607180241_025.png)
 
 **2. Frontmatter 元数据管理**
 
@@ -167,7 +167,7 @@ fun getAllDraftKeys(): Set<String>
 ```
 ┌─────────────────────────┐
 │ 服务器地址              │
-│ https://img.upxuu.com  │
+│ https://img.476543.xyz  │
 │                         │
 │ 管理员密码              │
 │ ********                │
@@ -223,7 +223,7 @@ enum class ThemeMode { SYSTEM, LIGHT, DARK }
 
 在 Settings 里切换，用的是 Compose 的 `MaterialTheme` 动态配色。浅色干净，深色护眼，系统模式自动跟随。图标也重新设计了一个 2D 矢量风格的深蓝色启动图标，和 UpXuu 品牌色一致。
 
-![XUCMS 海报](https://img.upxuu.com/img/2026/6/7/20260607180417_146.png)
+![XUCMS 海报](https://img.476543.xyz/img/2026/6/7/20260607180417_146.png)
 
 ## 和 Worker 后端的血缘关系
 
