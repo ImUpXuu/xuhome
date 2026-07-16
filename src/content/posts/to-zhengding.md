@@ -1,7 +1,7 @@
 ---
 title: "中考前夕的正定之旅"
 published: 2026-04-04 17:15:00
-image: "https://img.476543.xyz/image/20260404160022_340.jpg"
+image: "https://img.upxuu.com/image/20260404160022_340.jpg"
 category: "随笔"
 ---
 
@@ -15,22 +15,22 @@ category: "随笔"
 
 ## 正定-文庙
 
-![文庙门口](https://img.476543.xyz/image/20260404160259_570.jpg)
+![文庙门口](https://img.upxuu.com/image/20260404160259_570.jpg)
 
-![文庙门口](https://img.476543.xyz/image/20260404160250_531.jpg)
+![文庙门口](https://img.upxuu.com/image/20260404160250_531.jpg)
 
 ## 天宁寺
 
-![img](https://img.476543.xyz/image/20260404155417_281.jpg)
+![img](https://img.upxuu.com/image/20260404155417_281.jpg)
 
-![img](https://img.476543.xyz/image/20260404155653_279.jpg)
+![img](https://img.upxuu.com/image/20260404155653_279.jpg)
 
-![img](https://img.476543.xyz/image/20260404160022_340.jpg)
+![img](https://img.upxuu.com/image/20260404160022_340.jpg)
 
 ## eating
 
-![img](https://img.476543.xyz/image/20260404154719_568.jpg)
+![img](https://img.upxuu.com/image/20260404154719_568.jpg)
 
-![img](https://img.476543.xyz/image/20260404154944_437.jpg)
+![img](https://img.upxuu.com/image/20260404154944_437.jpg)
 
 就这样吧

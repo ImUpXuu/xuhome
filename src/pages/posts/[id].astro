@@ -317,30 +317,21 @@ const relatedPosts = (() => {
       images.forEach(img => {
         if (img.closest('a[data-fancybox]')) return;
 
-        const softWrap = img.closest('.img-soft-wrap');
-        const target = softWrap || img;
-        if (target.closest('a[data-fancybox]')) return;
-
         const wrapper = document.createElement('a');
         wrapper.setAttribute('data-fancybox', 'gallery');
         wrapper.setAttribute('href', img.currentSrc || img.src);
         wrapper.setAttribute('data-caption', img.alt || '');
         wrapper.className = 'block cursor-zoom-in not-prose';
 
-        const parent = target.parentElement;
+        const parent = img.parentElement;
         if (parent && parent.tagName === 'P' && parent.children.length === 1 && parent.innerText.trim() === '') {
           parent.classList.add('not-prose');
         }
 
-        target.parentNode.insertBefore(wrapper, target);
-        wrapper.appendChild(target);
-        // keep progressive-load classes; only ensure sizing
-        img.classList.add('m-0', 'w-full', 'h-auto', 'block', 'img-soft');
+        img.parentNode.insertBefore(wrapper, img);
+        wrapper.appendChild(img);
+        img.classList.add('m-0', 'w-full', 'h-auto', 'block');
       });
-      // re-bind load state after DOM moves
-      if (typeof window.__xuhomeEnhanceImages === 'function') {
-        window.__xuhomeEnhanceImages(content);
-      }
 
       try {
         Fancybox.destroy();

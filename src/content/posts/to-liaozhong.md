@@ -14,9 +14,9 @@ tags: []
 
 话说 这还是春运吗 人也太少了吧w😔
 
-![这真的是春运的车站吗.jpg](https://img.476543.xyz/image/20260215111312.jpg)
+![这真的是春运的车站吗.jpg](https://img.upxuu.com/image/20260215111312.jpg)
 
-![截图.jpg](https://img.476543.xyz/image/20260215111142.jpg)
+![截图.jpg](https://img.upxuu.com/image/20260215111142.jpg)
 
 ---
 
@@ -24,6 +24,6 @@ tags: []
 
 ### 下车w
 
-![20260217210512.jpg](https://img.476543.xyz/image/20260217210512.jpg)
+![20260217210512.jpg](https://img.upxuu.com/image/20260217210512.jpg)
 
 ---
