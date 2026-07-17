@@ -36,7 +36,7 @@ draft: false
 
 登录 [Bing Webmaster Tools](https://www.bing.com/webmasters)，首先先验证站点所有权，
 
-![image-20260503154224805](https://img.476543.xyz/img/2026/5/3/1777794145979_973.png)
+![image-20260503154224805](https://img.upxuu.com/img/2026/5/3/1777794145979_973.png)
 
 这里由于我已经配置了 所以直接就是控制台 有关于如何鉴权这里就不过多赘述了
 
@@ -44,11 +44,11 @@ draft: false
 
 进入[How to add IndexNow to your website | Bing Webmaster Tools](https://www.bing.com/indexnow/getstarted) 一直向下滑动（真够隐藏的）
 
-![image-20260503154448786](https://img.476543.xyz/img/2026/5/3/1777794289407_825.png)
+![image-20260503154448786](https://img.upxuu.com/img/2026/5/3/1777794289407_825.png)
 
 这里有官方的教程 其实还是比较易读的微软的英文(
 
-![image-20260503154831376](https://img.476543.xyz/img/2026/5/3/1777794511962_347.png)
+![image-20260503154831376](https://img.upxuu.com/img/2026/5/3/1777794511962_347.png)
 
 说白了就是吧api key放到你的网站下 .txt 内容一样
 
@@ -64,7 +64,7 @@ draft: false
 
 - 值：你的 IndexNow key
 
-  ![image-20260503155010533](https://img.476543.xyz/img/2026/5/3/1777794611134_692.png)
+  ![image-20260503155010533](https://img.upxuu.com/img/2026/5/3/1777794611134_692.png)
 
 ### 3. 创建工作流文件
 

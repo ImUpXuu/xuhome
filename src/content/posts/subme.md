@@ -16,7 +16,7 @@ lang: zh-cn
 
 首先，进入 [您订阅的UpXuu's blog更新啦~ · Issue #66 · ImUpXuu/myblog](https://github.com/ImUpXuu/myblog/issues/66)
 
-![subscribe](https://img.476543.xyz/img/2026/5/10/1778418425941_418.png)
+![subscribe](https://img.upxuu.com/img/2026/5/10/1778418425941_418.png)
 
 请确保您已登入您的 GitHub 账号。
 
@@ -30,7 +30,7 @@ lang: zh-cn
 
 如果你观察比较仔细的话，会发现近期本站的欢迎框多了一个选项——**📬 点击此处订阅博客更新**。
 
-![welcome toast](https://img.476543.xyz/img/2026/5/10/1778418137752_638.png)
+![welcome toast](https://img.upxuu.com/img/2026/5/10/1778418137752_638.png)
 
 点击后跳转到 GitHub Issue，点击 Subscribe 即可。具体来说，是使用 Issues 实现的，原理在 [基于 GitHub Issues 的博客更新订阅方案](https://upxuu.com/posts/blog-subscribe/) 有详细介绍。
 
