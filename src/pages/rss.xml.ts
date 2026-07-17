@@ -22,13 +22,16 @@ function stripMarkdown(md: string): string {
     .trim();
 }
 
-function formatBeijingPubDate(value: unknown): string | undefined {
+function formatUtcPubDate(value: unknown): string | undefined {
   if (!value) return undefined;
   const d = value instanceof Date ? value : new Date(value as string | number);
   if (isNaN(d.getTime())) return undefined;
+  // Frontmatter dates are stored as Beijing Time (UTC+8) but parsed by js-yaml as UTC.
+  // Subtract 8h to get the correct UTC moment, then format as GMT.
+  const utc = new Date(d.getTime() - 8 * 60 * 60 * 1000);
   const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  return `${days[d.getUTCDay()]}, ${String(d.getUTCDate()).padStart(2, '0')} ${months[d.getUTCMonth()]} ${d.getUTCFullYear()} ${String(d.getUTCHours()).padStart(2, '0')}:${String(d.getUTCMinutes()).padStart(2, '0')}:${String(d.getUTCSeconds()).padStart(2, '0')} +0800`;
+  return `${days[utc.getUTCDay()]}, ${String(utc.getUTCDate()).padStart(2, '0')} ${months[utc.getUTCMonth()]} ${utc.getUTCFullYear()} ${String(utc.getUTCHours()).padStart(2, '0')}:${String(utc.getUTCMinutes()).padStart(2, '0')}:${String(utc.getUTCSeconds()).padStart(2, '0')} GMT`;
 }
 
 export async function GET(context: APIContext) {
@@ -50,7 +53,7 @@ export async function GET(context: APIContext) {
       const permalink = `${siteUrl}/posts/${slug}/`;
       return {
         title: post.data.title,
-        pubDate: formatBeijingPubDate(post.data.published || post.data.date),
+        pubDate: formatUtcPubDate(post.data.published || post.data.date),
         description: desc,
         link: permalink,
         guid: permalink,
@@ -67,7 +70,7 @@ export async function GET(context: APIContext) {
       const permalink = `${siteUrl}/talk/${slug}/`;
       return {
         title: `「说说」${talk.data.title}`,
-        pubDate: formatBeijingPubDate(talk.data.date),
+        pubDate: formatUtcPubDate(talk.data.date),
         description: body.substring(0, 200).replace(/[#*`_\[\]()\-]/g, '').trim() || '',
         link: permalink,
         guid: permalink,
