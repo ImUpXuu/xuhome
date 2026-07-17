@@ -31,12 +31,14 @@ jobs:
         env:
           INDEXNOW_KEY: ${{ secrets.INDEXNOW_SECRET }}
         run: |
-          if [ -z "${INDEXNOW_KEY:-}" ]; then
+          # strip CR/LF/spaces from secret (filename cannot contain \n)
+          KEY=$(printf '%s' "${INDEXNOW_KEY:-}" | tr -d '\r\n' | xargs)
+          if [ -z "$KEY" ]; then
             echo "INDEXNOW_SECRET not set — skip key file"
             exit 0
           fi
-          printf '%s' "$INDEXNOW_KEY" > "public/${INDEXNOW_KEY}.txt"
-          echo "Wrote public/${INDEXNOW_KEY}.txt"
+          printf '%s' "$KEY" > "public/${KEY}.txt"
+          echo "Wrote public/${KEY}.txt"
 
       - run: pnpm build
 
