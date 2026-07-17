@@ -51,16 +51,20 @@ export async function GET(context: APIContext) {
       const slug = (post.data.slug || post.slug || post.id || '').trim();
       const desc = post.data.description || stripMarkdown(body).substring(0, 50);
       const permalink = `${siteUrl}/posts/${slug}/`;
+      const postPubDate = formatBeijingPubDate(post.data.published || post.data.date);
       return {
         title: post.data.title,
-        pubDate: formatBeijingPubDate(post.data.published || post.data.date),
         description: desc,
         link: permalink,
         guid: permalink,
         content: sanitizeHtml(parser.render(cleaned), {
           allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img']),
         }),
-        customData: `<dc:creator><![CDATA[${author}]]></dc:creator>`,
+        customData: [
+          `<dc:creator><![CDATA[${author}]]></dc:creator>`,
+          postPubDate ? `<pubDate>${postPubDate}</pubDate>` : '',
+        ].filter(Boolean).join(''),
+        sortDate: postPubDate ? new Date(postPubDate).getTime() : 0,
       };
     }),
     ...talks.map((talk) => {
@@ -68,23 +72,24 @@ export async function GET(context: APIContext) {
       const cleaned = stripInvalidXmlChars(body);
       const slug = (talk.data.slug || talk.slug || talk.id || '').trim();
       const permalink = `${siteUrl}/talk/${slug}/`;
+      const talkPubDate = formatBeijingPubDate(talk.data.date);
       return {
         title: `「说说」${talk.data.title}`,
-        pubDate: formatBeijingPubDate(talk.data.date),
         description: body.substring(0, 200).replace(/[#*`_\[\]()\-]/g, '').trim() || '',
         link: permalink,
         guid: permalink,
         content: sanitizeHtml(parser.render(cleaned), {
           allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img']),
         }),
-        customData: `<dc:creator><![CDATA[${author}]]></dc:creator>`,
+        customData: [
+          `<dc:creator><![CDATA[${author}]]></dc:creator>`,
+          talkPubDate ? `<pubDate>${talkPubDate}</pubDate>` : '',
+        ].filter(Boolean).join(''),
+        sortDate: talkPubDate ? new Date(talkPubDate).getTime() : 0,
       };
     }),
-  ].sort((a, b) => {
-    const da = a.pubDate ? new Date(a.pubDate).getTime() : 0;
-    const db = b.pubDate ? new Date(b.pubDate).getTime() : 0;
-    return db - da;
-  });
+  ].sort((a, b) => b.sortDate - a.sortDate)
+  .map(({ sortDate, ...item }) => item);
 
   return rss({
     title: siteConfig.title,
