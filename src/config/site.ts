@@ -45,7 +45,7 @@ export const siteConfig = {
   /** 评论系统配置 */
   waline: {
     /** Waline 服务端地址 */
-    serverURL: 'https://com2.upxuu.com',
+    serverURL: 'https://comment.upxuu.com',
   },
 
   /** 访问统计 — Umami（可配多个实例，留空数组则不加载） */
