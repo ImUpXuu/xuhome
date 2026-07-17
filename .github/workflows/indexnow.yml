@@ -37,14 +37,16 @@ jobs:
         run: |
           set -euo pipefail
 
-          if [ -z "${INDEXNOW_KEY:-}" ]; then
+          # strip CR/LF/spaces — secret paste often includes trailing newline
+          KEY=$(printf '%s' "${INDEXNOW_KEY:-}" | tr -d '\r\n' | xargs)
+          if [ -z "$KEY" ]; then
             echo "INDEXNOW_SECRET is not set"
             exit 1
           fi
 
           SITE_HOST="upxuu.com"
           SITE_URL="https://${SITE_HOST}"
-          KEY_LOCATION="${SITE_URL}/${INDEXNOW_KEY}.txt"
+          KEY_LOCATION="${SITE_URL}/${KEY}.txt"
           CHANGED="${{ steps.changed.outputs.changed }}"
 
           echo "Changed files: $CHANGED"
@@ -80,7 +82,7 @@ jobs:
           echo "Submitting $COUNT URL(s):"
           python3 -c "import json,sys; [print(' -', u) for u in json.loads(sys.argv[1])]" "$URLS_JSON"
 
-          BODY=$(python3 - <<'PY' "$SITE_HOST" "$INDEXNOW_KEY" "$KEY_LOCATION" "$URLS_JSON"
+          BODY=$(python3 - <<'PY' "$SITE_HOST" "$KEY" "$KEY_LOCATION" "$URLS_JSON"
           import json, sys
           host, key, key_location, urls_json = sys.argv[1:5]
           payload = {
