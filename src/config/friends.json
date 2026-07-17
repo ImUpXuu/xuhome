@@ -452,5 +452,11 @@
     "url": "https://blog.sayori.org/",
     "avatar": "https://blog.sayori.org/assets/profile/avatar-sayori.jpg",
     "description": "Amiya_desi的博客站，会记录一个真实的想要分享的人，欢迎！"
+  },
+  {
+    "name": "云峥博客（博创云途）",
+    "url": "https://www.uctb.cn",
+    "avatar": "https://www.uctb.cn/logo/favicon.ico",
+    "description": "记录运维与开发笔记，分享建站、云服务器、API 项目实战教程。"
   }
 ]
