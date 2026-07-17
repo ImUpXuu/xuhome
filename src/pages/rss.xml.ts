@@ -22,6 +22,15 @@ function stripMarkdown(md: string): string {
     .trim();
 }
 
+function formatBeijingPubDate(value: unknown): string | undefined {
+  if (!value) return undefined;
+  const d = value instanceof Date ? value : new Date(value as string | number);
+  if (isNaN(d.getTime())) return undefined;
+  const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  return `${days[d.getUTCDay()]}, ${String(d.getUTCDate()).padStart(2, '0')} ${months[d.getUTCMonth()]} ${d.getUTCFullYear()} ${String(d.getUTCHours()).padStart(2, '0')}:${String(d.getUTCMinutes()).padStart(2, '0')}:${String(d.getUTCSeconds()).padStart(2, '0')} +0800`;
+}
+
 export async function GET(context: APIContext) {
   const [posts, talks] = await Promise.all([
     getCollection('posts'),
@@ -41,7 +50,7 @@ export async function GET(context: APIContext) {
       const permalink = `${siteUrl}/posts/${slug}/`;
       return {
         title: post.data.title,
-        pubDate: post.data.published || post.data.date,
+        pubDate: formatBeijingPubDate(post.data.published || post.data.date),
         description: desc,
         link: permalink,
         guid: permalink,
@@ -58,7 +67,7 @@ export async function GET(context: APIContext) {
       const permalink = `${siteUrl}/talk/${slug}/`;
       return {
         title: `「说说」${talk.data.title}`,
-        pubDate: talk.data.date,
+        pubDate: formatBeijingPubDate(talk.data.date),
         description: body.substring(0, 200).replace(/[#*`_\[\]()\-]/g, '').trim() || '',
         link: permalink,
         guid: permalink,
