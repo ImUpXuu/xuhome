@@ -42,12 +42,6 @@
     "description": "博客"
   },
   {
-    "name": "瓶中虾",
-    "url": "https://weiyu14.top",
-    "avatar": "https://weiyu14.top/assets/ava-e842524e.jpg",
-    "description": "只闻花香 不争朝夕"
-  },
-  {
     "name": "ChenServer",
     "url": "https://etaris.moe",
     "avatar": "https://cn.cravatar.com/avatar/f9ff0db2d48c61f21a01f31de18643c2?d=mp&s=240",
@@ -70,12 +64,6 @@
     "url": "https://blog.ziworld.top",
     "avatar": "https://blog.ziworld.top/assect/images/avatar.webp",
     "description": "For all time, always."
-  },
-  {
-    "name": "爱琉璃",
-    "url": "https://www.illlt.com/",
-    "avatar": "",
-    "description": "琉璃之爱，清澈无瑕。"
   },
   {
     "name": "桃花源 TYC",
@@ -225,7 +213,7 @@
   },
   {
     "name": "阿锋的小宇宙",
-    "url": "https://feng.pub",
+    "url": "https://blog.feng.pub",
     "avatar": "https://feng.pub/favicon.ico",
     "description": "沧海一粟，微亮而渺小。"
   },
@@ -331,12 +319,6 @@
     "url": "https://blog.alcex.cn",
     "avatar": "https://avatars.githubusercontent.com/u/125755021?v=4",
     "description": "哈喽~欢迎光临"
-  },
-  {
-    "name": "AJie's Blog",
-    "url": "https://www.promptnet.cn/",
-    "avatar": "https://www.google.com/s2/favicons?domain=www.promptnet.cn&sz=128",
-    "description": "记录 AI 学习与探索之旅"
   },
   {
     "name": "红白Reimu的小窝",
