@@ -4,8 +4,11 @@
  */
 import { visit } from './visit.mjs';
 
-const GH_RE =
-  /^::github\{\s*repo\s*=\s*["']([^"']+)["'](?:\s+branch\s*=\s*["']([^"']+)["'])?\s*\}\s*$/i;
+const Q = `["'\u201C\u201D\u2018\u2019]`;
+const GH_RE = new RegExp(
+  `^::github\\{\\s*repo\\s*=\\s*${Q}([^${Q}]+)${Q}(?:\\s+branch\\s*=\\s*${Q}([^${Q}]+)${Q})?\\s*\\}\\s*$`,
+  'i'
+);
 
 function parseRepo(raw) {
   const s = String(raw || '').trim().replace(/^https?:\/\/github\.com\//i, '');
