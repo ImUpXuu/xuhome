@@ -20,9 +20,13 @@ jobs:
         run: |
           set -e
           BEFORE="${{ github.event.before }}"
+          AFTER="${{ github.sha }}"
+          CHANGED=""
           if [ -n "$BEFORE" ] && [ "$BEFORE" != "0000000000000000000000000000000000000000" ]; then
-            CHANGED=$(git diff --name-only --diff-filter=ACMR "$BEFORE" HEAD -- 'src/content/posts/**/*.md' || true)
-          else
+            # git log traverses commit graph reliably (handles rebase/merge pushes)
+            CHANGED=$(git log "$BEFORE..$AFTER" --format="" --name-only --diff-filter=ACMR -- 'src/content/posts/**/*.md' 2>/dev/null | sort -u || true)
+          fi
+          if [ -z "$CHANGED" ]; then
             CHANGED=$(git ls-files 'src/content/posts/**/*.md' || true)
           fi
           # collapse to single line for output
