@@ -19,8 +19,9 @@ jobs:
         id: changed
         run: |
           set -e
-          if git rev-parse --verify HEAD~1 >/dev/null 2>&1; then
-            CHANGED=$(git diff --name-only --diff-filter=ACMR HEAD~1 HEAD -- 'src/content/posts/**/*.md' || true)
+          BEFORE="${{ github.event.before }}"
+          if [ -n "$BEFORE" ] && [ "$BEFORE" != "0000000000000000000000000000000000000000" ]; then
+            CHANGED=$(git diff --name-only --diff-filter=ACMR "$BEFORE" HEAD -- 'src/content/posts/**/*.md' || true)
           else
             CHANGED=$(git ls-files 'src/content/posts/**/*.md' || true)
           fi
