@@ -8,113 +8,85 @@ on:
   workflow_dispatch:
 
 jobs:
-  indexnow:
+  submit:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Get changed post files
+      - name: Get changed posts
         id: changed
         run: |
-          set -e
           BEFORE="${{ github.event.before }}"
           AFTER="${{ github.sha }}"
-          CHANGED=""
-          if [ -n "$BEFORE" ] && [ "$BEFORE" != "0000000000000000000000000000000000000000" ]; then
-            # git log traverses commit graph reliably (handles rebase/merge pushes)
-            CHANGED=$(git log "$BEFORE..$AFTER" --format="" --name-only --diff-filter=ACMR -- 'src/content/posts/**/*.md' 2>/dev/null | sort -u || true)
-          fi
-          if [ -z "$CHANGED" ]; then
+          if [ "$BEFORE" != "0000000000000000000000000000000000000000" ]; then
+            CHANGED=$(git diff --name-only --diff-filter=ACMR "$BEFORE" "$AFTER" -- 'src/content/posts/**/*.md' || true)
+          else
             CHANGED=$(git ls-files 'src/content/posts/**/*.md' || true)
           fi
-          # collapse to single line for output
-          CHANGED_LINE=$(echo "$CHANGED" | tr '\n' ' ' | sed 's/[[:space:]]*$//')
-          echo "changed=$CHANGED_LINE" >> "$GITHUB_OUTPUT"
-          echo "Changed files:"
-          echo "$CHANGED"
+          {
+            echo "changed<<EOF"
+            echo "$CHANGED"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
 
-      - name: Build URLs and submit to IndexNow
+      - name: Submit to IndexNow
         if: steps.changed.outputs.changed != ''
         env:
-          INDEXNOW_KEY: ${{ secrets.INDEXNOW_SECRET }}
+          KEY: ${{ secrets.INDEXNOW_SECRET }}
+          CHANGED: ${{ steps.changed.outputs.changed }}
         run: |
           set -euo pipefail
+          KEY=$(printf '%s' "${KEY:-}" | tr -d '\r\n' | xargs)
+          [ -n "$KEY" ] || { echo "INDEXNOW_SECRET not set"; exit 1; }
 
-          # strip CR/LF/spaces — secret paste often includes trailing newline
-          KEY=$(printf '%s' "${INDEXNOW_KEY:-}" | tr -d '\r\n' | xargs)
-          if [ -z "$KEY" ]; then
-            echo "INDEXNOW_SECRET is not set"
-            exit 1
-          fi
+          SITE="https://upxuu.com"
+          KEY_LOCATION="${SITE}/${KEY}.txt"
 
-          SITE_HOST="upxuu.com"
-          SITE_URL="https://${SITE_HOST}"
-          KEY_LOCATION="${SITE_URL}/${KEY}.txt"
-          CHANGED="${{ steps.changed.outputs.changed }}"
-
-          echo "Changed files: $CHANGED"
-          # do not echo the raw key; only show that keyLocation host path is configured
-          echo "Key location host: ${SITE_HOST}/<secret>.txt"
-
-          URLS_JSON=$(python3 - <<'PY' "$CHANGED" "$SITE_URL"
+          python3 - "$KEY" "$KEY_LOCATION" "$SITE" "$CHANGED" <<'PY'
           import json, sys, urllib.parse
           from pathlib import Path
 
-          changed = sys.argv[1].split()
-          site = sys.argv[2].rstrip("/")
+          key, key_loc, site, *rest = sys.argv[1:]
+          changed = rest[0].split() if rest else []
+          host = site.replace("https://", "")
+
           urls = []
           for f in changed:
-              if not f.endswith(".md"):
-                  continue
-              if not f.startswith("src/content/posts/"):
+              if not f.endswith(".md") or not f.startswith("src/content/posts/"):
                   continue
               slug = Path(f).stem
-              # encode each path segment (Chinese filenames etc.)
-              encoded = urllib.parse.quote(slug, safe="")
-              urls.append(f"{site}/posts/{encoded}")
-          print(json.dumps(urls, ensure_ascii=False))
-          PY
-          )
+              urls.append(f"{site}/posts/{urllib.parse.quote(slug, safe='')}")
 
-          COUNT=$(python3 -c "import json,sys; print(len(json.loads(sys.argv[1])))" "$URLS_JSON")
-          if [ "$COUNT" -eq 0 ]; then
-            echo "No valid post URLs to submit"
-            exit 0
-          fi
+          if not urls:
+              print("No URLs to submit")
+              sys.exit(0)
 
-          echo "Submitting $COUNT URL(s):"
-          python3 -c "import json,sys; [print(' -', u) for u in json.loads(sys.argv[1])]" "$URLS_JSON"
+          print(f"Submitting {len(urls)} URL(s):")
+          for u in urls:
+              print(f"  {u}")
 
-          BODY=$(python3 - <<'PY' "$SITE_HOST" "$KEY" "$KEY_LOCATION" "$URLS_JSON"
-          import json, sys
-          host, key, key_location, urls_json = sys.argv[1:5]
-          payload = {
+          payload = json.dumps({
               "host": host,
               "key": key,
-              "keyLocation": key_location,
-              "urlList": json.loads(urls_json),
-          }
-          print(json.dumps(payload, ensure_ascii=False))
+              "keyLocation": key_loc,
+              "urlList": urls,
+          }, ensure_ascii=False)
+
+          import subprocess
+          r = subprocess.run([
+              "curl", "-sS", "-w", "\n%{http_code}",
+              "https://api.indexnow.org/indexnow",
+              "-H", "Content-Type: application/json; charset=utf-8",
+              "-d", payload,
+          ], capture_output=True, text=True)
+
+          lines = r.stdout.strip().split("\n")
+          code = lines[-1]
+          body = "\n".join(lines[:-1])
+          print(f"HTTP {code}: {body}")
+          if code not in ("200", "202"):
+              sys.exit(1)
+          print("IndexNow submission succeeded")
           PY
-          )
-
-          RESPONSE=$(curl -sS -w "\n%{http_code}" -X POST \
-            "https://api.indexnow.org/indexnow" \
-            -H "Content-Type: application/json; charset=utf-8" \
-            -d "$BODY")
-
-          HTTP_CODE=$(echo "$RESPONSE" | tail -n1)
-          RESP_BODY=$(echo "$RESPONSE" | sed '$d')
-
-          echo "HTTP Status: $HTTP_CODE"
-          echo "Response: $RESP_BODY"
-
-          # 200 success; 202 accepted
-          if [ "$HTTP_CODE" != "200" ] && [ "$HTTP_CODE" != "202" ]; then
-            echo "IndexNow submission failed"
-            exit 1
-          fi
-
-          echo "IndexNow submission succeeded"
