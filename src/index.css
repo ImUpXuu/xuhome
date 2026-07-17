@@ -441,6 +441,192 @@ html {
   color: #64748b;
 }
 
+/* ===== Admonitions / callout boxes ===== */
+.prose .admonition {
+  border: 3px solid #0284c7;
+  border-left-width: 6px;
+  border-radius: 4px;
+  box-shadow: 4px 4px 0 0 #0284c7;
+  padding: 0.85em 1em 0.95em;
+  margin: 1.4em 0;
+  background: rgba(250, 248, 245, 0.75);
+}
+.dark .prose .admonition {
+  background: rgba(30, 41, 59, 0.75);
+}
+.prose .admonition > .admonition-title {
+  margin: 0 0 0.45em;
+  font-weight: 900;
+  font-size: 0.95em;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #0284c7;
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+}
+.prose .admonition > .admonition-title::before {
+  content: "";
+  display: inline-block;
+  width: 0.7em;
+  height: 0.7em;
+  border: 2px solid currentColor;
+  border-radius: 2px;
+  box-shadow: 1.5px 1.5px 0 0 currentColor;
+  background: currentColor;
+  flex-shrink: 0;
+}
+.prose .admonition > :not(.admonition-title) {
+  margin-top: 0.35em;
+  margin-bottom: 0.35em;
+}
+.prose .admonition > :last-child {
+  margin-bottom: 0;
+}
+.prose .admonition-note,
+.prose .admonition-info {
+  border-color: #0284c7;
+  box-shadow: 4px 4px 0 0 #0ea5e9;
+  background: rgba(224, 242, 254, 0.55);
+}
+.prose .admonition-note > .admonition-title,
+.prose .admonition-info > .admonition-title {
+  color: #0284c7;
+}
+.prose .admonition-tip,
+.prose .admonition-success {
+  border-color: #059669;
+  box-shadow: 4px 4px 0 0 #34d399;
+  background: rgba(209, 250, 229, 0.55);
+}
+.prose .admonition-tip > .admonition-title,
+.prose .admonition-success > .admonition-title {
+  color: #047857;
+}
+.prose .admonition-important {
+  border-color: #7c3aed;
+  box-shadow: 4px 4px 0 0 #a78bfa;
+  background: rgba(237, 233, 254, 0.55);
+}
+.prose .admonition-important > .admonition-title {
+  color: #6d28d9;
+}
+.prose .admonition-warning,
+.prose .admonition-caution {
+  border-color: #d97706;
+  box-shadow: 4px 4px 0 0 #fbbf24;
+  background: rgba(254, 243, 199, 0.6);
+}
+.prose .admonition-warning > .admonition-title,
+.prose .admonition-caution > .admonition-title {
+  color: #b45309;
+}
+.prose .admonition-danger {
+  border-color: #dc2626;
+  box-shadow: 4px 4px 0 0 #f87171;
+  background: rgba(254, 226, 226, 0.55);
+}
+.prose .admonition-danger > .admonition-title {
+  color: #b91c1c;
+}
+.dark .prose .admonition-note,
+.dark .prose .admonition-info {
+  background: rgba(14, 116, 144, 0.2);
+}
+.dark .prose .admonition-tip,
+.dark .prose .admonition-success {
+  background: rgba(6, 78, 59, 0.3);
+}
+.dark .prose .admonition-important {
+  background: rgba(76, 29, 149, 0.25);
+}
+.dark .prose .admonition-warning,
+.dark .prose .admonition-caution {
+  background: rgba(120, 53, 15, 0.3);
+}
+.dark .prose .admonition-danger {
+  background: rgba(127, 29, 29, 0.3);
+}
+
+/* ===== GitHub card ::github{repo="owner/repo"} ===== */
+.prose .gh-card,
+.gh-card {
+  margin: 1.4em 0;
+  max-width: 520px;
+}
+.gh-card-link {
+  display: block;
+  text-decoration: none !important;
+  color: inherit !important;
+  background-image: none !important;
+}
+.gh-card-inner {
+  border: 3px solid #0284c7;
+  border-radius: 4px;
+  box-shadow: 4px 4px 0 0 #0284c7;
+  background: rgba(255, 255, 255, 0.85);
+  overflow: hidden;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.dark .gh-card-inner {
+  background: rgba(30, 41, 59, 0.9);
+}
+.gh-card-link:hover .gh-card-inner {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 0 #0ea5e9;
+}
+.gh-card-head {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.55em 0.75em;
+  border-bottom: 2px solid #0284c7;
+  background: rgba(224, 242, 254, 0.55);
+  font-weight: 800;
+  font-size: 0.9em;
+  color: #0284c7;
+}
+.dark .gh-card-head {
+  background: rgba(14, 116, 144, 0.25);
+  color: #38bdf8;
+}
+.gh-card-icon {
+  flex-shrink: 0;
+}
+.gh-card-full {
+  font-family: ui-monospace, monospace;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.gh-card-branch {
+  margin-left: auto;
+  font-size: 0.75em;
+  font-weight: 700;
+  border: 1.5px solid #0284c7;
+  padding: 0.05em 0.4em;
+  border-radius: 2px;
+  background: #fde68a;
+  color: #0369a1;
+}
+.gh-card-og {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-bottom: 2px solid #0284c7;
+}
+.gh-card-stats {
+  display: block;
+  width: 100%;
+  height: auto;
+  padding: 0.5em;
+  background: #fff;
+}
+.dark .gh-card-stats {
+  background: #0f172a;
+  filter: brightness(0.95);
+}
+
 /* Waline Custom Theme overwrites for Lego Brutalist Style */
 :root {
   --waline-theme-color: #0284c7 !important;
