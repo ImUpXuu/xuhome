@@ -1,6 +1,5 @@
 ---
-
-title: 假期将尽，再更博?
+title: 假期将尽，再更博客
 published: 2026-04-06
 description: '清明假期随笔，清明最后一天了，更新点东西'
 image: ''
@@ -9,9 +8,9 @@ category: 随笔
 draft: false 
 ---
 
-清明时节，春意正浓?
+清明时节，春意正浓。
 
-短暂的假期即将结束，是时候收拾心情，继续前行了?
+短暂的假期即将结束，是时候收拾心情，继续前行了。
 
 # 博客更新
 
@@ -23,7 +22,7 @@ https://stats.upxuu.com/share/sFftlqBkgk2z9JM2
 
 ![image.png](https://img.476543.xyz/img/2026/4/6/20260406102927_487.png)
 
-我这次使用的vercel+neon部署的，感觉速度还可?本来想像评论系统一样手搓一个的，但实在没时间了，索性就先这样吧~ ~~好像即使做出来了也没时间维护哈哈~~
+我这次使用的vercel+neon部署的，感觉速度还可以 本来想像评论系统一样手搓一个的，但实在没时间了，索性就先这样吧~ ~~好像即使做出来了也没时间维护哈哈~~
 
 ## 更换网站状态监控为自部署的kuma
 
@@ -33,11 +32,11 @@ https://stats.upxuu.com/share/sFftlqBkgk2z9JM2
 
 ![image-20260406184609746](https://img.476543.xyz/img/2026/04/06/1775472369949_430.png)
 
-<u>PS：这个是部署在元宝bot的那个服务器上的?/u>
+<u>PS：这个是部署在元宝bot的那个服务器上的哦</u>
 
 可以参考[元宝神操作！免费部署 OpenClaw，秒变永久免费服务器？？ - UpXuu's blog](https://upxuu.com/posts/yuanbaoopenclaw/)
 
-## 一个相?
+## 一个相册
 
 [画廊 - UpXuu's blog](https://myblog-inky-mu.vercel.app/gallery)
 
@@ -49,6 +48,6 @@ https://stats.upxuu.com/share/sFftlqBkgk2z9JM2
 
 ![image-20260406195343109](https://img.476543.xyz/img/2026/04/06/1775476423438_76.png)
 
-👆实在没办?用的trae
+👆实在没办法 用的trae
 
-下次大更新可能就?月了，以后可能只有时间更一些日?bye~
+下次大更新可能就是7月了，以后可能只有时间更一些日常 bye~

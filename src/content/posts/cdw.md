@@ -1,28 +1,27 @@
 ---
-
-title: "倒计时壁纸生成器"
+title: "什么，要中考了？！ 快来压力你的同学~——让你的班级白板充满压力🍐！"
 published: 2026-03-29 19:49:00
-category: "技术?"
+category: "技术"
 ---
 
 # 倒计时壁纸生成器
 
-一个模块化的桌面壁纸生成工具，为重要日子倒计时增添励志动力?
+一个模块化的桌面壁纸生成工具，为重要日子倒计时增添励志动力。
 
 ![Python](https://img.shields.io/badge/Python-3.6+-blue.svg)
 ![License](https://img.shields.io/badge/License-GPL--3.0-green.svg)
 ![Version](https://img.shields.io/badge/Version-2.1.6-orange.svg)
 
-## ?功能特?
+## ✨ 功能特性
 
-- 🖼?**自动获取 Bing 每日一?* 作为壁纸背景
+- 🖼️ **自动获取 Bing 每日一图** 作为壁纸背景
 - 📖 **一言 API 励志语录** 每日更新，传递感动与力量
-- ?**智能倒计?* 精确计算剩余天数和周?
-- 🔧 **模块化设?* 壁纸生成与管理分离，清晰高效
-- 🎨 **高度可定?* 字体、颜色、布局随心配置
-- 🧹 **自动清理** 保留最?3 天壁纸，节省空间
+- ⏰ **智能倒计时** 精确计算剩余天数和周数
+- 🔧 **模块化设计** 壁纸生成与管理分离，清晰高效
+- 🎨 **高度可定制** 字体、颜色、布局随心配置
+- 🧹 **自动清理** 保留最近 3 天壁纸，节省空间
 
-## 🚀 快速开?
+## 🚀 快速开始
 
 
 <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
@@ -38,17 +37,17 @@ category: "技术?"
 </div>
 
 
-**Windows 用户可以直接下载 exe 文件使用，无需安装 Python?*
+**Windows 用户可以直接下载 exe 文件使用，无需安装 Python！**
 
 - [📥 下载主程序](https://raw-githubusercontent-com-gh.2x.nz/ImUpXuu/CDW/refs/heads/main/dist/CountdownWallpaper.exe) - CountdownWallpaper.exe
 - [📥 下载管理器](https://raw-githubusercontent-com-gh.2x.nz/ImUpXuu/CDW/refs/heads/main/dist/CDWManager.exe) - CDWManager.exe
 
-**使用说明?*
+**使用说明：**
 
-1. 下载 `CountdownWallpaper.exe` 到任意目?
+1. 下载 `CountdownWallpaper.exe` 到任意目录
 2. 首次运行会自动下载管理器或从上方链接手动下载
-3. 使用管理器配置倒计时日?
-4. 保存后自动生成壁?
+3. 使用管理器配置倒计时日期
+4. 保存后自动生成壁纸
 
 ### 环境要求
 
@@ -67,12 +66,12 @@ category: "技术?"
 python cdwmanager.py
 ```
 
-管理器提供图形界面，可以?
+管理器提供图形界面，可以：
 
 - 设置倒计时名称和日期
 - 配置一言 API 参数
 - 设置开机自启（通过注册表）
-- 一键生成壁?
+- 一键生成壁纸
 
 #### 方式二：直接生成壁纸
 
@@ -80,17 +79,17 @@ python cdwmanager.py
 python CountdownWallpaper.py
 ```
 
-会自动读?`cdw.json` 配置文件并生成壁纸?
+会自动读取 `cdw.json` 配置文件并生成壁纸。
 
 ### 配置文件
 
-配置文件 `cdw.json` 格式?
+配置文件 `cdw.json` 格式：
 
 ```json
 {
     "countdowns": [
         {
-            "name": "地生会?,
+            "name": "地生会考",
             "date": "2026-06-23",
             "enabled": true
         }
@@ -112,8 +111,8 @@ python CountdownWallpaper.py
 
 ```
 countdown-wallpaper/
-├── CountdownWallpaper.py    # 壁纸生成器（核心?
-├── cdwmanager.py            # 管理器（PyQt5 GUI?
+├── CountdownWallpaper.py    # 壁纸生成器（核心）
+├── cdwmanager.py            # 管理器（PyQt5 GUI）
 ├── cdw.json                 # 配置文件
 ├── requirements.txt         # 依赖列表
 ├── font.ttf                 # 自定义字体（可选）
@@ -123,28 +122,28 @@ countdown-wallpaper/
 
 ## 🔧 模块说明
 
-### CountdownWallpaper.py - 壁纸生成?
+### CountdownWallpaper.py - 壁纸生成器
 
-**功能**?
+**功能**：
 
-- 从配置文件读取倒计时信?
-- 获取 Bing 每日一?
+- 从配置文件读取倒计时信息
+- 获取 Bing 每日一图
 - 调用一言 API 获取励志语录
 - 生成带倒计时的壁纸
 - 设置 Windows 壁纸
 
-**特点**?
+**特点**：
 
 - 专注壁纸生成，无定时任务
-- 从配置文件读取所有参?
-- 简洁高?
+- 从配置文件读取所有参数
+- 简洁高效
 
-### cdwmanager.py - 管理?
+### cdwmanager.py - 管理器
 
-**功能**?
+**功能**：
 
-- 图形界面配置倒计?
-- 管理多个倒计时项?
+- 图形界面配置倒计时
+- 管理多个倒计时项目
 - 配置一言 API 参数
 - 设置开机自启（注册表）
 - 创建定时任务
@@ -155,11 +154,11 @@ countdown-wallpaper/
 
 ### Q: 配置文件在哪里？
 
-A: `cdw.json` 在项目根目录。首次运行管理器会自动创建?
+A: `cdw.json` 在项目根目录。首次运行管理器会自动创建。
 
 ### Q: 如何添加多个倒计时？
 
-A: 运行 `cdwmanager.py`，在"倒计时管?标签页中添加?
+A: 运行 `cdwmanager.py`，在"倒计时管理"标签页中添加。
 
 ### Q: 开机自启是如何实现的？
 
@@ -167,35 +166,35 @@ A: 通过 Windows 注册表实现，位置：`HKEY_CURRENT_USER\Software\Microso
 
 ### Q: 一言 API 失败怎么办？
 
-A: 程序会自动使用内置的备用诗句库?
+A: 程序会自动使用内置的备用诗句库。
 
-### Q: 可以自定义壁纸样式吗?
+### Q: 可以自定义壁纸样式吗？
 
-A: 可以！编?`cdw.json` 中的配置参数?
+A: 可以！编辑 `cdw.json` 中的配置参数。
 
-## 🛠?打包为可执行文件
+## 🛠️ 打包为可执行文件
 
-### 打包壁纸生成?
+### 打包壁纸生成器
 
 ```bash
 pyinstaller --onefile --windowed --icon=icon.ico CountdownWallpaper.py
 ```
 
-### 打包管理?
+### 打包管理器
 
 ```bash
 pyinstaller --onefile --windowed --icon=icon.ico cdwmanager.py
 ```
 
-## 📄 开源协?
+## 📄 开源协议
 
-本项目采?[GNU General Public License v3.0](LICENSE) 开源协议?
+本项目采用 [GNU General Public License v3.0](LICENSE) 开源协议。
 
 ## 🙏 致谢
 
 - [Bing 每日一图](https://www.bing.com)
 - [一言 API](https://hitokoto.cn) - 传递感动的句子
-- [Pillow](https://python-pillow.org) - Python 图像处理?
+- [Pillow](https://python-pillow.org) - Python 图像处理库
 - [PyQt5](https://www.riverbankcomputing.com/software/pyqt/) - Python GUI 框架
 
 ## 📧 联系方式
@@ -205,11 +204,11 @@ pyinstaller --onefile --windowed --icon=icon.ico cdwmanager.py
 
 ## 🌟 Star History
 
-如果这个项目对你有帮助，请给一??Star 支持?
+如果这个项目对你有帮助，请给一个 ⭐ Star 支持！
 
 ---
 
-**让每一天的努力都闪闪发光！** ?
+**让每一天的努力都闪闪发光！** ✨
 
 ```
 
