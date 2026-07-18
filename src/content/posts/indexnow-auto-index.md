@@ -1,15 +1,14 @@
 ---
-
-title: 给博客接?IndexNow + Bing 自动索引
+title: 给博客接入 IndexNow + Bing 自动索引
 published: 2026-05-03
-description: 通过 GitHub Actions 工作流，在文章更新时自动通知 Bing 爬取新内容，再也不用手动?Bing Webmaster 提交了?
+description: 通过 GitHub Actions 工作流，在文章更新时自动通知 Bing 爬取新内容，再也不用手动去 Bing Webmaster 提交了。
 image: ''
 tags: [工具,博客,SEO,Github Action]
-category: 技?
+category: 技术
 draft: false
 ---
 
-之前每次写完博客都得手动?Bing Webmaster Tools 提交 URL，麻烦得很。最近接入了 IndexNow，配?GitHub Actions 实现了文章更新时自动通知 Bing 爬取，记录一下?
+之前每次写完博客都得手动去 Bing Webmaster Tools 提交 URL，麻烦得很。最近接入了 IndexNow，配合 GitHub Actions 实现了文章更新时自动通知 Bing 爬取，记录一下。
 
 ## 项目信息
 
@@ -21,9 +20,9 @@ draft: false
 
 ## 什么是 IndexNow
 
-[IndexNow](https://www.indexnow.org/) 是一个开放的搜索引擎索引协议，目前被 Bing、Yandex 等搜索引擎支持。原理很简单：网站主动 POST 一?URL 给搜索引擎的 IndexNow 接口，搜索引擎收到后会尽快来抓取这些页面?
+[IndexNow](https://www.indexnow.org/) 是一个开放的搜索引擎索引协议，目前被 Bing、Yandex 等搜索引擎支持。原理很简单：网站主动 POST 一批 URL 给搜索引擎的 IndexNow 接口，搜索引擎收到后会尽快来抓取这些页面。
 
-然而，如果你在搜索引擎搜索，会发现都是叫你如何配置wordpress之类的带有后台的indexnow，这些cms平台可以使用插件，可是想本站用的Astro静态站点呢...! 于是，是时候请出我们的GitHub action?
+然而，如果你在搜索引擎搜索，会发现都是叫你如何配置wordpress之类的带有后台的indexnow，这些cms平台可以使用插件，可是想本站用的Astro静态站点呢...! 于是，是时候请出我们的GitHub action啦
 
 ## 接入indexnow 好处有哪些？
 
@@ -35,7 +34,7 @@ draft: false
 
 #### 配置bing
 
-登录 [Bing Webmaster Tools](https://www.bing.com/webmasters)，首先先验证站点所有权?
+登录 [Bing Webmaster Tools](https://www.bing.com/webmasters)，首先先验证站点所有权，
 
 ![image-20260503154224805](https://img.476543.xyz/img/2026/5/3/1777794145979_973.png)
 
@@ -51,15 +50,15 @@ draft: false
 
 ![image-20260503154831376](https://img.476543.xyz/img/2026/5/3/1777794511962_347.png)
 
-说白了就是吧api key放到你的网站?.txt 内容一?
+说白了就是吧api key放到你的网站下 .txt 内容一样
 
 然后就可以了
 
 ### 2. 配置 GitHub Secrets
 
-由于这个key的权限非常高 可以直接控制你的索引 所以要?key 存到仓库?Secrets 里：
+由于这个key的权限非常高 可以直接控制你的索引 所以要把 key 存到仓库的 Secrets 里：
 
-- 路径?*Settings ?Secrets and variables ?Actions ?New repository secret**
+- 路径：**Settings → Secrets and variables → Actions → New repository secret**
 
 - 名称：`INDEXNOW_SECRET`
 
@@ -67,9 +66,9 @@ draft: false
 
   ![image-20260503155010533](https://img.476543.xyz/img/2026/5/3/1777794611134_692.png)
 
-### 3. 创建工作流文?
+### 3. 创建工作流文件
 
-?`.github/workflows/indexnow.yml` 写入以下内容?
+在 `.github/workflows/indexnow.yml` 写入以下内容：
 
 ```yaml
 name: IndexNow
@@ -138,18 +137,18 @@ jobs:
           echo "Response: $BODY"
 ```
 
-### 4. 工作流说?
+### 4. 工作流说明
 
 - **触发条件**：`src/content/posts/**/*.md` 有变更时自动触发
 - **精准索引**：通过 `git diff --name-only HEAD~1 HEAD` 只处理本次变更的文章
-- **URL 生成**：从文件名读?slug，拼接为 `https://upxuu.com/posts/{slug}/`
+- **URL 生成**：从文件名读取 slug，拼接为 `https://upxuu.com/posts/{slug}/`
 - **提交地址**：`https://www.bing.com/indexnow`
-- **输出结果**：GitHub Actions 日志里直接输?HTTP 状态码和响应内容，方便排查
+- **输出结果**：GitHub Actions 日志里直接输出 HTTP 状态码和响应内容，方便排查
 
 ## 效果
 
-现在每次推送文章后，GitHub Actions 会自动把新文章的 URL 提交?Bing。之前需要手动在 Webmaster 后台提交，现在完全自动化了?
+现在每次推送文章后，GitHub Actions 会自动把新文章的 URL 提交给 Bing。之前需要手动在 Webmaster 后台提交，现在完全自动化了。
 
-不过有一点需要注意：Bing ?IndexNow 的处理也需要时间，不会立刻出现在搜索结果里，一般几个小时到一天不等。之前主动推送到效果还是比较明显的，新文章基本当天就能被收录?
+不过有一点需要注意：Bing 对 IndexNow 的处理也需要时间，不会立刻出现在搜索结果里，一般几个小时到一天不等。之前主动推送到效果还是比较明显的，新文章基本当天就能被收录。
 
-顺便修了一下博客浅色模式代码高亮看不清的问?—?之前只配了暗色主?`github-dark`，浅色模式没有对应配置，现在改成双主?`github-dark` + `github-light`，切换主题后代码块颜色就正常了?
+顺便修了一下博客浅色模式代码高亮看不清的问题 —— 之前只配了暗色主题 `github-dark`，浅色模式没有对应配置，现在改成双主题 `github-dark` + `github-light`，切换主题后代码块颜色就正常了。

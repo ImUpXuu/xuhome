@@ -1,11 +1,10 @@
 ---
-
 title: "推荐几个超准的免登录，支持跨域的IP查询API"
 published: 2026-05-16 00:00:00
-description: "在这付费盛行的时?我找到了可能是“最良心的ip api?"
+description: "在这付费盛行的时期 我找到了可能是“最良心的ip api”"
 ---
 
-说实话，不知道从什么时候开始，完全免费的api接口真的越来越少了，即使是有 也都要注册，一次偶?让我发现了这些宝藏ip查询api
+说实话，不知道从什么时候开始，完全免费的api接口真的越来越少了，即使是有 也都要注册，一次偶然 让我发现了这些宝藏ip查询api
 
 ## 01 小小API
 
@@ -30,7 +29,7 @@ https://v2.xxapi.cn/api/ip
 
 ```
 
-为啥选他?因为真的限制特别?尤其适合放到前端查询 关键还准?
+为啥选他呢 因为真的限制特别少 尤其适合放到前端查询 关键还准！
 
 PS 他家还有v2版本 不过免费版也够用了（需要验key
 
@@ -38,24 +37,24 @@ PS 他家还有v2版本 不过免费版也够用了（需要验key
 
 > [!NOTE]
 >
-> 你可以访问https://upxuu.com/cfworkers-ip 这篇文章 已经做了详细的介?这里不过多赘?
+> 你可以访问https://upxuu.com/cfworkers-ip 这篇文章 已经做了详细的介绍 这里不过多赘述
 
-你可能会很惊?workers不是边缘平台吗？ 怎么还能做ip属地查询
+你可能会很惊讶 workers不是边缘平台吗？ 怎么还能做ip属地查询
 
-但是事实却是如此，你可以通过调用`request.cf` 对象查询指定ip的信?这里给大家一个实?
+但是事实却是如此，你可以通过调用`request.cf` 对象查询指定ip的信息 这里给大家一个实例
 
 javascript
 
 ```
 export default {
   async fetch(request, env, ctx) {
-    // 获取客户端真?IP
+    // 获取客户端真实 IP
     const clientIP = request.headers.get('CF-Connecting-IP');
   
     // 获取 request.cf 对象
     const cf = request.cf;
 
-    // 构造完整信?
+    // 构造完整信息
     const info = {
       ip: clientIP,
       ...cf
@@ -69,7 +68,7 @@ export default {
 }
 ```
 
-部署后访问这?Worker，你会看到类似这样的输出?
+部署后访问这个 Worker，你会看到类似这样的输出：
 
 json
 
@@ -98,4 +97,4 @@ json
 }
 ```
 
-`...cf` 会把 `request.cf` 里的所有字段自动展开，省得一个个手写。`null` 的字段是当前套餐未启用的，部署到 Cloudflare 上就会显示真实数据?
+`...cf` 会把 `request.cf` 里的所有字段自动展开，省得一个个手写。`null` 的字段是当前套餐未启用的，部署到 Cloudflare 上就会显示真实数据。
