@@ -57,6 +57,32 @@
     });
   }
 
+  async function loadImage(src: string): Promise<HTMLImageElement> {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => resolve(img);
+      img.onerror = reject;
+      img.src = src;
+    });
+  }
+
+  function wrapText(ctx: CanvasRenderingContext2D, text: string, maxWidth: number): string[] {
+    const lines: string[] = [];
+    let currentLine = '';
+    for (const char of text) {
+      const testLine = currentLine + char;
+      if (ctx.measureText(testLine).width > maxWidth && currentLine) {
+        lines.push(currentLine);
+        currentLine = char;
+      } else {
+        currentLine = testLine;
+      }
+    }
+    if (currentLine) lines.push(currentLine);
+    return lines.length ? lines : [text];
+  }
+
   async function generatePoster() {
     generatingPoster = true;
     posterError = '';
@@ -65,96 +91,153 @@
     try {
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d')!;
-      const width = 900;
-      const height = 600;
-      canvas.width = width;
-      canvas.height = height;
+      const W = 900;
+      const H = 1200;
+      canvas.width = W;
+      canvas.height = H;
 
+      ctx.fillStyle = '#e2e8f0';
+      ctx.fillRect(0, 0, W, H);
+      ctx.fillStyle = '#0284c7';
+      ctx.fillRect(18, 18, W - 24, H - 24);
       ctx.fillStyle = '#faf8f5';
-      ctx.fillRect(0, 0, width, height);
+      ctx.fillRect(8, 8, W - 32, H - 32);
 
-      ctx.strokeStyle = '#0284c7';
-      ctx.lineWidth = 8;
-      ctx.strokeRect(20, 20, width - 40, height - 40);
-
-      ctx.fillStyle = '#fde68a';
-      ctx.fillRect(28, 28, width - 56, 6);
+      ctx.fillStyle = '#f59e0b';
+      ctx.fillRect(8, 8, W - 32, 14);
 
       ctx.fillStyle = '#0284c7';
-      ctx.font = 'bold 22px "Fredoka", "Noto Sans SC", sans-serif';
+      ctx.fillRect(8, 22, W - 32, 72);
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 28px "Fredoka", "Noto Sans SC", system-ui, sans-serif';
       ctx.textAlign = 'left';
-      ctx.fillText("UPXUU'S TALK SHARING!", 50, 80);
+      ctx.fillText('UPXUU · TALK', 40, 68);
+      ctx.font = 'bold 16px "Noto Sans SC", system-ui, sans-serif';
+      ctx.fillStyle = '#bae6fd';
+      ctx.fillText('分享一条说说', 40, 90);
 
-      ctx.strokeStyle = '#0284c7';
-      ctx.lineWidth = 2;
-      ctx.setLineDash([6, 4]);
-      ctx.beginPath();
-      ctx.moveTo(50, 100);
-      ctx.lineTo(850, 100);
-      ctx.stroke();
-      ctx.setLineDash([]);
+      let y = 120;
+      const pad = 40;
+      const contentW = W - 32 - pad * 2;
 
-      let textX = 500;
       if (shareImage) {
         try {
           const img = await loadImage(shareImage);
-          const imgAreaW = 380;
-          const imgAreaH = 380;
-          const imgX = 60;
-          const imgY = 130;
-          const imgW = imgAreaW;
-          const imgH = Math.min(imgAreaH, imgW * (img.height / img.width));
+          const boxW = contentW;
+          const boxH = 360;
+          const scale = Math.max(boxW / img.width, boxH / img.height);
+          const sw = boxW / scale;
+          const sh = boxH / scale;
+          const sx = (img.width - sw) / 2;
+          const sy = (img.height - sh) / 2;
 
           ctx.fillStyle = '#0284c7';
-          ctx.fillRect(imgX - 4, imgY - 4, imgW + 8, imgH + 8);
+          ctx.fillRect(pad - 4, y - 4, boxW + 8, boxH + 8);
           ctx.save();
           ctx.beginPath();
-          ctx.rect(imgX, imgY, imgW, imgH);
+          ctx.rect(pad, y, boxW, boxH);
           ctx.clip();
-          ctx.drawImage(img, imgX, imgY, imgW, imgH);
+          ctx.drawImage(img, sx, sy, sw, sh, pad, y, boxW, boxH);
           ctx.restore();
-          textX = 480;
+          y += boxH + 36;
         } catch {
-          textX = 60;
+          y += 12;
         }
       } else {
-        textX = 60;
+        ctx.fillStyle = '#e0f2fe';
+        ctx.fillRect(pad, y, contentW, 120);
+        ctx.strokeStyle = '#0284c7';
+        ctx.lineWidth = 4;
+        ctx.strokeRect(pad, y, contentW, 120);
+        ctx.fillStyle = '#0284c7';
+        ctx.font = 'bold 42px "Fredoka", system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('TALK', pad + contentW / 2, y + 72);
+        ctx.textAlign = 'left';
+        y += 148;
       }
 
-      const maxTextWidth = width - textX - 60;
-      const titleY = 170;
-      ctx.fillStyle = '#1e293b';
-      ctx.font = 'bold 26px "Noto Sans SC", sans-serif';
-      ctx.textAlign = 'left';
-      const titleLines = wrapText(ctx, title, maxTextWidth);
-      titleLines.slice(0, 4).forEach((line, i) => {
-        ctx.fillText(line, textX, titleY + i * 36);
+      ctx.fillStyle = '#0f172a';
+      ctx.font = 'bold 40px "Noto Sans SC", system-ui, sans-serif';
+      const titleLines = wrapText(ctx, title, contentW);
+      titleLines.slice(0, 3).forEach((line, i) => {
+        ctx.fillText(line, pad, y + i * 52);
       });
-      const titleBottom = titleY + Math.min(titleLines.length, 4) * 36 + 20;
+      y += Math.min(titleLines.length, 3) * 52 + 24;
 
-      let descY = titleBottom + 10;
       if (description) {
-        ctx.fillStyle = '#64748b';
-        ctx.font = '16px "Noto Sans SC", sans-serif';
-        const descLines = wrapText(ctx, description.slice(0, 300), maxTextWidth);
-        descLines.slice(0, 6).forEach((line, i) => {
-          ctx.fillText(line, textX, descY + i * 26);
+        ctx.fillStyle = '#475569';
+        ctx.font = '22px "Noto Sans SC", system-ui, sans-serif';
+        const descLines = wrapText(ctx, description.slice(0, 220), contentW);
+        descLines.slice(0, 5).forEach((line, i) => {
+          ctx.fillText(line, pad, y + i * 32);
         });
-        descY += Math.min(descLines.length, 6) * 26 + 20;
+        y += Math.min(descLines.length, 5) * 32 + 28;
       }
 
-      ctx.fillStyle = '#fde68a';
-      ctx.fillRect(28, height - 34, width - 56, 6);
+      const footerY = H - 220;
+      const footerH = 150;
+      const footerW = contentW;
+      const footerX = pad;
 
-      ctx.fillStyle = '#0ea5e9';
-      ctx.font = '14px "JetBrains Mono", monospace';
+      ctx.fillStyle = '#0284c7';
+      ctx.fillRect(footerX + 6, footerY + 6, footerW, footerH);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(footerX, footerY, footerW, footerH);
+      ctx.strokeStyle = '#0284c7';
+      ctx.lineWidth = 4;
+      ctx.strokeRect(footerX, footerY, footerW, footerH);
+
+      const av = 72;
+      const avX = footerX + 24;
+      const avY = footerY + (footerH - av) / 2;
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(avX + av / 2, avY + av / 2, av / 2, 0, Math.PI * 2);
+      ctx.closePath();
+      ctx.clip();
+      try {
+        const avImg = await loadImage('https://upxuu.com/images/me.jpg');
+        ctx.drawImage(avImg, avX, avY, av, av);
+      } catch {
+        ctx.fillStyle = '#0284c7';
+        ctx.fillRect(avX, avY, av, av);
+      }
+      ctx.restore();
+      ctx.strokeStyle = '#0284c7';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(avX + av / 2, avY + av / 2, av / 2, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.fillStyle = '#0f172a';
+      ctx.font = 'bold 26px "Noto Sans SC", system-ui, sans-serif';
       ctx.textAlign = 'left';
-      ctx.fillText(talkUrl, 50, height - 70);
-
+      ctx.fillText('UPXUU', avX + av + 20, footerY + 58);
+      ctx.fillStyle = '#0284c7';
+      ctx.font = 'bold 18px "JetBrains Mono", monospace';
+      ctx.fillText('upxuu.com', avX + av + 20, footerY + 90);
       ctx.fillStyle = '#94a3b8';
-      ctx.font = '12px "Noto Sans SC", sans-serif';
-      ctx.textAlign = 'right';
-      ctx.fillText(`UpXuu · ${new Date().toLocaleDateString('zh-CN')}`, 850, height - 70);
+      ctx.font = '14px "Noto Sans SC", system-ui, sans-serif';
+      const shortUrl = talkUrl.replace(/^https?:\/\//, '').slice(0, 28);
+      ctx.fillText(shortUrl, avX + av + 20, footerY + 118);
+
+      const qr = 96;
+      const qrX = footerX + footerW - qr - 24;
+      const qrY = footerY + (footerH - qr) / 2;
+      ctx.fillStyle = '#0284c7';
+      ctx.fillRect(qrX - 4, qrY - 4, qr + 8, qr + 8);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(qrX, qrY, qr, qr);
+      try {
+        const qrImg = await loadImage('https://api.qrserver.com/v1/create-qr-code/?size=120x120&margin=8&data=' + encodeURIComponent(talkUrl));
+        ctx.drawImage(qrImg, qrX + 6, qrY + 6, qr - 12, qr - 12);
+      } catch {}
+
+      ctx.fillStyle = '#0284c7';
+      ctx.fillRect(8, H - 40, W - 32, 16);
+      ctx.fillStyle = '#f59e0b';
+      ctx.fillRect(8, H - 24, W - 32, 8);
 
       posterDataUrl = canvas.toDataURL('image/png');
     } catch (e) {
@@ -190,32 +273,6 @@
     a.download = `upxuu-poster-${Date.now()}.png`;
     a.click();
   }
-
-  function loadImage(src: string): Promise<HTMLImageElement> {
-    return new Promise((resolve, reject) => {
-      const img = new Image();
-      img.crossOrigin = 'anonymous';
-      img.onload = () => resolve(img);
-      img.onerror = reject;
-      img.src = src;
-    });
-  }
-
-  function wrapText(ctx: CanvasRenderingContext2D, text: string, maxWidth: number): string[] {
-    const lines: string[] = [];
-    let currentLine = '';
-    for (const char of text) {
-      const testLine = currentLine + char;
-      if (ctx.measureText(testLine).width > maxWidth && currentLine) {
-        lines.push(currentLine);
-        currentLine = char;
-      } else {
-        currentLine = testLine;
-      }
-    }
-    if (currentLine) lines.push(currentLine);
-    return lines.length ? lines : [text];
-  }
 </script>
 
 {#if show}
@@ -225,10 +282,10 @@
     on:click={handleBackdropClick}
   >
     <div
-      class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] sm:w-[420px] max-h-[85vh] bg-[rgba(250,248,245,0.55)] border-[10px] border-[#0284c7] rounded-sm shadow-[8px_8px_0px_0px_#0284c7] overflow-y-auto"
+      class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] sm:w-[400px] max-h-[85vh] bg-[rgba(250,248,245,0.96)] border-[6px] border-[#0284c7] rounded-sm shadow-[8px_8px_0px_0px_#0284c7] overflow-y-auto"
       on:click|stopPropagation
     >
-      <div class="flex items-center justify-between p-5 border-b-4 border-[#0284c7] bg-white sticky top-0 z-10">
+      <div class="flex items-center justify-between p-4 border-b-4 border-[#0284c7] bg-white sticky top-0 z-10">
         <h3 class="font-black text-[#0284c7] text-lg uppercase tracking-wider">分享</h3>
         <button on:click={close} class="w-10 h-10 flex items-center justify-center hover:bg-[#fde68a] rounded-sm transition-all text-[#0284c7] cursor-pointer border-2 border-[#0284c7] bg-white shadow-[2px_2px_0px_0px_#0284c7] active:translate-y-0.5 active:shadow-none">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 stroke-[3]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -237,7 +294,7 @@
         </button>
       </div>
 
-      <div class="p-5 space-y-3">
+      <div class="p-4 space-y-3">
         <button
           on:click={generatePoster}
           disabled={generatingPoster}
@@ -249,8 +306,8 @@
             </svg>
           </div>
           <div class="text-left">
-            <div class="font-black text-[#0284c7] text-sm">生成海报</div>
-            <div class="text-xs text-slate-500 font-bold">横向分享图 · 可直接分享</div>
+            <div class="font-black text-[#0284c7] text-sm">生成分享卡片</div>
+            <div class="text-xs text-slate-500 font-bold">竖版海报 · 一键下载</div>
           </div>
           {#if generatingPoster}
             <span class="ml-auto text-[#0284c7] font-black animate-spin">⟳</span>
