@@ -15,13 +15,15 @@
     "name": "zplb の博客",
     "url": "https://blog.zplb.top",
     "avatar": "https://zplb.org.cn/images/zplb.png",
-    "description": "一个喜欢网安的学生~"
+    "description": "一个喜欢网安的学生~",
+    "rss": "https://blog.zplb.top/rss.xml"
   },
   {
     "name": "石猫博客~",
     "url": "https://blog.imshimao.com",
     "avatar": "https://img.cdn1.vip/i/6a1ad021e2d4c_1780142113.jpeg",
-    "description": "就叫石猫好啦..."
+    "description": "就叫石猫好啦...",
+    "rss": "https://blog.imshimao.com/feed.xml"
   },
   {
     "name": "巳忆笔记",
@@ -81,7 +83,8 @@
     "name": "涵哲子居",
     "url": "https://iluc.cn/",
     "avatar": "https://iluc.cn/logo.webp",
-    "description": "天哲地理，共公卿好"
+    "description": "天哲地理，共公卿好",
+    "rss": "https://iluc.cn/rss.xml"
   },
   {
     "name": "AkiNard Blog",
@@ -191,7 +194,8 @@
     "name": "MIFENG BLOG",
     "url": "https://blog.imbee.top/",
     "avatar": "https://cdn.mfawa.top/image/logo.svg",
-    "description": "一个菜鸟的博客"
+    "description": "一个菜鸟的博客",
+    "rss": "https://blog.imbee.top/rss.xml"
   },
   {
     "name": "他说",
@@ -276,7 +280,8 @@
     "name": "xf_blog",
     "url": "https://xfcnl.github.io",
     "avatar": "",
-    "description": "立志用 cloudflare workers，GitHub pages 和 vercel 做出整个互联网的up（虽然不会成功"
+    "description": "立志用 cloudflare workers，GitHub pages 和 vercel 做出整个互联网的up（虽然不会成功",
+    "rss": "https://xfcnl.github.io/feed.xml"
   },
   {
     "name": "imba久期 BLOG",
@@ -318,7 +323,8 @@
     "name": "我的小世界呀",
     "url": "https://blog.alcex.cn",
     "avatar": "https://avatars.githubusercontent.com/u/125755021?v=4",
-    "description": "哈喽~欢迎光临"
+    "description": "哈喽~欢迎光临",
+    "rss": "https://blog.alcex.cn/feed"
   },
   {
     "name": "红白Reimu的小窝",
@@ -354,7 +360,8 @@
     "name": "Luquiesceneの小屋",
     "url": "https://luq-blog.xyz/",
     "avatar": "https://luq-blog.xyz/avatar.webp",
-    "description": "https://luq-blog.xyz/avatar.webp"
+    "description": "https://luq-blog.xyz/avatar.webp",
+    "rss": "https://luq-blog.xyz/rss.xml"
   },
   {
     "name": "知年博客",
@@ -414,7 +421,8 @@
     "name": "楠枝小笺",
     "url": "https://www.nannax.top",
     "avatar": "https://www.google.com/s2/favicons?domain=www.nannax.top&sz=128",
-    "description": "安安静静地存在，就已经很好啦。"
+    "description": "安安静静地存在，就已经很好啦。",
+    "rss": "https://www.nannax.top/rss.xml"
   },
   {
     "name": "龙星划空",
@@ -427,7 +435,8 @@
     "name": "姓王者的博客",
     "url": "https://xingwangzhe.fun/",
     "avatar": "https://xingwangzhe.fun/avatar.webp",
-    "description": "探索、学习、进步、创造无限可能！"
+    "description": "探索、学习、进步、创造无限可能！",
+    "rss": "https://xingwangzhe.fun/rss.xml"
   },
   {
     "name": "林子浩的博客",
