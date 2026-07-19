@@ -458,5 +458,11 @@
     "url": "https://www.uctb.cn",
     "avatar": "https://www.uctb.cn/logo/favicon.ico",
     "description": "记录运维与开发笔记，分享建站、云服务器、API 项目实战教程。"
+  },
+  {
+    "name": "里世界",
+    "url": "https://leenet.xyz",
+    "avatar": "https://leenet.xyz/avatar.png",
+    "description": "Welcome To The World Of Lee"
   }
 ]
