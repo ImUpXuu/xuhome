@@ -2,7 +2,7 @@
 title: "中考前一周，提前和生物老师再见..."
 date: "2026-06-12"
 description: "谨以本文予吾程老师"
-img: "https://img.476543.xyz/img/2026/6/12/20260612222321_404.png"
+img: "https://Img.upxuu.com/img/2026/6/12/20260612222321_404.png"
 tags: ["生活"]
 category: "生活"
 ---
