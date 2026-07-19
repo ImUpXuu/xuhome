@@ -7,6 +7,7 @@ export interface FriendLink {
   description: string;
   issue_id?: number;
   siteshot?: string;
+  rss?: string;
 }
 
 export const friendsConfig: FriendLink[] = friendsData;
