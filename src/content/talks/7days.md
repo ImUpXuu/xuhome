@@ -5,4 +5,4 @@ tags: []
 ---
 
 不悲观，不言弃
-![](https://img.upxuu.com/img/2026/6/16/20260616062208_303.jpg)
+![](https://img.upxuu.com/images/2026/6/16/20260616062208_303.jpg)

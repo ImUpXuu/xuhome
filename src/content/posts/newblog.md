@@ -1,7 +1,7 @@
 ---
 title: "在经历注入后 我还是放弃了wp"
 published: 2026-02-14 21:18:00
-image: "https://img.upxuu.com/image/20260214214231.jpg"
+image: "https://img.upxuu.com/images/20260214214231.jpg"
 tags: []
 category: "猎奇"
 ---

@@ -20,7 +20,7 @@ https://stats.upxuu.com/share/sFftlqBkgk2z9JM2
 
 其实这个一周前就已经配置好了，但是一直没时间添加到菜单里 索性这次就一并改好吧
 
-![image.png](https://img.upxuu.com/img/2026/4/6/20260406102927_487.png)
+![image.png](https://img.upxuu.com/images/2026/4/6/20260406102927_487.png)
 
 我这次使用的vercel+neon部署的，感觉速度还可以 本来想像评论系统一样手搓一个的，但实在没时间了，索性就先这样吧~ ~~好像即使做出来了也没时间维护哈哈~~
 
@@ -30,7 +30,7 @@ https://stats.upxuu.com/share/sFftlqBkgk2z9JM2
 
 这个就是纯图省事了，docker一配置直接上线
 
-![image-20260406184609746](https://img.upxuu.com/img/2026/04/06/1775472369949_430.png)
+![image-20260406184609746](https://img.upxuu.com/images/2026/04/06/1775472369949_430.png)
 
 <u>PS：这个是部署在元宝bot的那个服务器上的哦</u>
 
@@ -44,9 +44,9 @@ https://stats.upxuu.com/share/sFftlqBkgk2z9JM2
 
 以及使用GitHub action构建索引json
 
-![image-20260406200541187](https://img.upxuu.com/img/2026/04/06/1775477141878_612.png)
+![image-20260406200541187](https://img.upxuu.com/images/2026/04/06/1775477141878_612.png)
 
-![image-20260406195343109](https://img.upxuu.com/img/2026/04/06/1775476423438_76.png)
+![image-20260406195343109](https://img.upxuu.com/images/2026/04/06/1775476423438_76.png)
 
 👆实在没办法 用的trae
 
