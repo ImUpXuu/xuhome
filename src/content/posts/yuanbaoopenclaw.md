@@ -1,7 +1,7 @@
 ---
 title: "元宝神操作！免费部署 OpenClaw，秒变永久免费服务器？？"
 published: 2026-03-30 00:00:00
-image: "https://img.upxuu.com/image/img_1775141479284_image.png"
+image: "https://img.upxuu.com/images/img_1775141479284_image.png"
 description: "腾讯元宝推出重磅福利，可免费部署 OpenClaw！本文手把手教你通过 zerotier 内网穿透，将元宝 Bot 变身为一台可用的轻量云服务器，含 1Panel 安装、远程连接全流程。"
 tags: ["折腾"]
 category: "技术"
@@ -25,7 +25,7 @@ category: "技术"
 
 我刚开始以为只是一个噱头，可能是几个用户公用一个服务器，或者跑在 docker 里 但是？！它竟然是单独部署在服务器里的！！！
 
-![img](https://img.upxuu.com/img/2026/5/3/20260503193021_194.jpg)
+![img](https://img.upxuu.com/images/2026/5/3/20260503193021_194.jpg)
 
 元宝对自己的描述：
 
@@ -33,7 +33,7 @@ category: "技术"
 
 是的你没看错，那么如何最大限度地白嫖它呢？
 
-![元宝对自己的描述](https://img.upxuu.com/image/20260330220409_815.jpg)
+![元宝对自己的描述](https://img.upxuu.com/images/20260330220409_815.jpg)
 
 # 获取元宝bot
 
@@ -51,7 +51,7 @@ category: "技术"
 
 在弹出的窗口输入ENJOY（春节期间官方邀请码 亲测可用）
 
-![img](https://img.upxuu.com/img/2026/5/3/20260503193353_589.jpg)
+![img](https://img.upxuu.com/images/2026/5/3/20260503193353_589.jpg)
 
 ## 03准备抢注bot
 
@@ -67,17 +67,17 @@ category: "技术"
 
 点击注册[Sign Up - ZeroTier](https://accounts.zerotier.com/realms/zerotier/protocol/openid-connect/registrations?client_id=central-v2&scope=openid profile&redirect_uri=https%3A%2F%2Fcentral.zerotier.com%2F&response_type=code) 选择GitHub登录还是很快速的
 
-![image-20260503193917796](https://img.upxuu.com/img/2026/5/3/1777808692782_68.png)
+![image-20260503193917796](https://img.upxuu.com/images/2026/5/3/1777808692782_68.png)
 
 点击new network
 
-![image-20260503194030693](https://img.upxuu.com/img/2026/5/3/1777808698152_657.png)
+![image-20260503194030693](https://img.upxuu.com/images/2026/5/3/1777808698152_657.png)
 
 之后你可以进行一些配置 这里因为我已经配置好了就先不演示了
 
 重点！！！ 点击你的网段 然后记录下你的network id 使用这个
 
-![image-20260503194713747](https://img.upxuu.com/img/2026/5/3/1777808834302_243.png)
+![image-20260503194713747](https://img.upxuu.com/images/2026/5/3/1777808834302_243.png)
 
 ### 02引导 openclaw 安装zerotier
 
@@ -120,7 +120,7 @@ curl -sSL https://resource.fit2cloud.com/1panel/package/quick_start.sh | sudo ba
 
 回到你的控制台 你应该会看到如下界面 找到黄色的设备 点击三个点 然后选择允许
 
-![image-20260503195017889](https://img.upxuu.com/img/2026/5/3/1777809018571_723.png)
+![image-20260503195017889](https://img.upxuu.com/images/2026/5/3/1777809018571_723.png)
 
 # 客户端链接zerotier
 
