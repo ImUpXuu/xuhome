@@ -529,5 +529,11 @@
     "avatar": "https://mingcy.cn/image/mcy.png",
     "description": "茶香四溢，编程世界",
     "rss": "https://mingcy.cn/rss.xml"
+  },
+  {
+    "name": "雾语",
+    "url": "https://foglog.cn/",
+    "avatar": "https://www.google.com/s2/favicons?domain=foglog.cn&sz=128",
+    "description": "迷雾轻语，雅意深藏"
   }
 ]
