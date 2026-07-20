@@ -1,7 +1,7 @@
 ---
 title: "又有免费鸡蛋领？用wasmer免费部署wordpress！免费建站！"
 published: 2026-07-20 08:29:01
-description: ""
+description: "Wasmer免费部署WordPress教程，薅免费服务器搭建网站。支持PHP/Python静态站部署，类似Vercel的免费建站平台，GitHub登录一键部署，手把手教你用Wasmer白嫖免费虚拟主机。"
 tags: []
 category: "技术"
 ---
