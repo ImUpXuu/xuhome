@@ -522,5 +522,12 @@
     "avatar": "https://leenet.xyz/avatar.png",
     "description": "Welcome To The World Of Lee",
     "rss": "https://leenet.xyz/feed.xml"
+  },
+  {
+    "name": "茗辰原",
+    "url": "https://mingcy.cn",
+    "avatar": "https://mingcy.cn/image/mcy.png",
+    "description": "茶香四溢，编程世界",
+    "rss": "https://mingcy.cn/rss.xml"
   }
 ]
