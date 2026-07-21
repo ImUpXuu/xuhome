@@ -293,9 +293,6 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
       
       <footer class="w-full dark:bg-slate-900 border-t-4 border-[#0284c7] select-none">
         <div class="max-w-5xl mx-auto px-4 py-5 text-center text-xs font-mono text-slate-500 dark:text-slate-400 leading-relaxed space-y-2">
-          <div class="font-bold text-green-500 text-[11px] sm:text-xs">
-            唯一正版域名 <a href="https://upxuu.com" class="underline font-black hover:text-green-600">UPXUU.COM</a>
-          </div>
           <div class="font-bold">
             <span class="text-slate-700 dark:text-slate-300">{infoConfig.footer.copyrightText}</span>
             <span class="mx-1.5">|</span>
@@ -311,101 +308,31 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
             <span>{footerConfig.repoText}</span><a href={footerConfig.repoUrl} class="hover:text-[#0ea5e9] underline font-bold">{footerConfig.repoDisplayName}</a>
             {(() => {
               try {
-                const log = execSync('git log -n 1 --pretty=format:"%h||%s||%ci"').toString().trim();
-                const [hash, ...rest] = log.split('||');
-                const message = rest.join(' ').split('||')[0];
-                const date = rest.join(' ').split('||')[1] || '';
-                const formattedDate = date ? new Date(date).toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }) : '';
+                const log = execSync('git log -n 1 --pretty=format:"%h||%ci"').toString().trim();
+                const [hash, dateRaw] = log.split('||');
+                const d = dateRaw ? new Date(dateRaw) : null;
+                const formattedDate = d
+                  ? `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
+                  : '';
                 return <>
                   <span class="mx-1">·</span>
-                  <span class="font-bold">LATEST COMMIT</span>
-                  <span class="mx-1">-</span>
-                  <a href={`${footerConfig.repoUrl}/commit/${hash}`} class="hover:text-[#0ea5e9] underline">{hash}</a>
-                  <span class="mx-1">·</span>
-                  <span>{formattedDate}</span>
-                  <span class="mx-1">·</span>
-                  <span>{message}</span>
+                  <a href={`${footerConfig.repoUrl}/commit/${hash}`} class="hover:text-[#0ea5e9] underline font-bold">{hash}</a>
+                  {formattedDate && <><span class="mx-0.5">·</span><span>{formattedDate}</span></>}
                 </>;
               } catch (e) {
                 console.warn('[Layout] Git info unavailable at build time');
-                return <span class="text-slate-400">—</span>;
+                return null;
               }
             })()}
-          </div>
-          <div id="footer-stats" class="text-[10px] sm:text-xs">
-            <span>访问量 <span id="stat-pv" class="font-bold text-[#0284c7]">-</span></span>
-            <span class="mx-1">|</span>
-            <span>访客 <span id="stat-uv" class="font-bold text-[#0284c7]">-</span></span>
-            <span class="mx-1">|</span>
-            <span>次数 <span id="stat-vt" class="font-bold text-[#0284c7]">-</span></span>
-            <span class="mx-1">|</span>
-            <span>在线 <span id="stat-online" class="font-bold text-[#10b981]">-</span></span>
           </div>
           <div id="footer-uptime" class="text-[10px] sm:text-xs text-slate-400 dark:text-slate-500">
             本站已在互联网中航行 <span id="uptime-display" class="font-bold text-[#0284c7]">计算中...</span>
           </div>
-          <div id="footer-perf" class="text-[10px] sm:text-xs text-slate-400 dark:text-slate-500">
-            <span>加载 <span id="perf-time" class="font-bold text-[#0284c7]">-</span></span>
-            <span class="mx-1">·</span>
-            <span>传输 <span id="perf-size" class="font-bold text-[#0284c7]">-</span></span>
-          </div>
-          <div id="footer-stats-mon" class="text-[10px] sm:text-xs text-slate-400 dark:text-slate-500"></div>
         </div>
       </footer>
     </div>
 
 <script is:inline>
-  function initFooter() {
-    Promise.allSettled([
-      fetch('https://blogapi.476543.xyz/statsapi/alltime', { signal: AbortSignal.timeout(5000) }),
-      fetch('https://blogapi.476543.xyz/api/active', { signal: AbortSignal.timeout(5000) })
-    ]).then(async ([statsRes, activeRes]) => {
-      let pv = 0, uv = 0, vt = 0, active = 0;
-      if (statsRes.status === 'fulfilled') {
-        try { const d = await statsRes.value.json(); pv = typeof d.pageviews === 'object' ? (d.pageviews?.value ?? 0) : (d.pageviews ?? 0); uv = typeof d.visitors === 'object' ? (d.visitors?.value ?? 0) : (d.visitors ?? 0); vt = typeof d.visits === 'object' ? (d.visits?.value ?? 0) : (d.visits ?? 0); } catch {}
-      }
-      if (activeRes.status === 'fulfilled') {
-        try { const d = await activeRes.value.json(); active = Array.isArray(d) ? d.length : (d.total ?? d.visitors ?? 0); } catch {}
-      }
-      const pvEl = document.getElementById('stat-pv'); if (pvEl) pvEl.textContent = pv.toLocaleString();
-      const uvEl = document.getElementById('stat-uv'); if (uvEl) uvEl.textContent = uv.toLocaleString();
-      const vtEl = document.getElementById('stat-vt'); if (vtEl) vtEl.textContent = vt.toLocaleString();
-      const olEl = document.getElementById('stat-online'); if (olEl) olEl.textContent = String(active);
-    });
-  }
-
-  // Show real page performance metrics (load time + transfer size)
-  function showPerfMetrics() {
-    try {
-      const nav = performance.getEntriesByType('navigation')[0];
-      if (!nav) return;
-      const loadTime = (nav.loadEventEnd - nav.fetchStart) / 1000; // seconds
-      const transferSize = nav.transferSize || 0; // bytes
-
-      const timeEl = document.getElementById('perf-time');
-      if (timeEl) {
-        timeEl.textContent = loadTime > 0 ? loadTime.toFixed(2) + 's' : '-';
-      }
-      const sizeEl = document.getElementById('perf-size');
-      if (sizeEl) {
-        if (transferSize > 1048576) {
-          sizeEl.textContent = (transferSize / 1048576).toFixed(1) + ' MB';
-        } else if (transferSize > 1024) {
-          sizeEl.textContent = (transferSize / 1024).toFixed(0) + ' KB';
-        } else {
-          sizeEl.textContent = transferSize + ' B';
-        }
-      }
-    } catch {}
-  }
-
-  // Initial perf measurement
-  if (document.readyState === 'complete') {
-    showPerfMetrics();
-  } else {
-    window.addEventListener('load', showPerfMetrics);
-  }
-
   if (!window._uptimeStarted) {
     window._uptimeStarted = true;
     const start = new Date(2025, 8, 30, 20, 20, 0);
@@ -420,11 +347,6 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
       el.textContent = days + '\u5929' + String(hours).padStart(2,'0') + '\u5c0f\u65f6' + String(mins).padStart(2,'0') + '\u5206' + String(secs).padStart(2,'0') + '\u79d2';
     }, 1000);
   }
-
-  document.addEventListener('astro:page-load', () => {
-    initFooter();
-    showPerfMetrics();
-  });
 </script>
 <script is:inline>
   (function () {
