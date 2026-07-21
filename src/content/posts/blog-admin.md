@@ -124,7 +124,7 @@ PHOTO_OWNER = "ImUpXuu"            # 图片仓库所有者
 PHOTO_REPO = "photo"               # 图片仓库名
 PHOTO_BRANCH = "main"              # 图片仓库分支
 PHOTO_PATH = "images"              # 图片根目录
-PROXY_BASE = "https://img.upxuu.com/img"  # 图片代理基础 URL
+PROXY_BASE = "https://img.upxuu.com/images/img"  # 图片代理基础 URL
 ```
 
 #### 4. 设置 Secrets
@@ -238,7 +238,7 @@ pip install requests
 编辑工作流文件，将 `PROXY_BASE` 改为你自己的 Worker 代理地址：
 
 ```javascript
-const PROXY_BASE = 'https://img.upxuu.com/img';  // 改为你的地址
+const PROXY_BASE = 'https://img.upxuu.com/images/img';  // 改为你的地址
 ```
 
 #### 3. 工作原理
