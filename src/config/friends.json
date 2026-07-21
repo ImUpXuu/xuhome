@@ -535,5 +535,11 @@
     "url": "https://foglog.cn/",
     "avatar": "https://www.google.com/s2/favicons?domain=foglog.cn&sz=128",
     "description": "迷雾轻语，雅意深藏"
+  },
+  {
+    "name": "ISVCSEC",
+    "url": "https://www.nixegus.com/",
+    "avatar": "https://www.google.com/s2/favicons?domain=www.nixegus.com&sz=128",
+    "description": "专注攻防实战与技术研究的网络安全博客"
   }
 ]
