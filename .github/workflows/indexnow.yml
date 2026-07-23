@@ -35,7 +35,7 @@ jobs:
 
           echo "$FILES" > /tmp/changed.txt
           export IDX_KEY="$KEY"
-          python3 /tmp/changed.txt "$IDX_KEY" <<'PY'
+          python3 - <<'PY'
           import json, sys, re, os
           import urllib.request, urllib.error, ssl
           from pathlib import Path
