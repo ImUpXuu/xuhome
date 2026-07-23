@@ -553,5 +553,12 @@
     "url": "https://51chifun.cc.cd/",
     "avatar": "https://www.google.com/s2/favicons?domain=51chifun.cc.cd&sz=128",
     "description": "什么有趣就折腾什么"
+  },
+  {
+    "name": "RAGNote",
+    "url": "https://ragnote.top/",
+    "avatar": "https://ragnote.top/Avatar.png",
+    "description": "Life is code. I will debug it.",
+    "rss": "https://api.ragnote.top/rss.xml"
   }
 ]
