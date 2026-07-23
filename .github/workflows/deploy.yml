@@ -26,6 +26,8 @@ jobs:
       - run: pnpm install --no-frozen-lockfile
 
       - run: pnpm build
+        env:
+          INDEXNOW_SECRET: ${{ secrets.INDEXNOW_SECRET }}
 
       - name: Save commit SHA
         id: commit
