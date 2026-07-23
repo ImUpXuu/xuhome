@@ -10,7 +10,7 @@ category: "技术"
 
 其实也有别的办法。比如我之前写了个 Python HTTP 局域网文件服务器，但每次还得开电脑——太懒了。
 
-于是翻了翻 GitHub，偶遇了一个神项目——**LocalSend**。
+于是翻了翻 GitHub，偶遇了一个神项目——**LocalSend**（跨平台局域网传输）。
 
 ![image-20260723175018916](https://img.upxuu.com/images/2026/7/23/1784800220373_705.png)
 
