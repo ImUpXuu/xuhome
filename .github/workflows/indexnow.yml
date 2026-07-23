@@ -26,9 +26,9 @@ jobs:
           [ -n "$KEY" ] || { echo "INDEXNOW_SECRET not set"; exit 1; }
 
           if [ "${BEFORE}" != "0000000000000000000000000000000000000000" ]; then
-            FILES=$(git diff --name-only --diff-filter=ACMR "${BEFORE}" "${AFTER}" -- 'src/content/posts/**/*.md' || true)
+            FILES=$(git diff --name-only --diff-filter=ACMR "${BEFORE}" "${AFTER}" -- 'src/content/posts/' || true)
           else
-            FILES=$(git ls-files 'src/content/posts/**/*.md' || true)
+            FILES=$(git ls-files 'src/content/posts/' || true)
           fi
 
           [ -n "$FILES" ] || { echo "No posts changed"; exit 0; }
