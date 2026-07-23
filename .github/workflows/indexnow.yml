@@ -15,7 +15,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Submit changed posts to IndexNow
+      - name: Submit new / updated posts
         env:
           KEY: ${{ secrets.INDEXNOW_SECRET }}
           BEFORE: ${{ github.event.before }}
@@ -25,73 +25,68 @@ jobs:
           KEY=$(printf '%s' "${KEY:-}" | tr -d '\r\n' | xargs)
           [ -n "$KEY" ] || { echo "INDEXNOW_SECRET not set"; exit 1; }
 
-          # Determine changed files
           if [ "${BEFORE}" != "0000000000000000000000000000000000000000" ]; then
-            CHANGED=$(git diff --name-only --diff-filter=ACMR "${BEFORE}" "${AFTER}" -- 'src/content/posts/**/*.md' || true)
+            FILES=$(git diff --name-only --diff-filter=ACMR "${BEFORE}" "${AFTER}" -- 'src/content/posts/**/*.md' || true)
           else
-            CHANGED=$(git ls-files 'src/content/posts/**/*.md' || true)
+            FILES=$(git ls-files 'src/content/posts/**/*.md' || true)
           fi
 
-          [ -n "$CHANGED" ] || { echo "No posts changed"; exit 0; }
+          [ -n "$FILES" ] || { echo "No posts changed"; exit 0; }
 
-          # Run Python to extract slugs and submit
-          python3 - "$KEY" "$CHANGED" <<'PY'
-          import json, sys, urllib.request, urllib.parse, re
+          echo "$FILES" > /tmp/changed.txt
+          export IDX_KEY="$KEY"
+          python3 /tmp/changed.txt "$IDX_KEY" <<'PY'
+          import json, sys, re, os
+          import urllib.request, urllib.error, ssl
           from pathlib import Path
 
-          key = sys.argv[1]
-          changed = sys.argv[2].strip().split('\n') if len(sys.argv) > 2 and sys.argv[2].strip() else []
+          ssl._create_default_https_context = ssl._create_unverified_context
 
           SITE = "https://upxuu.com"
-          HOST = "upxuu.com"
+          KEY = os.environ.get("IDX_KEY", "")
+          if not KEY:
+              print("KEY not set"); sys.exit(1)
 
           def read_slug(filepath):
-              """Extract slug from frontmatter, fallback to filename stem"""
               try:
-                  with open(filepath, 'r', encoding='utf-8') as fh:
+                  with open(filepath, "r", encoding="utf-8") as fh:
                       raw = fh.read(4096)
               except Exception:
                   return Path(filepath).stem
-
-              if not raw.startswith('---'):
+              if not raw.startswith("---"):
                   return Path(filepath).stem
-
-              end = raw.find('---', 3)
+              end = raw.find("---", 3)
               if end == -1:
                   return Path(filepath).stem
-
               fm = raw[3:end]
-              m = re.search(r'^slug:\s*["\']?([^"'\r\n]+)["\']?\s*$', fm, re.MULTILINE)
+              m = re.search(r'^slug:\s*[\"\']?([^\"\'\\r\\n]+)', fm, re.MULTILINE)
               if m and m.group(1).strip():
                   return m.group(1).strip()
               return Path(filepath).stem
 
+          with open("/tmp/changed.txt", "r") as f:
+              lines = [l.strip() for l in f.readlines()]
+
           urls = []
-          seen = set()
-          for line in changed:
-              f = line.strip()
-              if not f or not f.startswith('src/content/posts/') or not f.endswith('.md'):
+          for f in lines:
+              if not f.startswith("src/content/posts/") or not f.endswith(".md"):
                   continue
-              slug = read_slug(f).lstrip('/')
-              url = f"{SITE}/posts/{urllib.parse.quote(slug, safe='')}"
-              if url not in seen:
-                  seen.add(url)
-                  urls.append(url)
+              slug = read_slug(f)
+              urls.append(f"{SITE}/posts/{slug}/")
 
           if not urls:
-              print("No valid URLs to submit")
-              sys.exit(0)
+              print("No URLs to submit"); sys.exit(0)
 
-          print(f"Submitting {len(urls)} URL(s):")
+          print(f"\nSubmitting {len(urls)} URL(s):")
           for u in urls:
               print(f"  {u}")
 
           payload = json.dumps({
-              "host": HOST,
-              "key": key,
-              "keyLocation": f"{SITE}/{key}.txt",
+              "host": "upxuu.com",
+              "key": KEY,
+              "keyLocation": f"{SITE}/{KEY}.txt",
               "urlList": urls,
-          }, ensure_ascii=False).encode('utf-8')
+          }, ensure_ascii=False).encode("utf-8")
 
           req = urllib.request.Request(
               "https://api.indexnow.org/indexnow",
@@ -99,18 +94,13 @@ jobs:
               headers={"Content-Type": "application/json; charset=utf-8"},
               method="POST",
           )
-
           try:
               with urllib.request.urlopen(req, timeout=30) as resp:
                   code = resp.getcode()
-                  body = resp.read().decode('utf-8', errors='replace')
-                  print(f"HTTP {code}: {body}")
-                  if code not in (200, 202):
-                      sys.exit(1)
-                  print("IndexNow submission succeeded")
+                  body = resp.read().decode("utf-8", errors="replace")
+                  print(f"HTTP {code} {body}")
+                  sys.exit(0 if code in (200, 202) else 1)
           except urllib.error.HTTPError as e:
-              code = e.code
-              body = e.read().decode('utf-8', errors='replace')
-              print(f"HTTP {code}: {body}")
+              print(f"HTTP {e.code} {e.read().decode('utf-8', errors='replace')}")
               sys.exit(1)
           PY
