@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "node scripts/indexnow-key.js && astro build",
     "preview": "astro preview",
     "clean": "rm -rf dist server.js",
     "lint": "tsc --noEmit"
