@@ -541,5 +541,11 @@
     "url": "https://www.nixegus.com/",
     "avatar": "https://www.google.com/s2/favicons?domain=www.nixegus.com&sz=128",
     "description": "专注攻防实战与技术研究的网络安全博客"
+  },
+  {
+    "name": "且听书吟",
+    "url": "https://yufan.me",
+    "avatar": "https://yufan.me/logo.svg",
+    "description": "诗与梦想的远方"
   }
 ]
