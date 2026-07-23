@@ -1,4 +1,4 @@
----
+﻿---
 title: "无需服务器，让文件在各个设备自由流转——LocalSend"
 published: 2026-07-23 17:44:34
 description: "跨设备传输文件不靠服务器！LocalSend 局域网直连，N100 小机器也能跑，鸿蒙卓易通可用，比 Python HTTP 服务器更省心。"
@@ -10,7 +10,7 @@ category: "技术"
 
 其实也有别的办法。比如我之前写了个 Python HTTP 局域网文件服务器，但每次还得开电脑——太懒了。
 
-于是翻了翻 GitHub，偶遇了一个神项目——**LocalSend**（跨平台局域网传输）。
+于是翻了翻 GitHub，偶遇了一个神项目——**LocalSend**（跨平台局域网文件传输）。
 
 ![image-20260723175018916](https://img.upxuu.com/images/2026/7/23/1784800220373_705.png)
 
