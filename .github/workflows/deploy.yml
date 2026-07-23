@@ -25,21 +25,6 @@ jobs:
 
       - run: pnpm install --no-frozen-lockfile
 
-      # IndexNow key must be public on the live site, but NOT stored in the public git repo.
-      # Write key file from secret at build time so dist/ includes it after deploy.
-      - name: Write IndexNow key file
-        env:
-          INDEXNOW_KEY: ${{ secrets.INDEXNOW_SECRET }}
-        run: |
-          # strip CR/LF/spaces from secret (filename cannot contain \n)
-          KEY=$(printf '%s' "${INDEXNOW_KEY:-}" | tr -d '\r\n' | xargs)
-          if [ -z "$KEY" ]; then
-            echo "INDEXNOW_SECRET not set — skip key file"
-            exit 0
-          fi
-          printf '%s' "$KEY" > "public/${KEY}.txt"
-          echo "Wrote public/${KEY}.txt"
-
       - run: pnpm build
 
       - name: Save commit SHA
