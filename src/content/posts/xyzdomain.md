@@ -1,7 +1,7 @@
 ---
 title: "最便宜的域名：xyz数字域名注册方法"
 published: 2026-05-10 11:00:00
-image: "https://img.upxuu.com/images/2026/5/10/1778388844407_935.png"
+image: "https://xu-1357447520.cos.ap-beijing.myqcloud.com/images/2026/5/10/1778388844407_935.png"
 description: "手把手教你以不到5元年的价格搞到一个好记得xyz域名"
 ---
 
@@ -21,7 +21,7 @@ description: "手把手教你以不到5元年的价格搞到一个好记得xyz�
 
 为什么选择这个呢 核心原因是它对于数字域名查询是真的友好
 
-![image-20260510160632255](https://img.upxuu.com/images/2026/5/10/1778400393545_497.png)
+![image-20260510160632255](https://xu-1357447520.cos.ap-beijing.myqcloud.com/images/2026/5/10/1778400393545_497.png)
 
 可以使用规则 可以使用类似于{3-6位顺子}{数字}{数字}的排列进行组合 6位的其实已经很少了
 
@@ -31,8 +31,8 @@ description: "手把手教你以不到5元年的价格搞到一个好记得xyz�
 
 spaceship差不多是最便宜的xyz了 而且主要是不用实名 非常方便
 
-![image-20260510161122538](https://img.upxuu.com/images/2026/5/10/1778400683110_561.png)
+![image-20260510161122538](https://xu-1357447520.cos.ap-beijing.myqcloud.com/images/2026/5/10/1778400683110_561.png)
 
 并且 他是支持支付宝的！
 
-![image-20260510161151366](https://img.upxuu.com/images/2026/5/10/1778400711894_842.png)
+![image-20260510161151366](https://xu-1357447520.cos.ap-beijing.myqcloud.com/images/2026/5/10/1778400711894_842.png)
