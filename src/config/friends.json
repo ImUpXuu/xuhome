@@ -566,5 +566,12 @@
     "url": "https://blog.xuioo.com/",
     "avatar": "https://www.google.com/s2/favicons?domain=blog.xuioo.com&sz=128",
     "description": "「纯粹祈愿皆成真」"
+  },
+  {
+    "name": "leorain",
+    "url": "https://www.leorain.cn",
+    "avatar": "https://www.leorain.cn/images/logo.png",
+    "description": "一个对技术和生活充满热爱的文艺型技术青年",
+    "rss": "https://www.leorain.cn/rss"
   }
 ]
