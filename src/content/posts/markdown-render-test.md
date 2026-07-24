@@ -239,7 +239,7 @@ list(fibonacci(10))
 
 ### 基础图片
 
-![Markdown Logo](https://markdown-here.com/img/icon256.png "Markdown Here Logo")
+![Markdown Logo](https://markdown-here.com/img/icon256.webp "Markdown Here Logo")
 
 ### 带尺寸的图片（HTML）
 
@@ -247,7 +247,7 @@ list(fibonacci(10))
 
 ### 图片链接
 
-[![Markdown Logo](https://markdown-here.com/img/icon256.png)](https://markdown-here.com)
+[![Markdown Logo](https://markdown-here.com/img/icon256.webp)](https://markdown-here.com)
 
 ---
 

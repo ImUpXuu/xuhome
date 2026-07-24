@@ -6,4 +6,4 @@ tags: []
 categories: []
 ---
 
-> \[caption id="" align="alignleft" width="3968"\]![选自上分卷2025 八上](https://f.xxu6.top/2427/IMG_20260125_123738.jpg) 上分卷2025 八上\[/caption\]
+> \[caption id="" align="alignleft" width="3968"\]![选自上分卷2025 八上](https://f.xxu6.top/2427/IMG_20260125_123738.webp) 上分卷2025 八上\[/caption\]
