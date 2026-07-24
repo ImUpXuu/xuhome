@@ -1,7 +1,7 @@
 ---
 title: "还在本地写博客？来试试基于worker的博客后台 零成本叫你打造一个不用服务器的后台"
 published: 2026-05-04 07:06:00
-image: "https://xu-1357447520.cos.ap-beijing.myqcloud.com/images/2026/5/4/20260503230406_418.png"
+image: "https://xu-1357447520.cos.ap-beijing.myqcloud.com/images/2026/5/4/20260503230406_418.webp"
 description: "- ✨ 支持三种编辑模式：即时渲染 (IR)、所见即所得 (WYSIWYG)、分屏预览 (SV)"
 category: "技术"
 ---
@@ -12,7 +12,7 @@ category: "技术"
 使用 Vditor 作为 Markdown 编辑器。
 
 ::github{repo="imupxuu/blog-admin-workers"}
-![image.png](https://xu-1357447520.cos.ap-beijing.myqcloud.com/images/2026/5/4/20260503230406_418.png)
+![image.png](https://xu-1357447520.cos.ap-beijing.myqcloud.com/images/2026/5/4/20260503230406_418.webp)
 
 ## 功能特性
 
@@ -24,11 +24,11 @@ category: "技术"
   - 按 `年/月/日/时间戳_随机数。扩展名` 结构存储
   - 递归获取所有子目录中的图片
   - crtl cv即可一键上传图片到图床
-    ![image.png](https://xu-1357447520.cos.ap-beijing.myqcloud.com/images/2026/5/4/20260503230451_869.png)
+    ![image.png](https://xu-1357447520.cos.ap-beijing.myqcloud.com/images/2026/5/4/20260503230451_869.webp)
 - 🤝 友链管理，在线编辑 GitHub 仓库中的友链配置
-  ![image.png](https://xu-1357447520.cos.ap-beijing.myqcloud.com/images/2026/5/4/20260503230535_598.png)
+  ![image.png](https://xu-1357447520.cos.ap-beijing.myqcloud.com/images/2026/5/4/20260503230535_598.webp)
 - 📅 时间轴筛选文章
-  ![img](https://xu-1357447520.cos.ap-beijing.myqcloud.com/images/2026/5/4/20260503230406_418.png)
+  ![img](https://xu-1357447520.cos.ap-beijing.myqcloud.com/images/2026/5/4/20260503230406_418.webp)
 - 🎨 多主题支持
 - 🔒 安全认证 + CAPTCHA 验证
 - 📱 移动端优化，智能固定布局
@@ -270,8 +270,8 @@ const PROXY_BASE = 'https://xu-1357447520.cos.ap-beijing.myqcloud.com/images/img
 ```json
 [
   {
-    "name": "1234567890_123.jpg",
-    "url": "https://xu-1357447520.cos.ap-beijing.myqcloud.com/images/2026/4/5/1234567890_123.jpg",
+    "name": "1234567890_123.webp",
+    "url": "https://xu-1357447520.cos.ap-beijing.myqcloud.com/images/2026/4/5/1234567890_123.webp",
     "date": "2026-4"
   }
 ]

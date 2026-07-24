@@ -4,7 +4,7 @@ published: 2026-06-06 15:00:00
 category: "技术"
 tags: ["Vercel", "Docker", "云原生"]
 description: "Vercel Sandbox 支持 Docker 不仅是功能更新，更是云计算范式转移的信号。深度分析为什么这件事意味着 Serverless 的终点和全栈平台的起点，以及它对开发者的真正价值。"
-image: "https://xu-1357447520.cos.ap-beijing.myqcloud.com/images/2026/6/6/1780716909043_939.png"
+image: "https://xu-1357447520.cos.ap-beijing.myqcloud.com/images/2026/6/6/1780716909043_939.webp"
 ---
 
 **本文由AI辅助生成**

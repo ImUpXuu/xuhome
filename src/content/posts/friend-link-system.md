@@ -17,7 +17,7 @@ category: "技术"
 ```yaml
 名称: UpXuu
 链接: https://upxuu.com
-头像: https://upxuu.com/images/me.jpg
+头像: https://upxuu.com/images/me.webp
 描述: 逐光而上
 ```
 
@@ -122,7 +122,7 @@ flowchart TB
 {
   "name": "xxx",
   "url": "https://xxx.com",
-  "avatar": "https://xxx.com/avatar.png",
+  "avatar": "https://xxx.com/avatar.webp",
   "description": "描述",
   "issue_id": 123
 }

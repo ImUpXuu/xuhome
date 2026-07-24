@@ -56,10 +56,10 @@ npm run dev
 raw_photos/           ← 你的原始照片放这里（不入库）
   ├── trip/            ← 一个相册 = 一个文件夹
   │   ├── meta.json    ← 相册标题、描述、密码等
-  │   ├── DSC001.jpg
-  │   ├── DSC002.jpg
+  │   ├── DSC001.webp
+  │   ├── DSC002.webp
   │   └── 上海/        ← 相册内子文件夹
-  │       ├── DSC010.jpg
+  │       ├── DSC010.webp
   │       └── VID_001.mp4
   └── daily/
       └── meta.json
@@ -85,11 +85,11 @@ gallery.config.json   ← 站点名称配置
 raw_photos/
   └── my_trip/           ← 相册 ID（URL 用，纯英文推荐）
       ├── meta.json      ← 可选，见下方
-      ├── beach.jpg
+      ├── beach.webp
       ├── sunset.mp4
       └── night/         ← 子文件夹
-          ├── party.jpg
-          └── cake.jpg
+          ├── party.webp
+          └── cake.webp
 ```
 
 运行 `npm run dev` 或 `npm run build:photos` 即可构建。
