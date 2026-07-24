@@ -560,5 +560,11 @@
     "avatar": "https://ragnote.top/Avatar.png",
     "description": "Life is code. I will debug it.",
     "rss": "https://api.ragnote.top/rss.xml"
+  },
+  {
+    "name": "Aimerting",
+    "url": "https://blog.xuioo.com/",
+    "avatar": "https://www.google.com/s2/favicons?domain=blog.xuioo.com&sz=128",
+    "description": "「纯粹祈愿皆成真」"
   }
 ]
