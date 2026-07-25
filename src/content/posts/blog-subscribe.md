@@ -1,7 +1,7 @@
 ---
 title: "基于 GitHub Issues 的博客更新订阅方案"
 published: 2026-05-10 00:00:00
-image: "https://img.ypxuu.com/images/2026/5/10/1778388844407_935.webp"
+image: "https://img.upxuu.com/images/2026/5/10/1778388844407_935.webp"
 description: "告别 RSS 被拦截和邮件滥用，用 GitHub Issues 实现零配置的博客更新通知"
 category: "技术"
 ---
@@ -41,7 +41,7 @@ RSS？邮件推送？第三方通知服务？这些方案各有问题。今天�
 1. 在博客页脚或欢迎弹窗点击 **"更新订阅"** 链接，跳转到 GitHub Issue
 2. 在 Issue 页面右上角点击 **Subscribe**（或评论任意内容自动订阅）
 
-![subscribe](https://img.ypxuu.com/images/2026/5/10/20260510092802_496.webp)
+![subscribe](https://img.upxuu.com/images/2026/5/10/20260510092802_496.webp)
 
 就这么简单，不需要注册任何额外账号，有 GitHub 账号就行。
 

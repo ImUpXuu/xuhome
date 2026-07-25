@@ -4,7 +4,7 @@ title: "我的中考第一站~石家庄信息中考纪实 一个关于我与老�
 published: 2026-05-15 23:11:00
 description: "我的中考第一站 信息！"
 category: "学习"
-image: "https://img.ypxuu.com/images/2026/5/16/20260516164028_481.webp"
+image: "https://img.upxuu.com/images/2026/5/16/20260516164028_481.webp"
 ---
 
 
@@ -25,14 +25,14 @@ image: "https://img.ypxuu.com/images/2026/5/16/20260516164028_481.webp"
 
 一次又一次的反馈：
 
-![image-20260515231448454](https://img.ypxuu.com/images/2026/5/15/1778858090022_122.webp)
+![image-20260515231448454](https://img.upxuu.com/images/2026/5/15/1778858090022_122.webp)
 
-![image-20260515231630559](https://img.ypxuu.com/images/2026/5/15/1778858191127_140.webp)
+![image-20260515231630559](https://img.upxuu.com/images/2026/5/15/1778858191127_140.webp)
 
 ## 02 那天那些事
 
 就这样 该中考了！
 
-![img](https://img.ypxuu.com/images/2026/5/16/20260516164028_481.webp)
+![img](https://img.upxuu.com/images/2026/5/16/20260516164028_481.webp)
 
 第一次有这么多老师送考 真的感觉像是真正的中考啊
