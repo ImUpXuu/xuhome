@@ -1,7 +1,7 @@
 ---
 title: "我的信息中考一模复盘：非常xx的数据分析题 使我的一分消失"
 published: 2026-05-01 00:00:00
-image: "https://xu-1357447520.cos.ap-beijing.myqcloud.com/images/2026/5/1/1777639970869_427.webp"
+image: "https://img.ypxuu.com/images/2026/5/1/1777639970869_427.webp"
 description: "4.30 记录我在石家庄初中信息中考市一模中的逆天错误"
 ---
 
@@ -13,16 +13,16 @@ description: "4.30 记录我在石家庄初中信息中考市一模中的逆天�
 
 我真的不敢不认真审题了！！！！
 
-![题目描述](https://xu-1357447520.cos.ap-beijing.myqcloud.com/images/2026/5/1/1777642753493_512.webp)
+![题目描述](https://img.ypxuu.com/images/2026/5/1/1777642753493_512.webp)
 
 复盘：大概是做的太快了吧
 
-![image-20260501214115103](https://xu-1357447520.cos.ap-beijing.myqcloud.com/images/2026/5/1/1777642875980_136.webp)
+![image-20260501214115103](https://img.ypxuu.com/images/2026/5/1/1777642875980_136.webp)
 
 这个物联网更是重量级 我们几乎都没有人全对 but!!!!我还tm错了个表格 直接下了95分 导致最后折分折到了9分 我已急哭
 
 看来必须要好好练了！！！！！！！1
 
-[image.png](https://xu-1357447520.cos.ap-beijing.myqcloud.com/images/2026/5/2/20260501231756_703.webp)!
+[image.png](https://img.ypxuu.com/images/2026/5/2/20260501231756_703.webp)!
 
-![image.png](https://xu-1357447520.cos.ap-beijing.myqcloud.com/images/2026/5/2/20260501231847_611.webp)
+![image.png](https://img.ypxuu.com/images/2026/5/2/20260501231847_611.webp)
