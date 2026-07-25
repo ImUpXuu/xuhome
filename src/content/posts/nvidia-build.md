@@ -25,15 +25,15 @@ NVIDIA Build 提供大量主流模型的**免费 API**，不需要绑卡，不�
 
 进入 [Try NVIDIA NIM APIs](https://build.nvidia.com/models?modal=signin)
 
-![image-20260524083927382](https://img.ypxuu.com/images/2026/5/24/1779583254619_996.webp) 这里输入邮箱即可
+![image-20260524083927382](https://img.upxuu.com/images/2026/5/24/1779583254619_996.webp) 这里输入邮箱即可
 
 ### 获取api key
 
-![image-20260524084255521](https://img.ypxuu.com/images/2026/5/24/1779583376271_531.webp)
+![image-20260524084255521](https://img.upxuu.com/images/2026/5/24/1779583376271_531.webp)
 
 右上角的头像 API keys 可以看到 每分钟请求40次 也是很够了
 
-![image-20260524084415587](https://img.ypxuu.com/images/2026/5/24/1779583456307_746.webp)
+![image-20260524084415587](https://img.upxuu.com/images/2026/5/24/1779583456307_746.webp)
 
 ## 02 零成本 GPU 实例
 
