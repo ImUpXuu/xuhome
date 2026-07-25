@@ -4,10 +4,10 @@ published: 2026-05-05 00:00:00
 category: "技术"
 ---
 
-![image-20260505220329914](https://xu-1357447520.cos.ap-beijing.myqcloud.com/images/2026/5/5/1777989811507_232.webp)
+![image-20260505220329914](https://img.ypxuu.com/images/2026/5/5/1777989811507_232.webp)
 
 嗯对 因为博主要努力准备中考了 所以打算找一个稳定的cf 优选ip 正好[MIFENG の 主页](https://imbee.top/) 有一个优选项目
 
-![image-20260505220549857](https://xu-1357447520.cos.ap-beijing.myqcloud.com/images/2026/5/5/1777989950452_783.webp)
+![image-20260505220549857](https://img.ypxuu.com/images/2026/5/5/1777989950452_783.webp)
 
 还是可以的

@@ -111,9 +111,9 @@ node convert_to_waline.js
 
 [Waline | Waline](https://waline.js.org/) 之所以选择它，主要还是感觉这个UI确实挺清新的，而且部署也很方便 并且还在更新当中
 
-![image-20260426194239589](https://xu-1357447520.cos.ap-beijing.myqcloud.com/images/2026/4/26/1777203760216_414.webp)
+![image-20260426194239589](https://img.ypxuu.com/images/2026/4/26/1777203760216_414.webp)
 
-![](https://xu-1357447520.cos.ap-beijing.myqcloud.com/images/2026/4/26/1777203800495_516.webp)
+![](https://img.ypxuu.com/images/2026/4/26/1777203800495_516.webp)
 
 我个人还是比较喜欢这种简洁的
 

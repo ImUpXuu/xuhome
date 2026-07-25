@@ -7,4 +7,4 @@ published: 2026-07-02 21:06:00
 
 终于 满分！！！！！！  感谢地理生物的历任老师 还有** 崔哥**
 
-![image.png](https://xu-1357447520.cos.ap-beijing.myqcloud.com/images/2026/7/2/20260702210849_862.webp)
+![image.png](https://img.ypxuu.com/images/2026/7/2/20260702210849_862.webp)
