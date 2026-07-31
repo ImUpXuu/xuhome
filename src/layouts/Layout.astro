@@ -4,7 +4,6 @@ import { infoConfig } from '../config/info';
 import { seoConfig } from '../config/seo';
 import { ClientRouter } from 'astro:transitions';
 import NavBar from '../components/NavBar.astro';
-import CustomCursor from '../components/CustomCursor.svelte';
 import WelcomeToast from '../components/WelcomeToast.astro';
 import { PageBanner } from '../components/PageBanner';
 import { execSync } from 'child_process';
@@ -247,7 +246,6 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
     <div id="bottom-loader" class="fixed bottom-0 left-0 w-full z-[111] pointer-events-none" style="transform: translateY(100%); transition: transform 0.3s ease;">
       <div class="h-[5px] bg-[#0284c7] border-t-2 border-[#0284c7] shadow-[0px_-2px_0px_0px_#f59e0b] w-0" style="transition: width 0.3s ease-out;"></div>
     </div>
-    <CustomCursor client:load />
     <WelcomeToast />                
     <div class="flex flex-col min-h-screen">
       <NavBar />
