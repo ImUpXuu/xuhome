@@ -22,6 +22,8 @@
 
   let searchQuery = '';
   let currentPage = 1;
+  let isLoadingPosts = false;
+  let loadFailed = false;
 
   // React to search queries sent from navbar
   onMount(() => {
@@ -48,6 +50,7 @@
     window.addEventListener('blog-search', handleGlobalSearch);
 
     if (dataUrl) {
+      isLoadingPosts = posts.length === 0;
       fetch(dataUrl)
         .then(res => res.ok ? res.json() : Promise.reject(new Error(`Failed to load ${dataUrl}`)))
         .then((loadedPosts: SearchablePost[]) => {
@@ -55,7 +58,13 @@
             posts = loadedPosts;
           }
         })
-        .catch(err => console.warn('[SearchablePosts] post data unavailable', err));
+        .catch(err => {
+          loadFailed = true;
+          console.warn('[SearchablePosts] post data unavailable', err);
+        })
+        .finally(() => {
+          isLoadingPosts = false;
+        });
     }
 
     return () => {
@@ -174,9 +183,13 @@
   </div>
 
   <div class="flex flex-col gap-4 sm:gap-6 md:gap-8 mt-2 sm:mt-1">
-    {#if displayedPosts.length === 0}
+    {#if isLoadingPosts}
       <div class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] p-12 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm text-center">
-        <p class="text-[#0284c7] font-black tracking-widest uppercase">{i18nConfig.search.noResults}</p>
+        <p class="text-[#0284c7] font-black tracking-widest uppercase">文章加载中...</p>
+      </div>
+    {:else if displayedPosts.length === 0}
+      <div class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] p-12 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm text-center">
+        <p class="text-[#0284c7] font-black tracking-widest uppercase">{loadFailed ? '文章数据加载失败' : i18nConfig.search.noResults}</p>
       </div>
     {/if}
 

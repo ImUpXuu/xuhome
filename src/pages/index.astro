@@ -3,7 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import { getProcessedPosts } from '../utils/postsFetcher';
 import HorizontalCategories from '../components/HorizontalCategories.astro';
 import LeftSidebar from '../components/LeftSidebar.astro';
-import PostsTimelineWidget from '../components/PostsTimelineWidget.astro';
+import PostsTimelineWidget from '../components/PostsTimelineWidget.svelte';
 import SearchablePosts from '../components/SearchablePosts.svelte';
 import { i18nConfig } from '../config/site';
 
@@ -32,7 +32,6 @@ const tags = Object.entries(tagMap)
   .map(([name, count]) => ({ name, count }))
   .sort((a, b) => b.count - a.count);
 
-const postListData = allPosts.map(p => ({ id: p.id, slug: p.slug, title: p.title, date: p.date, description: p.description, img: p.img, tags: p.tags, category: p.category }));
 ---
 
 <Layout 
@@ -43,12 +42,13 @@ const postListData = allPosts.map(p => ({ id: p.id, slug: p.slug, title: p.title
   <HorizontalCategories 
     categories={categories} 
     activeCategory={null} 
+    postsDataUrl="/posts-data.json"
   />
 
   <div class="flex flex-col xl:flex-row gap-4 sm:gap-6 xl:gap-8 items-start justify-center">
     {/* Center Articles Feed - FIRST in DOM for SEO */}
     <div class="w-full xl:flex-1 min-w-0 flex flex-col gap-4 order-1 xl:order-2">
-      <SearchablePosts posts={postListData.slice(0, 10)} dataUrl="/posts-data.json" client:idle />
+      <SearchablePosts posts={[]} dataUrl="/posts-data.json" client:idle />
     </div>
 
     {/* Left Sidebar - AFTER content in DOM, visually on left via order-1 */}
@@ -67,7 +67,7 @@ const postListData = allPosts.map(p => ({ id: p.id, slug: p.slug, title: p.title
       style="animation-delay: 0.1s"
       transition:name="sidebar-right"
     >
-      <PostsTimelineWidget posts={allPosts.slice(0, 60)} />
+      <PostsTimelineWidget posts={[]} dataUrl="/posts-data.json" client:idle />
     </aside>
   </div>
 </Layout>

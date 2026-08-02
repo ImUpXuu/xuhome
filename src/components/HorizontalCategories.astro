@@ -1,15 +1,13 @@
 ---
-import { getProcessedPosts } from '../utils/postsFetcher';
 import CalendarWidget from './CalendarWidget.svelte';
 
 interface Props {
   categories: { name: string; count: number }[];
   activeCategory: string | null;
+  postsDataUrl?: string;
 }
 
-const { categories, activeCategory } = Astro.props;
-const allPosts = await getProcessedPosts();
-const calendarPosts = allPosts.map(p => ({ slug: p.slug, title: p.title, date: p.date, description: p.description }));
+const { categories, activeCategory, postsDataUrl = '' } = Astro.props;
 ---
 
 <script>
@@ -106,7 +104,7 @@ const calendarPosts = allPosts.map(p => ({ slug: p.slug, title: p.title, date: p
             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
-        <CalendarWidget posts={calendarPosts} client:idle />
+        <CalendarWidget posts={[]} dataUrl={postsDataUrl} client:idle />
       </div>
     </dialog>
   </>
