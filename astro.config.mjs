@@ -13,6 +13,9 @@ import { remarkGithubCard } from './src/plugins/remark-github-card.mjs';
 export default defineConfig({
   output: 'static',
   outDir: 'dist',
+  build: {
+    inlineStylesheets: 'never',
+  },
   integrations: [react(), svelte(), mdx()],
   site: 'https://upxuu.com',
   redirects: {
