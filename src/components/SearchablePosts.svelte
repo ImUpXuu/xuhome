@@ -17,6 +17,7 @@
   }
 
   export let posts: SearchablePost[] = [];
+  export let dataUrl: string = '';
   export let postsPerPage: number = 10;
 
   let searchQuery = '';
@@ -45,6 +46,18 @@
     };
 
     window.addEventListener('blog-search', handleGlobalSearch);
+
+    if (dataUrl) {
+      fetch(dataUrl)
+        .then(res => res.ok ? res.json() : Promise.reject(new Error(`Failed to load ${dataUrl}`)))
+        .then((loadedPosts: SearchablePost[]) => {
+          if (Array.isArray(loadedPosts) && loadedPosts.length > 0) {
+            posts = loadedPosts;
+          }
+        })
+        .catch(err => console.warn('[SearchablePosts] post data unavailable', err));
+    }
+
     return () => {
       window.removeEventListener('blog-search', handleGlobalSearch);
     };

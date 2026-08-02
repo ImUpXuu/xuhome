@@ -11,22 +11,23 @@ interface CalendarPost {
 }
 
 export interface Props {
-  posts: CalendarPost[];
+  posts?: CalendarPost[];
   tags: { name: string; count: number }[];
   activeTag?: string | null;
   showCalendar?: boolean;
   showTags?: boolean;
   showAuthor?: boolean;
+  postsDataUrl?: string;
 }
 
-const { posts, tags, activeTag = null, showCalendar = true, showTags = true, showAuthor = true } = Astro.props;
+const { posts = [], tags, activeTag = null, showCalendar = true, showTags = true, showAuthor = true, postsDataUrl = '' } = Astro.props;
 ---
 
 {
   showAuthor && <AuthorCard />
 }
 {
-  showCalendar && <CalendarWidget posts={posts} client:idle />
+  showCalendar && <CalendarWidget posts={posts} dataUrl={postsDataUrl} client:idle />
 }
 {
   showTags && <SidebarTags tags={tags} activeTag={activeTag} />
