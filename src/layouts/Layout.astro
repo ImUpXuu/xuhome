@@ -204,7 +204,7 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
   </script>
   <ClientRouter />
 </head>
-  <body data-bg-count={bgCount} class="dark:bg-slate-900 text-slate-900 dark:text-slate-100 selection:bg-[#fde68a] selection:text-[#0284c7]">
+  <body data-bg-count={bgCount} data-is-article={isArticle ? "true" : "false"} class="dark:bg-slate-900 text-slate-900 dark:text-slate-100 selection:bg-[#fde68a] selection:text-[#0284c7]">
     {/* Persistent full-page bg layer (survives View Transitions) */}
     <div
       id="site-bg"
@@ -252,8 +252,8 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
       
       {!isAboutPage ? (
         <div 
-          class="min-h-screen dark:bg-slate-900 py-2 px-2 sm:py-6 sm:px-6 md:py-8 md:px-8 font-sans transition-all duration-300"
-          style={{ backgroundImage: "radial-gradient(#0284c70d 2px, transparent 2px)", backgroundSize: "24px 24px" }}
+          class={`min-h-screen dark:bg-slate-900 py-2 px-2 sm:py-6 sm:px-6 md:py-8 md:px-8 font-sans transition-all duration-300 ${isArticle ? "article-paper-shell" : ""}`}
+          style={!isArticle ? { backgroundImage: "radial-gradient(#0284c70d 2px, transparent 2px)", backgroundSize: "24px 24px" } : undefined}
         >
           <div class="max-w-[1440px] w-full mx-auto flex flex-col gap-3 sm:gap-6">
             <PageBanner 
@@ -353,6 +353,15 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
     function applySiteBg() {
       var el = document.getElementById('site-bg');
       if (!el) return;
+      var loader = document.getElementById('site-bg-loader');
+      var isArticle = document.body && document.body.dataset.isArticle === 'true';
+      if (isArticle) {
+        el.style.backgroundImage = 'none';
+        el.removeAttribute('data-bg-url');
+        el.classList.add('is-ready');
+        if (loader) loader.classList.remove('is-on');
+        return;
+      }
       var bgCount = Number(document.body && document.body.dataset.bgCount) || 0;
       if (bgCount <= 0) return;
 
@@ -369,7 +378,6 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
       }
 
       var url = 'https://img.upxuu.com/images/2026/7/' + i + '.webp';
-      var loader = document.getElementById('site-bg-loader');
       var attach = isMobile ? 'scroll' : 'fixed';
 
       function paintBg() {

@@ -77,13 +77,14 @@ const relatedPosts = (() => {
   description={post.description}
   image={post.img}
   post={post}
+  isArticle={true}
 >
   <div class="w-full flex flex-col gap-6 relative">
     <div class="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start w-full">
       
       {/* Main post body center panel */}
       <div class="flex-1 min-w-0 w-full space-y-8 lg:order-2">
-        <article class="bg-[#faf8f5] dark:bg-slate-800 border-4 border-[#0284c7] p-4 sm:p-6 md:p-10 shadow-[6px_6px_0px_0px_#0284c7] sm:shadow-[8px_8px_0px_0px_#0284c7] rounded-sm animate-card-entrance opacity-0">
+        <article class="article-paper bg-[#efe1bf] dark:bg-slate-800 border-4 border-[#0284c7] p-4 sm:p-6 md:p-10 shadow-[6px_6px_0px_0px_#0284c7] sm:shadow-[8px_8px_0px_0px_#0284c7] rounded-sm animate-card-entrance opacity-0">
           <div class="border-b-4 border-[#0284c7] pb-6 mb-8 text-center md:text-left flex flex-col md:flex-row justify-between items-center gap-4">
             <div>
               <h1 class="text-xl sm:text-2xl md:text-3xl font-black text-[#0284c7] mb-4 leading-tight">{post.title}</h1>
@@ -125,7 +126,7 @@ const relatedPosts = (() => {
 
         {/* Copyright Metadata block */}
         <div 
-          class="bg-[#faf8f5] dark:bg-slate-800 border-4 border-[#0284c7] p-5 md:p-7 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm relative transition-all duration-300 group/copyright animate-card-entrance opacity-0"
+          class="bg-[#efe1bf] dark:bg-slate-800 border-4 border-[#0284c7] p-5 md:p-7 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm relative transition-all duration-300 group/copyright animate-card-entrance opacity-0"
           id="post-copyright-card"
           style="animation-delay: 0.1s"
         >
@@ -178,7 +179,7 @@ const relatedPosts = (() => {
         {/* Related Posts */}
         {relatedPosts.length > 0 && (
           <div class="animate-card-entrance opacity-0" style="animation-delay: 0.08s">
-            <div class="bg-[#faf8f5] dark:bg-slate-800 border-4 border-[#0284c7] p-4 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm">
+            <div class="bg-[#efe1bf] dark:bg-slate-800 border-4 border-[#0284c7] p-4 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm">
               <h3 class="font-black text-[#0284c7] text-sm mb-3 flex items-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 100 20 10 10 0 000-20z" />
@@ -189,7 +190,7 @@ const relatedPosts = (() => {
                 {relatedPosts.map(rp => (
                   <a
                     href={`/posts/${encodeURIComponent(rp.slug)}`}
-                    class="group bg-[#faf8f5] dark:bg-slate-700 border-2 border-[#0284c7] px-3 py-2 rounded-sm shadow-[3px_3px_0px_0px_#0284c7] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all duration-200 inline-flex items-center gap-2"
+                    class="group bg-[#efe1bf] dark:bg-slate-700 border-2 border-[#0284c7] px-3 py-2 rounded-sm shadow-[3px_3px_0px_0px_#0284c7] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all duration-200 inline-flex items-center gap-2"
                   >
                     <span class="text-xs font-black text-slate-700 dark:text-slate-200 group-hover:text-[#0ea5e9] transition-colors whitespace-nowrap">{rp.title}</span>
                     <span class="text-[9px] font-bold text-slate-400 font-mono shrink-0">{rp.date}</span>
@@ -205,7 +206,7 @@ const relatedPosts = (() => {
           {prevPost ? (
             <a 
               href={`/posts/${encodeURIComponent(prevPost.slug)}`}
-              class="flex-1 min-w-0 bg-[#faf8f5] hover:bg-[#f5f1eb] border-3 border-[#0284c7] px-4 py-3 rounded-sm shadow-[4px_4px_0px_0px_#0284c7] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all duration-200 flex items-center gap-3 group text-left"
+              class="flex-1 min-w-0 bg-[#efe1bf] hover:bg-[#e8d4a6] border-3 border-[#0284c7] px-4 py-3 rounded-sm shadow-[4px_4px_0px_0px_#0284c7] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all duration-200 flex items-center gap-3 group text-left"
             >
               <span class="text-[#0ea5e9] group-hover:-translate-x-1 transition-transform shrink-0 font-extrabold">❮</span>
               <div class="min-w-0 flex-1">
@@ -222,7 +223,7 @@ const relatedPosts = (() => {
           {nextPost ? (
             <a 
               href={`/posts/${encodeURIComponent(nextPost.slug)}`}
-              class="flex-1 min-w-0 bg-[#faf8f5] hover:bg-[#f5f1eb] border-3 border-[#0284c7] px-4 py-3 rounded-sm shadow-[4px_4px_0px_0px_#0284c7] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all duration-200 flex items-center justify-between gap-3 group text-right"
+              class="flex-1 min-w-0 bg-[#efe1bf] hover:bg-[#e8d4a6] border-3 border-[#0284c7] px-4 py-3 rounded-sm shadow-[4px_4px_0px_0px_#0284c7] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all duration-200 flex items-center justify-between gap-3 group text-right"
             >
               <div class="min-w-0 flex-1">
                 <div class="text-[9px] uppercase font-black tracking-widest text-slate-400 mb-0.5">{i18nConfig.post.nextPost}</div>
@@ -248,7 +249,7 @@ const relatedPosts = (() => {
 
       {/* Right Desktop Sticky TOC Side Menu */}
       <div class="hidden lg:block w-[260px] shrink-0 sticky top-[100px] z-10 self-start animate-card-entrance opacity-0 lg:order-3" style="animation-delay: 0.1s">
-        <div class="bg-[#faf8f5] dark:bg-slate-800 border-4 border-[#0284c7] p-5 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm max-h-[calc(100vh-120px)] flex flex-col">
+        <div class="bg-[#efe1bf] dark:bg-slate-800 border-4 border-[#0284c7] p-5 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm max-h-[calc(100vh-120px)] flex flex-col">
           <h3 class="font-black text-[#0284c7] text-lg mb-4 flex items-center gap-2 shrink-0">
             {i18nConfig.post.tocTitle}
           </h3>
