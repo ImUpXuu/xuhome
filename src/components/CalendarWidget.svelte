@@ -9,10 +9,29 @@
   }
 
   export let posts: CalendarPost[] = [];
+  export let dataUrl: string = '';
 
   let currentDate = new Date();
   let selectedDate: Date | null = null;
   let isPickerOpen = false;
+
+  onMount(() => {
+    if (!dataUrl) return;
+
+    fetch(dataUrl)
+      .then(res => res.ok ? res.json() : Promise.reject(new Error(`Failed to load ${dataUrl}`)))
+      .then((loadedPosts: CalendarPost[]) => {
+        if (Array.isArray(loadedPosts)) {
+          posts = loadedPosts.map(post => ({
+            slug: post.slug,
+            title: post.title,
+            date: post.date,
+            description: post.description,
+          }));
+        }
+      })
+      .catch(err => console.warn('[CalendarWidget] post data unavailable', err));
+  });
 
   $: currentYear = currentDate.getFullYear();
   $: currentMonth = currentDate.getMonth();
