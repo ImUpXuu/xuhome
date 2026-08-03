@@ -3,7 +3,7 @@ title: "Markdown 渲染测试文档"
 date: "2026-06-04"
 description: "本文档用于全面测试 Markdown 渲染器的各项功能，确保排版和代码高亮正常运行。"
 img: "https://picsum.photos/seed/markdown-test/800/400"
-tags: ["测试", "Markdown"]
+tags: ["学习"]
 category: "开发日志"
 ---
 

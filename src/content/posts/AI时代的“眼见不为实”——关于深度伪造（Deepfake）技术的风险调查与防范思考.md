@@ -3,7 +3,7 @@ title: AI时代的“眼见不为实”——关于深度伪造（Deepfake）技
 published: 2026-01-12 14:54:34
 slug: aiarticle
 tags:
-  - ai
+  - AI
   - 活动
 categories:
   - '2427'

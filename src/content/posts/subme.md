@@ -2,9 +2,7 @@
 title: 如何订阅本站通过邮箱 快速获取最新文章！
 published: 2026-05-10 21:00:00
 description: 如何订阅本站通过邮箱 快速获取最新文章！无需额外注册账号
-tags:
-  - 订阅
-  - GitHub Issues
+tags: ["工具"]
 category: 技术
 draft: false
 lang: zh-cn

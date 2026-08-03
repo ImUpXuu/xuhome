@@ -3,7 +3,7 @@ title: "元宝神操作！免费部署 OpenClaw，秒变永久免费服务器？
 published: 2026-03-30 00:00:00
 image: "https://img.upxuu.com/images/img_1775141479284_image.webp"
 description: "腾讯元宝推出重磅福利，可免费部署 OpenClaw！本文手把手教你通过 zerotier 内网穿透，将元宝 Bot 变身为一台可用的轻量云服务器，含 1Panel 安装、远程连接全流程。"
-tags: ["折腾"]
+tags: ["AI", "折腾"]
 category: "技术"
 ---
 

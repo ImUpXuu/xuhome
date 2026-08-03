@@ -3,7 +3,7 @@ title: 假期将尽，再更博客
 published: 2026-04-06
 description: '清明假期随笔，清明最后一天了，更新点东西'
 image: ''
-tags: [日常，随笔]
+tags: ["生活", "随笔"]
 category: 随笔
 draft: false 
 ---

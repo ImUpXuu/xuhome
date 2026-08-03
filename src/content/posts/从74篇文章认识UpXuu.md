@@ -2,8 +2,7 @@
 title: 从 74 篇文章认识 UpXuu
 published: 2026-05-24 22:00:00
 slug: about-upxuu-from-74-posts
-tags:
-  - 随笔
+tags: ["随笔"]
 categories:
   - myself
 ---
