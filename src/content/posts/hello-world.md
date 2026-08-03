@@ -3,7 +3,7 @@ title: "我的第一篇博客文章"
 date: "2026-06-01"
 description: "这是把动态网站扩展为博客架构后的第一篇文章。测试Markdown渲染能力以及侧边栏的目录。"
 img: "https://picsum.photos/seed/post1/800/400"
-tags: ["博客", "Astro", "前端"]
+tags: ["博客", "技术"]
 category: "随便写写"
 ---
 

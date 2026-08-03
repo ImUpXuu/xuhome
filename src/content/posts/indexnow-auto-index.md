@@ -3,7 +3,7 @@ title: 给博客接入 IndexNow + Bing 自动索引
 published: 2026-05-03
 description: 通过 GitHub Actions 工作流，在文章更新时自动通知 Bing 爬取新内容，再也不用手动去 Bing Webmaster 提交了。
 image: ''
-tags: [工具,博客,SEO,Github Action]
+tags: ["工具", "博客"]
 category: 技术
 draft: false
 ---

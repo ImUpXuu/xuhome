@@ -3,7 +3,7 @@ title: 关于本站更改版权许可协议的声明
 published: 2026-05-30
 description: '本站即日起将博客文章的版权许可协议由 CC BY-NC-ND 4.0 变更为 All Rights Reserved（ARR），转载必须联系 me@upxuu.com。'
 image: ''
-tags: [公告]
+tags: ["公告"]
 category: ''
 draft: false 
 lang: ''
