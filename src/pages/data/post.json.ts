@@ -19,6 +19,13 @@ function excerpt(raw: string, max = 100): string {
   return plain.length <= max ? plain : plain.slice(0, max);
 }
 
+/** 把 date 转成 ISO 时间字符串（解析失败则返回空串） */
+function toISO(date: string): string {
+  if (!date || date === '未知时间') return '';
+  const d = new Date(date);
+  return isNaN(d.getTime()) ? '' : d.toISOString();
+}
+
 export async function GET() {
   const posts = await getProcessedPosts();
   const talks = await getProcessedTalks();
@@ -27,6 +34,8 @@ export async function GET() {
     type: 'post',
     title: p.title,
     url: `${siteConfig.url}/posts/${encodeURIComponent(p.slug)}`,
+    date: p.date,               // 发布时间（YYYY-MM-DD HH:MM:SS）
+    dateISO: toISO(p.date),      // ISO 时间
     description: p.description,
     excerpt: excerpt(p.content, 100),
   }));
@@ -35,6 +44,8 @@ export async function GET() {
     type: 'talk',
     title: t.title,
     url: `${siteConfig.url}/talk/${encodeURIComponent(t.slug)}`,
+    date: t.date,                // 发布时间
+    dateISO: toISO(t.date),      // ISO 时间
     description: excerpt(t.content, 150),
     excerpt: excerpt(t.content, 100),
   }));
