@@ -8,6 +8,7 @@ import remarkGfm from 'remark-gfm';
 import rehypeKatex from 'rehype-katex';
 import { remarkAdmonitions } from './src/plugins/remark-admonitions.mjs';
 import { remarkGithubCard } from './src/plugins/remark-github-card.mjs';
+import { rehypeShiftHeadings } from './src/plugins/rehype-shift-headings.mjs';
 
 // https://astro.build/config
 export default defineConfig({
@@ -26,7 +27,7 @@ export default defineConfig({
   },
   markdown: {
     remarkPlugins: [remarkGfm, remarkMath, remarkAdmonitions, remarkGithubCard],
-    rehypePlugins: [rehypeKatex],
+    rehypePlugins: [rehypeKatex, rehypeShiftHeadings],
   },
   vite: {
     plugins: [tailwindcss()],
