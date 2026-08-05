@@ -591,5 +591,12 @@
     "url": "https://blog.liuhangyv.top",
     "avatar": "https://www.google.com/s2/favicons?domain=blog.liuhangyv.top&sz=128",
     "description": "AI技术分享 × 行业动态 × 创新实践"
+  },
+  {
+    "name": "风·墨",
+    "url": "https://Vind.ink",
+    "description": "风舞弦，墨凝影",
+    "avatar": "https://Vind.ink/icon.png",
+    "rss": "https://Vind.ink/feed/"
   }
 ]
