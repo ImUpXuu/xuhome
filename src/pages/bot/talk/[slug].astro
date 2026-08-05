@@ -1,6 +1,6 @@
 ---
 import { getProcessedTalks } from '../../../utils/postsFetcher';
-import { siteConfig } from '../../../config/site';
+import { siteConfig, seoConfig } from '../../../config/site';
 
 export async function getStaticPaths() {
   const talks = await getProcessedTalks();
@@ -13,7 +13,8 @@ export async function getStaticPaths() {
 const { talk } = Astro.props;
 
 const canonicalURL = `${siteConfig.url}/talk/${encodeURIComponent(talk.slug)}`;
-const pageTitle = talk.title && talk.title !== '日常动态' ? talk.title : (talk.date || '说说');
+const baseTitle = talk.title && talk.title !== '日常动态' ? talk.title : (talk.date || '说说');
+const pageTitle = `${baseTitle}${seoConfig.titleTemplate}`;
 const pageDescription = (talk.content || '')
   .replace(/!\[.*?\]\(.*?\)/g, '')
   .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
@@ -55,6 +56,7 @@ const images = extractImages(talk.content || '');
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content={siteConfig.title} />
     <meta property="og:locale" content="zh-CN" />
+    {talk.date && <meta property="article:published_time" content={talk.date} />}
     {images[0] && <meta property="og:image" content={images[0]} />}
   </head>
   <body>

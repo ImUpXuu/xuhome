@@ -12,7 +12,7 @@ const isTalkPage = pathname === '/talks' || pathname.startsWith('/talks/');
 const isPostPage = pathname === '/' || pathname.startsWith('/page/') || pathname.startsWith('/posts/') || pathname.startsWith('/category/') || pathname.startsWith('/tag/');
 const isAboutPage = pathname === '/about';
 const isFriendsPage = pathname === '/friends' || pathname === '/links';
-const isArchivePage = pathname === '/archive';
+const isArchivePage = pathname === '/posts';
 ---
 
 <div class="fixed top-0 left-0 right-0 z-[100] bg-white dark:bg-slate-800 border-b-4 border-[#0284c7] px-3 py-2 sm:px-6 sm:py-3 shadow-[0px_4px_0px_0px_rgba(30,58,138,0.1)] dark:shadow-[0px_4px_0px_0px_rgba(2,132,199,0.2)]" transition:name="navbar" transition:persist>

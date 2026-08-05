@@ -1,0 +1,64 @@
+---
+import { getProcessedTalks } from '../../../utils/postsFetcher';
+import { siteConfig, seoConfig, i18nConfig } from '../../../config/site';
+
+const allTalks = await getProcessedTalks();
+
+const pageTitle = `${i18nConfig.talks.title}${seoConfig.titleTemplate}`;
+const pageDescription = i18nConfig.talks.description;
+const canonicalURL = `${siteConfig.url}/talks`;
+
+function stripMarkdown(raw: string): string {
+  return (raw || '')
+    .replace(/!\[.*?\]\(.*?\)/g, '')
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
+    .replace(/[#*`_~>|]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDescription} />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="canonical" href={canonicalURL} />
+
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDescription} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={siteConfig.title} />
+    <meta property="og:locale" content="zh-CN" />
+  </head>
+  <body>
+    <header>
+      <h1>{i18nConfig.talks.title}</h1>
+      <p>{pageDescription}</p>
+      <p><a href={`${siteConfig.url}/`}>返回首页</a></p>
+    </header>
+
+    <main>
+      <ul>
+        {allTalks.map(t => {
+          const excerpt = stripMarkdown(t.content).slice(0, 100);
+          return (
+            <li>
+              {t.date && <time>{t.date}</time>} -
+              <a href={`${siteConfig.url}/talk/${encodeURIComponent(t.slug)}`}>{t.title || t.date}</a>
+              {excerpt && <p>{excerpt}</p>}
+            </li>
+          );
+        })}
+      </ul>
+    </main>
+
+    <footer>
+      <p>© {new Date().getFullYear()} {siteConfig.title}</p>
+    </footer>
+  </body>
+</html>
