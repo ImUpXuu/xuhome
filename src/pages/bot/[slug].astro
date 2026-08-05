@@ -2,7 +2,7 @@
 import { render } from 'astro:content';
 import { getCollection } from 'astro:content';
 import { getProcessedPosts } from '../../utils/postsFetcher';
-import { siteConfig } from '../../config/site';
+import { siteConfig, seoConfig } from '../../config/site';
 
 export async function getStaticPaths() {
   const posts = await getProcessedPosts();
@@ -15,7 +15,9 @@ export async function getStaticPaths() {
 const { post } = Astro.props;
 
 const canonicalURL = `${siteConfig.url}/posts/${encodeURIComponent(post.slug)}`;
-const pageTitle = post.title || '无标题文章';
+const pageTitle = post.title
+  ? `${post.title}${seoConfig.titleTemplate}`
+  : `${siteConfig.title} - ${siteConfig.subtitle.split(' / ')[0]}`;
 const pageDescription = post.description || '';
 
 const rawPosts = await getCollection('posts');
@@ -41,6 +43,7 @@ const { Content } = articleEntry ? await render(articleEntry) : { Content: () =>
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content={siteConfig.title} />
     <meta property="og:locale" content="zh-CN" />
+    {post.dateISO && <meta property="article:published_time" content={post.dateISO} />}
     {post.img && <meta property="og:image" content={post.img} />}
 
     <meta name="twitter:card" content="summary_large_image" />

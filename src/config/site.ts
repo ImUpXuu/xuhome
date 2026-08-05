@@ -108,7 +108,7 @@ export const navConfig: {
     { name: "说说", href: "/talks" },
     { name: "友链", href: "/friends" },
     { name: "关于", href: "/about" },
-    { name: "归档", href: "/archive" },
+    { name: "归档", href: "/posts" },
     { name: "统计", href: "/stats" },
     { name: "标签", href: "/tags" },
   ],
@@ -116,7 +116,7 @@ export const navConfig: {
   mobileMore: [
     { name: "友链", href: "/friends" },
     { name: "关于", href: "/about" },
-    { name: "归档页面", href: "/archive" },
+    { name: "归档页面", href: "/posts" },
     { name: "网站统计", href: "/stats" },
     { name: "标签", href: "/tags" },
   ],
