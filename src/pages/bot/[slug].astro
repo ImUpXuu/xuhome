@@ -1,0 +1,80 @@
+---
+import { render } from 'astro:content';
+import { getCollection } from 'astro:content';
+import { getProcessedPosts } from '../../utils/postsFetcher';
+import { siteConfig } from '../../config/site';
+
+export async function getStaticPaths() {
+  const posts = await getProcessedPosts();
+  return posts.map(post => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+
+const canonicalURL = `${siteConfig.url}/posts/${encodeURIComponent(post.slug)}`;
+const pageTitle = post.title || '无标题文章';
+const pageDescription = post.description || '';
+
+const rawPosts = await getCollection('posts');
+const articleEntry = rawPosts.find(p => (p.slug || p.id) === post.slug);
+const { Content } = articleEntry ? await render(articleEntry) : { Content: () => null };
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDescription} />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="canonical" href={canonicalURL} />
+
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDescription} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content={siteConfig.title} />
+    <meta property="og:locale" content="zh-CN" />
+    {post.img && <meta property="og:image" content={post.img} />}
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={pageDescription} />
+    {post.img && <meta name="twitter:image" content={post.img} />}
+
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": pageTitle,
+      "description": pageDescription,
+      "image": post.img || undefined,
+      "datePublished": post.dateISO || post.date,
+      "author": {
+        "@type": "Person",
+        "name": siteConfig.author,
+        "url": siteConfig.url
+      },
+      "publisher": {
+        "@type": "Person",
+        "name": siteConfig.author,
+        "image": siteConfig.avatar
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": canonicalURL
+      }
+    })} />
+  </head>
+  <body>
+    <article>
+      <h1>{pageTitle}</h1>
+      {post.date && <p>发布于 {post.date}</p>}
+      <Content />
+      <p><a href={canonicalURL}>前往 upxuu.com 阅读完整版本（含交互功能）</a></p>
+    </article>
+  </body>
+</html>
