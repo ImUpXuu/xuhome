@@ -19,7 +19,9 @@ const pageTitle = post.title || '无标题文章';
 const pageDescription = post.description || '';
 
 const rawPosts = await getCollection('posts');
-const articleEntry = rawPosts.find(p => (p.slug || p.id) === post.slug);
+const articleEntry = rawPosts.find(p =>
+  p.id === post.id || (p.slug || p.id) === post.slug
+);
 const { Content } = articleEntry ? await render(articleEntry) : { Content: () => null };
 ---
 
