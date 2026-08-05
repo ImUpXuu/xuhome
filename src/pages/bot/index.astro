@@ -1,13 +1,29 @@
 ---
 import { getProcessedPosts, getProcessedTalks } from '../../utils/postsFetcher';
-import { siteConfig, seoConfig } from '../../config/site';
+import { siteConfig, seoConfig, i18nConfig } from '../../config/site';
 
 const posts = await getProcessedPosts();
 const talks = await getProcessedTalks();
 
-const pageTitle = `${siteConfig.title} - ${siteConfig.subtitle.split(' / ')[0]}`;
-const pageDescription = seoConfig.defaultDescription;
+// 与真人首页标题一致
+const pageTitle = `${i18nConfig.home.title}${seoConfig.titleTemplate}`;
+const pageDescription = i18nConfig.home.description;
 const canonicalURL = `${siteConfig.url}/`;
+
+// 按年月分组（与归档页一致）
+const archiveMap: Record<string, typeof posts> = {};
+posts.forEach(post => {
+  const dateStr = post.date || '';
+  const match = dateStr.match(/^(\d{4}-\d{2})/);
+  let key = '未知';
+  if (match) {
+    const [year, month] = match[1].split('-');
+    key = `${year}年${month}月`;
+  }
+  if (!archiveMap[key]) archiveMap[key] = [];
+  archiveMap[key].push(post);
+});
+const archiveKeys = Object.keys(archiveMap).sort((a, b) => b.localeCompare(a));
 ---
 
 <!doctype html>
@@ -42,10 +58,21 @@ const canonicalURL = `${siteConfig.url}/`;
       "description": siteConfig.description,
       "inLanguage": "zh-CN"
     })} />
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      "name": "最新文章",
+      "itemListElement": posts.slice(0, 100).map((p, i) => ({
+        "@type": "ListItem",
+        "position": i + 1,
+        "url": `${siteConfig.url}/posts/${encodeURIComponent(p.slug)}`,
+        "name": p.title
+      }))
+    })} />
   </head>
   <body>
     <header>
-      <h1>{siteConfig.title} - {siteConfig.subtitle.split(' / ')[0]}</h1>
+      <h1>{i18nConfig.home.title}</h1>
       <p>{pageDescription}</p>
     </header>
 
@@ -60,30 +87,37 @@ const canonicalURL = `${siteConfig.url}/`;
       </ul>
     </nav>
 
-    <section>
-      <h2>最新文章（共 {posts.length} 篇）</h2>
-      <ul>
-        {posts.slice(0, 30).map(p => (
-          <li>
-            {p.date && <time>{p.date}</time>} -
-            <a href={`${siteConfig.url}/posts/${encodeURIComponent(p.slug)}`}>{p.title}</a>
-            {p.description && <p>{p.description}</p>}
-          </li>
+    <main>
+      <section>
+        <h2>全部文章（共 {posts.length} 篇）</h2>
+        {archiveKeys.map(key => (
+          <div>
+            <h3>{key}（{archiveMap[key].length} 篇）</h3>
+            <ul>
+              {archiveMap[key].map(p => (
+                <li>
+                  {p.date && <time>{p.date}</time>} -
+                  <a href={`${siteConfig.url}/posts/${encodeURIComponent(p.slug)}`}>{p.title}</a>
+                  {p.description && <p>{p.description}</p>}
+                </li>
+              ))}
+            </ul>
+          </div>
         ))}
-      </ul>
-    </section>
+      </section>
 
-    <section>
-      <h2>最新说说（共 {talks.length} 条）</h2>
-      <ul>
-        {talks.slice(0, 20).map(t => (
-          <li>
-            {t.date && <time>{t.date}</time>} -
-            <a href={`${siteConfig.url}/talk/${encodeURIComponent(t.slug)}`}>{t.title || t.date}</a>
-          </li>
-        ))}
-      </ul>
-    </section>
+      <section>
+        <h2>最新说说（共 {talks.length} 条）</h2>
+        <ul>
+          {talks.slice(0, 20).map(t => (
+            <li>
+              {t.date && <time>{t.date}</time>} -
+              <a href={`${siteConfig.url}/talk/${encodeURIComponent(t.slug)}`}>{t.title || t.date}</a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    </main>
 
     <footer>
       <p>© {new Date().getFullYear()} {siteConfig.title}</p>
