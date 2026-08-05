@@ -1,6 +1,6 @@
 ---
-import { getProcessedTalks } from '../../utils/postsFetcher';
-import { siteConfig } from '../../config/site';
+import { getProcessedTalks } from '../../../utils/postsFetcher';
+import { siteConfig } from '../../../config/site';
 
 export async function getStaticPaths() {
   const talks = await getProcessedTalks();
