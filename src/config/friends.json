@@ -604,5 +604,11 @@
     "url": "https://upxuu.com",
     "description": "逐光而上",
     "avatar": "https://upxuu.com/images/me.jpg"
+  },
+  {
+    "name": "Brandon's Blog",
+    "url": "https://blog.oopss.top",
+    "avatar": "https://www.google.com/s2/favicons?domain=blog.oopss.top&sz=128",
+    "description": "分享个人技术经验与生活日常"
   }
 ]
