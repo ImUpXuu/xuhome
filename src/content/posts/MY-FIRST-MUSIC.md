@@ -9,6 +9,8 @@ category: "生活"
 
 来都来了，就先听听我做的歌吧！
 
+[晨星予你 - upxuu - 单曲 - 网易云音乐](https://music.163.com/#/song?id=3417149108)  [Sunlight on Still Water - upxuu - 单曲 - 网易云音乐](https://music.163.com/#/song?id=3416696044)
+
 <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=3416696044&auto=1&height=66"></iframe>
 
 <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=3417149108&auto=1&height=66"></iframe>
