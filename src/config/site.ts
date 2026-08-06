@@ -64,8 +64,8 @@ export const siteConfig = {
   assets: {
     /** 文章列表缺省封面图（为空时使用随机图） */
     defaultPostCover: "",
-    /** 随机图服务地址（当文章无封面时 fallback 使用） */
-    randomImage: "https://bing.img.run/rand.php",
+    /** 随机图服务地址（当文章无封面时 fallback 使用，返回 JSON 需解析 url 字段） */
+    randomImage: "https://bing.biturl.top/",
     /** 站点 favicon 路径（相对站点根目录） */
     favicon: "/images/me.jpg",
   },
