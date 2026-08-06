@@ -11,9 +11,9 @@ category: "生活"
 
 [晨星予你 - upxuu - 单曲 - 网易云音乐](https://music.163.com/#/song?id=3417149108)  [Sunlight on Still Water - upxuu - 单曲 - 网易云音乐](https://music.163.com/#/song?id=3416696044)
 
-<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=3416696044&auto=1&height=66"></iframe>
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="https://music.163.com/outchain/player?type=2&id=3416696044&auto=0&height=66"></iframe>
 
-<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=3417149108&auto=1&height=66"></iframe>
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="https://music.163.com/outchain/player?type=2&id=3417149108&auto=0&height=66"></iframe>
 
 ### 前情提要
 
@@ -43,6 +43,6 @@ category: "生活"
 
 顺带提一嘴，如果你觉得我的音乐很好听，阔以收藏一下吗 蟹蟹~
 
-<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=3416696044&auto=1&height=66"></iframe>
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="https://music.163.com/outchain/player?type=2&id=3416696044&auto=0&height=66"></iframe>
 
-<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=3417149108&auto=1&height=66"></iframe>
+<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="https://music.163.com/outchain/player?type=2&id=3417149108&auto=0&height=66"></iframe>
