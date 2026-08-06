@@ -30,7 +30,18 @@ export default defineConfig({
     rehypePlugins: [rehypeKatex, rehypeShiftHeadings],
   },
   vite: {
-    plugins: [tailwindcss()],
+    plugins: [tailwindcss({
+      lightningcss: {
+        targets: {
+          chrome: 49,
+          android: 49,
+          ios_saf: 10,
+          safari: 10,
+          firefox: 68,
+          edge: 79,
+        },
+      },
+    })],
     ssr: {
       noExternal: ['@fancyapps/ui', '@google/generative-ai']
     }
