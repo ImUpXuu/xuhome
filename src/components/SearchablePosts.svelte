@@ -25,6 +25,34 @@
   let isLoadingPosts = false;
   let loadFailed = false;
 
+  const randomImageApi = siteConfig.assets.randomImage;
+  const placeholderImg = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="190" height="120"%3E%3C/svg%3E';
+
+  let randomImageUrl = '';
+
+  async function loadRandomImage(img: HTMLImageElement): Promise<void> {
+    if (randomImageUrl) {
+      img.src = randomImageUrl;
+      return;
+    }
+    try {
+      const res = await fetch(randomImageApi, { referrerPolicy: 'no-referrer' });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      randomImageUrl = data?.url || '';
+      if (randomImageUrl) img.src = randomImageUrl;
+    } catch (err) {
+      console.warn('[SearchablePosts] failed to load random image', err);
+    }
+  }
+
+  function randomImgAction(node: HTMLImageElement, needsRandom: boolean): { destroy?: () => void } {
+    if (needsRandom && node.src === placeholderImg) {
+      loadRandomImage(node);
+    }
+    return {};
+  }
+
   // React to search queries sent from navbar
   onMount(() => {
     // Populate from URL query parameter
@@ -237,7 +265,7 @@
           </div>
           
           <a href={`/posts/${encodeURIComponent(post.slug)}`} class="w-[100px] sm:w-[130px] md:w-[190px] shrink-0 border-l-4 border-[#0284c7] relative bg-[#fde68a] flex items-center justify-center overflow-hidden">
-            <img src={post.img || siteConfig.assets.randomImage} alt={post.title} width="190" height="120" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" referrerpolicy="no-referrer" on:error={(e) => { const fallback = siteConfig.assets.randomImage; if ((e.currentTarget as HTMLImageElement).src !== fallback) { (e.currentTarget as HTMLImageElement).src = fallback; } }} />
+            <img src={post.img || placeholderImg} alt={post.title} width="190" height="120" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" referrerpolicy="no-referrer" use:randomImgAction={!post.img} on:error={(e) => { const imgEl = e.currentTarget as HTMLImageElement; if (imgEl.src !== placeholderImg && imgEl.src !== randomImageUrl) { imgEl.src = placeholderImg; loadRandomImage(imgEl); } }} />
           </a>
         </div>
       </article>

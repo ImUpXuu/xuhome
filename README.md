@@ -231,7 +231,7 @@ export const siteConfig = {
   },
   assets: {
     defaultPostCover: "",
-    randomImage: "https://bing.img.run/rand.php",
+    randomImage: "https://bing.biturl.top/",
     favicon: "/images/me.jpg",
   },
   startTime: new Date(2025, 8, 30, 20, 20, 0), // 页脚运行计时器起点
