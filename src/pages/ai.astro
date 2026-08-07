@@ -1,0 +1,43 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { siteConfig } from '../config/site';
+
+const AI_URL = 'https://ai.upxuu.com/';
+---
+
+<Layout
+  title="UpXuu AI · 文章问答助手"
+  description={`基于 ${siteConfig.title} 博客文章的 AI 问答助手，可以回答关于 upxuu 的任何问题`}
+>
+  <div class="max-w-[1440px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8">
+    <div class="max-w-6xl mx-auto">
+      {/* AI 标题栏 */}
+      <div class="bg-white border-4 border-[#0284c7] p-3 sm:p-4 shadow-[6px_6px_0px_0px_#f59e0b] rounded-sm mb-4">
+        <div class="flex items-center gap-3 flex-wrap">
+          <span class="w-9 h-9 flex items-center justify-center bg-[#0ea5e9] border-2 border-[#0284c7] font-black text-white text-lg shadow-[2px_2px_0px_0px_#0284c7] rounded-sm">🤖</span>
+          <div>
+            <h1 class="text-lg sm:text-xl font-black text-[#0284c7] tracking-wider">UpXuu AI</h1>
+            <p class="text-xs sm:text-sm text-slate-500 font-medium">基于博客文章的 AI 问答助手 · 后端由 UpXuu AI 提供</p>
+          </div>
+          <span class="ml-auto text-[10px] sm:text-xs font-mono border-2 border-[#0284c7] px-2 py-1 bg-[#e0f2fe] text-[#0284c7] rounded-sm hidden sm:inline-block">Powered by upxuu-ai</span>
+        </div>
+      </div>
+
+      {/* AI 聊天 iframe */}
+      <div class="bg-white border-4 border-[#0284c7] shadow-[8px_8px_0px_0px_#0ea5e9] rounded-sm overflow-hidden">
+        <iframe
+          src={AI_URL}
+          title="UpXuu AI 文章问答"
+          class="w-full block"
+          style="height: calc(100vh - 220px); min-height: 520px;"
+          loading="lazy"
+          allow="clipboard-write"
+        />
+      </div>
+
+      <p class="text-center text-xs text-slate-400 mt-4 font-medium">
+        AI 回答基于 upxuu 的博客文章，可能不够准确，仅供参考。也可以在 <a href={AI_URL} target="_blank" rel="noopener noreferrer" class="text-[#0284c7] hover:text-[#0ea5e9] border-b border-dashed border-[#0284c7]">ai.upxuu.com</a> 全屏使用。
+      </p>
+    </div>
+  </div>
+</Layout>
