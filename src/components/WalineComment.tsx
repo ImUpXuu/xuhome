@@ -3,63 +3,51 @@ import { init } from '@waline/client';
 import '@waline/client/waline.css';
 import { siteConfig } from '../config/site';
 
-// Cap CAPTCHA 配置（官方方式：cap-widget 自动注入 cap-token）
+// Cap CAPTCHA 配置（官方 CDN 方式）
 const CAP_API_ENDPOINT = 'https://cap.upxuu.com/28ba1b0591/';
-// 本地静态资源（国内可加载，避免 jsdelivr 被墙）
-const CAP_WIDGET_SRC = '/cap/cap.min.js';
-const CAP_WASM_URL = '/cap/cap_wasm_bg.wasm';
+const CAP_SCRIPT_SRC = 'https://cdn.jsdelivr.net/npm/cap-widget@0.1.56';
+const CAP_FLOATING_SRC = 'https://cdn.jsdelivr.net/npm/cap-widget@0.1.56/cap-floating.min.js';
 
 export function WalineComment() {
   const containerRef = useRef<HTMLDivElement>(null);
   const walineInstanceConfig = useRef<any>(null);
-  const capTokenRef = useRef<string | null>(null);
 
   useEffect(() => {
-    // 指定 wasm 从本地加载（cap.min.js 默认从 jsdelivr 拉 wasm，国内会失败）
-    try {
-      (window as any).CAP_CUSTOM_WASM_URL = CAP_WASM_URL;
-    } catch {
-      // ignore
-    }
-
-    // 动态加载本地 cap-widget（定义 cap-widget 自定义元素）
-    const loadCap = (): Promise<void> =>
+    // 加载官方 cap-widget + 浮动模式脚本（CDN）
+    const loadScript = (src: string): Promise<void> =>
       new Promise((resolve) => {
-        if (window.customElements?.get('cap-widget')) return resolve();
         const s = document.createElement('script');
-        s.src = CAP_WIDGET_SRC;
+        s.src = src;
         s.onload = () => resolve();
         s.onerror = () => resolve();
         document.head.appendChild(s);
       });
 
-    // 官方方式：在 Waline 渲染完成后，往评论区注入 cap-widget
-    // cap-widget 在表单内会自动注入 hidden 的 cap-token 输入框
+    // 在 Waline 渲染完成后，往评论区注入 cap-widget + 给提交按钮加浮动属性
     const setupCap = async () => {
-      await loadCap();
+      await loadScript(CAP_SCRIPT_SRC);
+      await loadScript(CAP_FLOATING_SRC);
       const container = containerRef.current;
       if (!container) return;
       // 等 Waline 渲染出表单
       const waitForForm = setInterval(() => {
         const form = container.querySelector('form');
-        if (form) {
+        const submitBtn = form?.querySelector('[type="submit"]');
+        if (form && submitBtn) {
           clearInterval(waitForForm);
-          // 在表单提交按钮前插入 cap-widget
+          // 1. 注入 cap-widget（隐藏，作浮动目标）
           if (!form.querySelector('cap-widget')) {
             const widget = document.createElement('cap-widget');
+            widget.id = 'cap-floating-widget';
             widget.setAttribute('data-cap-api-endpoint', CAP_API_ENDPOINT);
-            widget.setAttribute('data-cap-hidden-field-name', 'cap-token');
-            const submitBtn = form.querySelector('[type="submit"]');
-            if (submitBtn) {
-              form.insertBefore(widget, submitBtn);
-            } else {
-              form.appendChild(widget);
-            }
+            form.appendChild(widget);
           }
+          // 2. 给提交按钮加浮动触发属性
+          submitBtn.setAttribute('data-cap-floating', '#cap-floating-widget');
+          submitBtn.setAttribute('data-cap-floating-position', 'bottom');
         }
       }, 300);
-      // 5 秒后停止等待（避免内存泄漏）
-      setTimeout(() => clearInterval(waitForForm), 5000);
+      setTimeout(() => clearInterval(waitForForm), 8000);
     };
 
     if (containerRef.current) {
