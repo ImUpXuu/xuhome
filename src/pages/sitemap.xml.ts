@@ -28,7 +28,6 @@ export async function GET(context: any) {
     { loc: `${domain}/friends`, priority: '0.6', changefreq: 'monthly' },
     { loc: `${domain}/links`, priority: '0.6', changefreq: 'monthly' },
     { loc: `${domain}/posts`, priority: '0.5', changefreq: 'weekly' },
-    { loc: `${domain}/stats`, priority: '0.3', changefreq: 'monthly' },
     { loc: `${domain}/privacy`, priority: '0.2', changefreq: 'monthly' },
   ];
 
