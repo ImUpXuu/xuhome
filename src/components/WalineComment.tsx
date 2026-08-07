@@ -3,23 +3,98 @@ import { init } from '@waline/client';
 import '@waline/client/waline.css';
 import { siteConfig } from '../config/site';
 
+// Cap CAPTCHA 配置
+const CAP_API_ENDPOINT = 'https://cap.upxuu.com/28ba1b0591/';
+const CAP_WIDGET_SRC = '/vendor/cap.min.js';
+
+interface CapInstance {
+  solve(): Promise<{ token: string }>;
+  reset(): void;
+}
+declare global {
+  interface Window {
+    Cap?: new (opts: { apiEndpoint: string }) => CapInstance;
+  }
+}
+
 export function WalineComment() {
   const containerRef = useRef<HTMLDivElement>(null);
   const walineInstanceConfig = useRef<any>(null);
+  const capInstanceRef = useRef<CapInstance | null>(null);
+  const restoringFetchRef = useRef<boolean>(false);
 
   useEffect(() => {
     const handleRejection = (e: PromiseRejectionEvent) => {
       if (e.reason && e.reason.message === 'Failed to fetch') {
-        // Prevent Waline fetch errors from bubbling up to the error overlay
         e.preventDefault();
         console.warn('Waline fetch failed globally intercepted.');
       }
     };
     window.addEventListener('unhandledrejection', handleRejection);
 
+    // 动态加载 cap.min.js
+    const loadCap = (): Promise<void> =>
+      new Promise((resolve) => {
+        if (window.Cap) return resolve();
+        const s = document.createElement('script');
+        s.src = CAP_WIDGET_SRC;
+        s.onload = () => resolve();
+        s.onerror = () => resolve();
+        document.head.appendChild(s);
+      });
+
+    const solveCap = async (): Promise<string> => {
+      if (!window.Cap) {
+        await loadCap();
+      }
+      if (!window.Cap) throw new Error('Cap widget 加载失败');
+      if (!capInstanceRef.current) {
+        capInstanceRef.current = new window.Cap({ apiEndpoint: CAP_API_ENDPOINT });
+      }
+      const { token } = await capInstanceRef.current.solve();
+      return token;
+    };
+
+    // 拦截 fetch：给 Waline 的评论提交注入 cap-token
+    const originalFetch = window.fetch.bind(window);
+    let capInstalled = false;
+    const installCapInterceptor = () => {
+      if (capInstalled || restoringFetchRef.current) return;
+      capInstalled = true;
+      window.fetch = async (input: any, initOpts?: any) => {
+        try {
+          const url = typeof input === 'string' ? input : input?.url || '';
+          const isCommentPost =
+            url.includes('/comment') &&
+            (!initOpts || !initOpts.method || initOpts.method.toUpperCase() === 'POST');
+          if (isCommentPost && !restoringFetchRef.current) {
+            let body = initOpts?.body;
+            try {
+              if (typeof body === 'string') {
+                const parsed = JSON.parse(body);
+                if (parsed && typeof parsed === 'object' && !parsed['cap-token']) {
+                  const token = await solveCap();
+                  parsed['cap-token'] = token;
+                  body = JSON.stringify(parsed);
+                  initOpts = { ...initOpts, body };
+                }
+              }
+            } catch {
+              // body 非 JSON 或解析失败，跳过注入
+            }
+          }
+        } catch (err) {
+          console.warn('Cap interceptor error:', err);
+        }
+        return originalFetch(input, initOpts);
+      };
+    };
+    installCapInterceptor();
+
     if (containerRef.current) {
       let p = window.location.pathname.replace(/\/+/g, '/');
       if (!p.endsWith('/')) p += '/';
+      loadCap();
       walineInstanceConfig.current = init({
         el: containerRef.current,
         serverURL: siteConfig.waline.serverURL,
@@ -32,6 +107,15 @@ export function WalineComment() {
     }
 
     return () => {
+      // 恢复 fetch，避免影响其他组件
+      if (capInstalled && !restoringFetchRef.current) {
+        restoringFetchRef.current = true;
+        try {
+          window.fetch = originalFetch;
+        } catch {
+          // ignore
+        }
+      }
       walineInstanceConfig.current?.destroy();
       window.removeEventListener('unhandledrejection', handleRejection);
     };
