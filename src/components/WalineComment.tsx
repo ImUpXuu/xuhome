@@ -3,52 +3,19 @@ import { init } from '@waline/client';
 import '@waline/client/waline.css';
 import { siteConfig } from '../config/site';
 
-// Cap CAPTCHA 配置（官方 CDN 方式）
-const CAP_API_ENDPOINT = 'https://cap.upxuu.com/28ba1b0591/';
-const CAP_SCRIPT_SRC = 'https://cdn.jsdelivr.net/npm/cap-widget@0.1.56';
-const CAP_FLOATING_SRC = 'https://cdn.jsdelivr.net/npm/cap-widget@0.1.56/cap-floating.min.js';
-
 export function WalineComment() {
   const containerRef = useRef<HTMLDivElement>(null);
   const walineInstanceConfig = useRef<any>(null);
 
   useEffect(() => {
-    // 加载官方 cap-widget + 浮动模式脚本（CDN）
-    const loadScript = (src: string): Promise<void> =>
-      new Promise((resolve) => {
-        const s = document.createElement('script');
-        s.src = src;
-        s.onload = () => resolve();
-        s.onerror = () => resolve();
-        document.head.appendChild(s);
-      });
-
-    // 在 Waline 渲染完成后，往评论区注入 cap-widget + 给提交按钮加浮动属性
-    const setupCap = async () => {
-      await loadScript(CAP_SCRIPT_SRC);
-      await loadScript(CAP_FLOATING_SRC);
-      const container = containerRef.current;
-      if (!container) return;
-      // 等 Waline 渲染出表单
-      const waitForForm = setInterval(() => {
-        const form = container.querySelector('form');
-        const submitBtn = form?.querySelector('[type="submit"]');
-        if (form && submitBtn) {
-          clearInterval(waitForForm);
-          // 1. 注入 cap-widget（隐藏，作浮动目标）
-          if (!form.querySelector('cap-widget')) {
-            const widget = document.createElement('cap-widget');
-            widget.id = 'cap-floating-widget';
-            widget.setAttribute('data-cap-api-endpoint', CAP_API_ENDPOINT);
-            form.appendChild(widget);
-          }
-          // 2. 给提交按钮加浮动触发属性
-          submitBtn.setAttribute('data-cap-floating', '#cap-floating-widget');
-          submitBtn.setAttribute('data-cap-floating-position', 'bottom');
-        }
-      }, 300);
-      setTimeout(() => clearInterval(waitForForm), 8000);
+    const handleRejection = (e: PromiseRejectionEvent) => {
+      if (e.reason && e.reason.message === 'Failed to fetch') {
+        // Prevent Waline fetch errors from bubbling up to the error overlay
+        e.preventDefault();
+        console.warn('Waline fetch failed globally intercepted.');
+      }
     };
+    window.addEventListener('unhandledrejection', handleRejection);
 
     if (containerRef.current) {
       let p = window.location.pathname.replace(/\/+/g, '/');
@@ -62,11 +29,11 @@ export function WalineComment() {
         imageUploader: false,
         placeholder: '写几个字证明你来过~',
       });
-      setupCap();
     }
 
     return () => {
       walineInstanceConfig.current?.destroy();
+      window.removeEventListener('unhandledrejection', handleRejection);
     };
   }, []);
 
