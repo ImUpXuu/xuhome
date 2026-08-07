@@ -1,0 +1,21 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { siteConfig } from '../../config/site';
+---
+
+<Layout
+  title="申请友链 · UpXuu AI"
+  description={`通过 AI 向导申请与 ${siteConfig.title} 交换友链`}
+  hideFooter={true}
+>
+  <div class="w-full overflow-hidden" style="height: calc(100vh - var(--navbar-height) - 60px);">
+    <iframe
+      src="https://ai.upxuu.com/friend"
+      title="UpXuu AI 友链申请"
+      class="w-full h-full block"
+      loading="lazy"
+      allow="clipboard-write"
+      style="border: 0;"
+    />
+  </div>
+</Layout>
