@@ -610,5 +610,11 @@
     "url": "https://blog.oopss.top",
     "avatar": "https://www.google.com/s2/favicons?domain=blog.oopss.top&sz=128",
     "description": "分享个人技术经验与生活日常"
+  },
+  {
+    "name": "小曦的园子",
+    "url": "https://xiaoxi.ac.cn",
+    "description": "打理好自己的小园子",
+    "avatar": "https://img.xiaoxi.ac.cn/logo.png"
   }
 ]
