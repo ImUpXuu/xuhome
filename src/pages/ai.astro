@@ -1,8 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { siteConfig } from '../config/site';
-
-const AI_URL = 'https://ai.upxuu.com/';
+import { AiChatPage } from '../components/AiChatPage';
 ---
 
 <Layout
@@ -23,20 +22,11 @@ const AI_URL = 'https://ai.upxuu.com/';
         </div>
       </div>
 
-      {/* AI 聊天 iframe */}
-      <div class="bg-white border-4 border-[#0284c7] shadow-[8px_8px_0px_0px_#0ea5e9] rounded-sm overflow-hidden">
-        <iframe
-          src={AI_URL}
-          title="UpXuu AI 文章问答"
-          class="w-full block"
-          style="height: calc(100vh - 220px); min-height: 520px;"
-          loading="lazy"
-          allow="clipboard-write"
-        />
-      </div>
+      {/* AI 聊天（React 组件，直接调 upxuu-ai API，无 iframe） */}
+      <AiChatPage client:load />
 
       <p class="text-center text-xs text-slate-400 mt-4 font-medium">
-        AI 回答基于 upxuu 的博客文章，可能不够准确，仅供参考。也可以在 <a href={AI_URL} target="_blank" rel="noopener noreferrer" class="text-[#0284c7] hover:text-[#0ea5e9] border-b border-dashed border-[#0284c7]">ai.upxuu.com</a> 全屏使用。
+        AI 回答基于 upxuu 的博客文章，可能不够准确，仅供参考。
       </p>
     </div>
   </div>
