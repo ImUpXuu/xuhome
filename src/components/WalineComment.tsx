@@ -3,83 +3,60 @@ import { init } from '@waline/client';
 import '@waline/client/waline.css';
 import { siteConfig } from '../config/site';
 
-// Cap CAPTCHA 配置（CDN 加载官方组件）
+// Cap CAPTCHA 配置（官方方式：cap-widget 自动注入 cap-token）
 const CAP_API_ENDPOINT = 'https://cap.upxuu.com/28ba1b0591/';
-const CAP_WIDGET_SRC = 'https://cdn.jsdelivr.net/npm/cap-widget@0.1.56';
+// 本地静态资源（国内可加载，避免 jsdelivr 被墙）
+const CAP_WIDGET_SRC = '/cap/cap.min.js';
 
 export function WalineComment() {
   const containerRef = useRef<HTMLDivElement>(null);
   const walineInstanceConfig = useRef<any>(null);
   const capTokenRef = useRef<string | null>(null);
-  const restoringFetchRef = useRef<boolean>(false);
 
   useEffect(() => {
-    const handleRejection = (e: PromiseRejectionEvent) => {
-      if (e.reason && e.reason.message === 'Failed to fetch') {
-        e.preventDefault();
-        console.warn('Waline fetch failed globally intercepted.');
-      }
-    };
-    window.addEventListener('unhandledrejection', handleRejection);
-
-    // 动态加载 cap-widget（ESM module script）
+    // 动态加载本地 cap-widget（定义 cap-widget 自定义元素）
     const loadCap = (): Promise<void> =>
       new Promise((resolve) => {
         if (window.customElements?.get('cap-widget')) return resolve();
         const s = document.createElement('script');
-        s.type = 'module';
         s.src = CAP_WIDGET_SRC;
         s.onload = () => resolve();
         s.onerror = () => resolve();
         document.head.appendChild(s);
       });
 
-    // 拦截 fetch：给 Waline 评论提交注入 cap-token
-    const originalFetch = window.fetch.bind(window);
-    let capInstalled = false;
-    const installCapInterceptor = () => {
-      if (capInstalled || restoringFetchRef.current) return;
-      capInstalled = true;
-      window.fetch = async (input: any, initOpts?: any) => {
-        try {
-          const url = typeof input === 'string' ? input : input?.url || '';
-          const isCommentPost =
-            url.includes('/comment') &&
-            (!initOpts || !initOpts.method || initOpts.method.toUpperCase() === 'POST');
-          if (isCommentPost && !restoringFetchRef.current) {
-            let body = initOpts?.body;
-            try {
-              if (typeof body === 'string') {
-                const parsed = JSON.parse(body);
-                if (parsed && typeof parsed === 'object') {
-                  if (!capTokenRef.current) {
-                    // 无 token，阻止提交
-                    return new Response(
-                      JSON.stringify({ errno: 403, errmsg: '请先完成人机验证' }),
-                      { status: 403, headers: { 'Content-Type': 'application/json' } },
-                    );
-                  }
-                  parsed['cap-token'] = capTokenRef.current;
-                  body = JSON.stringify(parsed);
-                  initOpts = { ...initOpts, body };
-                }
-              }
-            } catch {
-              // 忽略
+    // 官方方式：在 Waline 渲染完成后，往评论区注入 cap-widget
+    // cap-widget 在表单内会自动注入 hidden 的 cap-token 输入框
+    const setupCap = async () => {
+      await loadCap();
+      const container = containerRef.current;
+      if (!container) return;
+      // 等 Waline 渲染出表单
+      const waitForForm = setInterval(() => {
+        const form = container.querySelector('form');
+        if (form) {
+          clearInterval(waitForForm);
+          // 在表单提交按钮前插入 cap-widget
+          if (!form.querySelector('cap-widget')) {
+            const widget = document.createElement('cap-widget');
+            widget.setAttribute('data-cap-api-endpoint', CAP_API_ENDPOINT);
+            widget.setAttribute('data-cap-hidden-field-name', 'cap-token');
+            const submitBtn = form.querySelector('[type="submit"]');
+            if (submitBtn) {
+              form.insertBefore(widget, submitBtn);
+            } else {
+              form.appendChild(widget);
             }
           }
-        } catch (err) {
-          console.warn('Cap interceptor error:', err);
         }
-        return originalFetch(input, initOpts);
-      };
+      }, 300);
+      // 5 秒后停止等待（避免内存泄漏）
+      setTimeout(() => clearInterval(waitForForm), 5000);
     };
-    installCapInterceptor();
 
     if (containerRef.current) {
       let p = window.location.pathname.replace(/\/+/g, '/');
       if (!p.endsWith('/')) p += '/';
-      loadCap();
       walineInstanceConfig.current = init({
         el: containerRef.current,
         serverURL: siteConfig.waline.serverURL,
@@ -89,34 +66,13 @@ export function WalineComment() {
         imageUploader: false,
         placeholder: '写几个字证明你来过~',
       });
+      setupCap();
     }
 
     return () => {
-      if (capInstalled && !restoringFetchRef.current) {
-        restoringFetchRef.current = true;
-        try {
-          window.fetch = originalFetch;
-        } catch {
-          // ignore
-        }
-      }
       walineInstanceConfig.current?.destroy();
-      window.removeEventListener('unhandledrejection', handleRejection);
     };
   }, []);
-
-  // 监听 cap-widget 的 solve 事件，把 token 存起来
-  const handleCapSolve = (e: any) => {
-    capTokenRef.current = e.detail?.token || null;
-    console.log('Cap solved');
-  };
-  const handleCapReset = () => {
-    capTokenRef.current = null;
-  };
-  const handleCapError = (e: any) => {
-    console.error('Cap error:', e.detail?.message);
-    capTokenRef.current = null;
-  };
 
   return (
     <div className="waline-custom-theme bg-white dark:bg-slate-800 border-4 border-[#0284c7] p-3 sm:p-5 shadow-[6px_6px_0px_0px_#0284c7] sm:shadow-[8px_8px_0px_0px_#0284c7] rounded-sm mt-8">
@@ -125,14 +81,6 @@ export function WalineComment() {
         <div className="absolute -top-2 -right-3 w-4 h-4 bg-[#fde68a] border-2 border-[#0284c7] shadow-[2px_2px_0px_0px_#0284c7] rounded-sm transform rotate-12"></div>
       </h3>
       <div ref={containerRef} />
-      <div className="my-3">
-        <cap-widget
-          data-cap-api-endpoint={CAP_API_ENDPOINT}
-          onsolve={handleCapSolve}
-          onreset={handleCapReset}
-          onerror={handleCapError}
-        />
-      </div>
       <p className="text-[10px] sm:text-xs text-slate-400 dark:text-slate-500 text-center mt-3 font-medium">
         （因不知名因素，海外IP暂时无法加载评论，请关闭代理）
       </p>
