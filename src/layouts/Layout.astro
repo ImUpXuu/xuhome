@@ -22,6 +22,7 @@ interface Props {
   postsCount?: number;
   isAboutPage?: boolean;
   isArticle?: boolean;
+  hideFooter?: boolean;
 }
 
 const {
@@ -35,6 +36,7 @@ const {
   postsCount = 0,
   isAboutPage = false,
   isArticle = false,
+  hideFooter = false,
 } = Astro.props;
 
 const pageTitle = title 
@@ -296,6 +298,7 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
         </main>
       )}
       
+      {!hideFooter && (
       <footer class="w-full dark:bg-slate-900 border-t-4 border-[#0284c7] select-none">
         <div class="max-w-5xl mx-auto px-4 py-5 text-center text-xs font-mono text-slate-500 dark:text-slate-400 leading-relaxed space-y-2">
           <div class="font-bold">
@@ -341,6 +344,7 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
           </div>
         </div>
       </footer>
+      )}
     </div>
 
 <script is:inline>
