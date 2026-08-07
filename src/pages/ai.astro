@@ -8,24 +8,22 @@ import { AiChatPage } from '../components/AiChatPage';
   title="UpXuu AI · 文章问答助手"
   description={`基于 ${siteConfig.title} 博客文章的 AI 问答助手，可以回答关于 upxuu 的任何问题`}
 >
-  <div class="max-w-[1440px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8">
-    <div class="max-w-6xl mx-auto">
-      {/* AI 标题栏 */}
-      <div class="bg-white border-4 border-[#0284c7] p-3 sm:p-4 shadow-[6px_6px_0px_0px_#f59e0b] rounded-sm mb-4">
-        <div class="flex items-center gap-3 flex-wrap">
-          <span class="w-9 h-9 flex items-center justify-center bg-[#0ea5e9] border-2 border-[#0284c7] font-black text-white text-lg shadow-[2px_2px_0px_0px_#0284c7] rounded-sm">🤖</span>
-          <div>
-            <h1 class="text-lg sm:text-xl font-black text-[#0284c7] tracking-wider">UpXuu AI</h1>
-            <p class="text-xs sm:text-sm text-slate-500 font-medium">基于博客文章的 AI 问答助手 · 后端由 UpXuu AI 提供</p>
-          </div>
-          <span class="ml-auto text-[10px] sm:text-xs font-mono border-2 border-[#0284c7] px-2 py-1 bg-[#e0f2fe] text-[#0284c7] rounded-sm hidden sm:inline-block">Powered by upxuu-ai</span>
+  <div class="max-w-[1440px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10">
+    <div class="max-w-5xl mx-auto">
+      {/* AI 标题栏（轻盈风） */}
+      <div class="mb-5 flex items-center gap-3 px-1">
+        <span class="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#0ea5e9] to-[#6366f1] flex items-center justify-center text-white text-xl font-black shadow-[0_4px_16px_rgba(99,102,241,0.3)]">✦</span>
+        <div>
+          <h1 class="text-xl sm:text-2xl font-bold text-slate-800 tracking-tight">UpXuu AI</h1>
+          <p class="text-xs sm:text-sm text-slate-400">基于博客文章的问答助手 · 后端由 UpXuu AI 提供</p>
         </div>
+        <span class="ml-auto text-[10px] font-mono text-slate-300 hidden sm:inline-block">upxuu-ai</span>
       </div>
 
-      {/* AI 聊天（React 组件，直接调 upxuu-ai API，无 iframe） */}
+      {/* AI 聊天（React 组件，直接调 upxuu-ai API） */}
       <AiChatPage client:load />
 
-      <p class="text-center text-xs text-slate-400 mt-4 font-medium">
+      <p class="text-center text-[11px] text-slate-300 mt-5">
         AI 回答基于 upxuu 的博客文章，可能不够准确，仅供参考。
       </p>
     </div>
