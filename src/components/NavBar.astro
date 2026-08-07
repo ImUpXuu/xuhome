@@ -86,9 +86,8 @@ const isArchivePage = pathname === '/posts';
 
       <a
         href={nav[5].href}
-        class={`hidden lg:flex px-1.5 py-0.5 sm:px-3 sm:py-1.5 border-2 border-[#0284c7] items-center gap-0.5 sm:gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-xs sm:text-sm tracking-wider shrink-0 whitespace-nowrap ${
-          Astro.url.pathname.startsWith('/stats') ? 'bg-[#0ea5e9] text-white shadow-[1px_1px_0px_0px_#0284c7] sm:shadow-[2px_2px_0px_0px_#0284c7]' : 'text-[#0284c7] shadow-[1px_1px_0px_0px_#fde68a] sm:shadow-[2px_2px_0px_0px_#fde68a] bg-[rgba(250,248,245,0.55)]'
-        }`}
+        target="_blank" rel="noopener noreferrer"
+        class={`hidden lg:flex px-1.5 py-0.5 sm:px-3 sm:py-1.5 border-2 border-[#0284c7] items-center gap-0.5 sm:gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-xs sm:text-sm tracking-wider shrink-0 whitespace-nowrap text-[#0284c7] shadow-[1px_1px_0px_0px_#fde68a] sm:shadow-[2px_2px_0px_0px_#fde68a] bg-[rgba(250,248,245,0.55)]`}
       >
         <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 sm:w-4 sm:h-4 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
@@ -239,7 +238,7 @@ const isArchivePage = pathname === '/posts';
             </svg>
             {mob[2].name}
           </a>
-          <a href={mob[3].href} class="p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none bg-[rgba(250,248,245,0.55)] dark:bg-slate-700 text-[#0284c7]">
+          <a href={mob[3].href} target="_blank" rel="noopener noreferrer" class="p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none bg-[rgba(250,248,245,0.55)] dark:bg-slate-700 text-[#0284c7]">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>{mob[3].name}
           </a>
           <a href={ext[1].href} target="_blank" class="p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none bg-[rgba(250,248,245,0.55)] dark:bg-slate-700 text-[#0284c7]">

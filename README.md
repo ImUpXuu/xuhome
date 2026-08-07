@@ -251,13 +251,13 @@ export const navConfig = {
     { name: "友链", href: "/friends" },
     { name: "关于", href: "/about" },
     { name: "归档", href: "/archive" },
-    { name: "统计", href: "/stats" },
+    { name: "统计", href: "https://stats.upxuu.com/share/sFftlqBkgk2z9JM2", external: true },
   ],
   mobileMore: [
     { name: "友链", href: "/friends" },
     { name: "关于", href: "/about" },
     { name: "归档页面", href: "/archive" },
-    { name: "网站统计", href: "/stats" },
+    { name: "网站统计", href: "https://stats.upxuu.com/share/sFftlqBkgk2z9JM2", external: true },
   ],
   external: [
     { name: "开往", href: "https://www.travellings.cn/go.html", external: true },
