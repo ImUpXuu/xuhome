@@ -7,6 +7,7 @@ import { siteConfig } from '../config/site';
 const CAP_API_ENDPOINT = 'https://cap.upxuu.com/28ba1b0591/';
 // 本地静态资源（国内可加载，避免 jsdelivr 被墙）
 const CAP_WIDGET_SRC = '/cap/cap.min.js';
+const CAP_WASM_URL = '/cap/cap_wasm_bg.wasm';
 
 export function WalineComment() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -14,6 +15,13 @@ export function WalineComment() {
   const capTokenRef = useRef<string | null>(null);
 
   useEffect(() => {
+    // 指定 wasm 从本地加载（cap.min.js 默认从 jsdelivr 拉 wasm，国内会失败）
+    try {
+      (window as any).CAP_CUSTOM_WASM_URL = CAP_WASM_URL;
+    } catch {
+      // ignore
+    }
+
     // 动态加载本地 cap-widget（定义 cap-widget 自定义元素）
     const loadCap = (): Promise<void> =>
       new Promise((resolve) => {
