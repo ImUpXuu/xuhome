@@ -3,13 +3,12 @@ import { init } from '@waline/client';
 import '@waline/client/waline.css';
 import { siteConfig } from '../config/site';
 
-// Cap CAPTCHA 配置
+// Cap CAPTCHA 配置（CDN 加载官方组件）
 const CAP_API_ENDPOINT = 'https://cap.upxuu.com/28ba1b0591/';
-const CAP_WIDGET_SRC = '/vendor/cap.min.js';
+const CAP_WIDGET_SRC = 'https://cdn.jsdelivr.net/npm/cap-widget@0.1.56';
 
 export function WalineComment() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const capWrapRef = useRef<HTMLDivElement>(null);
   const walineInstanceConfig = useRef<any>(null);
   const capTokenRef = useRef<string | null>(null);
   const restoringFetchRef = useRef<boolean>(false);
@@ -23,37 +22,17 @@ export function WalineComment() {
     };
     window.addEventListener('unhandledrejection', handleRejection);
 
-    // 动态加载 cap.min.js（定义 cap-widget 自定义元素）
+    // 动态加载 cap-widget（ESM module script）
     const loadCap = (): Promise<void> =>
       new Promise((resolve) => {
         if (window.customElements?.get('cap-widget')) return resolve();
         const s = document.createElement('script');
+        s.type = 'module';
         s.src = CAP_WIDGET_SRC;
         s.onload = () => resolve();
         s.onerror = () => resolve();
         document.head.appendChild(s);
       });
-
-    // 在评论区注入 cap-widget 元素，监听 solve 事件拿 token
-    const setupCapWidget = async () => {
-      await loadCap();
-      const wrap = capWrapRef.current;
-      if (!wrap || wrap.querySelector('cap-widget')) return;
-      const widget = document.createElement('cap-widget');
-      widget.setAttribute('data-cap-api-endpoint', CAP_API_ENDPOINT);
-      widget.addEventListener('solve', (e: any) => {
-        capTokenRef.current = e.detail?.token || null;
-        console.log('Cap solved, token ready');
-      });
-      widget.addEventListener('reset', () => {
-        capTokenRef.current = null;
-      });
-      widget.addEventListener('error', (e: any) => {
-        console.error('Cap error:', e.detail?.message);
-        capTokenRef.current = null;
-      });
-      wrap.appendChild(widget);
-    };
 
     // 拦截 fetch：给 Waline 评论提交注入 cap-token
     const originalFetch = window.fetch.bind(window);
@@ -74,11 +53,11 @@ export function WalineComment() {
                 const parsed = JSON.parse(body);
                 if (parsed && typeof parsed === 'object') {
                   if (!capTokenRef.current) {
-                    // 无 token，阻止提交（返回 403 让 Waline 显示错误）
-                    return new Response(JSON.stringify({ errno: 403, errmsg: '请先完成人机验证' }), {
-                      status: 403,
-                      headers: { 'Content-Type': 'application/json' },
-                    });
+                    // 无 token，阻止提交
+                    return new Response(
+                      JSON.stringify({ errno: 403, errmsg: '请先完成人机验证' }),
+                      { status: 403, headers: { 'Content-Type': 'application/json' } },
+                    );
                   }
                   parsed['cap-token'] = capTokenRef.current;
                   body = JSON.stringify(parsed);
@@ -86,7 +65,7 @@ export function WalineComment() {
                 }
               }
             } catch {
-              // body 非 JSON，跳过
+              // 忽略
             }
           }
         } catch (err) {
@@ -100,7 +79,7 @@ export function WalineComment() {
     if (containerRef.current) {
       let p = window.location.pathname.replace(/\/+/g, '/');
       if (!p.endsWith('/')) p += '/';
-      setupCapWidget();
+      loadCap();
       walineInstanceConfig.current = init({
         el: containerRef.current,
         serverURL: siteConfig.waline.serverURL,
@@ -126,6 +105,19 @@ export function WalineComment() {
     };
   }, []);
 
+  // 监听 cap-widget 的 solve 事件，把 token 存起来
+  const handleCapSolve = (e: any) => {
+    capTokenRef.current = e.detail?.token || null;
+    console.log('Cap solved');
+  };
+  const handleCapReset = () => {
+    capTokenRef.current = null;
+  };
+  const handleCapError = (e: any) => {
+    console.error('Cap error:', e.detail?.message);
+    capTokenRef.current = null;
+  };
+
   return (
     <div className="waline-custom-theme bg-white dark:bg-slate-800 border-4 border-[#0284c7] p-3 sm:p-5 shadow-[6px_6px_0px_0px_#0284c7] sm:shadow-[8px_8px_0px_0px_#0284c7] rounded-sm mt-8">
       <h3 className="text-xl font-black text-[#0284c7] border-b-4 border-[#0284c7] pb-2 mb-4 uppercase inline-block pr-6 tracking-widest relative">
@@ -133,7 +125,14 @@ export function WalineComment() {
         <div className="absolute -top-2 -right-3 w-4 h-4 bg-[#fde68a] border-2 border-[#0284c7] shadow-[2px_2px_0px_0px_#0284c7] rounded-sm transform rotate-12"></div>
       </h3>
       <div ref={containerRef} />
-      <div ref={capWrapRef} className="my-3" />
+      <div className="my-3">
+        <cap-widget
+          data-cap-api-endpoint={CAP_API_ENDPOINT}
+          onsolve={handleCapSolve}
+          onreset={handleCapReset}
+          onerror={handleCapError}
+        />
+      </div>
       <p className="text-[10px] sm:text-xs text-slate-400 dark:text-slate-500 text-center mt-3 font-medium">
         （因不知名因素，海外IP暂时无法加载评论，请关闭代理）
       </p>
