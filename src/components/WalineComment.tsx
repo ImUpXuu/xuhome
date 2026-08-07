@@ -3,13 +3,13 @@ import { init } from '@waline/client';
 import '@waline/client/waline.css';
 import { siteConfig } from '../config/site';
 
-// Cap CAPTCHA 配置（浮动模式，本地资源）
+// Cap CAPTCHA 配置（编程模式：new Cap().solve()，本地资源）
 const CAP_API_ENDPOINT = 'https://cap.upxuu.com/20fe56c780/';
-const CAP_BASE = '/cap/';
-const CAP_WIDGET_SRC = CAP_BASE + 'cap.min.js';
-const CAP_WASM_URL = CAP_BASE + 'cap_wasm_bg.wasm';
+const CAP_WIDGET_SRC = '/cap/cap.min.js';
+const CAP_WASM_URL = '/cap/cap_wasm_bg.wasm';
 
-// 全局 Cap token（由验证后写入，随提交注入）
+// 全局 Cap 实例 + token
+let capInstance: any = null;
 let capTokenRef: string | null = null;
 
 function loadScript(src: string): Promise<void> {
@@ -22,6 +22,36 @@ function loadScript(src: string): Promise<void> {
     s.onerror = () => resolve();
     document.head.appendChild(s);
   });
+}
+
+// 求解 Cap 验证，返回 token
+async function solveCap(): Promise<string> {
+  if (capTokenRef) return capTokenRef;
+  try {
+    const W: any = window;
+    if (!capInstance) {
+      if (!W.Cap) {
+        await loadScript(CAP_WIDGET_SRC);
+        // 等 Cap 类注册
+        const wait = new Promise<void>((res) => {
+          const t = setInterval(() => { if (W.Cap) { clearInterval(t); res(); } }, 100);
+          setTimeout(() => { clearInterval(t); res(); }, 5000);
+        });
+        await wait;
+      }
+      if (W.Cap) {
+        capInstance = new W.Cap({ apiEndpoint: CAP_API_ENDPOINT });
+      }
+    }
+    if (capInstance) {
+      const sol = await capInstance.solve();
+      capTokenRef = sol?.token || '';
+      return capTokenRef;
+    }
+  } catch (e) {
+    console.warn('Cap solve error:', e);
+  }
+  return '';
 }
 
 export function WalineComment() {
@@ -37,7 +67,12 @@ export function WalineComment() {
     };
     window.addEventListener('unhandledrejection', handleRejection);
 
-    // 拦截 fetch：给 Waline 评论提交注入 cap-token（若已有 token）
+    // 指定 wasm 本地加载
+    try { (window as any).CAP_CUSTOM_WASM_URL = CAP_WASM_URL; } catch {}
+    // 预加载 Cap 脚本
+    loadScript(CAP_WIDGET_SRC);
+
+    // 拦截 fetch：给 Waline 评论提交注入 cap-token（编程模式后台 solve）
     const originalFetch = window.fetch.bind(window);
     let interceptorInstalled = false;
     const installInterceptor = () => {
@@ -54,9 +89,10 @@ export function WalineComment() {
             if (typeof body === 'string') {
               const parsed = JSON.parse(body);
               if (parsed && typeof parsed === 'object') {
-                // 有 token 则注入（无 token 时由提交按钮拦截器负责验证）
-                if (capTokenRef) {
-                  parsed['cap-token'] = capTokenRef;
+                // 编程模式：后台 solve 拿 token 注入
+                const token = await solveCap();
+                if (token) {
+                  parsed['cap-token'] = token;
                   body = JSON.stringify(parsed);
                   initOpts = { ...initOpts, body };
                 }
@@ -71,76 +107,9 @@ export function WalineComment() {
     };
     installInterceptor();
 
-    // 显示 cap-widget 并等待 solve 返回 token
-    async function solveCapWidget(): Promise<string> {
-      const widget = document.getElementById('cap-comment-widget') as any;
-      if (!widget || !widget.solve) {
-        console.warn('Cap widget not ready');
-        return '';
-      }
-      widget.style.display = 'block';
-      try {
-        await widget.solve();
-        await new Promise((r) => setTimeout(r, 400)); // 等 solve 事件写 token
-      } catch (e) {
-        console.warn('Cap solve error:', e);
-      }
-      widget.style.display = 'none';
-      return capTokenRef || '';
-    }
-
-    // 在 Waline 渲染后注入 cap-widget，并拦截提交按钮
-    const setupCap = async () => {
-      await loadScript(CAP_WIDGET_SRC);
-      const container = containerRef.current;
-      if (!container) return;
-
-      let submitBound = false;
-      const waitForForm = setInterval(() => {
-        const form = container.querySelector('form');
-        const submitBtn = form?.querySelector('[type="submit"]');
-        if (!form || !submitBtn) return;
-
-        // 注入隐藏 cap-widget
-        let widget = form.querySelector('cap-widget') as any;
-        if (!widget) {
-          widget = document.createElement('cap-widget');
-          widget.id = 'cap-comment-widget';
-          widget.setAttribute('data-cap-api-endpoint', CAP_API_ENDPOINT);
-          widget.style.cssText = 'display:none;position:absolute;bottom:100%;right:0;z-index:99999;background:#fff;border:2px solid #0284c7;border-radius:0;box-shadow:4px 4px 0 rgba(2,132,199,.3);padding:6px 10px;';
-          widget.addEventListener('solve', (e: any) => {
-            capTokenRef = e.detail?.token || null;
-          });
-          widget.addEventListener('reset', () => { capTokenRef = null; });
-          form.appendChild(widget);
-          try { if (window.customElements?.upgrade) window.customElements.upgrade(widget); } catch {}
-        }
-
-        // 拦截提交按钮：首次点击先验证，通过后再提交
-        if (!submitBound) {
-          submitBound = true;
-          clearInterval(waitForForm);
-          submitBtn.addEventListener('click', async (e: MouseEvent) => {
-            // 已有 token 直接放行（fetch 拦截器会注入）
-            if (capTokenRef) return;
-            e.preventDefault();
-            e.stopImmediatePropagation();
-            const token = await solveCapWidget();
-            if (token) {
-              capTokenRef = token;
-              // 延迟后再触发提交（让 fetch 拦截器读到 token）
-              setTimeout(() => submitBtn.click(), 200);
-            }
-          }, true);
-        }
-      }, 300);
-      setTimeout(() => clearInterval(waitForForm), 8000);
-    };
-
     if (containerRef.current) {
       let p = window.location.pathname.replace(/\/+/g, '/');
       if (!p.endsWith('/')) p += '/';
-      try { (window as any).CAP_CUSTOM_WASM_URL = CAP_WASM_URL; } catch {}
       walineInstanceConfig.current = init({
         el: containerRef.current,
         serverURL: siteConfig.waline.serverURL,
@@ -150,7 +119,6 @@ export function WalineComment() {
         imageUploader: false,
         placeholder: '写几个字证明你来过~',
       });
-      setupCap();
     }
 
     return () => {
