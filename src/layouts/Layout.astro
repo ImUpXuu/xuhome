@@ -23,6 +23,7 @@ interface Props {
   isAboutPage?: boolean;
   isArticle?: boolean;
   hideFooter?: boolean;
+  hideBanner?: boolean;
 }
 
 const {
@@ -37,6 +38,7 @@ const {
   isAboutPage = false,
   isArticle = false,
   hideFooter = false,
+  hideBanner = false,
 } = Astro.props;
 
 const pageTitle = title 
@@ -265,6 +267,7 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
           style={!isArticle ? { backgroundImage: "radial-gradient(#0284c70d 2px, transparent 2px)", backgroundSize: "24px 24px" } : undefined}
         >
           <div class="max-w-[1440px] w-full mx-auto flex flex-col gap-3 sm:gap-6">
+            {!hideBanner && (
             <PageBanner 
               client:load
               pathname={Astro.url.pathname}
@@ -273,6 +276,7 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
               post={post}
               postsCount={postsCount}
             />
+            )}
 
             <main
               id="main-content"
