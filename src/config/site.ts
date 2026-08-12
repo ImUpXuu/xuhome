@@ -385,8 +385,8 @@ export const i18nConfig = {
   privacy: {
     title: "隐私政策",
     description: "UpXuu 博客的隐私政策——我们如何收集、使用和保护你的个人信息。",
-    lastUpdated: "2026 年 6 月 28 日",
-    effectiveDate: "2026 年 6 月 28 日",
+    lastUpdated: "2026 年 8 月 12 日",
+    effectiveDate: "2026 年 8 月 12 日",
     contactEmail: "me@upxuu.com",
   },
   /** 统计页面 */
