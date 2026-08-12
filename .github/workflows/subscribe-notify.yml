@@ -1,0 +1,122 @@
+name: 📧 订阅更新通知
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "src/content/posts/**/*.md"
+      - "src/content/talks/**/*.md"
+  workflow_dispatch:
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 解析变更内容并通知订阅系统
+        env:
+          SUBSCRIBE_TOKEN: ${{ secrets.SUBSCRIBE_TOKEN }}
+          BEFORE: ${{ github.event.before }}
+          AFTER: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          TOKEN=$(printf '%s' "${SUBSCRIBE_TOKEN:-}" | tr -d '\r\n' | xargs)
+          [ -n "$TOKEN" ] || { echo "SUBSCRIBE_TOKEN not set, skip"; exit 0; }
+
+          if [ "${BEFORE}" != "0000000000000000000000000000000000000000" ]; then
+            FILES=$(git diff --name-only --diff-filter=ACMR "${BEFORE}" "${AFTER}" -- 'src/content/posts/' 'src/content/talks/' || true)
+          else
+            FILES=$(git ls-files 'src/content/posts/' 'src/content/talks/' || true)
+          fi
+
+          [ -n "$FILES" ] || { echo "No content changed"; exit 0; }
+
+          echo "$FILES" > /tmp/changed.txt
+          export SEND_TOKEN="$TOKEN"
+          python3 - <<'PY'
+          import json, re, os, sys, time
+          import urllib.request, urllib.error, ssl
+          from pathlib import Path
+
+          ssl._create_default_https_context = ssl._create_unverified_context
+
+          SITE = "https://upxuu.com"
+          TOKEN = os.environ.get("SEND_TOKEN", "")
+          ENDPOINT = os.environ.get("NOTIFY_ENDPOINT", "http://8.220.197.92:3006/api/notify")
+
+          def parse_fm(path: Path):
+              """返回 (title, description, slug, body)"""
+              raw = path.read_text(encoding="utf-8")
+              title, description, slug = "", "", ""
+              body = raw
+              if raw.startswith("---"):
+                  end = raw.find("---", 3)
+                  if end != -1:
+                      fm = raw[3:end]
+                      body = raw[end + 3 :]
+                      for line in fm.splitlines():
+                          m = re.match(r'^(\w+)\s*:\s*(.*)$', line.strip())
+                          if not m:
+                              continue
+                          key, val = m.group(1), m.group(2).strip()
+                          val = val.strip('"').strip("'")
+                          if key == "title" and not title:
+                              title = val
+                          elif key == "description" and not description:
+                              description = val
+                          elif key == "slug" and not slug:
+                              slug = val
+              if not slug:
+                  slug = path.stem
+              return title, description, slug, body
+
+          with open("/tmp/changed.txt", "r") as f:
+              lines = [l.strip() for l in f.readlines()]
+
+          items = []
+          for f in lines:
+              if not (f.startswith("src/content/posts/") or f.startswith("src/content/talks/")):
+                  continue
+              if not f.endswith(".md"):
+                  continue
+              p = Path(f)
+              content_type = "talk" if f.startswith("src/content/talks/") else "post"
+              title, description, slug, body = parse_fm(p)
+              if content_type == "talk":
+                  url = f"{SITE}/talk/{slug}/"
+              else:
+                  url = f"{SITE}/posts/{slug}/"
+              items.append({
+                  "type": content_type,
+                  "title": title or slug,
+                  "description": description,
+                  "content": body.strip(),
+                  "url": url,
+              })
+              print(f"  [{content_type}] {title or slug} -> {url}")
+
+          if not items:
+              print("No items to notify"); sys.exit(0)
+
+          payload = json.dumps({"items": items}, ensure_ascii=False).encode("utf-8")
+          req = urllib.request.Request(
+              ENDPOINT,
+              data=payload,
+              headers={
+                  "Content-Type": "application/json; charset=utf-8",
+                  "Authorization": f"Bearer {TOKEN}",
+              },
+              method="POST",
+          )
+          try:
+              with urllib.request.urlopen(req, timeout=30) as resp:
+                  body = resp.read().decode("utf-8", errors="replace")
+                  print(f"HTTP {resp.getcode()} {body}")
+                  sys.exit(0 if resp.getcode() in (200, 202) else 1)
+          except urllib.error.HTTPError as e:
+              print(f"HTTP {e.code} {e.read().decode('utf-8', errors='replace')}")
+              sys.exit(1)
+          PY
