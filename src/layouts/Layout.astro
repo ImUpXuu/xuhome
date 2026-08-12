@@ -304,17 +304,23 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
       
       {!hideFooter && (
       <footer class="w-full dark:bg-slate-900 border-t-4 border-[#0284c7] select-none">
-        <div class="max-w-5xl mx-auto px-4 py-5 text-center text-xs font-mono text-slate-500 dark:text-slate-400 leading-relaxed space-y-2">
+        <div class="max-w-5xl mx-auto px-4 py-6 text-center text-xs font-mono text-slate-500 dark:text-slate-400 leading-relaxed space-y-3">
+          {/* 导航链接：积木粗野主义按钮组 */}
+          <div class="flex flex-wrap justify-center gap-2">
+            {infoConfig.footer.links.map((link) => (
+              <a href={link.path} target={link.external ? "_blank" : undefined} rel={link.external ? "noopener noreferrer" : undefined}
+                 class="px-3 py-1 border-2 border-[#0284c7] rounded-sm font-black text-xs text-[#0284c7] bg-[#fde68a] shadow-[2px_2px_0px_0px_#0284c7] hover:bg-[#0ea5e9] hover:text-white hover:-translate-y-0.5 hover:shadow-[3px_3px_0px_0px_#0284c7] active:translate-y-0 active:shadow-[1px_1px_0px_0px_#0284c7] transition-all whitespace-nowrap">
+                {link.name}
+              </a>
+            ))}
+          </div>
+          {/* 版权 + 备案 */}
           <div class="font-bold">
             <span class="text-slate-700 dark:text-slate-300">{infoConfig.footer.copyrightText}</span>
-            <span class="mx-1.5">|</span>
-            {infoConfig.footer.links.map((link, i) => (
-              <>
-                <a href={link.path} target={link.external ? "_blank" : undefined} rel={link.external ? "noopener noreferrer" : undefined} class="hover:text-[#0ea5e9] transition-colors hover:underline">{link.name}</a>
-                {i < infoConfig.footer.links.length - 1 && <span class="mx-1">·</span>}
-              </>
-            ))}
-            {infoConfig.footer.icp && <><span class="mx-1.5">|</span><a href={infoConfig.footer.icp.link} target="_blank" rel="noopener noreferrer" class="hover:text-[#0ea5e9] transition-colors text-[#0284c7] hover:underline">{infoConfig.footer.icp.text}</a></>}
+            {infoConfig.footer.icp && <>
+              <span class="mx-1.5 text-slate-400">·</span>
+              <a href={infoConfig.footer.icp.link} target="_blank" rel="noopener noreferrer" class="text-[#0284c7] hover:underline">{infoConfig.footer.icp.text}</a>
+            </>}
           </div>
           <div>
             <span>{footerConfig.repoText}</span><a href={footerConfig.repoUrl} class="hover:text-[#0ea5e9] underline font-bold">{footerConfig.repoDisplayName}</a>
