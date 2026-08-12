@@ -102,7 +102,7 @@ import { i18nConfig } from '../config/site';
             ⚠ Umami 不使用 Cookie，不追踪跨站行为。数据不与个人身份关联，仅以聚合形式展示。
           </p>
           <div class="mt-2 p-3 bg-[rgba(250,248,245,0.55)] dark:bg-slate-700 border-2 border-slate-300 dark:border-slate-600 rounded-sm text-xs font-mono text-slate-500 dark:text-slate-400">
-            服务方：stats.upxuu.com（第一方自托管）
+            服务方：stats.upxuu.com（第一方，部署于 Vercel，数据存储位于香港）
           </div>
         </div>
 
@@ -411,10 +411,11 @@ import { i18nConfig } from '../config/site';
 
         <h3 class="font-black text-slate-800 dark:text-slate-200 mt-5">3.2 跨境传输</h3>
         <p>
-          由于本站使用了 Microsoft Clarity、Google Fonts、GitHub API 等服务，你的部分数据（如 IP 地址、页面行为数据）可能被传输至境外服务器（主要位于美国）。同时，本站部分基础设施部署在境外：
+          由于本站使用了 Microsoft Clarity、Google Fonts、GitHub API 等服务，你的部分数据（如 IP 地址、页面行为数据）可能被传输至境外服务器（主要位于美国）。同时，本站部分基础设施部署在境外或特别行政区：
         </p>
         <ul class="list-disc list-inside ml-4 space-y-2 text-slate-600 dark:text-slate-400">
           <li><strong>韩国服务器</strong>——本站部分服务和数据存储在位于韩国的服务器上</li>
+          <li><strong>Vercel CDN（香港）</strong>——本站部分服务（如 stats.upxuu.com 统计）部署在 Vercel 平台，其 CDN 节点和数据存储位于香港</li>
           <li><strong>Cloudflare CDN 边缘节点</strong>——本站使用 Cloudflare 提供 CDN 加速和安全防护，你的请求可能经由 Cloudflare 分布在全球（含中国大陆以外）的边缘节点处理。在此过程中，Cloudflare 可能临时处理你的 IP 地址、User-Agent、请求路径等元数据（依据 Cloudflare 隐私政策：cloudflare.com/privacypolicy/）</li>
           <li><strong>Cloudflare Workers</strong>——Beat 统计服务（beat.345696.xyz）运行在 Cloudflare Workers 平台上，数据在边缘节点处理和存储，可能涉及跨境传输</li>
         </ul>
