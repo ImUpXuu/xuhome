@@ -77,10 +77,9 @@ jobs:
 
           cat HIT.txt
 
-      - name: 提交 HIT.txt 到仓库根目录
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add HIT.txt
-          git commit -m "chore: 更新 Vercel 缓存命中报告" || echo "HIT.txt 无变化，跳过提交"
-          git push
+      - name: 上传 HIT.txt 为 artifact（不提交到仓库，避免污染 main）
+        uses: actions/upload-artifact@v4
+        with:
+          name: hit-report
+          path: HIT.txt
+          retention-days: 14
