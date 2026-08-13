@@ -162,7 +162,7 @@ push 到 main
 
 ### 4.2 命中报告
 
-每次跑完，仓库根目录会生成一份 [HIT.txt](https://github.com/ImUpXuu/xuhome/blob/main/HIT.txt)，开头是统计（命中数 / 未命中数 / 命中率），下面是每个 URL 的详细状态。
+每次跑完，会生成一份命中报告（含统计 + 每个 URL 的状态），可以在仓库 **Actions 页面**每次运行的 artifacts 里下载查看 `hit-report`。
 
 工作流源码在这里：[cache-hit-check.yml](https://github.com/ImUpXuu/xuhome/blob/main/.github/workflows/cache-hit-check.yml)
 
