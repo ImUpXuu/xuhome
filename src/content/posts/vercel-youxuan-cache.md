@@ -3,8 +3,11 @@ title: "什么？你的vercel还没深绿？一文研究透vercel优选|缓存�
 published: 2026-08-13 11:00:00
 description: "从地区优选、IP优选到边缘缓存配置与缓存预热，让你的 Vercel 站点在国内测速全绿、加载飞快"
 tags: ["Vercel", "CDN", "缓存", "优化"]
+image: "https://img.476543.xyz/img/2026/8/13/20260813123224_215.png"
 category: "技术"
 ---
+
+![Vercel 深绿测速](https://img.476543.xyz/img/2026/8/13/20260813123224_215.png)
 
 很多玩 Vercel 的朋友都有一个执念：**让站点在国内测速工具上"深绿"**。
 
