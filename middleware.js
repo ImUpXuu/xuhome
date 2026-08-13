@@ -1,4 +1,4 @@
-import { NextResponse } from '@vercel/edge';
+import { next, rewrite } from '@vercel/edge';
 
 // 爬虫 User-Agent 正则（与原 Caddy 规则一致）
 const CRAWLER_RE = /googlebot|bingbot|baiduspider|sogou|360spider|yandex|duckduckbot/i;
@@ -14,7 +14,7 @@ function stripTrailingSlash(path) {
 export default function middleware(request) {
   const ua = request.headers.get('user-agent') || '';
   if (!CRAWLER_RE.test(ua)) {
-    return NextResponse.next();
+    return next();
   }
 
   const path = stripTrailingSlash(new URL(request.url).pathname);
@@ -33,7 +33,7 @@ export default function middleware(request) {
   }
 
   if (dest) {
-    return NextResponse.rewrite(new URL(dest, request.url));
+    return rewrite(new URL(dest, request.url).toString());
   }
-  return NextResponse.next();
+  return next();
 }
