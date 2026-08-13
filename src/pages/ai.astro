@@ -1,22 +1,5 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import { siteConfig } from '../config/site';
+import AiChatPage from '../components/AiChatPage.astro';
 ---
 
-<Layout
-  title="UpXuu AI · 文章问答助手"
-  description={`基于 ${siteConfig.title} 博客文章的 AI 问答助手，可以回答关于 upxuu 的任何问题`}
-  hideFooter={true}
-  hideBanner={true}
->
-  <div class="w-full overflow-hidden" style="height: calc(100vh - var(--navbar-height) - 60px);">
-    <iframe
-      src="https://ai.upxuu.com/"
-      title="UpXuu AI 文章问答"
-      class="w-full h-full block"
-      loading="lazy"
-      allow="clipboard-write"
-      style="border: 0;"
-    />
-  </div>
-</Layout>
+<AiChatPage />
