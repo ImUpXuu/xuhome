@@ -1,11 +1,11 @@
 # Vercel 边缘缓存命中报告
 
-> 生成时间：2026-08-13 03:31:09 UTC
+> 生成时间：2026-08-13 03:47:01 UTC
 
 | 指标 | 数值 |
 |------|------|
-| 总页面数 | 146 |
-| 命中 HIT | 146 |
+| 总页面数 | 147 |
+| 命中 HIT | 147 |
 | 未命中 MISS | 0 |
 | 命中率 | 100.0% |
 
@@ -112,6 +112,7 @@
 | HIT | https://upxuu.com/posts/to-liaozhong |
 | HIT | https://upxuu.com/posts/to-zhengding |
 | HIT | https://upxuu.com/posts/vercel-docker-significance |
+| HIT | https://upxuu.com/posts/vercel-youxuan-cache |
 | HIT | https://upxuu.com/posts/vercel666 |
 | HIT | https://upxuu.com/posts/wasmer |
 | HIT | https://upxuu.com/posts/woc-%e6%88%91%e4%bd%9c%e4%b8%9a%e5%a5%bd%e5%83%8f%e8%90%bd%e9%99%95%e8%a5%bf%e4%ba%86%ef%bc%81%ef%bc%81%ef%bc%81 |
