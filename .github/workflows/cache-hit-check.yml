@@ -1,0 +1,86 @@
+name: Vercel 缓存命中检查
+
+on:
+  push:
+    branches: [main]
+    # HIT.txt 提交不触发本工作流，避免死循环
+    paths-ignore:
+      - 'HIT.txt'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  cache-hit-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Vercel 构建约 60s，再缓冲 60s 确保部署完成
+      - name: 等待 Vercel 部署完成
+        run: sleep 120
+
+      - name: 提取 sitemap 所有页面 URL
+        run: |
+          curl -s -m 30 https://upxuu.com/sitemap.xml \
+            | grep -oP '(?<=<loc>)[^<]+' \
+            | sed 's/\r$//' > urls.txt
+          echo "共 $(wc -l < urls.txt) 个页面"
+
+      # 第一遍：预热边缘缓存（curl 无客户端缓存，天然忽略客户端缓存）
+      - name: 第一遍 curl（预热边缘缓存）
+        run: |
+          cat urls.txt | xargs -P 8 -I {} curl -s -o /dev/null -m 20 "{}" || true
+
+      # 第二遍：检查 X-Vercel-Cache 是否 HIT
+      - name: 第二遍 curl（检查命中）
+        run: |
+          total=0; hit=0; miss=0
+          : > detail.txt
+          while IFS= read -r url; do
+            [ -z "$url" ] && continue
+            total=$((total+1))
+            cache=$(curl -s -o /dev/null -m 20 -D - "$url" \
+              | grep -i '^x-vercel-cache:' | tr -d '\r' | awk '{print $2}')
+            [ -z "$cache" ] && cache="N/A"
+            if [ "$cache" = "HIT" ]; then hit=$((hit+1)); else miss=$((miss+1)); fi
+            echo "$cache|$url" >> detail.txt
+          done < urls.txt
+
+          if [ "$total" -gt 0 ]; then
+            rate=$(awk "BEGIN{printf \"%.1f\", $hit*100.0/$total}")
+          else
+            rate="0.0"
+          fi
+
+          {
+            echo "# Vercel 边缘缓存命中报告"
+            echo ""
+            echo "> 生成时间：$(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+            echo ""
+            echo "| 指标 | 数值 |"
+            echo "|------|------|"
+            echo "| 总页面数 | $total |"
+            echo "| 命中 HIT | $hit |"
+            echo "| 未命中 MISS | $miss |"
+            echo "| 命中率 | $rate% |"
+            echo ""
+            echo "## 详细状态"
+            echo ""
+            echo "| 状态 | URL |"
+            echo "|------|-----|"
+            while IFS='|' read -r cache url; do
+              echo "| $cache | $url |"
+            done < detail.txt
+          } > HIT.txt
+
+          cat HIT.txt
+
+      - name: 提交 HIT.txt 到仓库根目录
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add HIT.txt
+          git commit -m "chore: 更新 Vercel 缓存命中报告" || echo "HIT.txt 无变化，跳过提交"
+          git push
