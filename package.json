@@ -19,7 +19,7 @@
     "@astrojs/rss": "^4.0.18",
     "@astrojs/svelte": "^8.1.2",
     "@astrojs/vercel": "^10.0.8",
-    "@vercel/edge": "^1.1.2",
+    "@vercel/functions": "^3.9.3",
     "@fancyapps/ui": "^6.1.14",
     "@google/genai": "^2.4.0",
     "@tailwindcss/typography": "^0.5.19",
