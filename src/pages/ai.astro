@@ -1,5 +1,15 @@
 ---
+import Layout from '../layouts/Layout.astro';
 import AiChatPage from '../components/AiChatPage.astro';
+import { siteConfig } from '../config/site';
 ---
 
-<AiChatPage />
+<Layout
+  title="UpXuu AI · 文章问答助手"
+  description={`基于 ${siteConfig.title} 博客文章的 AI 问答助手，可以回答关于 upxuu 的任何问题`}
+  isAiPage={true}
+  hideFooter={true}
+  hideBanner={true}
+>
+  <AiChatPage />
+</Layout>
