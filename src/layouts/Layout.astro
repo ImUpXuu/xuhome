@@ -552,20 +552,35 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
       for (var pi = 0; pi < pending.length; pi++) trackResource(pending[pi]);
     }
 
-    document.addEventListener('astro:page-load', function () {
-      totalRes = 0;
-      doneRes = 0;
-      setProgressUI(0, 0);
-    });
-          mo.observe(document.documentElement, { childList: true, subtree: true });
-        } catch (e) {}
+    function scan(root) {
+      if (!root || !root.querySelectorAll) return;
+      var els = root.querySelectorAll('img, iframe, video');
+      for (var i = 0; i < els.length; i++) {
+        (function (el) {
+          if (el.tagName === 'IMG' && el.complete) return;
+          trackResource(new Promise(function (resolve) {
+            el.addEventListener('load', resolve, { once: true });
+            el.addEventListener('error', resolve, { once: true });
+          }));
+        })(els[i]);
       }
     }
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', boot);
-    } else {
-      boot();
+
+    function boot() {
+      scan(document);
+      var mo = new MutationObserver(function (mutations) {
+        for (var m = 0; m < mutations.length; m++) {
+          var added = mutations[m].addedNodes;
+          for (var n = 0; n < added.length; n++) {
+            if (added[n].nodeType === 1) scan(added[n]);
+          }
+        }
+      });
+      try {
+        mo.observe(document.documentElement, { childList: true, subtree: true });
+      } catch (e) {}
     }
+
     document.addEventListener('astro:page-load', function () {
       totalRes = 0;
       doneRes = 0;
