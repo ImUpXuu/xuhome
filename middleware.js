@@ -1,4 +1,4 @@
-import { next, rewrite } from '@vercel/edge';
+import { next, rewrite } from '@vercel/functions/middleware';
 
 // 爬虫 User-Agent 正则（与原 Caddy 规则一致）
 const CRAWLER_RE = /googlebot|bingbot|baiduspider|sogou|360spider|yandex|duckduckbot/i;
