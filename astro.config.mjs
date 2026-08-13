@@ -2,7 +2,6 @@ import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
 import svelte from '@astrojs/svelte';
 import mdx from '@astrojs/mdx';
-import vercel from '@astrojs/vercel/static';
 import tailwindcss from '@tailwindcss/vite';
 import remarkMath from 'remark-math';
 import remarkGfm from 'remark-gfm';
@@ -14,7 +13,6 @@ import { rehypeShiftHeadings } from './src/plugins/rehype-shift-headings.mjs';
 // https://astro.build/config
 export default defineConfig({
   output: 'static',
-  adapter: vercel(),
   outDir: 'dist',
   build: {
     inlineStylesheets: 'never',
