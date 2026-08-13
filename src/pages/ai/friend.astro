@@ -1,15 +1,5 @@
 ---
-import Layout from '../../layouts/Layout.astro';
 import AiChatPage from '../../components/AiChatPage.astro';
-import { siteConfig } from '../../config/site';
 ---
 
-<Layout
-  title="申请友链 · UpXuu AI"
-  description={`通过 AI 向导申请与 ${siteConfig.title} 交换友链`}
-  isAiPage={true}
-  hideFooter={true}
-  hideBanner={true}
->
-  <AiChatPage />
-</Layout>
+<AiChatPage />
