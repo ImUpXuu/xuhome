@@ -82,7 +82,10 @@ export function WalineComment() {
         const url = typeof input === 'string' ? input : input?.url || '';
         const isCommentPost =
           url.includes('/comment') &&
-          (!initOpts || !initOpts.method || initOpts.method.toUpperCase() === 'POST');
+          initOpts &&
+          initOpts.method &&
+          initOpts.method.toUpperCase() === 'POST' &&
+          initOpts.body;
         if (isCommentPost) {
           let body = initOpts?.body;
           try {
@@ -102,6 +105,7 @@ export function WalineComment() {
             // 忽略
           }
         }
+        // GET 加载评论等其它请求原样放行，不做任何改动
         return originalFetch(input, initOpts);
       };
     };
