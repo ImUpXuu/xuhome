@@ -26,7 +26,21 @@ jobs:
           curl -s -m 30 https://upxuu.com/sitemap.xml \
             | grep -oP '(?<=<loc>)[^<]+' \
             | sed 's/\r$//' > urls.txt
-          echo "共 $(wc -l < urls.txt) 个页面"
+          echo "sitemap 共 $(wc -l < urls.txt) 个页面"
+
+      # bot 优化页也是独立路由，同样需要预热（爬虫分流后爬虫会访问它们）
+      - name: 追加 bot 优化页 URL
+        run: |
+          printf '%s\n' \
+            "https://upxuu.com/bot/" \
+            "https://upxuu.com/bot/posts/" \
+            "https://upxuu.com/bot/talks/" >> urls.txt
+          grep -oP 'https://upxuu\.com/posts/[^/\s?#]+' urls.txt \
+            | sed 's|/posts/|/bot/|; s|$|/|' >> urls.txt
+          grep -oP 'https://upxuu\.com/talk/[^/\s?#]+' urls.txt \
+            | sed 's|/talk/|/bot/talk/|; s|$|/|' >> urls.txt
+          sort -u urls.txt -o urls.txt
+          echo "含 bot 页后共 $(wc -l < urls.txt) 个 URL"
 
       # 第一遍：预热边缘缓存（curl 无客户端缓存，天然忽略客户端缓存）
       - name: 第一遍 curl（预热边缘缓存）
