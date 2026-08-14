@@ -206,7 +206,7 @@ const relatedPosts = (() => {
           {prevPost ? (
             <a 
               href={`/posts/${encodeURIComponent(prevPost.slug)}`}
-              class="flex-1 min-w-0 bg-[#efe1bf] hover:bg-[#e8d4a6] border-3 border-[#0284c7] px-4 py-3 rounded-sm shadow-[4px_4px_0px_0px_#0284c7] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all duration-200 flex items-center gap-3 group text-left"
+              class="flex-1 min-w-0 bg-[#efe1bf] dark:bg-slate-800 hover:bg-[#e8d4a6] dark:hover:bg-slate-700 border-3 border-[#0284c7] px-4 py-3 rounded-sm shadow-[4px_4px_0px_0px_#0284c7] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all duration-200 flex items-center gap-3 group text-left"
             >
               <span class="text-[#0ea5e9] group-hover:-translate-x-1 transition-transform shrink-0 font-extrabold">❮</span>
               <div class="min-w-0 flex-1">
@@ -223,7 +223,7 @@ const relatedPosts = (() => {
           {nextPost ? (
             <a 
               href={`/posts/${encodeURIComponent(nextPost.slug)}`}
-              class="flex-1 min-w-0 bg-[#efe1bf] hover:bg-[#e8d4a6] border-3 border-[#0284c7] px-4 py-3 rounded-sm shadow-[4px_4px_0px_0px_#0284c7] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all duration-200 flex items-center justify-between gap-3 group text-right"
+              class="flex-1 min-w-0 bg-[#efe1bf] dark:bg-slate-800 hover:bg-[#e8d4a6] dark:hover:bg-slate-700 border-3 border-[#0284c7] px-4 py-3 rounded-sm shadow-[4px_4px_0px_0px_#0284c7] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all duration-200 flex items-center justify-between gap-3 group text-right"
             >
               <div class="min-w-0 flex-1">
                 <div class="text-[9px] uppercase font-black tracking-widest text-slate-400 mb-0.5">{i18nConfig.post.nextPost}</div>

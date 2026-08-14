@@ -16,6 +16,7 @@ export default defineConfig({
   outDir: 'dist',
   build: {
     inlineStylesheets: 'never',
+    compressHTML: true,
   },
   integrations: [react(), svelte(), mdx()],
   site: 'https://upxuu.com',
