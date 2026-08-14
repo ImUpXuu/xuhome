@@ -1,0 +1,44 @@
+name: 压测
+
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: '目标 URL'
+        required: true
+        default: 'https://upxuu.com'
+      rpm:
+        description: '每分钟请求数 RPM'
+        required: true
+        default: '3000'
+      duration:
+        description: '持续时间（秒）'
+        required: true
+        default: '300'
+      concurrency:
+        description: '并发线程数'
+        required: true
+        default: '100'
+
+jobs:
+  loadtest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 运行压测（实时输出每次请求）
+        run: |
+          python3 scripts/rpm_loadtest.py "${{ inputs.url }}" \
+            --rpm "${{ inputs.rpm }}" \
+            --duration "${{ inputs.duration }}" \
+            --concurrency "${{ inputs.concurrency }}" \
+            --segment 5 \
+            --log loadtest.log
+
+      - name: 上传完整日志
+        uses: actions/upload-artifact@v4
+        with:
+          name: loadtest-log
+          path: loadtest.log
+          retention-days: 7

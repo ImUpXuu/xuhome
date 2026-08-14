@@ -1,45 +1,22 @@
-name: 压测
+name: 缓存保温（持续预热首页）
 
 on:
+  schedule:
+    # 每 6 小时触发一次，衔接单次 5h55m 的运行（GitHub Actions 单 job 上限 6h）
+    - cron: '0 */6 * * *'
   workflow_dispatch:
-    inputs:
-      url:
-        description: '目标 URL'
-        required: true
-        default: 'https://upxuu.com'
-      rpm:
-        description: '每分钟请求数 RPM'
-        required: true
-        default: '3000'
-      duration:
-        description: '持续时间（秒）'
-        required: true
-        default: '600'
-      concurrency:
-        description: '并发线程数'
-        required: true
-        default: '100'
 
 jobs:
-  loadtest:
+  keep-warm:
     runs-on: ubuntu-latest
     timeout-minutes: 360
     steps:
-      - uses: actions/checkout@v4
-
-      - name: 运行压测（实时输出分段统计）
+      - name: 每 30 秒请求一次首页（保温 5h55m）
         run: |
-          python3 scripts/rpm_loadtest.py "${{ inputs.url }}" \
-            --rpm "${{ inputs.rpm }}" \
-            --duration "${{ inputs.duration }}" \
-            --concurrency "${{ inputs.concurrency }}" \
-            --segment 5 \
-            --quiet \
-            --log loadtest.log
-
-      - name: 上传完整日志
-        uses: actions/upload-artifact@v4
-        with:
-          name: loadtest-log
-          path: loadtest.log
-          retention-days: 7
+          END=$((SECONDS + 21300))   # 5h55m = 21300 秒
+          echo "开始保温，将持续约 $((END/60)) 分钟"
+          while [ $SECONDS -lt $END ]; do
+            curl -s -o /dev/null -m 20 "https://upxuu.com/" || true
+            sleep 30
+          done
+          echo "保温完成，共运行 $SECONDS 秒"
