@@ -1,0 +1,22 @@
+name: 缓存保温（持续预热首页）
+
+on:
+  schedule:
+    # 每 6 小时触发一次，衔接单次 5h55m 的运行（GitHub Actions 单 job 上限 6h）
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+jobs:
+  keep-warm:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - name: 每 30 秒请求一次首页（保温 5h55m）
+        run: |
+          END=$((SECONDS + 21300))   # 5h55m = 21300 秒
+          echo "开始保温，将持续约 $((END/60)) 分钟"
+          while [ $SECONDS -lt $END ]; do
+            curl -s -o /dev/null -m 20 "https://upxuu.com/" || true
+            sleep 30
+          done
+          echo "保温完成，共运行 $SECONDS 秒"
