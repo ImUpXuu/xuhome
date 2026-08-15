@@ -14,9 +14,9 @@
   $: filteredFriends = searchTerm.trim() === "" 
     ? shuffled 
     : shuffled.filter(f => 
-        f.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        f.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        f.url.toLowerCase().includes(searchTerm.toLowerCase())
+        (f.name || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (f.description || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (f.url || "").toLowerCase().includes(searchTerm.toLowerCase())
       );
 
   let copiedLabel = "";
