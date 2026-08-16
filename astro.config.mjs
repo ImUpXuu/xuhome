@@ -17,6 +17,8 @@ export default defineConfig({
   build: {
     inlineStylesheets: 'never',
     compressHTML: true,
+    // 静态资源（_astro/*）指向 EdgeOne 国内 CDN（upxuu.lcrworld.xyz），HTML 仍由 Vercel 提供
+    assetsPrefix: 'https://upxuu.lcrworld.xyz',
   },
   integrations: [react(), svelte(), mdx()],
   site: 'https://upxuu.com',
