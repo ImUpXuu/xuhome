@@ -15,7 +15,7 @@ export const siteConfig = {
   /** 站点 URL（影响 Canonical、Sitemap、OG、RSS 等所有绝对链接） */
   url: "https://upxuu.com", // Base URL of the site
   /** 作者头像 URL（导航栏、关于页、AuthorCard 等处使用） */
-  avatar: "https://upxuu.com/images/me.jpg",
+  avatar: "https://s41.ax1x.com/2026/08/15/pmXkRNd.jpg",
   /** 作者签名/座右铭（显示在 AuthorCard 侧边栏） */
   signature: "逐光而上！",
 
@@ -167,7 +167,7 @@ export const seoConfig = {
   /** 默认页面描述 */
   defaultDescription: "UpXuu 的个人博客，记录一位独立开发者的生活随笔、编程实践与技术思考。涵盖 Web 开发、Astro 建站、开源项目与日常感悟，用文字连接数字世界的每一份热爱。",
   /** 默认 OG 图片 URL */
-  defaultImage: "https://upxuu.com/images/me.jpg",
+  defaultImage: "https://s41.ax1x.com/2026/08/15/pmXkRNd.jpg",
   /** SEO 关键词 */
   keywords: ["UpXuu", "blog", "开发者", "生活", "学习", "技术分享", "upxuu的碎碎念"],
   /** Twitter Card 配置 */
