@@ -20,13 +20,13 @@ category: "技术"
 
 [https://ai.love7.top/](https://ai.love7.top/)
 
-![New API 中转站首页](https://img.upxuu.com/images/2026/8/3/1785729285798_188.png)
+![New API 中转站首页](https://img.upxuu.lcrworld.xyz/images/2026/8/3/1785729285798_188.png)
 
 ## 模型概览
 
 本站模型聚合了多个平台渠道，目前有两个魔搭社区账号和 90 个 NVIDIA NIM 账号。魔搭配额较少，因此降低了其权重；NVIDIA NIM 可保证高可用度和高并发，但 DeepSeek、GLM 等高级模型速度有亿点点慢——不过如果你不在意速度，也足够用了。
 
-![模型分流示意图](https://img.upxuu.com/images/2026/8/3/1785729498136_764.png)
+![模型分流示意图](https://img.upxuu.lcrworld.xyz/images/2026/8/3/1785729498136_764.png)
 
 另外接入了十多个 Agnes 号，这些模型比较适合跑 Agent，当然，它们的性能不算太强。
 

@@ -16,18 +16,18 @@ category: "技术"
 
 迁移好dns以后，就可以配分流的了，起初我是用的cloudflare workers 但是 这自定义主机名死活就是搞不好，一直522，索性直接换edgeone pages，反正海外也慢不到哪里去
 
-![image-20260714141124572](https://img.upxuu.com/images/2026/7/14/1784009485927_132.webp)
+![image-20260714141124572](https://img.upxuu.lcrworld.xyz/images/2026/7/14/1784009485927_132.webp)
 
 可以看到也是配置好了（666我这咋画的）
 
-![image-20260714141235504](https://img.upxuu.com/images/2026/7/14/1784009556142_438.webp)
+![image-20260714141235504](https://img.upxuu.lcrworld.xyz/images/2026/7/14/1784009556142_438.webp)
 
 有的节点dns还没有更新
 
 当然，为了防止有神人指定dns去直接绕过限制打我，又让caddy设了白名单，海外ip一律444
 
-![image-20260714141606796](https://img.upxuu.com/images/2026/7/14/1784009767619_142.webp)
+![image-20260714141606796](https://img.upxuu.lcrworld.xyz/images/2026/7/14/1784009767619_142.webp)
 
-![image-20260714141727789](https://img.upxuu.com/images/2026/7/14/1784009848458_319.webp)
+![image-20260714141727789](https://img.upxuu.lcrworld.xyz/images/2026/7/14/1784009848458_319.webp)
 
 十分安全👍

@@ -5,4 +5,4 @@ tags: ["技术"]
 ---
 
 今天我在看自己博客时，神秘客户端么有关，导致我访问到了国外通过cloudflare的节点，并且不知道咋回事，cf 的鉴权js疑似没有正常加载，才发现我的所有页面的邮箱（我自己的公开邮箱），都被替换成了email protected ，我起初还纳闷，不对啊我记得我也妹加这个功能啊 点击一看跳到了这个页面，cloudflare为了防止bot收集网站的email发邮件，竟然还有这种小巧思，大善人他真的我哭死（）
-![image.png](https://img.476543.xyz/img/2026/8/6/20260806204244_102.png)
+![image.png](https://img.upxuu.lcrworld.xyz/images/2026/8/6/20260806204244_102.png)

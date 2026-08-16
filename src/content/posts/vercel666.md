@@ -10,7 +10,7 @@ category: "技术"
 
 我一想不对啊，vercel不是有cdn吗怎么还有地区之分，结果仔细一寻找还真有，默认还在美国！
 
-![image-20260812180535876](https://img.upxuu.com/images/2026/8/12/1786529137496_840.png)
+![image-20260812180535876](https://img.upxuu.lcrworld.xyz/images/2026/8/12/1786529137496_840.png)
 
 进入到已经部署的项目中，点击settings ➡️Functions➡️Functions Region 这里还有一个坑 你需要先切换到North America取消勾选USA 否则会选中两个地区导致在hobby计划下无法使用
 
