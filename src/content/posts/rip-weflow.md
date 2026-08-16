@@ -12,7 +12,7 @@ category: "技术"
 
 曾经，我以为腾讯是为了防止不懂技术的用户或者非法分子轻易利用数据造成损失或利用数据违法，因而没有开放官方的导出途径。直到，看到一个又一个导出记录的仓库被DMCA下架，我才知道——这是动了南山必胜客的蛋糕。
 
-![image-20260805153354196](https://img.upxuu.com/images/2026/8/5/1785915234846_219.png)
+![image-20260805153354196](https://img.upxuu.lcrworld.xyz/images/2026/8/5/1785915234846_219.png)
 
 但是，有压迫的地方就有反抗。
 
@@ -45,7 +45,7 @@ WeFlow今天被封了，可能明天就有一个新项目出现，不叫WeFlow�
 
 现在仍然幸存的功能差不多的ciphertalk，就是其中一个！[ILoveBingLu/CipherTalk: 查无此人？](https://github.com/ILoveBingLu/CipherTalk/)
 
-![image-20260805153750731](https://img.upxuu.com/images/2026/8/5/1785915471380_183.png)
+![image-20260805153750731](https://img.upxuu.lcrworld.xyz/images/2026/8/5/1785915471380_183.png)
 
 你可知道，为何是查无此人？这不是懦弱，而是明智的反抗
 

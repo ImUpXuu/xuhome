@@ -1,7 +1,7 @@
 ---
 title: "DeepSeek 降价了！还是永久降价！ 缓存命中 0.02 元/百万 token，这价格还有谁"
 published: 2026-05-23 22:07:11
-image: "https://img.upxuu.com/images/2026/5/23/1779527143525_509.webp"
+image: "https://img.upxuu.lcrworld.xyz/images/2026/5/23/1779527143525_509.webp"
 description: "DeepSeek V4 缓存命中价格降至原来的 1/10，Flash 输入只要 0.02 元/百万 token，Pro 永久降价到原价的 1/4。顺便对比下 GPT-5.5、Claude Opus 4、Gemini 2.5 Pro 和 qwen3.7-max 的价格"
 tags: ["AI"]
 category: "技术"
@@ -13,7 +13,7 @@ category: "技术"
 
 那么upxuu也是火速冲了5r试了试 是真的便宜啊~
 
-![屏幕截图 2026-05-23 164026](https://img.upxuu.com/images/2026/5/23/1779527216846_431.webp)
+![屏幕截图 2026-05-23 164026](https://img.upxuu.lcrworld.xyz/images/2026/5/23/1779527216846_431.webp)
 
 而且 Pro 不是简单的打折，是**永久降价**——首发原价 0.1/12/24 已经划掉了，现在的 0.025/3/6 是原价的 1/4，5 月 31 号之后永久执行。
 
@@ -106,6 +106,6 @@ Pro 直接降到首发原价的 1/4，缓存命中只要 0.025 元、输出 6 �
 
 *注：GPT-5.5 价格基于 OpenAI 公开定价，Claude 基于 Anthropic 公开定价，Gemini 基于 Google AI Studio 定价，qwen3.7-max 基于阿里云百炼定价。外币按 1 USD ≈ 7.2 CNY 换算，价格为近似值。*
 
-![屏幕截图 2026-05-23 164131](https://img.upxuu.com/images/2026/5/23/1779527249479_689.webp)
+![屏幕截图 2026-05-23 164131](https://img.upxuu.lcrworld.xyz/images/2026/5/23/1779527249479_689.webp)
 
 顺带一提 DeepSeek-tui也很好用
