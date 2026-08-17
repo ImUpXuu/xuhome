@@ -159,19 +159,19 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
     </script>
   <style is:global>
     @keyframes content-in {
-      0% { opacity: 0; transform: translateY(20px); filter: blur(4px); }
-      100% { opacity: 1; transform: translateY(0); filter: blur(0); }
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
     }
     @keyframes content-out {
       0% { opacity: 1; transform: translateY(0); }
-      100% { opacity: 0; transform: translateY(15px); filter: blur(2px); }
+      100% { opacity: 0; transform: translateY(15px); }
     }
     /* Card Specific Entrance - Used for staggered listing */
     @keyframes card-entrance {
       0% { 
         opacity: 0; 
         transform: translateY(30px) scale(0.96); 
-        filter: blur(4px);
+        filter: blur(1px);
       }
       70% {
         opacity: 1;
@@ -179,13 +179,27 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
         filter: blur(0);
       }
       100% { 
-        opacity: 1; 
+        opacity: 1;
         transform: translateY(0) scale(1); 
         filter: blur(0);
       }
     }
     .animate-card-entrance {
       animation: card-entrance 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+    /* 减弱动态效果：禁用 blur，降低动画幅度 */
+    @media (prefers-reduced-motion: reduce) {
+      @keyframes content-in {
+        0% { opacity: 0; }
+        100% { opacity: 1; }
+      }
+      @keyframes content-out {
+        100% { opacity: 0; }
+      }
+      @keyframes card-entrance {
+        0% { opacity: 0; }
+        100% { opacity: 1; }
+      }
     }
 
 
