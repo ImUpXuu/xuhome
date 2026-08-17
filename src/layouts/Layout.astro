@@ -148,11 +148,14 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
       <script defer src={u.src} data-website-id={u.id}></script>
     ))}
     <script type="text/javascript">
-      (function(c,l,a,r,i,t,y){
-        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-      })(window, document, "clarity", "script", "uziyyjxiky");
+      /* Clarity：页面 load 后再加载，不阻塞首屏 */
+      window.addEventListener('load', function() {
+        (function(c,l,a,r,i,t,y){
+          c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+          t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+          y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "uziyyjxiky");
+      });
     </script>
   <style is:global>
     @keyframes content-in {
