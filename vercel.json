@@ -9,27 +9,6 @@
   "headers": [
     {
       "source": "/(.*)",
-      "headers": [
-        {
-          "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://stats.upxuu.com https://comment.upxuu.com https://www.clarity.ms https://clarity.microsoft.com; style-src 'self' 'unsafe-inline' https://img.upxuu.lcrworld.xyz; font-src 'self' https://img.upxuu.lcrworld.xyz; img-src 'self' data: blob: https://img.upxuu.lcrworld.xyz https://upxuu.com https://bing.biturl.top https://github-readme-stats.shion.dev https://streak-stats.demolab.com https://komarev.com https://f.xxu6.top https://www.bilibili.com https://*.hdslb.com; connect-src 'self' https://stats.upxuu.com https://comment.upxuu.com https://blogapi.476543.xyz https://blogapi.upxuu.com https://api.github.com https://uapis.cn https://www.clarity.ms https://clarity.microsoft.com; frame-src 'self' https://player.bilibili.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'"
-        },
-        {
-          "key": "X-Content-Type-Options",
-          "value": "nosniff"
-        },
-        {
-          "key": "X-Frame-Options",
-          "value": "SAMEORIGIN"
-        },
-        {
-          "key": "Referrer-Policy",
-          "value": "strict-origin-when-cross-origin"
-        }
-      ]
-    },
-    {
-      "source": "/(.*)",
       "has": [
         {
           "type": "host",
