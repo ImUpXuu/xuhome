@@ -9,7 +9,7 @@ import { PageBanner } from '../components/PageBanner';
 import { execSync } from 'child_process';
 import '../index.css';
 
-let bgCount = 6;
+let bgCount = 0;
 
 interface Props {
   title?: string;
@@ -398,7 +398,19 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
         return;
       }
       var bgCount = Number(document.body && document.body.dataset.bgCount) || 0;
-      if (bgCount <= 0) return;
+      if (bgCount <= 0) {
+        var isMobile0 = window.innerWidth < 768;
+        var attach0 = isMobile0 ? 'scroll' : 'fixed';
+        el.style.backgroundImage =
+          'radial-gradient(circle, rgba(253,246,227,0.35) 1px, transparent 1px)';
+        el.style.backgroundSize = '24px 24px';
+        el.style.backgroundPosition = '0 0';
+        el.style.backgroundRepeat = 'repeat';
+        el.style.backgroundAttachment = attach0;
+        el.classList.add('is-ready');
+        if (loader) loader.classList.remove('is-on');
+        return;
+      }
 
       var isMobile = window.innerWidth < 768;
       var min = isMobile ? 4 : 1;
