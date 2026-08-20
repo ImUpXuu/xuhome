@@ -325,7 +325,7 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
           {/* 版权 + 备案 */}
           <div class="font-bold">
             <span class="text-slate-700 dark:text-slate-300">{infoConfig.footer.copyrightText}</span>
-            {infoConfig.footer.icp && <>
+            {infoConfig.footer.icp.text && <>
               <span class="mx-1.5 text-slate-400">·</span>
               <a href={infoConfig.footer.icp.link} target="_blank" rel="noopener noreferrer" class="text-[#0284c7] hover:underline">{infoConfig.footer.icp.text}</a>
             </>}

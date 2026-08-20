@@ -138,7 +138,7 @@ export const footerConfig = {
   copyrightText: "© 2026 UpXuu. All Rights Reserved. ",
   /** ICP 备案信息（留空则不显示） */
   icp: {
-    text: "萌 ICP 备 20269996 号",
+    text: "",
     link: "https://icp.gov.moe/?keyword=20269996",
   },
   /** 页脚底部链接列表 */
