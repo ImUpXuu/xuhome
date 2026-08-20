@@ -695,5 +695,11 @@
     "description": "物物而不物于物，念念而不念于念",
     "avatar": "https://rainzt.cn/zzty.png",
     "rss": "https://rainzt.cn/rss.xml"
+  },
+  {
+    "name": "懋和道人",
+    "url": "https://blog.dao.js.cn/",
+    "avatar": "https://www.google.com/s2/favicons?domain=blog.dao.js.cn&sz=128",
+    "description": "懋和道人的博客"
   }
 ]
