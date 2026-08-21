@@ -30,9 +30,9 @@
   let lyrics: LyricLine[] = [];
 
   let audio: HTMLAudioElement;
+  let fixedBar: HTMLElement;
   let mounted = false;
 
-  // onMount 是客户端运行，组件的 HTML 在 SSR 阶段已经输出过
   onMount(() => {
     audio = new Audio();
     audio.preload = 'none';
@@ -66,17 +66,23 @@
     } catch {}
     audio.volume = volume;
 
-    mounted = true; // 显示底部条（首次挂载后）
+    // 把底部条挪出 <main> 挂载到 body，避免 main 动画的 transform 造成包含块
+    if (fixedBar && fixedBar.parentNode !== document.body) {
+      document.body.appendChild(fixedBar);
+    }
+
+    mounted = true;
     loadPlaylist(activePlaylistId);
 
     return () => {
+      audio.pause();
       audio.removeEventListener('timeupdate', onTimeUpdate);
       audio.removeEventListener('loadedmetadata', onLoadedMetadata);
       audio.removeEventListener('play', onPlay);
       audio.removeEventListener('pause', onPause);
       audio.removeEventListener('ended', onEnded);
       audio.removeEventListener('error', onError);
-      audio.pause();
+      if (fixedBar?.parentNode === document.body) document.body.removeChild(fixedBar);
     };
   });
 
@@ -296,14 +302,15 @@
   </div>
 </div>
 
-<!-- 固定底部条：用 mounted 控制 opacity 滑 fade-in，无闪烁 -->
+<!-- 固定底部条：挂到 body 上避免 main transform 影响，用 mounted 控制 opacity 滑入不闪烁 -->
 <div
+  bind:this={fixedBar}
   class={`fixed bottom-0 left-0 right-0 z-[90] border-t-4 border-[#0284c7] bg-white dark:bg-slate-900 transition-all duration-300
-    ${mounted && songs.length ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}
+    ${mounted && songs.length ? 'translate-y-0 opacity-100' : 'pointer-events-none translate-y-full opacity-0'}`}
 >
   <!-- 进度（高度固定，不闪烁） -->
-  <div class="h-[7px] w-full bg-slate-200 dark:bg-slate-700 cursor-pointer relative" on:click={seek} on:keydown={seek} role="progressbar" aria-valuenow={progressPct} tabindex="0" aria-label="进度条">
-    <div class="absolute left-0 top-0 h-full bg-[#0284c7] transition-none" style="width: {progressPct}%" />
+  <div class="h-[7px] w-full bg-slate-200 dark:bg-slate-700 cursor-pointer relative" on:click={seek} aria-label="进度条">
+    <div class="absolute left-0 top-0 h-full bg-[#0284c7]" style="width: {progressPct}%" />
   </div>
 
   <!-- 播放控制 -->
