@@ -317,11 +317,11 @@
 <!-- ============================================================ -->
 <!-- 页面主体：左侧歌单 + 右侧歌曲列表 -->
 <!-- ============================================================ -->
-<div class="w-full max-w-6xl mx-auto px-2 sm:px-4 pb-24">
+<div class="w-full max-w-6xl mx-auto px-2 sm:px-4 pb-4 flex flex-col h-[calc(100dvh-150px)] lg:h-[calc(100vh-200px)] min-h-0 overflow-hidden">
 
   <!-- 顶部搜索框：输入关键词搜索音乐（netease） -->
   <form
-    class="mb-4"
+    class="mb-4 shrink-0"
     on:submit|preventDefault={() => doSearch()}
   >
     <div class="flex items-center gap-2 bg-white dark:bg-slate-800 border-4 border-[#0284c7] shadow-[4px_4px_0px_0px_#0284c7] rounded-sm p-2">
@@ -346,7 +346,7 @@
   </form>
 
   <!-- 手机端：歌单折叠触发条（lg 以下显示，点开弹覆盖层） -->
-  <div class="lg:hidden mb-3">
+  <div class="lg:hidden mb-3 shrink-0">
     <button
       on:click={() => showPlaylistMobile = !showPlaylistMobile}
       class="w-full bg-white dark:bg-slate-800 border-4 border-[#0284c7] shadow-[4px_4px_0px_0px_#0284c7] rounded-sm px-4 py-3 flex items-center justify-between gap-8"
@@ -361,15 +361,15 @@
     </button>
   </div>
 
-  <div class="flex flex-col lg:flex-row gap-4 items-stretch">
+  <div class="flex flex-col lg:flex-row gap-4 items-stretch flex-1 min-h-0">
 
-    <!-- 桌面歌单侧栏（lg 以上常驻） -->
-    <aside class="hidden lg:block lg:w-52 shrink-0">
-      <div class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] shadow-[4px_4px_0px_0px_#0284c7] rounded-sm overflow-hidden">
-        <div class="px-4 py-3 border-b-2 border-[#0284c7] bg-[#fde68a]">
+    <!-- 桌面歌单侧栏（lg 以上常驻，flex 撑满右列高度） -->
+    <aside class="hidden lg:block lg:w-52 shrink-0 min-h-0">
+      <div class="h-full bg-white dark:bg-slate-800 border-4 border-[#0284c7] shadow-[4px_4px_0px_0px_#0284c7] rounded-sm overflow-hidden flex flex-col">
+        <div class="px-4 py-3 border-b-2 border-[#0284c7] bg-[#fde68a] shrink-0">
           <span class="font-black text-sm text-[#0284c7] tracking-wider">🎵 歌单</span>
         </div>
-        <div class="p-2">
+        <div class="p-2 flex-1 min-h-0 overflow-y-auto overscroll-contain">
           {#each PLAYLISTS as p (p.id)}
             <button
               on:click={() => loadPlaylist(p.id)}
@@ -417,8 +417,8 @@
         </div>
       {/if}
 
-      <!-- 歌单内容卡片 -->
-      <div class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] shadow-[4px_4px_0px_0px_#0284c7] rounded-sm overflow-hidden">
+      <!-- 歌单内容卡片：header 固定，列表内部滚动，不撑高页面 -->
+      <div class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] shadow-[4px_4px_0px_0px_#0284c7] rounded-sm overflow-hidden flex flex-col h-full min-h-0">
 
       <!-- 歌单头部（搜索模式显示搜索词） -->
       <div class="px-5 py-4 border-b-2 border-[#0284c7] bg-[#fde68a] flex items-center justify-between gap-3">
@@ -460,7 +460,7 @@
           <p class="font-bold text-sm">{searchMode ? '没有找到相关歌曲，换个关键词试试' : '暂无歌曲'}</p>
         </div>
       {:else}
-        <div class="max-h-[calc(100vh-220px)] min-h-40 lg:max-h-[calc(100vh-140px)] overflow-y-auto overscroll-contain" bind:this={listScrollEl}>
+        <div class="flex-1 min-h-0 overflow-y-auto overscroll-contain" bind:this={listScrollEl}>
           <ul>
             {#each songs as song, i (songId(song) + i)}
               <li class={i % 2 === 0 ? '' : 'bg-slate-50/60 dark:bg-slate-700/20'}>
@@ -603,7 +603,7 @@
 
   <!-- 面板：从底部上滑，实色背景，顶部大圆角；底部让出播放器不遮挡，桌面端收窄居中 -->
   <aside
-    class={`absolute left-0 right-0 mx-auto bottom-[70px] md:bottom-[76px] w-full max-w-2xl h-[78vh] sm:h-[72vh] flex flex-col bg-white dark:bg-slate-900 rounded-t-[24px] border-t-4 border-[#0284c7] shadow-[0_-16px_50px_rgba(2,132,199,0.25)] transition-transform duration-400 ease-out ${lyricsOpen ? 'translate-y-0' : 'translate-y-[calc(100%+90px)]'} ${lyricsOpen ? '' : 'pointer-events-none'}`}
+    class={`absolute left-0 right-0 mx-auto bottom-[70px] md:bottom-[76px] w-full max-w-2xl h-[78vh] sm:h-[72vh] flex flex-col bg-white dark:bg-slate-900 rounded-t-[24px] border-t-4 border-[#0284c7] shadow-[0_-16px_50px_rgba(2,132,199,0.25)] transition-transform duration-400 ease-out ${lyricsOpen ? 'translate-y-0 pointer-events-auto' : 'translate-y-[calc(100%+90px)] pointer-events-none'}`}
   >
     <!-- 顶部拖拽抓手 + 头部：歌名 / 歌手 + 关闭按钮 -->
     <div class="shrink-0 px-4 pt-2.5 pb-2 border-b-2 border-[#0284c7] bg-[#fde68a] rounded-t-[28px]">
