@@ -111,6 +111,7 @@ export const navConfig: {
     { name: "归档", href: "/posts" },
     { name: "统计", href: "https://stats.upxuu.com/share/sFftlqBkgk2z9JM2", external: true },
     { name: "标签", href: "/tags" },
+    { name: "音乐", href: "/music" },
     { name: "AI", href: "/ai" },
   ],
   /** 移动端汉堡菜单中的额外项 */
@@ -120,6 +121,7 @@ export const navConfig: {
     { name: "归档页面", href: "/posts" },
     { name: "网站统计", href: "https://stats.upxuu.com/share/sFftlqBkgk2z9JM2", external: true },
     { name: "标签", href: "/tags" },
+    { name: "音乐", href: "/music" },
     { name: "AI", href: "/ai" },
   ],
   /** 外部链接项（桌面端"更多"下拉 + 移动端汉堡菜单底部） */
