@@ -117,17 +117,6 @@ const relatedPosts = (() => {
               </div>
             </div>
 
-            {/* 顶栏分享按钮：放在文章标题同行的右上角 */}
-            <div class="shrink-0">
-              <ShareButton
-                title={post.title}
-                description={post.description}
-                url={Astro.url.href}
-                image={post.img}
-                date={post.date}
-                client:only="svelte"
-              />
-            </div>
           </div>
 
           {/* Prose Content block */}
@@ -147,7 +136,20 @@ const relatedPosts = (() => {
           </div>
           
           <div class="relative z-10 space-y-4">
-            <h3 class="text-base sm:text-lg font-black text-[#0284c7] leading-snug">{post.title}</h3>
+            <div class="flex items-start justify-between gap-3">
+              <h3 class="text-base sm:text-lg font-black text-[#0284c7] leading-snug min-w-0">{post.title}</h3>
+              {/* 分享按钮：放在底部版权卡片右上角 */}
+              <div class="shrink-0">
+                <ShareButton
+                  title={post.title}
+                  description={post.description}
+                  url={Astro.url.href}
+                  image={post.img}
+                  date={post.date}
+                  client:only="svelte"
+                />
+              </div>
+            </div>
             
             <div class="inline-block bg-[#e0f2fe]/80 border-2 border-[#0ea5e9]/20 px-3 py-1 rounded-sm text-xs font-bold text-[#0284c7] hover:text-[#0ea5e9] hover:bg-[#e0f2fe] transition-all break-all select-all">
               <a href={Astro.url.href} target="_blank" rel="noopener noreferrer">
