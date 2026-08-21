@@ -50,6 +50,13 @@
   let userScrolling = false;
   let userScrollTimer: ReturnType<typeof setTimeout> | null = null;
 
+  // 歌词面板高度（vh），可通过拖拽把手动态调整
+  let sheetHeight = 62;
+  let draggingSheet = false;
+  let dragStartY = 0;
+  let dragStartH = 0;
+  let dragMovedY = 0;
+
   let playlistCounts: Record<string, number> = {};
 
   // ==================== 生命周期 ====================
@@ -88,6 +95,7 @@
     audio.volume = volume;
 
     mounted = true;
+    sheetHeight = defaultSheetHeight();
     loadPlaylist(activePlaylistId);
 
     return () => {
@@ -311,6 +319,36 @@
     if (!audio || !line) return;
     audio.currentTime = line.time;
     currentTime = line.time;
+  }
+
+  // ==================== 歌词面板拖拽调高 ====================
+  function defaultSheetHeight() {
+    return typeof window !== 'undefined' && window.innerWidth >= 640 ? 70 : 62;
+  }
+
+  function onSheetDragStart(e: PointerEvent) {
+    draggingSheet = true;
+    dragStartY = e.clientY;
+    dragStartH = sheetHeight;
+    dragMovedY = 0;
+    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+  }
+
+  function onSheetDragMove(e: PointerEvent) {
+    if (!draggingSheet) return;
+    dragMovedY = e.clientY - dragStartY;
+    const h = dragStartH - (dragMovedY / window.innerHeight) * 100;
+    sheetHeight = Math.max(32, Math.min(92, h));
+  }
+
+  function onSheetDragEnd() {
+    if (!draggingSheet) return;
+    draggingSheet = false;
+    // 快速下滑超过 12% 屏高 → 直接关闭并重置高度
+    if (dragMovedY > window.innerHeight * 0.12) {
+      closeLyrics();
+      sheetHeight = defaultSheetHeight();
+    }
   }
 </script>
 
@@ -601,13 +639,22 @@
     on:click={closeLyrics}
   ></div>
 
-  <!-- 面板：从底部上滑，实色背景，顶部大圆角；底部让出播放器不遮挡，桌面端收窄居中 -->
+  <!-- 面板：从底部上滑，实色背景，顶部大圆角；高度可拖拽调整，底部让出播放器，桌面端收窄居中 -->
   <aside
-    class={`absolute left-0 right-0 mx-auto bottom-[70px] md:bottom-[76px] w-full max-w-2xl h-[78vh] sm:h-[72vh] flex flex-col bg-white dark:bg-slate-900 rounded-t-[24px] border-t-4 border-[#0284c7] shadow-[0_-16px_50px_rgba(2,132,199,0.25)] transition-transform duration-400 ease-out ${lyricsOpen ? 'translate-y-0 pointer-events-auto' : 'translate-y-[calc(100%+90px)] pointer-events-none'}`}
+    style={`height:${sheetHeight}vh`}
+    class={`absolute left-0 right-0 mx-auto bottom-[70px] md:bottom-[76px] w-full max-w-2xl flex flex-col bg-white dark:bg-slate-900 rounded-t-[24px] border-t-4 border-[#0284c7] shadow-[0_-16px_50px_rgba(2,132,199,0.25)] ${draggingSheet ? '' : 'transition-transform duration-400 ease-out'} ${lyricsOpen ? 'translate-y-0 pointer-events-auto' : 'translate-y-[calc(100%+90px)] pointer-events-none'}`}
   >
     <!-- 顶部拖拽抓手 + 头部：歌名 / 歌手 + 关闭按钮 -->
     <div class="shrink-0 px-4 pt-2.5 pb-2 border-b-2 border-[#0284c7] bg-[#fde68a] rounded-t-[28px]">
-      <div class="w-10 h-1.5 rounded-full bg-[#0284c7]/30 mx-auto mb-2"></div>
+      <div
+        class="w-16 h-2 rounded-full bg-[#0284c7]/30 mx-auto mb-2 cursor-grab active:cursor-grabbing touch-none select-none"
+        role="separator"
+        aria-label="拖拽调整歌词面板高度"
+        on:pointerdown={onSheetDragStart}
+        on:pointermove={onSheetDragMove}
+        on:pointerup={onSheetDragEnd}
+        on:pointercancel={onSheetDragEnd}
+      ></div>
       <div class="flex items-center justify-between gap-3">
         <div class="min-w-0">
           <div class="font-black text-sm text-[#0284c7] truncate">{currentSong.title}</div>
