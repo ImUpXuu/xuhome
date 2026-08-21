@@ -194,7 +194,6 @@
   }
 
   function changeMode() { mode = mode === 'list' ? 'single' : mode === 'single' ? 'random' : 'list'; }
-  const modeIcon = { list: '→', single: '≡', random: '∞' };
 
   /** 当前正在唱的第几句（-1 表示还没有） */
   $: activeLyricIdx = (() => {
@@ -441,15 +440,24 @@
       </button>
     </div>
 
-    <!-- 右侧：时间/模式/音量（桌面显示，手机收起） -->
-    <div class="hidden md:flex items-center gap-3 shrink-0 ml-auto">
-      <span class="text-xs font-black tabular-nums whitespace-nowrap text-slate-500 dark:text-slate-400">
+    <!-- 右侧：时间/模式/音量（模式手机也显示，时间≥sm，音量≥lg） -->
+    <div class="flex items-center gap-2 sm:gap-3 shrink-0 ml-auto">
+      <span class="text-xs font-black tabular-nums whitespace-nowrap text-slate-500 dark:text-slate-400 hidden sm:inline">
         {fmt(currentTime)} / {fmt(duration)}
       </span>
       <button on:click={changeMode} aria-label="播放模式"
-        class="w-9 h-9 flex-shrink-0 flex items-center justify-center border-2 border-[#0284c7] text-xs font-black text-[#0284c7] bg-[#fde68a] rounded-sm shadow-[2px_2px_0px_0px_#0284c7] active:shadow-none active:translate-y-0.5 transition-all hover:-translate-y-0.5"
+        class="w-9 h-9 flex-shrink-0 flex items-center justify-center border-2 border-[#0284c7] text-[#0284c7] bg-[#fde68a] rounded-sm shadow-[2px_2px_0px_0px_#0284c7] active:shadow-none active:translate-y-0.5 transition-all hover:-translate-y-0.5"
         title="当前模式：{mode === 'list' ? '列表循环' : mode === 'single' ? '单曲循环' : '随机播放'}">
-        {modeIcon[mode]}
+        {#if mode === 'list'}
+          <!-- 列表循环 -->
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 1 4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="m7 23-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+        {:else if mode === 'single'}
+          <!-- 单曲循环 -->
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 1 4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="m7 23-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/><path d="M11 10h1v4"/></svg>
+        {:else}
+          <!-- 随机播放 -->
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 14 4 4-4 4"/><path d="m18 2 4 4-4 4"/><path d="M2 18h1.973a4 4 0 0 0 3.3-1.7l5.454-8.6a4 4 0 0 1 3.3-1.7H22"/><path d="M2 6h1.972a4 4 0 0 1 3.6 2.2"/><path d="M22 18h-6.041a4 4 0 0 1-3.3-1.8l-.359-.45"/></svg>
+        {/if}
       </button>
       <div class="hidden lg:flex items-center gap-2 w-20">
         <span class="text-[10px] font-black text-slate-400">音量</span>
@@ -465,20 +473,20 @@
 <!-- 歌词面板：网易云风格，从底部弹出（实色，不透明） -->
 <!-- ============================================================ -->
 {#if currentSong}
-<div class="fixed inset-0 z-[100]" class:pointer-events-none={!lyricsOpen} aria-hidden={!lyricsOpen}>
+<div class="fixed inset-0 z-[100] pointer-events-none" aria-hidden={!lyricsOpen}>
 
-  <!-- 遮罩：点击空白处关闭 -->
+  <!-- 遮罩：点击空白处关闭（底部让出播放器高度，不遮住播放器） -->
   <div
-    class="absolute inset-0 bg-slate-900/50 transition-opacity duration-300"
+    class="absolute inset-0 bottom-[70px] md:bottom-[76px] bg-slate-900/50 transition-opacity duration-300"
     class:opacity-100={lyricsOpen}
     class:opacity-0={!lyricsOpen}
-    class:pointer-events-none={!lyricsOpen}
+    class:pointer-events-auto={lyricsOpen}
     on:click={() => lyricsOpen = false}
   ></div>
 
-  <!-- 面板：从底部上滑，实色背景，顶部大圆角（网易云风格） -->
+  <!-- 面板：从底部上滑，实色背景，顶部大圆角；底部让出播放器不遮挡，桌面端收窄居中 -->
   <aside
-    class={`absolute left-0 right-0 bottom-0 h-[82vh] sm:h-[76vh] md:h-[70vh] flex flex-col bg-white dark:bg-slate-900 rounded-t-[28px] border-t-4 border-[#0284c7] shadow-[0_-16px_50px_rgba(2,132,199,0.25)] transition-transform duration-400 ease-out ${lyricsOpen ? 'translate-y-0' : 'translate-y-full'} ${lyricsOpen ? '' : 'pointer-events-none'}`}
+    class={`absolute left-0 right-0 mx-auto bottom-[70px] md:bottom-[76px] w-full max-w-2xl h-[78vh] sm:h-[72vh] flex flex-col bg-white dark:bg-slate-900 rounded-t-[24px] border-t-4 border-[#0284c7] shadow-[0_-16px_50px_rgba(2,132,199,0.25)] transition-transform duration-400 ease-out ${lyricsOpen ? 'translate-y-0' : 'translate-y-full'} ${lyricsOpen ? '' : 'pointer-events-none'}`}
   >
     <!-- 顶部拖拽抓手 + 头部：歌名 / 歌手 + 关闭按钮 -->
     <div class="shrink-0 px-4 pt-2.5 pb-2 border-b-2 border-[#0284c7] bg-[#fde68a] rounded-t-[28px]">
