@@ -25,6 +25,7 @@ import argparse
 import datetime
 import http.client
 import json
+import os
 import ssl
 import statistics
 import sys
@@ -33,6 +34,15 @@ import time
 from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
 from urllib.parse import urlparse
+
+
+def _safe_cwd_path(p, label):
+    """把输出/日志路径限制在当前工作目录内，防止写入任意位置（路径穿越）。"""
+    base = os.path.abspath(os.getcwd())
+    path = os.path.abspath(p)
+    if not path.startswith(base + os.sep):
+        raise ValueError(f"{label} 必须位于当前工作目录内，拒绝写入: {p}")
+    return path
 
 
 # ----------------------------------------------------------------------------
@@ -448,6 +458,7 @@ def main():
     headers.setdefault("Accept", "*/*")
 
     logfile = args.log or f"loadtest_{now_fname()}.log"
+    logfile = _safe_cwd_path(logfile, "日志文件")
     logger = TeeLogger(logfile)
     print(f"日志文件: {logfile}\n")
 
@@ -476,7 +487,7 @@ def main():
                 for r in results
             ],
         }
-        with open(args.output, "w", encoding="utf-8") as f:
+        with open(_safe_cwd_path(args.output, "输出文件"), "w", encoding="utf-8") as f:
             json.dump(report, f, ensure_ascii=False, indent=2)
         print(f"\n详细结果已写入: {args.output}")
 

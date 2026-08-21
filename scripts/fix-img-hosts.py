@@ -29,6 +29,12 @@ NEW_IMAGES_PREFIX = "https://" + NEW_HOST + "/images/"
 WEBP_SET = set()
 
 
+def _inside(base, p):
+    """p 是否落在 base 目录内（防路径穿越，只允许改内容目录内的文件）。"""
+    abs_base = os.path.abspath(base)
+    return os.path.abspath(p).startswith(abs_base + os.sep)
+
+
 def collect_upxuu_urls():
     """Extract all https://img.upxuu.com/images/... URLs from content files."""
     found = set()
@@ -109,6 +115,10 @@ def main():
                             "https://" + NEW_HOST + "/images/")
         text = text.replace(XYZ_PREFIX, NEW_IMAGES_PREFIX)
         if text != orig:
+            # 只允许改写内容目录或固定布局文件，防止意外覆盖其它路径
+            if not (_inside(CONTENT, p) or os.path.abspath(p) == os.path.abspath(LAYOUT)):
+                print("SKIP (outside content):", os.path.relpath(p, ROOT))
+                continue
             with open(p, "wb") as f:
                 f.write(text.encode("utf-8"))
             total += 1

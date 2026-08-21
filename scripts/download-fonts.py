@@ -10,6 +10,7 @@
 import os
 import re
 import time
+import urllib.parse
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
@@ -30,8 +31,24 @@ CSS_OUT = os.path.join(OUT_DIR, "fonts.css")
 MAX_WORKERS = 6
 RETRIES = 3
 
+# 仅允许抓取 Google Fonts 白名单域名，防止 SSRF
+ALLOWED_HOSTS = {"fonts.googleapis.com", "fonts.gstatic.com"}
+
+
+def safe_join(base, name):
+    """把 name 拼到 base 下并强制落在 base 内，杜绝路径穿越。"""
+    base = os.path.abspath(base)
+    name = os.path.basename(name)  # 剥离任何目录成分
+    path = os.path.abspath(os.path.join(base, name))
+    if not path.startswith(base + os.sep):
+        raise ValueError(f"拒绝写入 base 之外的文件名: {name!r}")
+    return path
+
 
 def fetch(url, headers=None, timeout=30):
+    parsed = urllib.parse.urlparse(url)
+    if parsed.scheme not in ("https", "http") or parsed.hostname not in ALLOWED_HOSTS:
+        raise ValueError(f"拒绝访问非白名单地址: {url}")
     req = urllib.request.Request(url, headers=headers or {"User-Agent": UA})
     with urllib.request.urlopen(req, timeout=timeout) as r:
         return r.read()
@@ -86,7 +103,7 @@ def main():
         fam = re.sub(r"[^A-Za-z0-9]+", "", it["family"]).lower()
         counters[fam] = counters.get(fam, 0) + 1
         it["file"] = f"{fam}-{counters[fam]:03d}.woff2"
-        it["path"] = os.path.join(WOFF_DIR, it["file"])
+        it["path"] = safe_join(WOFF_DIR, it["file"])
 
     # 并发下载
     def dl(it):
@@ -127,7 +144,7 @@ def main():
         "/* 自托管字体：请将整个 fonts-download 目录上传到 CDN，然后引用 fonts.css */\n"
         "/* 例如：<link rel=\"stylesheet\" href=\"https://你的域名/fonts/fonts.css\" /> */\n"
     )
-    with open(CSS_OUT, "w", encoding="utf-8") as f:
+    with open(safe_join(OUT_DIR, "fonts.css"), "w", encoding="utf-8") as f:
         f.write(header + new_css)
     print(f"已生成 {os.path.relpath(CSS_OUT, os.getcwd())}")
 

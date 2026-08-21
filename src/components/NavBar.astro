@@ -13,7 +13,9 @@ const isPostPage = pathname === '/' || pathname.startsWith('/page/') || pathname
 const isAboutPage = pathname === '/about';
 const isFriendsPage = pathname === '/friends' || pathname === '/links';
 const isArchivePage = pathname === '/posts';
+const isTagsPage = pathname === '/tags' || pathname.startsWith('/tag/') || pathname.startsWith('/tags/');
 const isAiPage = pathname === '/ai';
+const isMusicPage = pathname === '/music';
 ---
 
 <div class="fixed top-0 left-0 right-0 z-[100] bg-white dark:bg-slate-800 border-b-4 border-[#0284c7] px-3 py-2 sm:px-6 sm:py-3 shadow-[0px_4px_0px_0px_rgba(30,58,138,0.1)] dark:shadow-[0px_4px_0px_0px_rgba(2,132,199,0.2)]" transition:name="navbar" transition:persist>
@@ -97,6 +99,18 @@ const isAiPage = pathname === '/ai';
       </a>
 
       <a
+        href={nav[6].href}
+        class={`hidden xl:flex px-1.5 py-0.5 sm:px-3 sm:py-1.5 border-2 border-[#0284c7] items-center gap-0.5 sm:gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-xs sm:text-sm tracking-wider shrink-0 whitespace-nowrap ${
+          isTagsPage ? 'bg-[#0ea5e9] text-white shadow-[1px_1px_0px_0px_#0284c7] sm:shadow-[2px_2px_0px_0px_#0284c7]' : 'text-[#0284c7] shadow-[1px_1px_0px_0px_#fde68a] sm:shadow-[2px_2px_0px_0px_#fde68a] bg-[rgba(250,248,245,0.55)]'
+        }`}
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 sm:w-4 sm:h-4 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82zM7 7h.01" />
+        </svg>
+        <span>{nav[6].name}</span>
+      </a>
+
+      <a
         href={nav[7].href}
         class={`hidden xl:flex px-1.5 py-0.5 sm:px-3 sm:py-1.5 border-2 border-[#0284c7] items-center gap-0.5 sm:gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-xs sm:text-sm tracking-wider shrink-0 whitespace-nowrap ${
           isAiPage ? 'bg-[#0ea5e9] text-white shadow-[1px_1px_0px_0px_#0284c7] sm:shadow-[2px_2px_0px_0px_#0284c7]' : 'text-[#0284c7] shadow-[1px_1px_0px_0px_#fde68a] sm:shadow-[2px_2px_0px_0px_#fde68a] bg-[rgba(250,248,245,0.55)]'
@@ -106,6 +120,18 @@ const isAiPage = pathname === '/ai';
           <path stroke-linecap="round" stroke-linejoin="round" d="M12 2a5 5 0 015 5v2h1a2 2 0 012 2v8a2 2 0 01-2 2H6a2 2 0 01-2-2v-8a2 2 0 012-2h1V7a5 5 0 015-5zm0 2a3 3 0 00-3 3v2h6V7a3 3 0 00-3-3z" />
         </svg>
         <span>{nav[7].name}</span>
+      </a>
+
+      <a
+        href={nav[8].href}
+        class={`hidden xl:flex px-1.5 py-0.5 sm:px-3 sm:py-1.5 border-2 border-[#0284c7] items-center gap-0.5 sm:gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-xs sm:text-sm tracking-wider shrink-0 whitespace-nowrap ${
+          isMusicPage ? 'bg-[#0ea5e9] text-white shadow-[1px_1px_0px_0px_#0284c7] sm:shadow-[2px_2px_0px_0px_#0284c7]' : 'text-[#0284c7] shadow-[1px_1px_0px_0px_#fde68a] sm:shadow-[2px_2px_0px_0px_#fde68a] bg-[rgba(250,248,245,0.55)]'
+        }`}
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 sm:w-4 sm:h-4 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 18V5l12-2v13M9 18a3 3 0 01-6 0M12 16V6l-3 12m15-1a3 3 0 01-6 0" />
+        </svg>
+        <span>{nav[8].name}</span>
       </a>
 
       <a
@@ -144,6 +170,18 @@ const isAiPage = pathname === '/ai';
           <span class="hidden md:inline">{i18nConfig.common.more}</span>
         </button>
         <div id="desktop-more-dropdown" class="absolute right-0 mt-3 w-32 bg-white dark:bg-slate-800 border-3 border-[#0284c7] shadow-[3px_3px_0px_0px_#0284c7] rounded-sm p-1.5 flex flex-col gap-1.5 z-[110] transform rotate-0.5 hidden">
+          <a href={nav[6].href} class={`xl:hidden p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none ${isTagsPage ? "bg-[#0ea5e9] text-white" : "bg-[rgba(250,248,245,0.55)] dark:bg-slate-700 text-[#0284c7]"}`}>
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82zM7 7h.01" /></svg>
+            {nav[6].name}
+          </a>
+          <a href={nav[7].href} class={`xl:hidden p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none ${isAiPage ? "bg-[#0ea5e9] text-white" : "bg-[rgba(250,248,245,0.55)] dark:bg-slate-700 text-[#0284c7]"}`}>
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 2a5 5 0 015 5v2h1a2 2 0 012 2v8a2 2 0 01-2 2H6a2 2 0 01-2-2v-8a2 2 0 012-2h1V7a5 5 0 015-5zm0 2a3 3 0 00-3 3v2h6V7a3 3 0 00-3-3z" /></svg>
+            {nav[7].name}
+          </a>
+          <a href={nav[8].href} class={`xl:hidden p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none ${isMusicPage ? "bg-[#0ea5e9] text-white" : "bg-[rgba(250,248,245,0.55)] dark:bg-slate-700 text-[#0284c7]"}`}>
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 18V5l12-2v13M9 18a3 3 0 01-6 0M12 16V6l-3 12m15-1a3 3 0 01-6 0" /></svg>
+            {nav[8].name}
+          </a>
           <a href={ext[0].href} target="_blank" rel="noopener noreferrer" class="xl:hidden p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider bg-[#ebf3ff] dark:bg-slate-700 text-[#0284c7] select-none">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
