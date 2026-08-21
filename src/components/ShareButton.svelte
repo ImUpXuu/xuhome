@@ -30,10 +30,25 @@
     } catch {}
   });
 
-  function toggle() { expanded = !expanded; }
+  function toggle() {
+    expanded = !expanded;
+    if (expanded) document.addEventListener('keydown', onKeyDown);
+    else document.removeEventListener('keydown', onKeyDown);
+  }
 
-  function copyLink() {
-    navigator.clipboard.writeText(shareUrl).then(() => { copied = true; setTimeout(() => copied = false, 2000); });
+  function closeShare() {
+    expanded = false;
+    document.removeEventListener('keydown', onKeyDown);
+  }
+
+  async function copyLink() {
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      copied = true;
+      setTimeout(() => copied = false, 2000);
+    } catch {
+      copied = false;
+    }
   }
 
   function shareToQQ() {
@@ -54,7 +69,11 @@
     document.removeEventListener('keydown', onKeyDown);
   }
 
-  function onKeyDown(e: KeyboardEvent) { if (e.key === 'Escape') closePoster(); }
+  function onKeyDown(e: KeyboardEvent) {
+    if (e.key !== 'Escape') return;
+    if (showPoster) closePoster();
+    else if (expanded) closeShare();
+  }
 
   async function copyPoster() {
     if (!posterDataUrl) return;
@@ -93,6 +112,7 @@
   }
 
   async function generatePoster() {
+    closeShare();
     generatingPoster = true;
     posterError = '';
     posterDataUrl = null;
@@ -270,33 +290,51 @@
 </button>
 
 {#if expanded}
-  <div class="mt-3 border-t-2 border-dashed border-[#0284c7]/20 pt-3 space-y-2">
-    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
-      <button on:click={generatePoster} disabled={generatingPoster} class="flex items-center gap-2 p-2.5 bg-white dark:bg-slate-700 border-2 border-[#0284c7] rounded-sm shadow-[2px_2px_0px_0px_#0284c7] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all text-xs font-black text-[#0284c7] cursor-pointer disabled:opacity-50">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-        {#if generatingPoster}<span class="animate-spin">⟳</span>{:else}海报{/if}
-      </button>
-      <button on:click={shareToQQ} class="flex items-center gap-2 p-2.5 bg-white dark:bg-slate-700 border-2 border-[#0284c7] rounded-sm shadow-[2px_2px_0px_0px_#0284c7] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all text-xs font-black text-[#0284c7] cursor-pointer">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 shrink-0 fill-[#0284c7]" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.5 14h-9c-.83 0-1.5-.67-1.5-1.5S6.67 13 7.5 13h9c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5zm0-5h-9c-.83 0-1.5-.67-1.5-1.5S6.67 8 7.5 8h9c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5z"/></svg>
-        QQ
-      </button>
-      <button on:click={shareToX} class="flex items-center gap-2 p-2.5 bg-white dark:bg-slate-700 border-2 border-[#0284c7] rounded-sm shadow-[2px_2px_0px_0px_#0284c7] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all text-xs font-black text-[#0284c7] cursor-pointer">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 shrink-0 fill-current" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-        X
-      </button>
-      <button on:click={shareToWeChat} class="flex items-center gap-2 p-2.5 bg-white dark:bg-slate-700 border-2 border-[#0284c7] rounded-sm shadow-[2px_2px_0px_0px_#0284c7] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all text-xs font-black text-[#0284c7] cursor-pointer">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 shrink-0 fill-[#07c160]" viewBox="0 0 24 24"><path d="M8.691 2.188C3.891 2.188 0 5.476 0 9.53c0 2.212 1.17 4.203 3.002 5.55a.59.59 0 01.213.665l-.39 1.48c-.019.07-.048.141-.048.213 0 .163.13.295.29.295a.326.326 0 00.167-.054l1.903-1.114a.864.864 0 01.717-.098 10.16 10.16 0 002.837.403c.276 0 .543-.027.811-.05-.857-2.578.157-4.972 1.932-6.446 1.703-1.415 3.882-1.98 5.853-1.838-.576-3.583-4.196-6.348-8.596-6.348z"/></svg>
-        微信
-      </button>
-      <button on:click={copyLink} class="flex items-center gap-2 p-2.5 bg-white dark:bg-slate-700 border-2 border-[#0284c7] rounded-sm shadow-[2px_2px_0px_0px_#0284c7] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all text-xs font-black text-[#0284c7] cursor-pointer">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>
-        {copied ? '已复制' : '复制链接'}
-      </button>
-    </div>
+  <div class="fixed inset-0 z-[9990] flex items-end sm:items-center justify-center p-0 sm:p-6" role="presentation" on:click={closeShare}>
+    <div class="absolute inset-0 bg-slate-900/35 backdrop-blur-sm"></div>
+    <section
+      class="relative w-full sm:max-w-lg max-h-[88vh] overflow-y-auto rounded-t-[28px] sm:rounded-[28px] bg-[#f8fbff] dark:bg-slate-800 border border-[#c5e2f2] shadow-[0_24px_80px_rgba(23,50,77,0.25)]"
+      role="dialog" aria-modal="true" aria-labelledby="share-dialog-title" on:click|stopPropagation
+    >
+      <div class="sticky top-0 z-10 flex items-center justify-between gap-4 px-5 py-4 border-b border-[#dceefa] bg-[#f8fbff]/95 dark:bg-slate-800/95 backdrop-blur">
+        <div>
+          <h2 id="share-dialog-title" class="text-lg font-bold text-[#17324d] dark:text-slate-100">分享这篇文章</h2>
+          <p class="mt-1 text-xs text-[#6b8298]">选择方式，把内容分享给朋友</p>
+        </div>
+        <button type="button" on:click={closeShare} aria-label="关闭分享窗口" class="w-10 h-10 shrink-0 rounded-full bg-[#dceefa] text-[#4b83a5] hover:bg-[#c5e2f2] transition-colors flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+      </div>
 
-    {#if posterError}
-      <p class="text-xs font-bold text-red-500 text-center">{posterError}</p>
-    {/if}
+      <div class="p-5 sm:p-6">
+        <div class="flex items-start gap-3 p-4 rounded-2xl bg-white dark:bg-slate-700 border border-[#dceefa]">
+          {#if image}<img src={image} alt="" class="w-14 h-14 rounded-xl object-cover shrink-0" />{/if}
+          <div class="min-w-0">
+            <h3 class="font-bold text-[#17324d] dark:text-slate-100 line-clamp-2">{title || '无标题'}</h3>
+            <p class="mt-1 text-xs text-[#6b8298] line-clamp-2">{description || '来自 UpXuu 的文章分享'}</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-5">
+          <button type="button" on:click={() => { closeShare(); generatePoster(); }} disabled={generatingPoster} class="min-h-16 rounded-2xl bg-[#78b9dc] text-white font-bold text-sm hover:bg-[#5fa8d0] transition-colors disabled:opacity-60 flex flex-col items-center justify-center gap-1">
+            <span class="text-lg">{generatingPoster ? '⟳' : '▧'}</span><span>{generatingPoster ? '生成中…' : '海报'}</span>
+          </button>
+          <button type="button" on:click={copyLink} class="min-h-16 rounded-2xl bg-white dark:bg-slate-700 border border-[#c5e2f2] text-[#4b83a5] font-bold text-sm hover:bg-[#eef7fc] transition-colors flex flex-col items-center justify-center gap-1">
+            <span class="text-lg">⌁</span><span>{copied ? '已复制' : '复制链接'}</span>
+          </button>
+          <button type="button" on:click={shareToWeChat} class="min-h-16 rounded-2xl bg-white dark:bg-slate-700 border border-[#c5e2f2] text-[#4b83a5] font-bold text-sm hover:bg-[#eef7fc] transition-colors flex flex-col items-center justify-center gap-1">
+            <span class="text-lg text-[#07c160]">●</span><span>微信</span>
+          </button>
+          <button type="button" on:click={shareToQQ} class="min-h-16 rounded-2xl bg-white dark:bg-slate-700 border border-[#c5e2f2] text-[#4b83a5] font-bold text-sm hover:bg-[#eef7fc] transition-colors flex flex-col items-center justify-center gap-1">
+            <span class="text-lg">Q</span><span>QQ 空间</span>
+          </button>
+          <button type="button" on:click={shareToX} class="min-h-16 rounded-2xl bg-white dark:bg-slate-700 border border-[#c5e2f2] text-[#4b83a5] font-bold text-sm hover:bg-[#eef7fc] transition-colors flex flex-col items-center justify-center gap-1">
+            <span class="text-lg">𝕏</span><span>分享到 X</span>
+          </button>
+        </div>
+        {#if posterError}<p class="mt-3 text-center text-xs font-medium text-red-500">{posterError}</p>{/if}
+      </div>
+    </section>
   </div>
 {/if}
 
