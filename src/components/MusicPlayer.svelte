@@ -353,11 +353,10 @@
   </div>
 
   <!-- 底栏内容区（桌面端限宽居中） -->
-  <div class="px-3 sm:px-4 py-2 flex items-center gap-2 sm:gap-3 max-w-6xl mx-auto">
-
-    <!-- 唱盘 + 歌名/歌手 -->
+  <div class="px-3 sm:px-4 py-2 flex items-center gap-2 sm:gap-3 max-w-6xl mx-auto w-full">
+    <!-- 封面 + 歌名/歌手 -->
     <div class="flex items-center gap-2.5 flex-1 min-w-0 lg:w-64 lg:shrink-0">
-      <div class={`shrink-0 w-11 h-11 rounded-full border-3 border-[#0284c7] overflow-hidden bg-slate-100 dark:bg-slate-800 transition-transform duration-500 ${playing ? 'rotate-180 scale-105' : ''}`}>
+      <div class={`shrink-0 w-11 h-11 rounded-full border-3 border-[#0284c7] overflow-hidden bg-slate-100 dark:bg-slate-800 transition-transform ${playing ? 'rotate-180 scale-105' : ''}`}>
         {#if currentSong?.pic}
           <img src={currentSong.pic} alt={currentSong.title} class="w-full h-full object-cover" />
         {:else}
@@ -366,10 +365,10 @@
       </div>
       <div class="min-w-0 flex-1">
         <div class="font-black text-sm text-slate-800 dark:text-slate-100 truncate">
-          {currentSong ? currentSong.title : '\u2014\u2014'}
+          {currentSong ? currentSong.title : '——'}
         </div>
         <div class="text-xs text-slate-400 truncate">
-          {lyricText && playing ? lyricText : (currentSong?.author || '\u2014\u2014')}
+          {lyricText && playing ? lyricText : (currentSong?.author || '——')}
         </div>
       </div>
     </div>
@@ -411,8 +410,6 @@
           bind:value={volume} on:input={(e) => setVolume((e.target as HTMLInputElement).valueAsNumber)} />
       </div>
     </div>
-
-  </div>
   </div>
 </div>
 
