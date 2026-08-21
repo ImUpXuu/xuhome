@@ -459,7 +459,7 @@
 <!-- 歌词面板：从右侧滑入（网易云风格），手机端全屏覆盖 -->
 <!-- ============================================================ -->
 {#if currentSong}
-<div class="fixed inset-0 z-[100]" aria-hidden={!lyricsOpen}>
+<div class="fixed inset-0 z-[100] transition-opacity duration-300" class:opacity-100={lyricsOpen} class:opacity-0={!lyricsOpen} class:pointer-events-none={!lyricsOpen} aria-hidden={!lyricsOpen}>
 
   <!-- 遮罩：点击空白处关闭 -->
   <div
