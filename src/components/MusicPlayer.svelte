@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount, onDestroy } from 'svelte';
+  import { onMount, onDestroy, afterUpdate } from 'svelte';
 
   interface Song { title: string; author: string; pic: string; url: string; lrc?: string; }
   interface LyricLine { time: number; text: string; }
@@ -32,6 +32,9 @@
   let mode: 'list' | 'single' | 'random' = 'list';
   let lyrics: LyricLine[] = [];
   let lyricText = '';
+  let lyricsOpen = false;
+  let lyricScrollEl: HTMLElement;
+  let lastScrolledIdx = -1;
 
   let audio: HTMLAudioElement;
   let mounted = false;
@@ -114,6 +117,7 @@
   async function loadLyrics(song: Song) {
     lyrics = [];
     lyricText = '';
+    lastScrolledIdx = -1;
     if (!song.lrc) return;
     try {
       const res = await fetch(song.lrc);
@@ -191,6 +195,38 @@
 
   function changeMode() { mode = mode === 'list' ? 'single' : mode === 'single' ? 'random' : 'list'; }
   const modeIcon = { list: '→', single: '≡', random: '∞' };
+
+  /** 当前正在唱的第几句（-1 表示还没有） */
+  $: activeLyricIdx = (() => {
+    if (!lyrics.length) return -1;
+    let idx = -1;
+    for (let i = 0; i < lyrics.length; i++) {
+      if (lyrics[i].time > currentTime) break;
+      idx = i;
+    }
+    return idx;
+  })();
+
+  // 歌词面板打开/当前句变化时，把当前句滚动到面板中央（网易云式跟随）
+  afterUpdate(() => {
+    if (!lyricsOpen || !lyricScrollEl || activeLyricIdx < 0) return;
+    if (lastScrolledIdx === activeLyricIdx) return;
+    lastScrolledIdx = activeLyricIdx;
+    lyricScrollEl.querySelector(`[data-lyric-idx="${activeLyricIdx}"]`)?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+  });
+
+  function toggleLyrics() {
+    lyricsOpen = !lyricsOpen;
+    lastScrolledIdx = -1; // 每次打开都重新定位到当前句
+  }
+
+  /** 点击歌词行跳转到对应时间 */
+  function seekLyricLine(i: number) {
+    const line = lyrics[i];
+    if (!audio || !line) return;
+    audio.currentTime = line.time;
+    currentTime = line.time;
+  }
 </script>
 
 <!-- ============================================================ -->
@@ -343,7 +379,7 @@
 <!-- 底部播放器（独立于页面，固定视口底部） -->
 <!-- ============================================================ -->
 <div
-  class={`fixed bottom-0 left-0 right-0 z-[90] bg-white dark:bg-slate-900 border-t-4 border-[#0284c7] transition-transform duration-300 ${mounted && songs.length ? 'translate-y-0' : 'translate-y-full'}`}
+  class={`fixed bottom-0 left-0 right-0 z-[90] bg-white dark:bg-slate-900 transition-transform duration-300 ${mounted && songs.length ? 'translate-y-0' : 'translate-y-full'}`}
 >
   <!-- 进度条（独立一行，占满宽度） -->
   <div class="w-full cursor-pointer select-none" on:click={seek} aria-label="播放进度">
@@ -367,9 +403,15 @@
         <div class="font-black text-sm text-slate-800 dark:text-slate-100 truncate">
           {currentSong ? currentSong.title : '——'}
         </div>
-        <div class="text-xs text-slate-400 truncate">
+        <button
+          type="button"
+          on:click={toggleLyrics}
+          title={lyrics.length ? '查看完整歌词' : '暂无歌词'}
+          aria-label={lyrics.length ? '查看歌词' : '暂无歌词'}
+          class="block w-full text-left text-xs text-slate-400 truncate hover:text-[#0284c7] hover:underline transition-colors"
+        >
           {lyricText && playing ? lyricText : (currentSong?.author || '——')}
-        </div>
+        </button>
       </div>
     </div>
 
@@ -412,6 +454,61 @@
     </div>
   </div>
 </div>
+
+<!-- ============================================================ -->
+<!-- 歌词面板：从右侧滑入（网易云风格），手机端全屏覆盖 -->
+<!-- ============================================================ -->
+{#if currentSong}
+<div class="fixed inset-0 z-[100]" aria-hidden={!lyricsOpen}>
+
+  <!-- 遮罩：点击空白处关闭 -->
+  <div
+    class="absolute inset-0 bg-slate-900/60 transition-opacity duration-300"
+    class:opacity-100={lyricsOpen}
+    class:opacity-0={!lyricsOpen}
+    class:pointer-events-none={!lyricsOpen}
+    on:click={() => lyricsOpen = false}
+  ></div>
+
+  <!-- 面板：手机端占满整屏，桌面端右侧 420px 滑出 -->
+  <aside
+    class={`absolute right-0 top-0 bottom-0 flex flex-col w-full sm:w-96 md:w-[420px] bg-white dark:bg-slate-900 border-l-4 border-[#0284c7] shadow-[-8px_8px_0px_0px_rgba(2,132,199,0.35)] transition-transform duration-300 ease-out ${lyricsOpen ? 'translate-x-0' : 'translate-x-full'} ${lyricsOpen ? '' : 'pointer-events-none'}`}
+  >
+    <!-- 头部：歌名 / 歌手 + 关闭按钮（44px 触控目标） -->
+    <div class="flex items-center justify-between gap-3 border-b-2 border-[#0284c7] bg-[#fde68a] px-4 py-2.5 shrink-0">
+      <div class="min-w-0">
+        <div class="font-black text-sm text-[#0284c7] truncate">{currentSong.title}</div>
+        <div class="text-[11px] font-bold text-[#0284c7]/70 truncate">{currentSong.author}</div>
+      </div>
+      <button type="button" on:click={() => lyricsOpen = false} aria-label="关闭歌词"
+        class="shrink-0 w-11 h-11 flex items-center justify-center bg-white border-2 border-[#0284c7] text-[#0284c7] rounded-sm shadow-[2px_2px_0px_0px_#0284c7] active:shadow-none active:translate-y-0.5 transition-all font-black text-xl">×</button>
+    </div>
+
+    <!-- 歌词主体：当前句高亮并自动跟随居中，点击任意一句可跳转 -->
+    <div class="flex-1 min-h-0 overflow-y-auto px-5 py-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] select-none touch-pan-y overscroll-contain" bind:this={lyricScrollEl}>
+      {#if !lyrics.length}
+        <p class="mt-24 text-center text-sm font-bold text-slate-400 dark:text-slate-500">暂无歌词</p>
+      {:else}
+        <ul class="space-y-3.5">
+          {#each lyrics as line, i (i)}
+            <li
+              data-lyric-idx={i}
+              aria-current={i === activeLyricIdx}
+              on:click={() => seekLyricLine(i)}
+              class={`cursor-pointer transition-all duration-300 leading-relaxed text-sm sm:text-[15px]
+                ${i === activeLyricIdx
+                  ? 'text-[#0284c7] font-black text-base sm:text-lg translate-x-1'
+                  : 'text-slate-500 dark:text-slate-400 hover:text-[#0284c7]/80'}`}
+            >
+              {line.text}
+            </li>
+          {/each}
+        </ul>
+      {/if}
+    </div>
+  </aside>
+</div>
+{/if}
 
 <style>
   /* 页面内内容不被 footer 遮挡 */
