@@ -21,6 +21,36 @@ jobs:
       - name: 等待 Vercel 部署完成
         run: sleep 120
 
+      # ---- 预热前先清空 Cloudflare 全站缓存，确保边缘缓存放的是最新版本 ----
+      - name: 清除 Cloudflare 全站缓存
+        env:
+          CLOUDFLARE_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_API_KEY: ${{ secrets.CLOUDFLARE_API_KEY }}
+          CLOUDFLARE_EMAIL: ${{ secrets.CLOUDFLARE_EMAIL }}
+        run: |
+          AUTH_ARGS=()
+          if [ -n "${CLOUDFLARE_API_TOKEN:-}" ]; then
+            AUTH_ARGS=(-H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}")
+          elif [ -n "${CLOUDFLARE_API_KEY:-}" ] && [ -n "${CLOUDFLARE_EMAIL:-}" ]; then
+            AUTH_ARGS=(-H "X-Auth-Email: ${CLOUDFLARE_EMAIL}" -H "X-Auth-Key: ${CLOUDFLARE_API_KEY}")
+          else
+            echo "::error::未配置 Cloudflare 凭据，请添加 secrets：CLOUDFLARE_API_TOKEN（或 CLOUDFLARE_API_KEY + COUDFLARE_EMAIL）和 CLOUDFLARE_ZONE_ID"
+            exit 1
+          fi
+          code=$(curl -s -o purge.log -w "%{http_code}" -m 30 \
+            -X POST "https://api.cloudflare.com/client/v4/zones/${CLOUDFLARE_ZONE_ID}/purge_cache" \
+            "${AUTH_ARGS[@]}" \
+            -H "Content-Type: application/json" \
+            --data '{"purge_everything":true}')
+          if [ "$code" = "200" ]; then
+            echo "✅ Cloudflare 全站缓存已清空，开始预热"
+          else
+            echo "❌ Cloudflare 缓存清除失败 HTTP=$code：$(cat purge.log)"
+            echo "::error::Cloudflare 缓存清除失败，请检查 CLOUDFLARE_ZONE_ID / API 凭据"
+            exit 1
+          fi
+
       - name: 提取 sitemap 所有页面 URL
         run: |
           curl -s -m 30 https://upxuu.com/sitemap.xml \
