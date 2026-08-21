@@ -17,9 +17,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # 构建约 30s，缓冲 40s 确保部署完成
+      # 构建约 30s，缓冲 80s 确保部署完成
       - name: 等待部署完成
-        run: sleep 40
+        run: sleep 80
 
       # ---- 预热前先清空 Cloudflare 全站缓存，确保边缘缓存放的是最新版本 ----
       # 注意：upxuu.com 挂在 SaaS zone 476543.xyz（自定义主机名）下，
