@@ -170,18 +170,15 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
     @keyframes card-entrance {
       0% { 
         opacity: 0; 
-        transform: translateY(30px) scale(0.96); 
-        filter: blur(1px);
+        transform: translateY(30px) scale(0.96);
       }
       70% {
         opacity: 1;
         transform: translateY(-4px) scale(1.02);
-        filter: blur(0);
       }
       100% { 
         opacity: 1;
-        transform: translateY(0) scale(1); 
-        filter: blur(0);
+        transform: translateY(0) scale(1);
       }
     }
     .animate-card-entrance {
@@ -256,14 +253,6 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
         id="scroll-bar-indicator"
         class="h-full bg-gradient-to-r from-[#0284c7] via-[#0ea5e9] to-[#f59e0b] origin-left w-0 transition-all duration-75"
       ></div>
-    </div>
-    {/* Page navigation loading bar */}
-    <div id="nav-loader" class="fixed top-0 left-0 w-full h-[4px] z-[111] pointer-events-none hidden">
-      <div class="h-full bg-gradient-to-r from-[#fde68a] via-[#f59e0b] to-[#fde68a] w-0 h-full transition-all duration-300"></div>
-    </div>
-    {/* Bottom page transition progress bar */}
-    <div id="bottom-loader" class="fixed bottom-0 left-0 w-full z-[111] pointer-events-none" style="transform: translateY(100%); transition: transform 0.3s ease;">
-      <div class="h-[5px] bg-[#0284c7] border-t-2 border-[#0284c7] shadow-[0px_-2px_0px_0px_#f59e0b] w-0" style="transition: width 0.3s ease-out;"></div>
     </div>
     {/* 暂时禁用：<WelcomeToast /> */}
     <div class="flex flex-col min-h-screen">
@@ -623,18 +612,20 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
   </body>
 </html>
 
-<script is:inline data-astro-rerun>
+  <script is:inline data-astro-rerun>
 {
-
-    const indicator = document.getElementById('scroll-bar-indicator');
-    if (!indicator || window.__scrollBarSetup) return;
+  // 滚动阅读进度条（原脚本顶层 return 属 SyntaxError，整段从未执行过）
+  if (!window.__scrollBarSetup) {
     window.__scrollBarSetup = true;
     window.addEventListener('scroll', () => {
+      const el = document.getElementById('scroll-bar-indicator');
+      if (!el) return;
       const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
       const percentage = totalHeight > 0 ? (window.pageYOffset / totalHeight) * 100 : 0;
-      indicator.style.width = percentage + '%';
+      el.style.width = percentage + '%';
     }, { passive: true });
   }
+
 
   function setupBackToTop() {
     const backToTopBtn = document.getElementById('back-to-top-btn');
@@ -656,95 +647,14 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
       }, { passive: true });
     }
 
-    // Click listener: only once (button is in layout body, persists)
-    if (!window.__backToTopClickSetup) {
-      window.__backToTopClickSetup = true;
+      // Click listener：按钮在 View Transition 后会重建，故每次脚本运行都重新绑定
       backToTopBtn.addEventListener('click', () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
       });
     }
-  }
 
-  // Initial run
-  setupGlobalScrollBar();
+  // 回顶按钮（View Transition 后按钮节点会重建，点击监听每次脚本运行重新绑定即可）
   setupBackToTop();
-  
-  // Page navigation loader — tracks real resource loading
-  let navLoaderTimer = null;
-  let bottomLoaderTimer = null;
-  const navLoader = document.getElementById('nav-loader');
-  const navLoaderBar = navLoader?.querySelector('div');
-  const bottomLoader = document.getElementById('bottom-loader');
-  const bottomLoaderBar = bottomLoader?.querySelector('div');
-
-  let loaderActive = false;
-
-  function setProgress(pct) {
-    const clamped = Math.max(0, Math.min(100, pct));
-    if (navLoaderBar) navLoaderBar.style.width = clamped + '%';
-    if (bottomLoaderBar) bottomLoaderBar.style.width = clamped + '%';
-  }
-
-  function startNavLoader() {
-    if (navLoader && navLoaderBar) {
-      clearTimeout(navLoaderTimer);
-      navLoader.classList.remove('hidden');
-      navLoaderBar.style.transition = 'width 0.3s ease-out';
-      navLoaderBar.style.width = '3%';
-    }
-
-    if (bottomLoader && bottomLoaderBar) {
-      clearTimeout(bottomLoaderTimer);
-      bottomLoader.style.transform = 'translateY(0)';
-      bottomLoaderBar.style.width = '3%';
-      bottomLoaderBar.style.transition = 'width 0.3s ease-out';
-    }
-  }
-
-  function completeNavLoader() {
-    loaderActive = false;
-    clearTimeout(window.__loaderFallbackTimer);
-    clearInterval(window.__loaderFallbackInterval);
-
-    if (resourceObserver) {
-      resourceObserver.disconnect();
-      resourceObserver = null;
-    }
-
-    requestAnimationFrame(() => {
-      if (navLoaderBar) { navLoaderBar.style.width = '100%'; navLoaderBar.style.transition = 'width 0.15s ease-out'; }
-      if (bottomLoaderBar) { bottomLoaderBar.style.width = '100%'; bottomLoaderBar.style.transition = 'width 0.15s ease-out'; }
-
-      if (navLoader) {
-        clearTimeout(navLoaderTimer);
-        navLoaderTimer = setTimeout(() => {
-          navLoader.classList.add('hidden');
-          if (navLoaderBar) navLoaderBar.style.width = '0%';
-        }, 300);
-      }
-
-      if (bottomLoader) {
-        clearTimeout(bottomLoaderTimer);
-        bottomLoaderTimer = setTimeout(() => {
-          bottomLoader.style.transform = 'translateY(100%)';
-        setTimeout(() => {
-          bottomLoaderBar.style.width = '0%';
-        }, 300);
-      }, 250);
-    }
-  }
-
-  if (!window._layoutListenersInited) {
-    document.addEventListener('astro:before-preparation', startNavLoader);
-    document.addEventListener('astro:error', completeNavLoader);
-    document.addEventListener('astro:page-load', () => {
-      completeNavLoader();
-      setupGlobalScrollBar();
-      setupBackToTop();
-      showPerfMetrics();
-    });
-    window._layoutListenersInited = true;
-  }
 }
 </script>
 

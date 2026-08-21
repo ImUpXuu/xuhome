@@ -1,6 +1,8 @@
 import rss from '@astrojs/rss';
 import { getCollection } from 'astro:content';
 import { siteConfig } from '../config/site';
+import { normalizeEntrySlug, talkPath } from '../utils/slugify';
+import { toBeijingInstant } from '../utils/dateFormat';
 import MarkdownIt from 'markdown-it';
 import sanitizeHtml from 'sanitize-html';
 import type { APIContext } from 'astro';
@@ -24,11 +26,11 @@ export async function GET(context: APIContext) {
     .map((talk) => {
       const body = typeof talk.body === 'string' ? talk.body : '';
       const cleaned = stripInvalidXmlChars(body);
-      const slug = (talk.data.slug || talk.slug || talk.id || '').trim();
-      const permalink = `${siteUrl}/talk/${slug}/`;
+      const slug = normalizeEntrySlug(talk);
+      const permalink = `${siteUrl}${talkPath(slug)}`;
       return {
         title: talk.data.title,
-        pubDate: talk.data.date,
+        pubDate: toBeijingInstant(talk.data.date) ?? new Date(),
         description: body
           .replace(/!\[.*?\]\(.*?\)/g, '')
           .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')

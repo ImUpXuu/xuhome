@@ -1,4 +1,6 @@
 import { getCollection } from 'astro:content';
+import { normalizeEntrySlug, postPath, talkPath } from '../utils/slugify';
+import { beijingWallDate } from '../utils/dateFormat';
 
 function escapeXml(unsafe: string): string {
   return unsafe.replace(/[<>&'"]/g, (c) => {
@@ -21,10 +23,10 @@ export async function GET(context: any) {
   const siteUrl = context.site ? context.site.toString() : 'https://upxuu.com';
   const domain = siteUrl.replace(/\/$/, '');
 
-  const urls = [
+  const urls: Array<{ loc: string; priority: string; changefreq: string; lastmod?: string | null }> = [
     { loc: `${domain}`, priority: '1.0', changefreq: 'daily' },
     { loc: `${domain}/about`, priority: '0.8', changefreq: 'monthly' },
-    { loc: `${domain}/talk`, priority: '0.8', changefreq: 'daily' },
+    { loc: `${domain}/talks`, priority: '0.8', changefreq: 'daily' },
     { loc: `${domain}/friends`, priority: '0.6', changefreq: 'monthly' },
     { loc: `${domain}/links`, priority: '0.6', changefreq: 'monthly' },
     { loc: `${domain}/posts`, priority: '0.5', changefreq: 'weekly' },
@@ -32,14 +34,10 @@ export async function GET(context: any) {
   ];
 
   rawPosts.forEach((post: any) => {
-    const data = post.data;
-    let customSlug = post.slug || post.id;
-    if (data.slug && typeof data.slug === 'string' && data.slug.trim() !== '') {
-      customSlug = data.slug.trim();
-    }
-    const lastmod = data.published || data.date || null;
+    const customSlug = normalizeEntrySlug(post);
+    const lastmod = beijingWallDate(post.data.published || post.data.date) || null;
     urls.push({
-      loc: `${domain}/posts/${customSlug}`,
+      loc: `${domain}${postPath(customSlug)}`,
       priority: '0.8',
       changefreq: 'weekly',
       lastmod
@@ -47,14 +45,10 @@ export async function GET(context: any) {
   });
 
   rawTalks.forEach((talk: any) => {
-    const data = talk.data;
-    let customSlug = talk.slug || talk.id;
-    if (data.slug && typeof data.slug === 'string' && data.slug.trim() !== '') {
-      customSlug = data.slug.trim();
-    }
-    const lastmod = data.date || null;
+    const customSlug = normalizeEntrySlug(talk);
+    const lastmod = beijingWallDate(talk.data.date) || null;
     urls.push({
-      loc: `${domain}/talk/${customSlug}`,
+      loc: `${domain}${talkPath(customSlug)}`,
       priority: '0.6',
       changefreq: 'weekly',
       lastmod
@@ -66,7 +60,7 @@ export async function GET(context: any) {
   ${urls.map(url => `
   <url>
     <loc>${escapeXml(url.loc)}</loc>
-    ${url.lastmod ? `<lastmod>${escapeXml(new Date(url.lastmod).toISOString().split('T')[0])}</lastmod>` : ''}
+    ${url.lastmod ? `<lastmod>${escapeXml(url.lastmod)}</lastmod>` : ''}
     <changefreq>${escapeXml(url.changefreq)}</changefreq>
     <priority>${escapeXml(url.priority)}</priority>
   </url>

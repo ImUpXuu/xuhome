@@ -1,6 +1,8 @@
 import rss from '@astrojs/rss';
 import { getCollection } from 'astro:content';
 import { siteConfig } from '../config/site';
+import { normalizeEntrySlug, postPath, talkPath } from '../utils/slugify';
+import { toBeijingInstant } from '../utils/dateFormat';
 import MarkdownIt from 'markdown-it';
 import sanitizeHtml from 'sanitize-html';
 import type { APIContext } from 'astro';
@@ -35,12 +37,12 @@ export async function GET(context: APIContext) {
     ...posts.map((post) => {
       const body = typeof post.body === 'string' ? post.body : '';
       const cleaned = stripInvalidXmlChars(body);
-      const slug = (post.data.slug || post.slug || post.id || '').trim();
+      const slug = normalizeEntrySlug(post);
       const desc = post.data.description || stripMarkdown(body).substring(0, 50);
-      const permalink = `${siteUrl}/posts/${slug}/`;
+      const permalink = `${siteUrl}${postPath(slug)}`;
       return {
         title: post.data.title,
-        pubDate: post.data.published || post.data.date,
+        pubDate: toBeijingInstant(post.data.published || post.data.date) ?? new Date(),
         description: desc,
         link: permalink,
         guid: permalink,
@@ -53,11 +55,11 @@ export async function GET(context: APIContext) {
     ...talks.map((talk) => {
       const body = typeof talk.body === 'string' ? talk.body : '';
       const cleaned = stripInvalidXmlChars(body);
-      const slug = (talk.data.slug || talk.slug || talk.id || '').trim();
-      const permalink = `${siteUrl}/talk/${slug}/`;
+      const slug = normalizeEntrySlug(talk);
+      const permalink = `${siteUrl}${talkPath(slug)}`;
       return {
         title: `「说说」${talk.data.title}`,
-        pubDate: talk.data.date,
+        pubDate: toBeijingInstant(talk.data.date) ?? new Date(),
         description: body.substring(0, 200).replace(/[#*`_\[\]()\-]/g, '').trim() || '',
         link: permalink,
         guid: permalink,
