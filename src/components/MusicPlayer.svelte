@@ -392,13 +392,19 @@
   <div class="px-3 sm:px-4 py-2 flex items-center gap-2 sm:gap-3 max-w-6xl mx-auto w-full">
     <!-- 封面 + 歌名/歌手 -->
     <div class="flex items-center gap-2.5 flex-1 min-w-0 lg:w-64 lg:shrink-0">
-      <div class={`shrink-0 w-11 h-11 rounded-full border-3 border-[#0284c7] overflow-hidden bg-slate-100 dark:bg-slate-800 transition-transform ${playing ? 'rotate-180 scale-105' : ''}`}>
+      <button
+        type="button"
+        on:click={toggleLyrics}
+        title={lyrics.length ? '查看完整歌词' : '暂无歌词'}
+        aria-label={lyrics.length ? '查看歌词' : '暂无歌词'}
+        class={`shrink-0 w-11 h-11 rounded-full border-3 border-[#0284c7] overflow-hidden bg-slate-100 dark:bg-slate-800 transition-transform hover:scale-110 active:scale-95 cursor-pointer ${playing ? 'rotate-180 scale-105' : ''}`}
+      >
         {#if currentSong?.pic}
           <img src={currentSong.pic} alt={currentSong.title} class="w-full h-full object-cover" />
         {:else}
           <span class="w-full h-full flex items-center justify-center text-[#0284c7] font-black text-base">♪</span>
         {/if}
-      </div>
+      </button>
       <div class="min-w-0 flex-1">
         <div class="font-black text-sm text-slate-800 dark:text-slate-100 truncate">
           {currentSong ? currentSong.title : '——'}
@@ -456,54 +462,60 @@
 </div>
 
 <!-- ============================================================ -->
-<!-- 歌词面板：从右侧滑入（网易云风格），手机端全屏覆盖 -->
+<!-- 歌词面板：网易云风格，从底部弹出（实色，不透明） -->
 <!-- ============================================================ -->
 {#if currentSong}
-<div class="fixed inset-0 z-[100] transition-opacity duration-300" class:opacity-100={lyricsOpen} class:opacity-0={!lyricsOpen} class:pointer-events-none={!lyricsOpen} aria-hidden={!lyricsOpen}>
+<div class="fixed inset-0 z-[100]" class:pointer-events-none={!lyricsOpen} aria-hidden={!lyricsOpen}>
 
   <!-- 遮罩：点击空白处关闭 -->
   <div
-    class="absolute inset-0 bg-slate-900/60 transition-opacity duration-300"
+    class="absolute inset-0 bg-slate-900/50 transition-opacity duration-300"
     class:opacity-100={lyricsOpen}
     class:opacity-0={!lyricsOpen}
     class:pointer-events-none={!lyricsOpen}
     on:click={() => lyricsOpen = false}
   ></div>
 
-  <!-- 面板：手机端占满整屏，桌面端右侧 420px 滑出 -->
+  <!-- 面板：从底部上滑，实色背景，顶部大圆角（网易云风格） -->
   <aside
-    class={`absolute right-0 top-0 bottom-0 flex flex-col w-full sm:w-96 md:w-[420px] bg-white dark:bg-slate-900 border-l-4 border-[#0284c7] shadow-[-8px_8px_0px_0px_rgba(2,132,199,0.35)] transition-transform duration-300 ease-out ${lyricsOpen ? 'translate-x-0' : 'translate-x-full'} ${lyricsOpen ? '' : 'pointer-events-none'}`}
+    class={`absolute left-0 right-0 bottom-0 h-[82vh] sm:h-[76vh] md:h-[70vh] flex flex-col bg-white dark:bg-slate-900 rounded-t-[28px] border-t-4 border-[#0284c7] shadow-[0_-16px_50px_rgba(2,132,199,0.25)] transition-transform duration-400 ease-out ${lyricsOpen ? 'translate-y-0' : 'translate-y-full'} ${lyricsOpen ? '' : 'pointer-events-none'}`}
   >
-    <!-- 头部：歌名 / 歌手 + 关闭按钮（44px 触控目标） -->
-    <div class="flex items-center justify-between gap-3 border-b-2 border-[#0284c7] bg-[#fde68a] px-4 py-2.5 shrink-0">
-      <div class="min-w-0">
-        <div class="font-black text-sm text-[#0284c7] truncate">{currentSong.title}</div>
-        <div class="text-[11px] font-bold text-[#0284c7]/70 truncate">{currentSong.author}</div>
+    <!-- 顶部拖拽抓手 + 头部：歌名 / 歌手 + 关闭按钮 -->
+    <div class="shrink-0 px-4 pt-2.5 pb-2 border-b-2 border-[#0284c7] bg-[#fde68a] rounded-t-[28px]">
+      <div class="w-10 h-1.5 rounded-full bg-[#0284c7]/30 mx-auto mb-2"></div>
+      <div class="flex items-center justify-between gap-3">
+        <div class="min-w-0">
+          <div class="font-black text-sm text-[#0284c7] truncate">{currentSong.title}</div>
+          <div class="text-[11px] font-bold text-[#0284c7]/70 truncate">{currentSong.author}</div>
+        </div>
+        <button type="button" on:click={() => lyricsOpen = false} aria-label="关闭歌词"
+          class="shrink-0 w-11 h-11 flex items-center justify-center bg-white border-2 border-[#0284c7] text-[#0284c7] rounded-full shadow-[2px_2px_0px_0px_#0284c7] active:shadow-none active:translate-y-0.5 transition-all font-black text-xl">×</button>
       </div>
-      <button type="button" on:click={() => lyricsOpen = false} aria-label="关闭歌词"
-        class="shrink-0 w-11 h-11 flex items-center justify-center bg-white border-2 border-[#0284c7] text-[#0284c7] rounded-sm shadow-[2px_2px_0px_0px_#0284c7] active:shadow-none active:translate-y-0.5 transition-all font-black text-xl">×</button>
     </div>
 
     <!-- 歌词主体：当前句高亮并自动跟随居中，点击任意一句可跳转 -->
-    <div class="flex-1 min-h-0 overflow-y-auto px-5 py-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] select-none touch-pan-y overscroll-contain" bind:this={lyricScrollEl}>
+    <div class="flex-1 min-h-0 overflow-y-auto px-5 py-8 pb-[calc(2rem+env(safe-area-inset-bottom))] select-none touch-pan-y overscroll-contain" bind:this={lyricScrollEl}>
       {#if !lyrics.length}
         <p class="mt-24 text-center text-sm font-bold text-slate-400 dark:text-slate-500">暂无歌词</p>
       {:else}
-        <ul class="space-y-3.5">
+        <!-- 上下留白，让当前句能真正滚到正中（网易云效果） -->
+        <div class="h-[28%]"></div>
+        <ul class="space-y-4">
           {#each lyrics as line, i (i)}
             <li
               data-lyric-idx={i}
               aria-current={i === activeLyricIdx}
               on:click={() => seekLyricLine(i)}
-              class={`cursor-pointer transition-all duration-300 leading-relaxed text-sm sm:text-[15px]
+              class={`cursor-pointer transition-all duration-300 leading-relaxed text-center text-sm sm:text-[15px]
                 ${i === activeLyricIdx
-                  ? 'text-[#0284c7] font-black text-base sm:text-lg translate-x-1'
+                  ? 'text-[#0284c7] font-black text-lg sm:text-xl'
                   : 'text-slate-500 dark:text-slate-400 hover:text-[#0284c7]/80'}`}
             >
               {line.text}
             </li>
           {/each}
         </ul>
+        <div class="h-[28%]"></div>
       {/if}
     </div>
   </aside>
