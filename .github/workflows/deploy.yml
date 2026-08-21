@@ -46,10 +46,6 @@ jobs:
       # 所有机器共用 secrets.SERVER_SSH_KEY（私钥）+ secrets.SERVER_USER
       matrix:
         include:
-          - host: 38.76.185.215
-            name: server-1
-          - host: 154.219.110.223
-            name: server-2
           - host: 8.220.197.92
             name: server-3
       fail-fast: false
