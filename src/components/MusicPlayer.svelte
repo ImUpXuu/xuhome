@@ -21,6 +21,7 @@
   let loading = false;
   let loadError = '';
   let listScrollEl: HTMLElement;
+  let showPlaylistMobile = false;
 
   let currentIndex = -1;
   let playing = false;
@@ -64,8 +65,11 @@
     });
 
     try {
-      const v = Number(localStorage.getItem('music-volume'));
-      if (isFinite(v) && v >= 0 && v <= 1) volume = v;
+      const saved = localStorage.getItem('music-volume');
+      if (saved !== null && saved !== '') {
+        const v = Number(saved);
+        if (isFinite(v) && v >= 0 && v <= 1) volume = v;
+      }
     } catch {}
     audio.volume = volume;
 
@@ -193,10 +197,27 @@
 <!-- 页面主体：左侧歌单 + 右侧歌曲列表 -->
 <!-- ============================================================ -->
 <div class="w-full max-w-6xl mx-auto px-2 sm:px-4 pb-24">
+
+  <!-- 手机端：歌单折叠触发条（lg 以下显示，点开弹覆盖层） -->
+  <div class="lg:hidden mb-3">
+    <button
+      on:click={() => showPlaylistMobile = !showPlaylistMobile}
+      class="w-full bg-white dark:bg-slate-800 border-4 border-[#0284c7] shadow-[4px_4px_0px_0px_#0284c7] rounded-sm px-4 py-3 flex items-center justify-between gap-8"
+    >
+      <span class="font-black text-sm text-[#0284c7] flex items-center gap-2 truncate">
+        <span>🎵</span>
+        <span class="truncate">{activeName || '歌单'}</span>
+      </span>
+      <span class="text-[10px] font-black text-[#0284c7]/70 shrink-0">
+        {showPlaylistMobile ? '收起 ▲' : '展开 ▼'}
+      </span>
+    </button>
+  </div>
+
   <div class="flex flex-col lg:flex-row gap-4 items-stretch">
 
-    <!-- 左侧：歌单列表 -->
-    <aside class="w-full lg:w-52 shrink-0">
+    <!-- 桌面歌单侧栏（lg 以上常驻） -->
+    <aside class="hidden lg:block lg:w-52 shrink-0">
       <div class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] shadow-[4px_4px_0px_0px_#0284c7] rounded-sm overflow-hidden">
         <div class="px-4 py-3 border-b-2 border-[#0284c7] bg-[#fde68a]">
           <span class="font-black text-sm text-[#0284c7] tracking-wider">🎵 歌单</span>
@@ -220,8 +241,36 @@
       </div>
     </aside>
 
-    <!-- 右侧：歌单内容 -->
-    <div class="flex-1 min-w-0">
+    <!-- 右侧：歌曲列表（手机端被歌单覆盖） -->
+    <div class="relative flex-1 min-w-0">
+
+      <!-- 手机端歌单覆盖层（默认收起，点按钮展开，覆盖在歌单上方） -->
+      {#if showPlaylistMobile}
+        <div class="lg:hidden absolute inset-x-0 top-0 z-20 bg-white dark:bg-slate-800 border-4 border-[#0284c7] shadow-[4px_4px_0px_0px_#0284c7] rounded-sm overflow-hidden">
+          <div class="px-4 py-2.5 border-b-2 border-[#0284c7] bg-[#fde68a] flex items-center justify-between">
+            <span class="font-black text-sm text-[#0284c7] tracking-wider">🎵 选歌单</span>
+            <button on:click={() => showPlaylistMobile = false} class="text-xs font-black text-[#0284c7]/60">收起 ↑</button>
+          </div>
+          <div class="p-2 max-h-60 overflow-y-auto">
+            {#each PLAYLISTS as p (p.id)}
+              <button
+                on:click={() => { loadPlaylist(p.id); showPlaylistMobile = false; }}
+                class={`w-full text-left px-3 py-2.5 text-sm font-bold rounded-sm transition-colors flex items-center justify-between gap-2
+                  ${activePlaylistId === p.id
+                    ? 'bg-[#cdeeff] text-[#0284c7] border-l-4 border-l-[#0284c7]'
+                    : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700/50'}`}
+              >
+                <span>{p.name}</span>
+                {#if playlistCounts[p.id]}
+                  <span class="shrink-0 text-[10px] font-black text-slate-400">{playlistCounts[p.id]}</span>
+                {/if}
+              </button>
+            {/each}
+          </div>
+        </div>
+      {/if}
+
+      <!-- 歌单内容卡片 -->
       <div class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] shadow-[4px_4px_0px_0px_#0284c7] rounded-sm overflow-hidden">
 
       <!-- 歌单头部 -->
@@ -299,11 +348,12 @@
   <!-- 进度条（独立一行，占满宽度） -->
   <div class="w-full cursor-pointer select-none" on:click={seek} aria-label="播放进度">
     <div class="h-[5px] w-full bg-slate-200 dark:bg-slate-700 relative">
-      <div class="absolute left-0 top-0 h-full bg-[#0284c7] transition-none" style="width: {progressPct}%" />
+      <div class="absolute left-0 top-0 h-full bg-[#0284c7]" style="width: {progressPct}%" />
     </div>
   </div>
 
-  <div class="px-3 sm:px-4 py-2 flex items-center gap-2 sm:gap-3">
+  <!-- 底栏内容区（桌面端限宽居中） -->
+  <div class="px-3 sm:px-4 py-2 flex items-center gap-2 sm:gap-3 max-w-6xl mx-auto">
 
     <!-- 唱盘 + 歌名/歌手 -->
     <div class="flex items-center gap-2.5 flex-1 min-w-0 lg:w-64 lg:shrink-0">
@@ -362,6 +412,7 @@
       </div>
     </div>
 
+  </div>
   </div>
 </div>
 
