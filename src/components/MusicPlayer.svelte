@@ -389,7 +389,7 @@
     </aside>
 
     <!-- 右侧：歌曲列表（手机端被歌单覆盖） -->
-    <div class="relative flex-1 min-w-0">
+    <div class="relative flex-1 min-w-0 min-h-0 flex flex-col">
 
       <!-- 手机端歌单覆盖层（默认收起，点按钮展开，覆盖在歌单上方） -->
       {#if showPlaylistMobile}
