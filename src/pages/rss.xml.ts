@@ -1,7 +1,5 @@
 import { getCollection } from 'astro:content';
 import { siteConfig } from '../config/site';
-import { normalizeEntrySlug, postPath, talkPath } from '../utils/slugify';
-import { beijingRfc2822 } from '../utils/dateFormat';
 import MarkdownIt from 'markdown-it';
 import sanitizeHtml from 'sanitize-html';
 import type { APIContext } from 'astro';
@@ -21,6 +19,18 @@ function stripMarkdown(md: string): string {
     .replace(/\n+/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
+}
+
+function beijingRfc2822(value: unknown): string {
+  if (!value) return new Date().toUTCString();
+  const d = value instanceof Date ? value : new Date(value as string | number);
+  if (isNaN(d.getTime())) return new Date().toUTCString();
+  // Frontmatter dates are Beijing Time (UTC+8) but parsed by js-yaml as UTC.
+  // Subtract 8h to get correct UTC moment, then format as GMT.
+  const utc = new Date(d.getTime() - 8 * 60 * 60 * 1000);
+  const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  return `${days[utc.getUTCDay()]}, ${String(utc.getUTCDate()).padStart(2, '0')} ${months[utc.getUTCMonth()]} ${utc.getUTCFullYear()} ${String(utc.getUTCHours()).padStart(2, '0')}:${String(utc.getUTCMinutes()).padStart(2, '0')}:${String(utc.getUTCSeconds()).padStart(2, '0')} GMT`;
 }
 
 function escapeXml(s: string): string {
@@ -54,9 +64,9 @@ export async function GET(context: APIContext) {
     ...posts.map((post) => {
       const body = typeof post.body === 'string' ? post.body : '';
       const cleaned = stripInvalidXmlChars(body);
-      const slug = normalizeEntrySlug(post);
+      const slug = (post.data.slug || post.slug || post.id || '').trim();
       const desc = post.data.description || stripMarkdown(body).substring(0, 50);
-      const url = `${siteUrl}${postPath(slug)}`;
+      const url = `${siteUrl}/posts/${slug}/`;
       const pubDate = beijingRfc2822(post.data.published || post.data.date);
       const content = sanitizeHtml(parser.render(cleaned), {
         allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img']),
@@ -70,8 +80,8 @@ export async function GET(context: APIContext) {
     ...talks.map((talk) => {
       const body = typeof talk.body === 'string' ? talk.body : '';
       const cleaned = stripInvalidXmlChars(body);
-      const slug = normalizeEntrySlug(talk);
-      const url = `${siteUrl}${talkPath(slug)}`;
+      const slug = (talk.data.slug || talk.slug || talk.id || '').trim();
+      const url = `${siteUrl}/talk/${slug}/`;
       const pubDate = beijingRfc2822(talk.data.date);
       const desc = body.substring(0, 200).replace(/[#*`_\[\]()\-]/g, '').trim() || '';
       const content = sanitizeHtml(parser.render(cleaned), {
