@@ -627,10 +627,10 @@ const siteTitle = siteConfig.title;
 
   let busy=false;
   const HISTORY_KEY = 'upxuu_ai_history';
-  let history = [];
-  try { history = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]') || []; } catch(e){ history = []; }
+  let chatHistory = [];
+  try { chatHistory = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]') || []; } catch(e){ chatHistory = []; }
   function saveHistory(){
-    try{ localStorage.setItem(HISTORY_KEY, JSON.stringify(history.slice(-24))); }catch(e){}
+    try{ localStorage.setItem(HISTORY_KEY, JSON.stringify(chatHistory.slice(-24))); }catch(e){}
   }
 
   async function sendQuestion(q){
@@ -708,7 +708,7 @@ const siteTitle = siteConfig.title;
       const res=await fetch(API_BASE+'/api/chat/stream',{
         method:'POST',
         headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({question:q, history: history.slice(-12), 'cap-token': capToken})
+        body:JSON.stringify({question:q, history: chatHistory.slice(-12), 'cap-token': capToken})
       });
       if(!res.ok||!res.body){
         let msg = 'HTTP '+res.status;
@@ -810,8 +810,8 @@ const siteTitle = siteConfig.title;
         ensureTextEl().innerHTML = renderMarkdown(accumulated);
       }
       if(accumulated.trim()){
-        history.push({role:'user', content:q});
-        history.push({role:'assistant', content:accumulated});
+        chatHistory.push({role:'user', content:q});
+        chatHistory.push({role:'assistant', content:accumulated});
         saveHistory();
       }
       if(accumulated===''&&!flow.textContent.trim()) ensureTextEl().textContent='⚠️ 没有返回内容';
@@ -851,10 +851,10 @@ const siteTitle = siteConfig.title;
   });
 
   function restoreHistory(){
-    if(!history.length) return;
+    if(!chatHistory.length) return;
     emptyState.style.display='none';
     settleComposer();
-    for(const h of history){
+    for(const h of chatHistory){
       if(h.role==='user'){
         addMsg('user', h.content);
       } else {
@@ -866,7 +866,7 @@ const siteTitle = siteConfig.title;
     main.scrollTop=main.scrollHeight;
   }
   restoreHistory();
-  if (!history.length) raiseComposer();
+  if (!chatHistory.length) raiseComposer();
 
   // 访问 /ai/friend 时自动触发友链申请介绍
   if(window.location.pathname.endsWith('/friend')){
@@ -883,7 +883,7 @@ const siteTitle = siteConfig.title;
   }
 
   document.getElementById('clearBtn').addEventListener('click',()=>{
-    history=[];
+    chatHistory=[];
     saveHistory();
     main.innerHTML='';
     main.appendChild(emptyState);

@@ -1,6 +1,7 @@
 import type { APIContext } from 'astro';
 import { getCollection } from 'astro:content';
 import { siteConfig } from '../config/site';
+import { beijingWallDate } from '../utils/dateFormat';
 
 /**
  * llms-full.txt —— 全站内容全文（https://llmstxt.org/ 标准）
@@ -35,14 +36,7 @@ export async function GET(context: APIContext) {
       `索引版见 ${siteUrl}/llms.txt`
   );
 
-  const beijingDate = (value: unknown): string => {
-    if (!value) return '';
-    const d = value instanceof Date ? value : new Date(value as string | number);
-    if (isNaN(d.getTime())) return '';
-    const utc = new Date(d.getTime() - 8 * 60 * 60 * 1000);
-    const pad = (n: number) => String(n).padStart(2, '0');
-    return `${utc.getUTCFullYear()}-${pad(utc.getUTCMonth() + 1)}-${pad(utc.getUTCDate())}`;
-  };
+  const beijingDate = (value: unknown): string => beijingWallDate(value);
 
   // ---- 文章 ----
   lines.push('');
