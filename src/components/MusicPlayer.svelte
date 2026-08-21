@@ -46,6 +46,10 @@
   let audio: HTMLAudioElement;
   let mounted = false;
 
+  // 用户手动滚动歌词时暂停自动跟随（网易云行为）
+  let userScrolling = false;
+  let userScrollTimer: ReturnType<typeof setTimeout> | null = null;
+
   let playlistCounts: Record<string, number> = {};
 
   // ==================== 生命周期 ====================
@@ -88,6 +92,8 @@
 
     return () => {
       audio.pause();
+      if (userScrollTimer) clearTimeout(userScrollTimer);
+      document.documentElement.style.overflow = '';
       document.body.style.overflow = '';
     };
   });
@@ -260,6 +266,8 @@
   // 歌词面板打开/当前句变化时，把当前句滚动到面板中央（网易云式跟随）
   afterUpdate(() => {
     if (!lyricsOpen || !lyricScrollEl || activeLyricIdx < 0) return;
+    // 用户正在手动滚动时暂停自动跟随
+    if (userScrolling) return;
     if (lastScrolledIdx === activeLyricIdx) return;
     lastScrolledIdx = activeLyricIdx;
     const el = lyricScrollEl.querySelector(`[data-lyric-idx="${activeLyricIdx}"]`);
@@ -269,18 +277,31 @@
     lyricScrollEl.scrollTop = top - lyricScrollEl.clientHeight / 2 + (el as HTMLElement).offsetHeight / 2;
   });
 
+  /** 用户滚动歌词容器时标记为手动滚动，2.5 秒内不抢回滚动条 */
+  function onLyricUserScroll() {
+    userScrolling = true;
+    if (userScrollTimer) clearTimeout(userScrollTimer);
+    userScrollTimer = setTimeout(() => { userScrolling = false; }, 2500);
+  }
+
+  /** 锁定/恢复页面滚动：html 和 body 都要锁，避免滚轮穿过面板滚到底部页面 */
+  function setBodyScrollLock(lock: boolean) {
+    const v = lock ? 'hidden' : '';
+    document.documentElement.style.overflow = v;
+    document.body.style.overflow = v;
+  }
+
   function toggleLyrics() {
     lyricsOpen = !lyricsOpen;
     lastScrolledIdx = -1; // 每次打开都重新定位到当前句
-    // 打开时锁定页面滚动，关闭时恢复（避免滚动手势穿过面板滚到底部页面）
-    document.body.style.overflow = lyricsOpen ? 'hidden' : '';
+    setBodyScrollLock(lyricsOpen);
   }
 
   function closeLyrics() {
     if (!lyricsOpen) return;
     lyricsOpen = false;
     lastScrolledIdx = -1;
-    document.body.style.overflow = '';
+    setBodyScrollLock(false);
   }
 
   /** 点击歌词行跳转到对应时间 */
@@ -438,7 +459,7 @@
           <p class="font-bold text-sm">{searchMode ? '没有找到相关歌曲，换个关键词试试' : '暂无歌曲'}</p>
         </div>
       {:else}
-        <div class="max-h-[70vh] overflow-y-auto" bind:this={listScrollEl}>
+        <div class="max-h-[calc(100vh-220px)] min-h-40 lg:max-h-[calc(100vh-140px)] overflow-y-auto overscroll-contain" bind:this={listScrollEl}>
           <ul>
             {#each songs as song, i (songId(song) + i)}
               <li class={i % 2 === 0 ? '' : 'bg-slate-50/60 dark:bg-slate-700/20'}>
@@ -597,7 +618,10 @@
     </div>
 
     <!-- 歌词主体：当前句高亮并自动跟随居中，点击任意一句可跳转 -->
-    <div class="flex-1 min-h-0 overflow-y-auto px-5 py-8 pb-[calc(2rem+env(safe-area-inset-bottom))] select-none touch-pan-y overscroll-contain" bind:this={lyricScrollEl}>
+    <div class="flex-1 min-h-0 overflow-y-auto px-5 py-8 pb-[calc(2rem+env(safe-area-inset-bottom))] select-none touch-pan-y overscroll-contain" bind:this={lyricScrollEl}
+      on:wheel={onLyricUserScroll}
+      on:touchstart={onLyricUserScroll}
+      on:touchmove={onLyricUserScroll}>
       {#if !lyrics.length}
         <p class="mt-24 text-center text-sm font-bold text-slate-400 dark:text-slate-500">暂无歌词</p>
       {:else}
