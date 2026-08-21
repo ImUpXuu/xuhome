@@ -277,6 +277,16 @@
       a.click();
     }
   }
+
+  /**
+   * Portal：把弹窗移动到 <body> 顶层。
+   * 文章卡片有 transform 动画，会让 position:fixed 退化为相对定位，
+   * 导致弹窗被困在卡片里、无法覆盖全屏。挂到 body 后彻底脱离任何容器。
+   */
+  function portal(node: HTMLElement) {
+    document.body.appendChild(node);
+    return { destroy() { node.remove(); } };
+  }
 </script>
 
 <button
@@ -291,7 +301,7 @@
 </button>
 
 {#if expanded}
-  <div class="fixed inset-0 z-[9990] flex items-end sm:items-center justify-center p-0 sm:p-6" role="presentation" on:click={closeShare}>
+  <div use:portal class="fixed inset-0 z-[2147483000] flex items-end sm:items-center justify-center p-0 sm:p-6" role="presentation" on:click={closeShare}>
     <div class="absolute inset-0 bg-slate-900/35 backdrop-blur-sm"></div>
     <section
       class="relative w-full sm:max-w-lg max-h-[88vh] overflow-y-auto rounded-t-[28px] sm:rounded-[28px] bg-[#f8fbff] dark:bg-slate-800 border border-[#c5e2f2] shadow-[0_24px_80px_rgba(23,50,77,0.25)]"
@@ -340,7 +350,7 @@
 {/if}
 
 {#if showPoster && posterDataUrl}
-  <div class="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center p-0 sm:p-6" style="background: rgba(23,50,77,0.38); backdrop-filter: blur(8px);" role="dialog" aria-modal="true" on:click={closePoster}>
+  <div use:portal class="fixed inset-0 z-[2147483001] flex items-end sm:items-center justify-center p-0 sm:p-6" style="background: rgba(23,50,77,0.38); backdrop-filter: blur(8px);" role="dialog" aria-modal="true" on:click={closePoster}>
     <div class="w-full sm:max-w-[440px] max-h-[94vh] overflow-y-auto bg-[#f8fbff] dark:bg-slate-800 rounded-t-[28px] sm:rounded-[28px] shadow-[0_24px_80px_rgba(23,50,77,0.28)] border border-[#c5e2f2]" on:click|stopPropagation>
       <div class="flex items-center justify-between px-5 py-4 border-b border-[#dceefa] sticky top-0 z-10 bg-[#f8fbff]/95 dark:bg-slate-800/95 backdrop-blur">
         <div><h3 class="font-bold text-[#17324d] dark:text-slate-100 text-base">分享海报</h3><p class="text-xs text-[#6b8298] mt-0.5">下载或复制给朋友</p></div>
