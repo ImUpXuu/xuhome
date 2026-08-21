@@ -91,7 +91,11 @@ category: "技术"
 
 ## 白嫖路径 & 注意事项
 
-最简单粗暴：OpenRouter 注册个账号，模型直接选 `stealth/ox-alpha` 就能用，API 兼容 OpenAI 格式。
+目前一共有**三条路**可以白嫖：
+
+### ① OpenRouter（官方路由）
+
+最简单粗暴：[OpenRouter](https://openrouter.ai/stealth/ox-alpha) 注册个账号，模型直接选 `stealth/ox-alpha` 就能用，API 兼容 OpenAI 格式。
 
 ```bash
 curl https://openrouter.ai/api/v1/chat/completions \
@@ -103,6 +107,26 @@ curl https://openrouter.ai/api/v1/chat/completions \
   }'
 ```
 
+### ② OpenCode Zen（opencode 官方网关）
+
+用 opencode 的朋友可以直接走 [OpenCode Zen](https://opencode.ai/zen/)，模型 ID 是 `x-preview-f`，同样免费、限时、零留存。在 opencode 里配好 Zen 的 key 就能直接用。
+
+### ③ 我的中转站也接入了！
+
+是的，upxuu 的[公益中转站](https://ai.love7.top/)第一时间把 Ox Alpha 接进来了，模型名就叫 `ox-alpha`，OpenAI 协议直接调：
+
+```bash
+curl -X POST https://ai.love7.top/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "model": "ox-alpha",
+    "messages": [{"role": "user", "content": "你好，介绍一下你自己"}]
+  }'
+```
+
+还不知道我中转站的可以看这篇：[我的公益中转站上线啦！ - UpXuu's blog](https://upxuu.com/posts/new-api/)，注册就有初始额度，熟悉的朋友还可以找我加量。懒得折腾 OpenRouter 的直接用它就行~
+
 > [!WARNING]
 >
 > **有两个坑必须提醒：**
@@ -112,6 +136,17 @@ curl https://openrouter.ai/api/v1/chat/completions \
 > 2. **匿名供应商**：托管方是匿名 provider，身份未证实。拿它写写文章、跑跑玩具 demo 没问题，做合规架构别指望它。
 
 好消息是免费期至少到 **8 月 27 日前后**（官方说 free for the next week），100T/天的容量也基本等于不限量。趁热白嫖，指不定哪天就收费了。
+
+## 参考链接
+
+- [Ox Alpha - OpenRouter 模型页](https://openrouter.ai/stealth/ox-alpha)
+- [opencode 官方推文（免费一周公告）](https://x.com/opencode/status/2090544355824038300)
+- [OpenRouter 官方发布推文](https://x.com/OpenRouter/status/2090544970923184269)
+- [Hacker News 热帖讨论（123 评论）](https://news.ycombinator.com/item?id=49381896)
+- [Ox Alpha 身份之谜分析](https://www.ic.work/article/ox-alpha-stealth-model-openrouter-identity-mystery)
+- [疑似智谱来源分析 - 80aj](https://www.80aj.com/2026/08/21/ox-alpha-model-exposed/)
+- [OpenCode Zen 模型接入 PR](https://github.com/anomalyco/opencode/pull/43690)
+- [我的公益中转站 - UpXuu's blog](https://upxuu.com/posts/new-api/)
 
 ---
 
