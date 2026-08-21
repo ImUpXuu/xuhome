@@ -565,7 +565,7 @@
 
   <!-- 面板：从底部上滑，实色背景，顶部大圆角；底部让出播放器不遮挡，桌面端收窄居中 -->
   <aside
-    class={`absolute left-0 right-0 mx-auto bottom-[70px] md:bottom-[76px] w-full max-w-2xl h-[78vh] sm:h-[72vh] flex flex-col bg-white dark:bg-slate-900 rounded-t-[24px] border-t-4 border-[#0284c7] shadow-[0_-16px_50px_rgba(2,132,199,0.25)] transition-transform duration-400 ease-out ${lyricsOpen ? 'translate-y-0' : 'translate-y-full'} ${lyricsOpen ? '' : 'pointer-events-none'}`}
+    class={`absolute left-0 right-0 mx-auto bottom-[70px] md:bottom-[76px] w-full max-w-2xl h-[78vh] sm:h-[72vh] flex flex-col bg-white dark:bg-slate-900 rounded-t-[24px] border-t-4 border-[#0284c7] shadow-[0_-16px_50px_rgba(2,132,199,0.25)] transition-transform duration-400 ease-out ${lyricsOpen ? 'translate-y-0' : 'translate-y-[calc(100%+90px)]'} ${lyricsOpen ? '' : 'pointer-events-none'}`}
   >
     <!-- 顶部拖拽抓手 + 头部：歌名 / 歌手 + 关闭按钮 -->
     <div class="shrink-0 px-4 pt-2.5 pb-2 border-b-2 border-[#0284c7] bg-[#fde68a] rounded-t-[28px]">
