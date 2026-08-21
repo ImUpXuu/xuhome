@@ -23,6 +23,13 @@
   let listScrollEl: HTMLElement;
   let showPlaylistMobile = false;
 
+  // 搜索状态
+  let searchMode = false;
+  let searchQuery = '';
+  let searching = false;
+  let searchResults: Song[] = [];
+  let searchDone = false;
+
   let currentIndex = -1;
   let playing = false;
   let duration = 0;
@@ -92,6 +99,7 @@
 
   async function loadPlaylist(id: string) {
     activePlaylistId = id;
+    searchMode = false;
     loading = true;
     loadError = '';
     try {
@@ -112,6 +120,46 @@
     } finally {
       loading = false;
     }
+  }
+
+  /** 搜索音乐（netease search），结果进入搜索模式列表 */
+  async function doSearch() {
+    const q = searchQuery.trim();
+    if (!q) return;
+    searchMode = true;
+    searching = true;
+    searchDone = false;
+    searchResults = [];
+    try {
+      const res = await fetch(apiUrl(['type', 'search'], ['id', q]));
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      searchResults = (Array.isArray(data) ? data : []).map((s: any) => ({
+        title: s.title || '未知歌名',
+        author: s.author || '未知歌手',
+        pic: fixUrl(s.pic) || '',
+        url: fixUrl(s.url) || '',
+        lrc: fixUrl(s.lrc) || '',
+      }));
+      // 搜索模式用这组结果作为播放列表
+      songs = searchResults;
+      if (listScrollEl) listScrollEl.scrollTop = 0;
+    } catch (e: any) {
+      loadError = e?.message || '搜索失败';
+    } finally {
+      searching = false;
+      searchDone = true;
+      loading = false;
+    }
+  }
+
+  /** 退出搜索模式，回到当前歌单 */
+  function exitSearch() {
+    searchMode = false;
+    searchQuery = '';
+    searchResults = [];
+    searchDone = false;
+    loadPlaylist(activePlaylistId);
   }
 
   async function loadLyrics(song: Song) {
@@ -233,6 +281,32 @@
 <!-- ============================================================ -->
 <div class="w-full max-w-6xl mx-auto px-2 sm:px-4 pb-24">
 
+  <!-- 顶部搜索框：输入关键词搜索音乐（netease） -->
+  <form
+    class="mb-4"
+    on:submit|preventDefault={() => doSearch()}
+  >
+    <div class="flex items-center gap-2 bg-white dark:bg-slate-800 border-4 border-[#0284c7] shadow-[4px_4px_0px_0px_#0284c7] rounded-sm p-2">
+      <svg class="w-5 h-5 shrink-0 text-[#0284c7] ml-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input
+        type="search"
+        placeholder="搜索歌曲 / 歌手…（回车搜索）"
+        bind:value={searchQuery}
+        aria-label="搜索音乐"
+        class="flex-1 min-w-0 bg-transparent outline-none text-sm font-bold text-slate-800 dark:text-slate-100 placeholder:text-slate-400 placeholder:font-medium"
+      />
+      {#if searchMode}
+        <button type="button" on:click={exitSearch} aria-label="退出搜索，返回歌单"
+          class="shrink-0 px-2 py-1.5 text-xs font-black text-[#0284c7] border-2 border-[#0284c7] rounded-sm bg-[#fde68a] shadow-[2px_2px_0px_0px_#0284c7] active:shadow-none active:translate-y-0.5 transition-all">退出搜索</button>
+      {:else}
+        <button type="submit" disabled={searching}
+          class="shrink-0 px-4 py-1.5 text-sm font-black text-white bg-[#0284c7] rounded-sm active:translate-y-0.5 transition-all disabled:opacity-60">
+          {searching ? '搜索中…' : '搜索'}
+        </button>
+      {/if}
+    </div>
+  </form>
+
   <!-- 手机端：歌单折叠触发条（lg 以下显示，点开弹覆盖层） -->
   <div class="lg:hidden mb-3">
     <button
@@ -308,15 +382,20 @@
       <!-- 歌单内容卡片 -->
       <div class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] shadow-[4px_4px_0px_0px_#0284c7] rounded-sm overflow-hidden">
 
-      <!-- 歌单头部 -->
+      <!-- 歌单头部（搜索模式显示搜索词） -->
       <div class="px-5 py-4 border-b-2 border-[#0284c7] bg-[#fde68a] flex items-center justify-between gap-3">
-        <div>
-          <h1 class="font-black text-lg sm:text-xl text-[#0284c7] leading-tight">{activeName}</h1>
-          {#if songs.length && !loading}
-            <p class="text-xs font-bold text-[#0284c7]/60 mt-0.5">{songs.length} 首</p>
+        <div class="min-w-0">
+          {#if searchMode}
+            <h1 class="font-black text-lg sm:text-xl text-[#0284c7] leading-tight truncate">🔍 “{searchQuery.trim() || '搜索' }”</h1>
+            <p class="text-xs font-bold text-[#0284c7]/60 mt-0.5">{searchDone ? `${songs.length} 条结果` : '搜索中…'}</p>
+          {:else}
+            <h1 class="font-black text-lg sm:text-xl text-[#0284c7] leading-tight truncate">{activeName}</h1>
+            {#if songs.length && !loading}
+              <p class="text-xs font-bold text-[#0284c7]/60 mt-0.5">{songs.length} 首</p>
+            {/if}
           {/if}
         </div>
-        {#if songs.length && !loading}
+        {#if songs.length && !loading && !searching}
           <button on:click={() => play(0)}
             class="shrink-0 px-4 py-2 bg-white border-2 border-[#0284c7] text-[#0284c7] font-black text-sm rounded-sm shadow-[2px_2px_0px_0px_#0284c7] hover:-translate-y-0.5 transition-transform active:translate-y-0 active:shadow-none">
             ▶ 播放全部
@@ -328,19 +407,19 @@
       {#if loadError}
         <div class="p-10 text-center text-[#0284c7]">
           <p class="font-black mb-3">加载失败：{loadError}</p>
-          <button on:click={() => loadPlaylist(activePlaylistId)}
+          <button on:click={() => searchMode ? doSearch() : loadPlaylist(activePlaylistId)}
             class="px-4 py-2 bg-[#fde68a] border-2 border-[#0284c7] text-[#0284c7] font-black text-sm rounded-sm shadow-[2px_2px_0px_0px_#0284c7] hover:-translate-y-0.5 transition-transform">
             重试
           </button>
         </div>
-      {:else if loading}
+      {:else if loading || searching}
         <div class="p-12 text-center text-slate-400">
           <div class="inline-block w-6 h-6 border-4 border-[#0284c7] border-t-transparent rounded-full animate-spin mb-2"></div>
-          <p class="font-bold text-sm">加载歌单中…</p>
+          <p class="font-bold text-sm">{searching ? '搜索中…' : '加载歌单中…'}</p>
         </div>
       {:else if songs.length === 0}
         <div class="p-12 text-center text-slate-400">
-          <p class="font-bold text-sm">暂无歌曲</p>
+          <p class="font-bold text-sm">{searchMode ? '没有找到相关歌曲，换个关键词试试' : '暂无歌曲'}</p>
         </div>
       {:else}
         <div class="max-h-[70vh] overflow-y-auto" bind:this={listScrollEl}>
