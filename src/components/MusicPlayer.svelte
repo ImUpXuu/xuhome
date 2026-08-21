@@ -272,9 +272,10 @@
     lastScrolledIdx = activeLyricIdx;
     const el = lyricScrollEl.querySelector(`[data-lyric-idx="${activeLyricIdx}"]`);
     if (!el) return;
-    // 只滚歌词容器本身，不触发页面滚动
+    // 只滚歌词容器本身，不触发页面滚动；用 smooth 过渡更丝滑
     const top = (el as HTMLElement).offsetTop - lyricScrollEl.offsetTop;
-    lyricScrollEl.scrollTop = top - lyricScrollEl.clientHeight / 2 + (el as HTMLElement).offsetHeight / 2;
+    const target = top - lyricScrollEl.clientHeight / 2 + (el as HTMLElement).offsetHeight / 2;
+    lyricScrollEl.scrollTo({ top: target, behavior: 'smooth' });
   });
 
   /** 用户滚动歌词容器时标记为手动滚动，2.5 秒内不抢回滚动条 */
@@ -627,16 +628,16 @@
       {:else}
         <!-- 上下留白，让当前句能真正滚到正中（网易云效果） -->
         <div class="h-[28%]"></div>
-        <ul class="space-y-4">
+        <ul class="space-y-6">
           {#each lyrics as line, i (i)}
             <li
               data-lyric-idx={i}
               aria-current={i === activeLyricIdx}
               on:click={() => seekLyricLine(i)}
-              class={`cursor-pointer transition-all duration-300 leading-relaxed text-center text-sm sm:text-[15px]
+              class={`cursor-pointer transition-all duration-300 leading-relaxed text-center text-[15px] sm:text-base
                 ${i === activeLyricIdx
-                  ? 'text-[#0284c7] font-black text-lg sm:text-xl'
-                  : 'text-slate-500 dark:text-slate-400 hover:text-[#0284c7]/80'}`}
+                  ? 'text-[#0284c7] font-black text-xl sm:text-2xl'
+                  : 'text-slate-600 dark:text-slate-300 hover:text-[#0284c7]/80'}`}
             >
               {line.text}
             </li>
