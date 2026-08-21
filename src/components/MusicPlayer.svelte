@@ -86,7 +86,10 @@
     mounted = true;
     loadPlaylist(activePlaylistId);
 
-    return () => { audio.pause(); };
+    return () => {
+      audio.pause();
+      document.body.style.overflow = '';
+    };
   });
 
   // ==================== 数据 ====================
@@ -259,12 +262,25 @@
     if (!lyricsOpen || !lyricScrollEl || activeLyricIdx < 0) return;
     if (lastScrolledIdx === activeLyricIdx) return;
     lastScrolledIdx = activeLyricIdx;
-    lyricScrollEl.querySelector(`[data-lyric-idx="${activeLyricIdx}"]`)?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    const el = lyricScrollEl.querySelector(`[data-lyric-idx="${activeLyricIdx}"]`);
+    if (!el) return;
+    // 只滚歌词容器本身，不触发页面滚动
+    const top = (el as HTMLElement).offsetTop - lyricScrollEl.offsetTop;
+    lyricScrollEl.scrollTop = top - lyricScrollEl.clientHeight / 2 + (el as HTMLElement).offsetHeight / 2;
   });
 
   function toggleLyrics() {
     lyricsOpen = !lyricsOpen;
     lastScrolledIdx = -1; // 每次打开都重新定位到当前句
+    // 打开时锁定页面滚动，关闭时恢复（避免滚动手势穿过面板滚到底部页面）
+    document.body.style.overflow = lyricsOpen ? 'hidden' : '';
+  }
+
+  function closeLyrics() {
+    if (!lyricsOpen) return;
+    lyricsOpen = false;
+    lastScrolledIdx = -1;
+    document.body.style.overflow = '';
   }
 
   /** 点击歌词行跳转到对应时间 */
@@ -560,7 +576,7 @@
     class:opacity-100={lyricsOpen}
     class:opacity-0={!lyricsOpen}
     class:pointer-events-auto={lyricsOpen}
-    on:click={() => lyricsOpen = false}
+    on:click={closeLyrics}
   ></div>
 
   <!-- 面板：从底部上滑，实色背景，顶部大圆角；底部让出播放器不遮挡，桌面端收窄居中 -->
@@ -575,7 +591,7 @@
           <div class="font-black text-sm text-[#0284c7] truncate">{currentSong.title}</div>
           <div class="text-[11px] font-bold text-[#0284c7]/70 truncate">{currentSong.author}</div>
         </div>
-        <button type="button" on:click={() => lyricsOpen = false} aria-label="关闭歌词"
+        <button type="button" on:click={closeLyrics} aria-label="关闭歌词"
           class="shrink-0 w-11 h-11 flex items-center justify-center bg-white border-2 border-[#0284c7] text-[#0284c7] rounded-full shadow-[2px_2px_0px_0px_#0284c7] active:shadow-none active:translate-y-0.5 transition-all font-black text-xl">×</button>
       </div>
     </div>
