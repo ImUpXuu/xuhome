@@ -695,5 +695,11 @@
     "description": "物物而不物于物，念念而不念于念",
     "avatar": "https://rainzt.cn/zzty.png",
     "rss": "https://rainzt.cn/rss.xml"
+  },
+  {
+    "name": "路明笔记",
+    "url": "https://www.luming.cool",
+    "avatar": "https://www.google.com/s2/favicons?domain=www.luming.cool&sz=128",
+    "description": "一名高中生的技术与生活博客"
   }
 ]
