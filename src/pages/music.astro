@@ -1,0 +1,9 @@
+---
+import Layout from '../layouts/Layout.astro';
+import MusicPlayer from '../components/MusicPlayer.svelte';
+import { seoConfig } from '../config/site';
+---
+
+<Layout title={`音乐播放器${seoConfig.titleTemplate}`} description="UpXuu 的博客音乐播放器">
+  <MusicPlayer client:load />
+</Layout>
