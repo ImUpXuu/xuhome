@@ -101,178 +101,142 @@
       const ctx = canvas.getContext('2d')!;
       const W = 900;
       const H = 1200;
-      canvas.width = W;
-      canvas.height = H;
+      const dpr = Math.max(1, Math.min(3, window.devicePixelRatio || 1));
+      canvas.width = Math.round(W * dpr);
+      canvas.height = Math.round(H * dpr);
+      canvas.style.width = W + 'px';
+      canvas.style.height = H + 'px';
+      ctx.scale(dpr, dpr);
 
-      // Outer cream + stacked shadow
-      ctx.fillStyle = '#e2e8f0';
+      const warmWhite = '#f8fbff';
+      const ink = '#17324d';
+      const muted = '#6b8298';
+      const blue = '#dceefa';
+      const blueStrong = '#78b9dc';
+      const pad = 58;
+      const contentW = W - pad * 2;
+      const roundedRect = (x: number, y: number, w: number, h: number, r: number) => {
+        ctx.beginPath();
+        ctx.moveTo(x + r, y);
+        ctx.arcTo(x + w, y, x + w, y + h, r);
+        ctx.arcTo(x + w, y + h, x, y + h, r);
+        ctx.arcTo(x, y + h, x, y, r);
+        ctx.arcTo(x, y, x + w, y, r);
+        ctx.closePath();
+      };
+      const fillRound = (x: number, y: number, w: number, h: number, r: number, color: string) => {
+        roundedRect(x, y, w, h, r);
+        ctx.fillStyle = color;
+        ctx.fill();
+      };
+
+      ctx.fillStyle = warmWhite;
       ctx.fillRect(0, 0, W, H);
-      ctx.fillStyle = '#0284c7';
-      ctx.fillRect(18, 18, W - 24, H - 24);
+      ctx.fillStyle = blue;
+      ctx.fillRect(0, 0, W, 18);
+      ctx.fillStyle = '#eef7fc';
+      ctx.fillRect(0, H - 16, W, 16);
 
-      // Main card
-      ctx.fillStyle = '#faf8f5';
-      ctx.fillRect(8, 8, W - 32, H - 32);
-
-      // Top accent bar
-      ctx.fillStyle = '#f59e0b';
-      ctx.fillRect(8, 8, W - 32, 14);
-
-      // Header band
-      ctx.fillStyle = '#0284c7';
-      ctx.fillRect(8, 22, W - 32, 72);
-      ctx.fillStyle = '#ffffff';
-      ctx.font = 'bold 28px "Fredoka", "Noto Sans SC", system-ui, sans-serif';
       ctx.textAlign = 'left';
-      ctx.fillText('UPXUU · BLOG', 40, 68);
-      ctx.font = 'bold 16px "Noto Sans SC", system-ui, sans-serif';
-      ctx.fillStyle = '#bae6fd';
-      ctx.fillText('分享一张好看的文章卡片', 40, 90);
+      ctx.fillStyle = blueStrong;
+      ctx.font = 'bold 24px "Noto Sans SC", system-ui, sans-serif';
+      ctx.fillText('UPXUU  ·  STORY', pad, 68);
+      ctx.fillStyle = muted;
+      ctx.font = '16px "Noto Sans SC", system-ui, sans-serif';
+      ctx.fillText('把值得分享的内容，留在一张卡片里', pad, 96);
 
-      let y = 120;
-      const pad = 40;
-      const contentW = W - 32 - pad * 2;
-
-      // Cover image
+      let y = 126;
+      const coverH = 370;
       if (image) {
         try {
           const img = await loadImage(image);
-          const boxW = contentW;
-          const boxH = 360;
-          const scale = Math.max(boxW / img.width, boxH / img.height);
-          const sw = boxW / scale;
-          const sh = boxH / scale;
+          const scale = Math.max(contentW / img.width, coverH / img.height);
+          const sw = contentW / scale;
+          const sh = coverH / scale;
           const sx = (img.width - sw) / 2;
           const sy = (img.height - sh) / 2;
-
-          ctx.fillStyle = '#0284c7';
-          ctx.fillRect(pad - 4, y - 4, boxW + 8, boxH + 8);
           ctx.save();
-          ctx.beginPath();
-          ctx.rect(pad, y, boxW, boxH);
+          roundedRect(pad, y, contentW, coverH, 24);
           ctx.clip();
-          ctx.drawImage(img, sx, sy, sw, sh, pad, y, boxW, boxH);
+          ctx.drawImage(img, sx, sy, sw, sh, pad, y, contentW, coverH);
           ctx.restore();
-          y += boxH + 36;
+          ctx.strokeStyle = '#c5e2f2';
+          ctx.lineWidth = 3;
+          roundedRect(pad, y, contentW, coverH, 24);
+          ctx.stroke();
+          y += coverH + 42;
         } catch {
           y += 12;
         }
       } else {
-        // Decorative block when no cover
-        ctx.fillStyle = '#e0f2fe';
-        ctx.fillRect(pad, y, contentW, 120);
-        ctx.strokeStyle = '#0284c7';
-        ctx.lineWidth = 4;
-        ctx.strokeRect(pad, y, contentW, 120);
-        ctx.fillStyle = '#0284c7';
-        ctx.font = 'bold 42px "Fredoka", system-ui, sans-serif';
+        fillRound(pad, y, contentW, 150, 24, blue);
+        ctx.fillStyle = blueStrong;
+        ctx.font = 'bold 48px system-ui, sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText('UPXUU', pad + contentW / 2, y + 72);
+        ctx.fillText('UPXUU', W / 2, y + 92);
         ctx.textAlign = 'left';
-        y += 148;
+        y += 188;
       }
 
-      // Title
-      ctx.fillStyle = '#0f172a';
+      ctx.fillStyle = ink;
       ctx.font = 'bold 40px "Noto Sans SC", system-ui, sans-serif';
       const titleLines = wrapText(ctx, title || '无标题', contentW);
-      titleLines.slice(0, 3).forEach((line, i) => {
-        ctx.fillText(line, pad, y + i * 52);
-      });
+      titleLines.slice(0, 3).forEach((line, i) => ctx.fillText(line, pad, y + i * 52));
       y += Math.min(titleLines.length, 3) * 52 + 18;
 
-      // Meta chips
+      ctx.fillStyle = blueStrong;
+      ctx.font = 'bold 18px "Noto Sans SC", system-ui, sans-serif';
       const metaParts: string[] = [];
       if (date) metaParts.push(date);
       metaParts.push(`${pageViews} 次阅读`);
-      const meta = metaParts.join('  ·  ');
-      ctx.fillStyle = '#0284c7';
-      ctx.font = 'bold 18px "Noto Sans SC", system-ui, sans-serif';
-      ctx.fillText(meta, pad, y);
-      y += 36;
+      ctx.fillText(metaParts.join('  ·  '), pad, y);
+      y += 34;
 
-      // Description
       if (description) {
-        ctx.fillStyle = '#475569';
-        ctx.font = '22px "Noto Sans SC", system-ui, sans-serif';
+        ctx.fillStyle = muted;
+        ctx.font = '21px "Noto Sans SC", system-ui, sans-serif';
         const descLines = wrapText(ctx, description, contentW);
-        descLines.slice(0, 4).forEach((line, i) => {
-          ctx.fillText(line, pad, y + i * 32);
-        });
-        y += Math.min(descLines.length, 4) * 32 + 28;
+        descLines.slice(0, 3).forEach((line, i) => ctx.fillText(line, pad, y + i * 31));
       }
 
-      // Footer card
-      const footerY = H - 220;
-      const footerH = 150;
-      const footerW = contentW;
-      const footerX = pad;
+      const footerY = H - 210;
+      const footerH = 142;
+      fillRound(pad, footerY, contentW, footerH, 22, '#edf7fc');
+      ctx.strokeStyle = '#c5e2f2';
+      ctx.lineWidth = 2;
+      roundedRect(pad, footerY, contentW, footerH, 22);
+      ctx.stroke();
 
-      // Shadow
-      ctx.fillStyle = '#0284c7';
-      ctx.fillRect(footerX + 6, footerY + 6, footerW, footerH);
-      // Card
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect(footerX, footerY, footerW, footerH);
-      ctx.strokeStyle = '#0284c7';
-      ctx.lineWidth = 4;
-      ctx.strokeRect(footerX, footerY, footerW, footerH);
-
-      // Avatar
       const av = 72;
-      const avX = footerX + 24;
+      const avX = pad + 24;
       const avY = footerY + (footerH - av) / 2;
       ctx.save();
       ctx.beginPath();
       ctx.arc(avX + av / 2, avY + av / 2, av / 2, 0, Math.PI * 2);
-      ctx.closePath();
       ctx.clip();
       try {
         const avImg = await loadImage('https://upxuu.com/images/me.jpg');
         ctx.drawImage(avImg, avX, avY, av, av);
       } catch {
-        ctx.fillStyle = '#0284c7';
+        ctx.fillStyle = blueStrong;
         ctx.fillRect(avX, avY, av, av);
       }
       ctx.restore();
-      // Avatar ring
-      ctx.strokeStyle = '#0284c7';
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.arc(avX + av / 2, avY + av / 2, av / 2, 0, Math.PI * 2);
-      ctx.stroke();
-
-      // Name + link
-      ctx.fillStyle = '#0f172a';
+      ctx.fillStyle = ink;
       ctx.font = 'bold 26px "Noto Sans SC", system-ui, sans-serif';
-      ctx.textAlign = 'left';
       ctx.fillText('UPXUU', avX + av + 20, footerY + 58);
-      ctx.fillStyle = '#0284c7';
-      ctx.font = 'bold 18px "JetBrains Mono", monospace';
-      ctx.fillText('upxuu.com', avX + av + 20, footerY + 90);
-      ctx.fillStyle = '#94a3b8';
-      ctx.font = '14px "Noto Sans SC", system-ui, sans-serif';
-      const shortUrl = shareUrl.replace(/^https?:\/\//, '').slice(0, 28);
-      ctx.fillText(shortUrl, avX + av + 20, footerY + 118);
+      ctx.fillStyle = muted;
+      ctx.font = '16px "Noto Sans SC", system-ui, sans-serif';
+      ctx.fillText('upxuu.com', avX + av + 20, footerY + 88);
 
-      // QR
-      const qr = 96;
-      const qrX = footerX + footerW - qr - 24;
+      const qr = 100;
+      const qrX = pad + contentW - qr - 28;
       const qrY = footerY + (footerH - qr) / 2;
-      ctx.fillStyle = '#0284c7';
-      ctx.fillRect(qrX - 4, qrY - 4, qr + 8, qr + 8);
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect(qrX, qrY, qr, qr);
+      fillRound(qrX - 9, qrY - 9, qr + 18, qr + 18, 14, '#ffffff');
       try {
-        const qrImg = await loadImage('https://api.qrserver.com/v1/create-qr-code/?size=120x120&margin=8&data=' + encodeURIComponent(shareUrl));
-        ctx.drawImage(qrImg, qrX + 6, qrY + 6, qr - 12, qr - 12);
+        const qrImg = await loadImage('https://api.qrserver.com/v1/create-qr-code/?size=140x140&margin=8&data=' + encodeURIComponent(shareUrl));
+        ctx.drawImage(qrImg, qrX, qrY, qr, qr);
       } catch {}
-
-      // Bottom strip
-      ctx.fillStyle = '#0284c7';
-      ctx.fillRect(8, H - 40, W - 32, 16);
-      ctx.fillStyle = '#f59e0b';
-      ctx.fillRect(8, H - 24, W - 32, 8);
 
       posterDataUrl = canvas.toDataURL('image/png');
       showPoster = true;
@@ -337,23 +301,19 @@
 {/if}
 
 {#if showPoster && posterDataUrl}
-  <div class="fixed inset-0 z-[9999]" style="background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);" role="dialog" aria-modal="true" on:click={closePoster}>
-    <div class="absolute bottom-0 sm:bottom-auto sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 w-full sm:w-[420px] max-h-[90vh] bg-[rgba(250,248,245,0.95)] dark:bg-slate-800 border-t-[6px] sm:border-[6px] border-[#0284c7] rounded-t-3xl sm:rounded-sm shadow-[0_-20px_60px_-10px_rgba(0,0,0,0.5),6px_6px_0px_0px_#0284c7] overflow-y-auto" on:click|stopPropagation>
-      <div class="flex items-center justify-between p-4 border-b-4 border-[#0284c7] bg-white dark:bg-slate-800 sticky top-0 z-10">
-        <h3 class="font-black text-[#0284c7] text-base uppercase tracking-wider">分享卡片</h3>
-        <button on:click={closePoster} class="w-9 h-9 flex items-center justify-center hover:bg-[#fde68a] dark:hover:bg-[#fde68a]/20 rounded-sm transition-all text-[#0284c7] cursor-pointer border-2 border-[#0284c7] bg-white dark:bg-slate-700 shadow-[2px_2px_0px_0px_#0284c7] active:translate-y-0.5 active:shadow-none">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 stroke-[3]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+  <div class="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center p-0 sm:p-6" style="background: rgba(23,50,77,0.38); backdrop-filter: blur(8px);" role="dialog" aria-modal="true" on:click={closePoster}>
+    <div class="w-full sm:max-w-[440px] max-h-[94vh] overflow-y-auto bg-[#f8fbff] dark:bg-slate-800 rounded-t-[28px] sm:rounded-[28px] shadow-[0_24px_80px_rgba(23,50,77,0.28)] border border-[#c5e2f2]" on:click|stopPropagation>
+      <div class="flex items-center justify-between px-5 py-4 border-b border-[#dceefa] sticky top-0 z-10 bg-[#f8fbff]/95 dark:bg-slate-800/95 backdrop-blur">
+        <div><h3 class="font-bold text-[#17324d] dark:text-slate-100 text-base">分享海报</h3><p class="text-xs text-[#6b8298] mt-0.5">下载或复制给朋友</p></div>
+        <button on:click={closePoster} aria-label="关闭" class="w-9 h-9 flex items-center justify-center rounded-full bg-[#dceefa] text-[#4b83a5] hover:bg-[#c5e2f2] transition-colors cursor-pointer">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
         </button>
       </div>
-      <div class="p-4">
-        <img src={posterDataUrl} alt="海报" class="w-full h-auto rounded-sm border-2 border-[#0284c7]/20" />
-        <div class="mt-3 flex gap-2">
-          <button on:click={downloadPoster} class="flex-1 bg-[#0284c7] text-white font-black py-2.5 border-3 border-[#0284c7] rounded-sm shadow-[3px_3px_0px_0px_#fde68a] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all text-sm cursor-pointer">
-            下载
-          </button>
-          <button on:click={copyPoster} class="flex-1 bg-white dark:bg-slate-700 text-[#0284c7] font-black py-2.5 border-3 border-[#0284c7] rounded-sm shadow-[3px_3px_0px_0px_#0284c7] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all text-sm cursor-pointer">
-            复制
-          </button>
+      <div class="p-4 sm:p-5">
+        <img src={posterDataUrl} alt="海报" class="w-full h-auto rounded-2xl border border-[#c5e2f2] shadow-sm" />
+        <div class="mt-4 flex gap-3">
+          <button on:click={downloadPoster} class="flex-1 bg-[#78b9dc] text-white font-bold py-3 rounded-xl hover:bg-[#5fa8d0] transition-colors text-sm cursor-pointer">下载海报</button>
+          <button on:click={copyPoster} class="flex-1 bg-white dark:bg-slate-700 text-[#4b83a5] font-bold py-3 rounded-xl border border-[#c5e2f2] hover:bg-[#eef7fc] transition-colors text-sm cursor-pointer">复制图片</button>
         </div>
       </div>
     </div>
