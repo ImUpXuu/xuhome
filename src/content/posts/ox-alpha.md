@@ -51,12 +51,12 @@ category: "技术"
 
 这条推文热度爆炸：6790 赞、330 转发、2500+ 收藏、约 **196 万次浏览**。
 
-代码侧也落地了：opencode 仓库（sst 迁移到了 anomalyco/opencode）连着合了两个 PR，把 Ox Alpha 接进了 **opencode Go** 的模型表里——Go 端模型 ID 叫 **`x-preview-f`**，标注免费、限时、零留存。
+代码侧也落地了：opencode 仓库（sst 迁移到了 anomalyco/opencode）连着合了两个 PR，把 Ox Alpha 接进了 **opencode Go** 的模型表里——Go 端模型 ID 叫 **`ox-alpha-free`**，标注免费、限时、零留存。
 
 也就是说你现在有**两条免费通道**：
 
 1. **OpenRouter**：`stealth/ox-alpha`
-2. **opencode Go**：`x-preview-f`
+2. **opencode Go**：`ox-alpha-free`
 
 不过注意，opencode 的"官方推荐模型"列表里还没它，官方措辞更像"上线了一个新玩具"而不是"这以后就是咱默认推荐了"。顺带一提，它的最大流量来源测出来是 **Claude Code** 和 Hermes Agent 在带——也就是说已经有大量 agent 把它当"免费干活模型"在跑了。
 
@@ -109,7 +109,7 @@ curl https://openrouter.ai/api/v1/chat/completions \
 
 ### ② opencode Go
 
-用 opencode 的朋友可以直接走 **opencode Go**，模型 ID 是 `x-preview-f`，同样免费、限时、零留存。配好之后就能直接用。
+用 opencode 的朋友可以直接走 **opencode Go**，模型 ID 是 `ox-alpha-free`，同样免费、限时、零留存。配好之后就能直接用。
 
 ### ③ 我的中转站也接入了！
 
