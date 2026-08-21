@@ -1,4 +1,4 @@
-name: Vercel 缓存命中检查
+name: Cloudflare 缓存命中检查
 
 on:
   push:
@@ -17,9 +17,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Vercel 构建约 60s，再缓冲 60s 确保部署完成
-      - name: 等待 Vercel 部署完成
-        run: sleep 120
+      # 构建约 30s，缓冲 40s 确保部署完成
+      - name: 等待部署完成
+        run: sleep 40
 
       # ---- 预热前先清空 Cloudflare 全站缓存，确保边缘缓存放的是最新版本 ----
       # 注意：upxuu.com 挂在 SaaS zone 476543.xyz（自定义主机名）下，
@@ -72,7 +72,7 @@ jobs:
         run: |
           cat urls.txt | xargs -P 8 -I {} curl -s -o /dev/null -m 20 "{}" || true
 
-      # 第二遍：检查 X-Vercel-Cache 是否 HIT
+      # 第二遍：检查 cf-cache-status 是否 HIT（Cloudflare 边缘缓存）
       - name: 第二遍 curl（检查命中）
         run: |
           total=0; hit=0; miss=0
@@ -81,7 +81,7 @@ jobs:
             [ -z "$url" ] && continue
             total=$((total+1))
             cache=$(curl -s -o /dev/null -m 20 -D - "$url" \
-              | grep -i '^x-vercel-cache:' | tr -d '\r' | awk '{print $2}')
+              | grep -i '^cf-cache-status:' | tr -d '\r' | awk '{print $2}')
             [ -z "$cache" ] && cache="N/A"
             if [ "$cache" = "HIT" ]; then hit=$((hit+1)); else miss=$((miss+1)); fi
             echo "$cache|$url" >> detail.txt
@@ -94,7 +94,7 @@ jobs:
           fi
 
           {
-            echo "# Vercel 边缘缓存命中报告"
+            echo "# Cloudflare 边缘缓存命中报告"
             echo ""
             echo "> 生成时间：$(date -u '+%Y-%m-%d %H:%M:%S UTC')"
             echo ""
