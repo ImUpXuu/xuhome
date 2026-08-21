@@ -116,6 +116,18 @@ const relatedPosts = (() => {
                 )}
               </div>
             </div>
+
+            {/* 顶栏分享按钮：放在文章标题同行的右上角 */}
+            <div class="shrink-0">
+              <ShareButton
+                title={post.title}
+                description={post.description}
+                url={Astro.url.href}
+                image={post.img}
+                date={post.date}
+                client:only="svelte"
+              />
+            </div>
           </div>
 
           {/* Prose Content block */}
@@ -160,26 +172,6 @@ const relatedPosts = (() => {
                   </a>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
-
-        {/* 独立分享区块：不与其他信息挤在同一张卡片里 */}
-        <div class="bg-[#efe1bf] dark:bg-slate-800 border-4 border-[#0284c7] p-5 md:p-6 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm relative animate-card-entrance opacity-0" style="animation-delay: 0.12s">
-          <h3 class="text-base sm:text-lg font-black text-[#0284c7] mb-3 leading-snug">分享这篇文章</h3>
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <p class="text-xs sm:text-sm font-bold text-slate-500 dark:text-slate-400 leading-relaxed">
-              生成一张文章海报、复制链接，或分享到微信 / QQ / X
-            </p>
-            <div class="shrink-0">
-              <ShareButton
-                title={post.title}
-                description={post.description}
-                url={Astro.url.href}
-                image={post.img}
-                date={post.date}
-                client:only="svelte"
-              />
             </div>
           </div>
         </div>
