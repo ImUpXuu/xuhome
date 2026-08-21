@@ -1,8 +1,6 @@
 import rss from '@astrojs/rss';
 import { getCollection } from 'astro:content';
 import { siteConfig } from '../config/site';
-import { normalizeEntrySlug, postPath } from '../utils/slugify';
-import { toBeijingInstant } from '../utils/dateFormat';
 import MarkdownIt from 'markdown-it';
 import sanitizeHtml from 'sanitize-html';
 import type { APIContext } from 'astro';
@@ -34,12 +32,12 @@ export async function GET(context: APIContext) {
     .map((post) => {
       const body = typeof post.body === 'string' ? post.body : '';
       const cleaned = stripInvalidXmlChars(body);
-      const slug = normalizeEntrySlug(post);
+      const slug = (post.data.slug || post.slug || post.id || '').trim();
       const desc = post.data.description || stripMarkdown(body).substring(0, 50);
-      const permalink = `${siteUrl}${postPath(slug)}`;
+      const permalink = `${siteUrl}/posts/${slug}/`;
       return {
         title: post.data.title,
-        pubDate: toBeijingInstant(post.data.published || post.data.date) ?? new Date(),
+        pubDate: post.data.published || post.data.date,
         description: desc,
         link: permalink,
         guid: permalink,
