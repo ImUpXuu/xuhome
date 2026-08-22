@@ -1,9 +1,8 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import MusicPlayer from '../components/MusicPlayer.svelte';
 import { seoConfig } from '../config/site';
 ---
 
 <Layout title={`音乐播放器${seoConfig.titleTemplate}`} description="UpXuu 的博客音乐播放器" hideFooter={true} hideBanner={true}>
-  <MusicPlayer client:load />
+  {/* 播放器已全局挂载在 Layout 中（transition:persist 跨页保活），此处仅提供页面路由 */}
 </Layout>
