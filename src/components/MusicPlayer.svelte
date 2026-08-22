@@ -46,6 +46,11 @@
   let audio: HTMLAudioElement;
   let mounted = false;
 
+  // 路由感知：是否在音乐页（View Transitions 导航后由 astro:page-load 更新）
+  let isMusicPage = true;
+  // 后台播放：开启后离开音乐页音乐继续，并在其他页面显示迷你播放胶囊
+  let backgroundPlay = false;
+
   // 用户手动滚动歌词时暂停自动跟随（网易云行为）
   let userScrolling = false;
   let userScrollTimer: ReturnType<typeof setTimeout> | null = null;
@@ -96,15 +101,30 @@
 
     mounted = true;
     sheetHeight = defaultSheetHeight();
+    isMusicPage = window.location.pathname === '/music' || window.location.pathname.startsWith('/music/');
+    try { backgroundPlay = sessionStorage.getItem('music-bg') === '1'; } catch {}
     loadPlaylist(activePlaylistId);
 
+    // View Transitions 导航后更新路由状态
+    const onPageLoad = () => {
+      isMusicPage = window.location.pathname === '/music' || window.location.pathname.startsWith('/music/');
+    };
+    document.addEventListener('astro:page-load', onPageLoad);
+
     return () => {
-      audio.pause();
+      document.removeEventListener('astro:page-load', onPageLoad);
       if (userScrollTimer) clearTimeout(userScrollTimer);
+      if (!backgroundPlay) audio.pause();
       document.documentElement.style.overflow = '';
       document.body.style.overflow = '';
     };
   });
+
+  /** 切换后台播放 */
+  function toggleBackgroundPlay() {
+    backgroundPlay = !backgroundPlay;
+    try { sessionStorage.setItem('music-bg', backgroundPlay ? '1' : '0'); } catch {}
+  }
 
   // ==================== 数据 ====================
   function apiUrl(...params: [string, string][]) {
@@ -353,8 +373,9 @@
 </script>
 
 <!-- ============================================================ -->
-<!-- 页面主体：左侧歌单 + 右侧歌曲列表 -->
+<!-- 页面主体：左侧歌单 + 右侧歌曲列表（仅音乐页渲染） -->
 <!-- ============================================================ -->
+{#if isMusicPage}
 <div class="w-full max-w-6xl mx-auto px-2 sm:px-4 pb-4 flex flex-col h-[calc(100dvh-150px)] lg:h-[calc(100vh-200px)] min-h-0 overflow-hidden">
 
   <!-- 顶部搜索框：输入关键词搜索音乐（netease） -->
@@ -528,13 +549,15 @@
     </div>
   </div>
 </div>
+{/if}
 
 <!-- ============================================================ -->
-<!-- 底部播放器（独立于页面，固定视口底部） -->
+<!-- 底部播放器（独立于页面，固定视口底部；仅音乐页或开启后台播放时显示） -->
 <!-- ============================================================ -->
-<div
-  class={`fixed bottom-0 left-0 right-0 z-[90] bg-white dark:bg-slate-900 transition-transform duration-300 ${mounted && songs.length ? 'translate-y-0' : 'translate-y-full'}`}
->
+{#if mounted && songs.length && (isMusicPage || backgroundPlay)}
+{#if isMusicPage}
+<!-- ===== 完整底栏（音乐页） ===== -->
+<div class="fixed bottom-0 left-0 right-0 z-[90] bg-white dark:bg-slate-900">
   <!-- 进度条（独立一行，占满宽度） -->
   <div class="w-full cursor-pointer select-none" on:click={seek} aria-label="播放进度">
     <div class="h-[5px] w-full bg-slate-200 dark:bg-slate-700 relative">
@@ -614,6 +637,12 @@
           <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 14 4 4-4 4"/><path d="m18 2 4 4-4 4"/><path d="M2 18h1.973a4 4 0 0 0 3.3-1.7l5.454-8.6a4 4 0 0 1 3.3-1.7H22"/><path d="M2 6h1.972a4 4 0 0 1 3.6 2.2"/><path d="M22 18h-6.041a4 4 0 0 1-3.3-1.8l-.359-.45"/></svg>
         {/if}
       </button>
+      <button on:click={toggleBackgroundPlay} aria-label="后台播放"
+        class={`w-9 h-9 flex-shrink-0 flex items-center justify-center border-2 rounded-sm shadow-[2px_2px_0px_0px_#0284c7] active:shadow-none active:translate-y-0.5 transition-all hover:-translate-y-0.5 ${backgroundPlay ? 'bg-[#0284c7] text-white' : 'bg-[#fde68a] text-[#0284c7] border-[#0284c7]'}`}
+        title={backgroundPlay ? '后台播放已开启：离开本页将继续播放' : '开启后台播放：离开音乐页也能继续听'}>
+        <!-- 画中画式图标 -->
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="14" rx="2"/><rect x="12" y="11" width="8" height="6" rx="1" fill="currentColor" stroke="none"/></svg>
+      </button>
       <div class="hidden lg:flex items-center gap-2 w-20">
         <span class="text-[10px] font-black text-slate-400">音量</span>
         <input type="range" min="0" max="1" step="0.01"
@@ -623,11 +652,47 @@
     </div>
   </div>
 </div>
+{:else}
+<!-- ===== 迷你胶囊（其他页面 + 已开启后台播放） ===== -->
+<div class="fixed bottom-4 right-4 z-[90] max-w-[calc(100vw-2rem)] bg-white dark:bg-slate-900 border-3 border-[#0284c7] rounded-full shadow-[4px_4px_0px_0px_#0284c7] pl-1.5 pr-2 py-1.5 flex items-center gap-2">
+  <button on:click={toggle} aria-label={playing ? '暂停' : '播放'}
+    class="shrink-0 w-10 h-10 rounded-full overflow-hidden border-2 border-[#0284c7] bg-slate-100 dark:bg-slate-800 relative group">
+    {#if currentSong?.pic}
+      <img src={currentSong.pic} alt={currentSong.title} class="w-full h-full object-cover" />
+    {:else}
+      <span class="w-full h-full flex items-center justify-center text-[#0284c7] font-black">♪</span>
+    {/if}
+    <!-- 播放/暂停覆盖图标 -->
+    <span class="absolute inset-0 bg-slate-900/40 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity">
+      {#if playing}
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/></svg>
+      {:else}
+        <svg class="w-4 h-4 ml-0.5" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7L8 5z"/></svg>
+      {/if}
+    </span>
+  </button>
+  <div class="min-w-0 max-w-32 sm:max-w-44">
+    <div class="text-xs font-black text-slate-800 dark:text-slate-100 truncate leading-tight">{currentSong ? currentSong.title : '——'}</div>
+    <div class="text-[10px] text-slate-400 truncate leading-tight">{currentSong?.author || ''}</div>
+  </div>
+  <button on:click={prev} aria-label="上一首" class="shrink-0 w-8 h-8 hidden sm:flex items-center justify-center text-[#0284c7] hover:bg-[#fde68a]/50 rounded-full transition-colors">
+    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M6.5 4h3v16h-3V4zM19 5v14L8 12l11-7z"/></svg>
+  </button>
+  <button on:click={() => next(false)} aria-label="下一首" class="shrink-0 w-8 h-8 hidden sm:flex items-center justify-center text-[#0284c7] hover:bg-[#fde68a]/50 rounded-full transition-colors">
+    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M14.5 4h3v16h-3V4zM5 5l10 7-10 7V5z"/></svg>
+  </button>
+  <button on:click={() => { toggleBackgroundPlay(); audio.pause(); }} aria-label="停止后台播放"
+    class="shrink-0 w-8 h-8 flex items-center justify-center text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-full transition-colors"
+    title="停止并关闭">
+    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 18L18 6M6 6l12 12"/></svg>
+  </button>
+</div>
+{/if}
 
 <!-- ============================================================ -->
 <!-- 歌词面板：网易云风格，从底部弹出（实色，不透明） -->
 <!-- ============================================================ -->
-{#if currentSong}
+{#if currentSong && isMusicPage}
 <div class="fixed inset-0 z-[100] pointer-events-none" aria-hidden={!lyricsOpen}>
 
   <!-- 遮罩：点击空白处关闭（底部让出播放器高度，不遮住播放器） -->

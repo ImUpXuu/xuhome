@@ -6,6 +6,7 @@ import { ClientRouter } from 'astro:transitions';
 import NavBar from '../components/NavBar.astro';
 // 暂时禁用：import WelcomeToast from '../components/WelcomeToast.astro';
 import { PageBanner } from '../components/PageBanner';
+import MusicPlayer from '../components/MusicPlayer.svelte';
 import { execSync } from 'child_process';
 import '../index.css';
 
@@ -609,6 +610,11 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
         <path stroke-linecap="round" stroke-linejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" />
       </svg>
     </button>
+
+    {/* 全站音乐播放器：transition:persist 跨页保活，离开音乐页可继续播放（后台播放开启时显示迷你胶囊） */}
+    {!isAboutPage && (
+      <MusicPlayer client:load transition:persist="music-player" />
+    )}
   </body>
 </html>
 
