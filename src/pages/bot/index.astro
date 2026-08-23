@@ -79,11 +79,11 @@ const archiveKeys = Object.keys(archiveMap).sort((a, b) => b.localeCompare(a));
     <nav>
       <h2>导航</h2>
       <ul>
-        <li><a href={`${siteConfig.url}/talks`}>说说 / Talks</a></li>
-        <li><a href={`${siteConfig.url}/posts`}>归档 / Archive</a></li>
-        <li><a href={`${siteConfig.url}/about`}>关于 / About</a></li>
-        <li><a href={`${siteConfig.url}/friends`}>友链 / Friends</a></li>
-        <li><a href={`${siteConfig.url}/tags`}>标签 / Tags</a></li>
+        <li><a href={`${siteConfig.url}/talks/`}>说说 / Talks</a></li>
+        <li><a href={`${siteConfig.url}/posts/`}>归档 / Archive</a></li>
+        <li><a href={`${siteConfig.url}/about/`}>关于 / About</a></li>
+        <li><a href={`${siteConfig.url}/friends/`}>友链 / Friends</a></li>
+        <li><a href={`${siteConfig.url}/tags/`}>标签 / Tags</a></li>
       </ul>
     </nav>
 
@@ -97,7 +97,7 @@ const archiveKeys = Object.keys(archiveMap).sort((a, b) => b.localeCompare(a));
               {archiveMap[key].map(p => (
                 <li>
                   {p.date && <time>{p.date}</time>} -
-                  <a href={`${siteConfig.url}/posts/${encodeURIComponent(p.slug)}`}>{p.title}</a>
+                  <a href={`${siteConfig.url}/posts/${encodeURIComponent(p.slug)}/`}>{p.title}</a>
                   {p.description && <p>{p.description}</p>}
                 </li>
               ))}
@@ -112,7 +112,7 @@ const archiveKeys = Object.keys(archiveMap).sort((a, b) => b.localeCompare(a));
           {talks.slice(0, 20).map(t => (
             <li>
               {t.date && <time>{t.date}</time>} -
-              <a href={`${siteConfig.url}/talk/${encodeURIComponent(t.slug)}`}>{t.title || t.date}</a>
+              <a href={`${siteConfig.url}/talk/${encodeURIComponent(t.slug)}/`}>{t.title || t.date}</a>
             </li>
           ))}
         </ul>

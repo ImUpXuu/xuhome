@@ -1,4 +1,5 @@
 import { getCollection } from 'astro:content';
+import { seoConfig } from '../config/seo';
 
 export interface PostItem {
   id: string;
@@ -90,7 +91,7 @@ export async function getProcessedPosts(): Promise<PostItem[]> {
         }
         return desc;
       })(),
-      img: data.img || data.image || data.cover || '',
+      img: data.img || data.image || data.cover || seoConfig.defaultImage,
       tags,
       category
     };

@@ -17,9 +17,9 @@ export function normalizeEntrySlug(entry: any): string {
 }
 
 export function postPath(slugNormalized: string): string {
-  return `/posts/${encodeURIComponent(slugNormalized)}`;
+  return `/posts/${encodeURIComponent(slugNormalized)}/`;
 }
 
 export function talkPath(slugNormalized: string): string {
-  return `/talk/${encodeURIComponent(slugNormalized)}`;
+  return `/talk/${encodeURIComponent(slugNormalized)}/`;
 }
