@@ -483,10 +483,10 @@
       <div class="px-5 py-4 border-b-2 border-[#0284c7] bg-[#fde68a] flex items-center justify-between gap-3">
         <div class="min-w-0">
           {#if searchMode}
-            <h1 class="font-black text-lg sm:text-xl text-[#0284c7] leading-tight truncate">🔍 “{searchQuery.trim() || '搜索' }”</h1>
+            <h3 class="font-black text-lg sm:text-xl text-[#0284c7] leading-tight truncate">🔍 “{searchQuery.trim() || '搜索' }”</h3>
             <p class="text-xs font-bold text-[#0284c7]/60 mt-0.5">{searchDone ? `${songs.length} 条结果` : '搜索中…'}</p>
           {:else}
-            <h1 class="font-black text-lg sm:text-xl text-[#0284c7] leading-tight truncate">{activeName}</h1>
+            <h3 class="font-black text-lg sm:text-xl text-[#0284c7] leading-tight truncate">{activeName}</h3>
             {#if songs.length && !loading}
               <p class="text-xs font-bold text-[#0284c7]/60 mt-0.5">{songs.length} 首</p>
             {/if}

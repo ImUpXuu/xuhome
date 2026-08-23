@@ -6,7 +6,7 @@ const allTalks = await getProcessedTalks();
 
 const pageTitle = `${i18nConfig.talks.title}${seoConfig.titleTemplate}`;
 const pageDescription = i18nConfig.talks.description;
-const canonicalURL = `${siteConfig.url}/talks`;
+const canonicalURL = `${siteConfig.url}/talks/`;
 
 function stripMarkdown(raw: string): string {
   return (raw || '')
@@ -49,7 +49,7 @@ function stripMarkdown(raw: string): string {
           return (
             <li>
               {t.date && <time>{t.date}</time>} -
-              <a href={`${siteConfig.url}/talk/${encodeURIComponent(t.slug)}`}>{t.title || t.date}</a>
+              <a href={`${siteConfig.url}/talk/${encodeURIComponent(t.slug)}/`}>{t.title || t.date}</a>
               {excerpt && <p>{excerpt}</p>}
             </li>
           );

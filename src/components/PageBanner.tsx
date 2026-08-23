@@ -20,10 +20,12 @@ export function PageBanner({
 }: PageBannerProps) {
   // Use props if provided, otherwise fallback to window.location (client-side only)
   const pathname = propPathname || (typeof window !== 'undefined' ? window.location.pathname : '');
+  const isHome = pathname === '/' || pathname === '/index.html';
 
   const categoryName = propCategoryName;
   const tagName = propTagName;
   const post = propPost;
+  const SecondaryHeading: 'h1' | 'h2' = post ? 'h2' : 'h1';
   const postsCount = propPostsCount || 0;
 
   const hasRightContent = useMemo(() => {
@@ -45,9 +47,9 @@ export function PageBanner({
           <div className="text-[10px] md:text-xs font-black text-[#0ea5e9] bg-white dark:bg-slate-700 border-2 border-[#0284c7] px-2 py-0.5 rounded-sm shadow-[2px_2px_0px_0px_#0284c7] transform md:rotate-2 uppercase tracking-widest shrink-0 select-none">
             {infoConfig.banner.labels.category}
           </div>
-          <h2 className="text-sm md:text-3xl font-black text-[#0284c7] bg-[#fde68a] border-2 md:border-3 border-[#0284c7] shadow-[2.5px_2.5px_0px_0px_#f59e0b] px-4 py-1 transform md:-rotate-1 shrink-0 max-w-[70vw] md:max-w-[450px] truncate">
+          <SecondaryHeading className="text-sm md:text-3xl font-black text-[#0284c7] bg-[#fde68a] border-2 md:border-3 border-[#0284c7] shadow-[2.5px_2.5px_0px_0px_#f59e0b] px-4 py-1 transform md:-rotate-1 shrink-0 max-w-[70vw] md:max-w-[450px] truncate">
             {categoryName}
-          </h2>
+          </SecondaryHeading>
           <div className="font-bold text-[#f59e0b] bg-white border-2 border-[#f59e0b] px-2.5 py-0.5 shadow-[2px_2px_0px_0px_#0284c7] text-[10px] md:text-xs shrink-0">
             {postsCount} 篇
           </div>
@@ -68,9 +70,9 @@ export function PageBanner({
           <div className="text-[10px] md:text-xs font-black text-[#0ea5e9] bg-white dark:bg-slate-700 border-2 border-[#0284c7] px-2 py-0.5 rounded-sm shadow-[2px_2px_0px_0px_#0284c7] transform md:rotate-2 uppercase tracking-widest shrink-0 select-none">
             {infoConfig.banner.labels.tag}
           </div>
-          <h2 className="text-sm md:text-3xl font-black text-[#0284c7] bg-[#fde68a] border-2 md:border-3 border-[#0284c7] shadow-[2.5px_2.5px_0px_0px_#f59e0b] px-4 py-1 transform md:-rotate-1 shrink-0 max-w-[70vw] md:max-w-[450px] truncate font-sans">
+          <SecondaryHeading className="text-sm md:text-3xl font-black text-[#0284c7] bg-[#fde68a] border-2 md:border-3 border-[#0284c7] shadow-[2.5px_2.5px_0px_0px_#f59e0b] px-4 py-1 transform md:-rotate-1 shrink-0 max-w-[70vw] md:max-w-[450px] truncate font-sans">
             #{tagName}
-          </h2>
+          </SecondaryHeading>
           <div className="font-bold text-[#f59e0b] bg-white border-2 border-[#f59e0b] px-2.5 py-0.5 shadow-[2px_2px_0px_0px_#0284c7] text-[10px] md:text-xs shrink-0">
             {postsCount} 篇
           </div>
@@ -114,7 +116,7 @@ export function PageBanner({
           <div className="text-[10px] md:text-xs font-black text-[#0ea5e9] bg-white border-2 border-[#0284c7] px-2.5 py-0.5 rounded-sm shadow-[2px_2px_0px_0px_#0284c7] transform md:rotate-2 uppercase tracking-widest shrink-0 select-none">
             {infoConfig.banner.labels.talk}
           </div>
-          <div className="text-xs md:text-lg font-bold text-slate-700 dark:text-slate-200 font-mono h-8 md:h-11 flex items-center justify-center md:justify-end -rotate-1 max-w-[70vw] md:max-w-[450px]">
+          <SecondaryHeading className="text-xs md:text-lg font-bold text-slate-700 dark:text-slate-200 font-mono h-8 md:h-11 flex items-center justify-center md:justify-end -rotate-1 max-w-[70vw] md:max-w-[450px]">
             <TypeAnimation
               sequence={infoConfig.banner.talkTicker.sequence}
               wrapper="span"
@@ -122,7 +124,7 @@ export function PageBanner({
               repeat={Infinity}
               className="bg-[#fde68a] px-3 py-1 shadow-[2px_2px_0px_0px_#0284c7] border-2 border-[#0284c7] inline-block font-sans whitespace-nowrap"
             />
-          </div>
+          </SecondaryHeading>
         </motion.div>
       );
     }
@@ -164,9 +166,15 @@ export function PageBanner({
           }`}
         >
           <a href="/" className="hover:opacity-90 active:scale-98 transition-all inline-block">
-            <p className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-[#0284c7] mb-1.5 sm:mb-3 md:mb-5 tracking-widest transform -rotate-1 inline-block">
-              {infoConfig.banner.title}'s blog
-            </p>
+            {isHome ? (
+              <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-[#0284c7] mb-1.5 sm:mb-3 md:mb-5 tracking-widest transform -rotate-1 inline-block">
+                {infoConfig.banner.title}'s blog
+              </h1>
+            ) : (
+              <p className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-[#0284c7] mb-1.5 sm:mb-3 md:mb-5 tracking-widest transform -rotate-1 inline-block">
+                {infoConfig.banner.title}'s blog
+              </p>
+            )}
           </a>
           <div 
             className={`text-xs md:text-lg font-bold text-slate-600 dark:text-slate-300 font-mono h-6 sm:h-8 flex items-center justify-center -rotate-1 ${

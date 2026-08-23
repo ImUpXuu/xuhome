@@ -1,10 +1,10 @@
 import { next, rewrite } from '@vercel/functions/middleware';
 
-// 爬虫 User-Agent 正则（与原 Caddy 规则一致）
-const CRAWLER_RE = /googlebot|bingbot|baiduspider|sogou|360spider|yandex|duckduckbot/i;
+// 爬虫 User-Agent 正则（与 Caddy 规则保持一致）
+const CRAWLER_RE = /(bot|crawl|spider|gpt|claude|perplexity|anthropic|cohere)/i;
 
 export const config = {
-  matcher: ['/', '/posts/:path*', '/talks/:path*', '/talk/:path*'],
+  matcher: ['/', '/posts/:path*', '/talks/:path*', '/talk', '/talk/:path*'],
 };
 
 function stripTrailingSlash(path) {
@@ -27,6 +27,8 @@ export default function middleware(request) {
   } else if (path.startsWith('/posts/')) {
     dest = '/bot/' + path.slice('/posts/'.length) + '/';
   } else if (path === '/talks') {
+    dest = '/bot/talks/';
+  } else if (path === '/talk') {
     dest = '/bot/talks/';
   } else if (path.startsWith('/talk/')) {
     dest = '/bot/talk/' + path.slice('/talk/'.length) + '/';

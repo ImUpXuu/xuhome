@@ -50,6 +50,7 @@ const pageDescription = (description || seoConfig.defaultDescription).length < 1
   : (description || seoConfig.defaultDescription);
 
 const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
+const resolvedImage = image || seoConfig.defaultImage;
 ---
 
 <!doctype html>
@@ -72,7 +73,7 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={pageDescription} />
     <meta property="og:type" content={post ? "article" : "website"} />
-    <meta property="og:image" content={image} />
+    <meta property="og:image" content={resolvedImage} />
     <meta property="og:site_name" content={siteConfig.title} />
     <meta property="og:locale" content="zh-CN" />
     <meta property="og:url" content={canonicalURL} />
@@ -84,7 +85,7 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
     <meta name="twitter:creator" content={seoConfig.twitter.creator} />
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={pageDescription} />
-    <meta name="twitter:image" content={image} />
+    <meta name="twitter:image" content={resolvedImage} />
 
     {/* JSON-LD Structured Data */}
     <script type="application/ld+json" set:html={JSON.stringify({
@@ -113,7 +114,7 @@ const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
           "@id": `${canonicalURL}#article`,
           "headline": post.title,
           "description": pageDescription,
-          "image": image,
+          "image": resolvedImage,
           "datePublished": post.dateISO || post.date,
           "author": {
             "@type": "Person",

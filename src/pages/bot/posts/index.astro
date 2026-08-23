@@ -21,7 +21,7 @@ const archiveKeys = Object.keys(archiveMap).sort((a, b) => b.localeCompare(a));
 
 const pageTitle = `${i18nConfig.archive.title}${seoConfig.titleTemplate}`;
 const pageDescription = i18nConfig.archive.description;
-const canonicalURL = `${siteConfig.url}/posts`;
+const canonicalURL = `${siteConfig.url}/posts/`;
 ---
 
 <!doctype html>
@@ -56,7 +56,7 @@ const canonicalURL = `${siteConfig.url}/posts`;
             {archiveMap[key].map(p => (
               <li>
                 {p.date && <time>{p.date}</time>} -
-                <a href={`${siteConfig.url}/posts/${encodeURIComponent(p.slug)}`}>{p.title}</a>
+                <a href={`${siteConfig.url}/posts/${encodeURIComponent(p.slug)}/`}>{p.title}</a>
               </li>
             ))}
           </ul>
