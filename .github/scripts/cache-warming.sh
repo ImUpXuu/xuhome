@@ -22,20 +22,25 @@ warm_url() {
   local response_time
   local remote_ip
   local cache_status
+  local age_seconds
 
   header_file="$(mktemp)"
   metric="$(curl -sS -o /dev/null -m "$REQUEST_TIMEOUT" -D "$header_file" \
     -w '%{http_code}\t%{time_total}\t%{remote_ip}' "$url" 2>/dev/null || true)"
   IFS=$'\t' read -r http_code response_time remote_ip <<< "$metric"
-  cache_status="$(sed -n 's/^[Cc][Ff]-[Cc]ache-[Ss]tatus:[[:space:]]*//p' "$header_file" \
-    | tail -n 1 | tr -d '\r')"
+  cache_status="$(awk 'tolower($1) == "x-vercel-cache:" { sub(/\r$/, "", $2); print $2 }' "$header_file" | tail -n 1)"
+  if [ -z "$cache_status" ]; then
+    cache_status="$(awk 'tolower($1) == "cf-cache-status:" { sub(/\r$/, "", $2); print $2 }' "$header_file" | tail -n 1)"
+  fi
+  age_seconds="$(awk 'tolower($1) == "age:" && $2 ~ /^[0-9]+$/ { sub(/\r$/, "", $2); print $2 }' "$header_file" | tail -n 1)"
 
-  printf '%s\t%s\t%s\t%s\t%s\n' \
+  printf '%s\t%s\t%s\t%s\t%s\t%s\n' \
     "$url" \
     "${http_code:-000}" \
     "${response_time:-0.000000}" \
     "${remote_ip:-unknown}" \
-    "${cache_status:-NONE}"
+    "${cache_status:-NONE}" \
+    "${age_seconds:-}"
   rm -f "$header_file"
 }
 
@@ -76,13 +81,25 @@ while [ "$(date +%s)" -lt "$deadline" ]; do
         ip=($4 == "" ? "unknown" : $4)
         status=($5 == "" ? "NONE" : $5)
         if (status == "HIT") hits++
+        if ($6 ~ /^[0-9]+$/) {
+          age = $6 + 0
+          age_total += age
+          age_count++
+          if (!age_seen || age < age_min) age_min = age
+          if (!age_seen || age > age_max) age_max = age
+          age_seen = 1
+        }
       }
       END {
         average=total ? response_sum / total : 0
         hit_rate=total ? hits * 100 / total : 0
-        printf "%d\t%d\t%.3f\t%d\t%.1f", total, successful, average, hits, hit_rate
+        age_average=age_count ? age_total / age_count : 0
+        if (age_count)
+          printf "%d\t%d\t%.3f\t%d\t%.1f\t%.0f\t%d\t%d", total, successful, average, hits, hit_rate, age_average, age_min, age_max
+        else
+          printf "%d\t%d\t%.3f\t%d\t%.1f\t-1\t-1\t-1", total, successful, average, hits, hit_rate
       }' "$metrics_file")"
-    IFS=$'\t' read -r requested successful average_response hits hit_rate <<< "$summary"
+    IFS=$'\t' read -r requested successful average_response hits hit_rate age_average age_min age_max <<< "$summary"
 
     ip_summary="$(awk -F '\t' '{print ($4 == "" ? "unknown" : $4)}' "$metrics_file" \
       | sort | uniq -c \
@@ -92,7 +109,13 @@ while [ "$(date +%s)" -lt "$deadline" ]; do
       | awk '{printf "%s%s=%s", separator, $2, $1; separator=", "}')"
 
     elapsed=$(($(date +%s) - cycle_start))
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] 第 $cycle 轮：预热 $requested 个页面，用时 ${elapsed}s，成功 $successful/$requested，平均响应 ${average_response}s，IP ${ip_summary:-unknown}，状态 ${status_summary:-NONE}，命中 HIT ${hits}/${requested}(${hit_rate}%)"
+    if [ "$age_average" -ge 0 ]; then
+      age_summary="avg=${age_average%.*}s/min=${age_min}s/max=${age_max}s"
+    else
+      age_summary="N/A"
+    fi
+
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] 第 $cycle 轮：预热 $requested 个页面，用时 ${elapsed}s，成功 $successful/$requested，平均响应 ${average_response}s，IP ${ip_summary:-unknown}，状态 ${status_summary:-NONE}，命中 HIT ${hits}/${requested}(${hit_rate}%)，Age ${age_summary}"
     rm -f "$metrics_file"
   else
     echo "::warning::[$(date '+%Y-%m-%d %H:%M:%S')] 获取 sitemap 失败，本轮跳过"
