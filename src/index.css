@@ -913,21 +913,3 @@ body { font-weight: 500 !important; }
   }
 }
 
-/* Native view transition for the persistent banner. The browser animates the
-   old/new snapshots on the compositor instead of Motion measuring page layout. */
-.page-banner-vt {
-  view-transition-name: page-banner;
-}
-
-::view-transition-old(page-banner),
-::view-transition-new(page-banner) {
-  animation-duration: 320ms;
-  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .page-banner-vt {
-    view-transition-name: none;
-  }
-}
-

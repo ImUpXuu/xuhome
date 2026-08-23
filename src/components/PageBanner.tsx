@@ -133,7 +133,11 @@ export function PageBanner({
   }, [categoryName, tagName, post, pathname, postsCount]);
 
   return (
-    <div className="page-banner-vt bg-white border-4 border-[#0284c7] p-3.5 sm:p-6 md:p-10 shadow-[6px_6px_0px_0px_#0284c7] sm:shadow-[8px_8px_0px_0px_#0284c7] rounded-sm text-center relative overflow-hidden flex flex-col justify-center min-h-[110px] sm:min-h-[180px] md:min-h-[220px]">
+    <motion.div
+      layoutId="hero-banner"
+      transition={{ type: "spring", stiffness: 220, damping: 26 }}
+      className="bg-white border-4 border-[#0284c7] p-3.5 sm:p-6 md:p-10 shadow-[6px_6px_0px_0px_#0284c7] sm:shadow-[8px_8px_0px_0px_#0284c7] rounded-sm text-center relative overflow-hidden flex flex-col justify-center min-h-[110px] sm:min-h-[180px] md:min-h-[220px]"
+    >
       {/* Handpainted/Retro grid styling */}
       <div 
         className="absolute top-0 left-0 w-full h-full pointer-events-none" 
@@ -196,6 +200,6 @@ export function PageBanner({
           </div>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 }
