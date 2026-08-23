@@ -184,11 +184,10 @@ import { i18nConfig } from '../config/site';
             <li>IP 地址（由服务器自动记录，用于反垃圾评论）</li>
           </ul>
           <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">
-            ⚠ 邮箱不会公开展示，仅用于 Gravatar 头像匹配和收到回复时的邮件通知。评论提交前需通过人机验证（Cap CAPTCHA），验证过程仅发送验证题解答案，不涉及个人信息。
+            ⚠ 邮箱不会公开展示，仅用于 Gravatar 头像匹配和收到回复时的邮件通知。
           </p>
           <div class="mt-2 p-3 bg-[rgba(250,248,245,0.55)] dark:bg-slate-700 border-2 border-slate-300 dark:border-slate-600 rounded-sm text-xs font-mono text-slate-500 dark:text-slate-400">
             评论服务：comment.upxuu.com（第一方自托管）<br>
-            验证码服务：cap.upxuu.com（第一方自部署）
           </div>
         </div>
 
@@ -286,7 +285,7 @@ import { i18nConfig } from '../config/site';
                 </tr>
                 <tr class="border-b border-slate-200 dark:border-slate-700">
                   <td class="py-2 px-3 font-bold">jsDelivr CDN</td>
-                  <td class="py-2 px-3">评论验证码组件的依赖库回退加载</td>
+                  <td class="py-2 px-3">评论系统静态资源依赖</td>
                   <td class="py-2 px-3 font-mono text-[10px]">cdn.jsdelivr.net</td>
                 </tr>
                 <tr>
@@ -512,7 +511,7 @@ import { i18nConfig } from '../config/site';
           <li><strong>保障站点正常运行</strong>——基础访问统计和页面计数帮助了解站点运行状况</li>
           <li><strong>改善用户体验</strong>——行为分析（Clarity）帮助发现页面可用性问题、优化布局</li>
           <li><strong>提供互动功能</strong>——评论系统允许读者留言互动，AI 功能辅助阅读</li>
-          <li><strong>安全防护</strong>——评论验证码（CAPTCHA）和 IP 记录用于防止垃圾评论和滥用</li>
+          <li><strong>安全防护</strong>——评论 IP 记录用于防止垃圾评论和滥用</li>
           <li><strong>个性化展示</strong>——主题偏好、欢迎提示、天气信息等增强浏览体验</li>
         </ul>
         <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">
@@ -575,7 +574,7 @@ import { i18nConfig } from '../config/site';
           <li><strong>HTTPS 加密传输</strong>——全站启用 HTTPS，所有数据传输均经 TLS 加密</li>
           <li><strong>自托管服务</strong>——核心服务（评论、统计、AI 后端）运行在自有服务器上，减少数据暴露面</li>
           <li><strong>访问控制</strong>——服务器部署访问控制，评论管理有后台保护</li>
-          <li><strong>人机验证</strong>——评论系统接入 CAPTCHA 防止自动化滥用</li>
+          <li><strong>评论管理</strong>——后台评论审核用于防止自动化滥用</li>
           <li><strong>第三方筛选</strong>——仅接入知名、可信的第三方服务</li>
         </ul>
         <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">
