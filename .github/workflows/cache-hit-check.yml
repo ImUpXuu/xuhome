@@ -55,7 +55,6 @@ jobs:
             exit 1
           fi
 
-      - name: 提取 sitemap 所有页面 URL
       - name: 持续预热全站页面（每 5 分钟一轮）
         env:
           RUN_SECONDS: '21480'
