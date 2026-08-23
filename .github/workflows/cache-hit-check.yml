@@ -59,45 +59,5 @@ jobs:
         env:
           RUN_SECONDS: '21480'
           INTERVAL_SECONDS: '300'
-        run: |
-          set -u -o pipefail
-          deadline=$(( $(date +%s) + RUN_SECONDS ))
-          cycle=0
-
-          while [ "$(date +%s)" -lt "$deadline" ]; do
-            cycle=$((cycle + 1))
-            cycle_start="$(date +%s)"
-            url_count=0
-
-            if curl -fsS --retry 2 --retry-delay 2 -m 30 https://upxuu.com/sitemap.xml \
-              | grep -oP '(?<=<loc>)[^<]+' \
-              | sed 's/\r$//' > urls.txt; then
-              printf '%s\n' \
-                "https://upxuu.com/bot/" \
-                "https://upxuu.com/bot/posts/" \
-                "https://upxuu.com/bot/talks/" >> urls.txt
-
-              # bot 优化页也是独立路由；sitemap 新增文章后下一轮会自动带上
-              grep -oP 'https://upxuu\.com/posts/[^/\s?#]+' urls.txt \
-                | sed 's|/posts/|/bot/|; s|$|/|' >> urls.txt
-              grep -oP 'https://upxuu\.com/talk/[^/\s?#]+' urls.txt \
-                | sed 's|/talk/|/bot/talk/|; s|$|/|' >> urls.txt
-              sort -u urls.txt -o urls.txt
-              url_count=$(wc -l < urls.txt)
-
-              echo "[$(date -u '+%F %T')] 第 $cycle 轮：预热 $url_count 个页面"
-              xargs -P 8 -I {} curl -sS -o /dev/null -m 20 "{}" < urls.txt || true
-            else
-              echo "::warning::[$(date -u '+%F %T')] 获取 sitemap 失败，本轮跳过"
-            fi
-
-            next_cycle=$(( cycle_start + INTERVAL_SECONDS ))
-            now="$(date +%s)"
-            if [ "$now" -lt "$next_cycle" ] && [ "$next_cycle" -lt "$deadline" ]; then
-              sleep $(( next_cycle - now ))
-            elif [ "$next_cycle" -lt "$deadline" ]; then
-              sleep 5
-            fi
-          done
-
-          echo "保温窗口结束：共执行 $cycle 轮"
+          TZ: Asia/Shanghai
+        run: bash .github/scripts/cache-warming.sh
