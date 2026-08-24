@@ -1,5 +1,6 @@
 ---
 title: "我的生日纪实~"
+keywords: ["十五岁生日", "生日纪实", "中考后", "朋友聚会"]
 published: 2026-07-06 19:00:00
 image: "https://img.upxuu.lcrworld.xyz/images/2026/7/6/1783336235627_622.webp"
 description: "UpXuu的十五岁生日纪实~第一次和朋友出去玩"

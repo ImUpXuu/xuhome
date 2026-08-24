@@ -1,5 +1,6 @@
 ---
 title: "我把静态博客部署在服务器上了(:!"
+keywords: ["静态博客", "服务器部署", "香港VPS", "博客搬家"]
 published: 2026-07-11 16:56:34
 description: "因为一次偶然的发现 我抛弃了cloudflare worker和vercel组合 改用"
 tags: []

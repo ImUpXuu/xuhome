@@ -1,5 +1,6 @@
 ---
 title: "DeepSeek 降价了！还是永久降价！ 缓存命中 0.02 元/百万 token，这价格还有谁"
+keywords: ["DeepSeek", "大模型降价", "API价格", "缓存命中"]
 published: 2026-05-23 22:07:11
 image: "https://img.upxuu.lcrworld.xyz/images/2026/5/23/1779527143525_509.webp"
 description: "DeepSeek V4 缓存命中价格降至原来的 1/10，Flash 输入只要 0.02 元/百万 token，Pro 永久降价到原价的 1/4。顺便对比下 GPT-5.5、Claude Opus 4、Gemini 2.5 Pro 和 qwen3.7-max 的价格"

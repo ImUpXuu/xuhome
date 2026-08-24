@@ -1,5 +1,6 @@
 ---
 title: "Vercel 跑 Docker 意味着什么？全栈平台的最后一块拼图，拼上了 | Vercel Docker | Vercel Sandbox | 云原生 | Serverless"
+keywords: ["Vercel", "Docker", "Serverless", "云原生"]
 published: 2026-06-06 15:00:00
 category: "技术"
 tags: ["技术"]

@@ -1,5 +1,6 @@
 ---
 title: "XUCMS：搓了个静态博客后台不够，我又搞了个Android客户端"
+keywords: ["XUCMS", "Android", "Kotlin", "博客后台"]
 published: 2026-06-07 17:50:00
 description: "之前搞了blog-admin-workers当静态博客后台，Vditor在手机上体验一般。于是我用Kotlin+Compose搓了个原生Android客户端，和Worker后端完美配对。"
 category: "技术"

@@ -1,5 +1,6 @@
 ---
 title: "焕然一新！暑假博客优化的总结！"
+keywords: ["暑假", "博客优化", "VPS", "速度优化"]
 published: 2026-07-13 21:58:05
 description: ""
 tags: []

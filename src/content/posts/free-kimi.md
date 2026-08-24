@@ -1,5 +1,6 @@
 ---
 title: "震撼首发！英伟达推出免费kimi k3！且速度极快，白嫖界迎来巨变|nvida nim|免费AI"
+keywords: ["Kimi K3", "NVIDIA NIM", "免费AI", "大模型"]
 published: 2026-08-21 07:52:49
 description: "是的你没有看错，就是那个极其昂贵的kimi k3模型已经上架英伟达的免费ai平台了！！"
 tags: []

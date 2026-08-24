@@ -1,5 +1,6 @@
 ---
 title: "你的vercel项目，还能更快"
+keywords: ["Vercel", "项目加速", "地区设置"]
 published: 2026-08-12 18:02:22
 description: "通过更改vercel项目地区加快vercel项目的速度"
 tags: []

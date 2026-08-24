@@ -1,6 +1,7 @@
 ---
 
 title: "兜兜转转开发了1个月的ExTalk，最后还是换回了成熟的方案"
+keywords: ["评论系统", "Waline", "ExTalk", "数据迁移"]
 published: 2026-04-26 14:15:00
 description: "如果你是本站的老读者可能知道，我在很早的时候发了篇文章，介绍本站自研的评论系统，现在又换waline了..."
 category: "技术"

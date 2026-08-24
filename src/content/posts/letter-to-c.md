@@ -1,5 +1,6 @@
 ---
 title: "[震撼首发]我在课上给cui写了封信"
+keywords: ["给老师的信", "英语", "数学老师", "Cui"]
 published: 2026-03-22 20:06:00
 image: "https://img.upxuu.lcrworld.xyz/images/20260322200940_356.webp"
 description: "在英语课写给某人的letter🤫，震撼首发，建议严肃学习😠"

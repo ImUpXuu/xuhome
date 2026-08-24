@@ -1,5 +1,6 @@
 ---
 title: "Markdown 完整渲染测试"
+keywords: ["Markdown", "渲染", "测试文档"]
 date: "2026-06-02"
 description: "这是一篇包含各种 Markdown 元素的测试文章，用于展示博客对不同排版格式的支持效果，包括代码块、表格、引用等。"
 img: "https://picsum.photos/seed/markdownbg/800/400"

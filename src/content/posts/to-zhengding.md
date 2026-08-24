@@ -1,5 +1,6 @@
 ---
 title: "中考前夕的正定之旅"
+keywords: ["正定", "旅行", "中考前夕", "随笔"]
 published: 2026-04-04 17:15:00
 image: "https://img.upxuu.lcrworld.xyz/images/20260404160022_340.webp"
 category: "随笔"

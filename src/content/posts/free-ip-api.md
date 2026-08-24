@@ -1,5 +1,6 @@
 ---
 title: "推荐几个超准的免登录，支持跨域的IP查询API"
+keywords: ["IP查询API", "免费API", "跨域请求"]
 published: 2026-05-16 00:00:00
 description: "在这付费盛行的时期 我找到了可能是“最良心的ip api”"
 ---

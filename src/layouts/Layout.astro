@@ -19,7 +19,8 @@ interface Props {
   image?: string;
   categoryName?: string | null;
   tagName?: string | null;
-  post?: { title: string; date: string } | null;
+  post?: { title: string; date: string; dateISO?: string; keywords?: string[] } | null;
+  keywords?: string[] | null;
   isTalk?: boolean;
   postsCount?: number;
   isAboutPage?: boolean;
@@ -35,6 +36,7 @@ const {
   categoryName = null,
   tagName = null,
   post = null,
+  keywords = null,
   isTalk = false,
   postsCount = 0,
   isAboutPage = false,
@@ -49,6 +51,11 @@ const pageTitle = title
 const pageDescription = (description || seoConfig.defaultDescription).length < 10 
   ? seoConfig.defaultDescription 
   : (description || seoConfig.defaultDescription);
+const pageKeywords = keywords?.length
+  ? keywords
+  : post?.keywords?.length
+    ? post.keywords
+    : seoConfig.keywords;
 
 const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
 const resolvedImage = image || seoConfig.defaultImage;
@@ -61,7 +68,7 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
     <meta charset="UTF-8" />
     <title>{pageTitle}</title>
     <meta name="description" content={pageDescription} />
-    <meta name="keywords" content={seoConfig.keywords.join(", ")} />
+    <meta name="keywords" content={pageKeywords.join(", ")} />
     <meta name="author" content={siteConfig.author} />
     <meta name="robots" content={seoConfig.robots} />
     <link rel="canonical" href={canonicalURL} />

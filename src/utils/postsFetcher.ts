@@ -11,6 +11,7 @@ export interface PostItem {
   description: string;
   img: string;
   tags: string[];
+  keywords: string[];
   category: string;
 }
 
@@ -42,6 +43,15 @@ export async function getProcessedPosts(): Promise<PostItem[]> {
       tags = data.tags;
     } else if (typeof data.tags === 'string') {
       tags = data.tags.split(',').map((t: string) => t.trim());
+    }
+
+    let keywords: string[] = [];
+    if (Array.isArray(data.keywords)) {
+      keywords = data.keywords.map((k: string) => String(k).trim()).filter(Boolean);
+    } else if (typeof data.keywords === 'string') {
+      keywords = data.keywords.split(/[,，]/).map((k: string) => k.trim()).filter(Boolean);
+    } else if (typeof data.keyword === 'string') {
+      keywords = data.keyword.split(/[,，]/).map((k: string) => k.trim()).filter(Boolean);
     }
 
     let parsedDate = '未知时间';
@@ -93,6 +103,7 @@ export async function getProcessedPosts(): Promise<PostItem[]> {
       })(),
       img: data.img || data.image || data.cover || seoConfig.defaultImage,
       tags,
+      keywords,
       category
     };
   });

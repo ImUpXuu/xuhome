@@ -1,5 +1,6 @@
 ---
 title: '为我的博客实现AI功能，让博客"活起来"'
+keywords: ["AI问答", "Cloudflare Worker", "SSE", "博客AI"]
 published: 2026-05-30 16:41:00
 description: "从 Cloudflare Worker 到前端 SSE 流式渲染，从三个模型端点到 Swup SPA 兼容，完整记录本博客 AI 问答 + 文章概括功能的实现过程与踩坑经历。"
 tags: ["AI", "博客", "折腾"]

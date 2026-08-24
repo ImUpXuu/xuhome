@@ -8,6 +8,7 @@ interface SEOProps {
   type?: string;
   url?: string;
   isArticle?: boolean;
+  keywords?: string[];
 }
 
 export function SEO({
@@ -17,11 +18,13 @@ export function SEO({
   type = "website",
   url = typeof window !== 'undefined' ? window.location.href : '',
   isArticle = false,
+  keywords,
 }: SEOProps) {
   const pageTitle = title 
     ? `${title}${seoConfig.titleTemplate}` 
     : `${siteConfig.title} - ${siteConfig.subtitle.split(' / ')[0]}`;
   const pageDescription = description || seoConfig.defaultDescription;
+  const pageKeywords = keywords?.length ? keywords : seoConfig.keywords;
   
   // Custom canonical URL basing on configuration
   const canonicalUrl = siteConfig.url 
@@ -32,7 +35,7 @@ export function SEO({
     <>
       <title>{pageTitle}</title>
       <meta name="description" content={pageDescription} />
-      <meta name="keywords" content={seoConfig.keywords.join(", ")} />
+      <meta name="keywords" content={pageKeywords.join(", ")} />
       <meta name="author" content={siteConfig.author} />
       <meta name="robots" content={seoConfig.robots} />
       {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}

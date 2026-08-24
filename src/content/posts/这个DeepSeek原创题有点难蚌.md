@@ -1,5 +1,6 @@
 ---
 title: 这个DeepSeek原创题有点难蚌
+keywords: ["DeepSeek", "原创题", "AI"]
 published: 2026-01-25 04:40:43
 slug: dswuli
 tags: []

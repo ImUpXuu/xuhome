@@ -1,5 +1,6 @@
 ---
 title: "bye~cloudflare hi~huaweidns"
+keywords: ["华为云DNS", "Cloudflare", "EdgeOne", "DNS分流"]
 published: 2026-07-14 14:00:48
 description: "本文主要介绍了作者为了防止自己的服务器被打死而想到的分流方案，为完成海外和国内分流而将dns服务器改为了华为云"
 tags: []

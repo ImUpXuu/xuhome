@@ -1,5 +1,6 @@
 ---
 title: “在河北待了十几年 怎么能不去一趟赵州桥呢~ 51游杂记”
+keywords: ["五一", "赵州桥", "旅行", "河北"]
 published: 2026-05-02
 description: '在河北待了十几年 怎么能不去一趟赵州桥呢 于是 这个51 一次说走就走的旅行~'
 image: 'https://img.upxuu.lcrworld.xyz/images/2026/5/2/1777722925803_771.webp'

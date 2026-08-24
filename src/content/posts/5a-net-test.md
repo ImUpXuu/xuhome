@@ -1,5 +1,6 @@
 ---
 title: "华为5A网络在4G手机卡下表现实测"
+keywords: ["华为5A网络", "4G", "网速测试", "Nova 14 Ultra"]
 published: 2026-04-25 00:00:00
 description: "去年，华为向部分机型推出了5A网络，大家的争议焦点普遍在于到底是4G还是5G 那就来看看在4G下的表现吧"
 category: "技术"

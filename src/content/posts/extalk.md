@@ -1,5 +1,6 @@
 ---
 title: "Extalk - 下一代边缘计算评论系统 🚀"
+keywords: ["Extalk", "评论系统", "Cloudflare Workers", "D1", "边缘计算"]
 published: 2026-03-14 17:44:00
 category: "技术"
 ---

@@ -1,5 +1,6 @@
 ---
 title: "关于近期全站被盗版镜像的处理"
+keywords: ["盗版镜像", "DMCA", "Cloudflare Worker", "版权维权"]
 published: 2026-07-09 19:00:00
 description: "关于 qas458.com 全站镜像盗用本站内容的完整说明与处理进展"
 category: "公告"

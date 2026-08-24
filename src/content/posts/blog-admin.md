@@ -1,5 +1,6 @@
 ---
 title: "还在本地写博客？来试试基于worker的博客后台 零成本叫你打造一个不用服务器的后台"
+keywords: ["博客后台", "Cloudflare Workers", "Vditor", "图床"]
 published: 2026-05-04 07:06:00
 image: "https://img.upxuu.lcrworld.xyz/images/2026/5/4/20260503230406_418.webp"
 description: "- ✨ 支持三种编辑模式：即时渲染 (IR)、所见即所得 (WYSIWYG)、分屏预览 (SV)"

@@ -1,5 +1,6 @@
 ---
 title: 毕业2.5年后 我封存了小学的记忆...
+keywords: ["小学", "回忆", "相册", "毕业"]
 published: 2026-05-03
 description: '一次相册的整理'
 image: 'https://img.upxuu.lcrworld.xyz/images/2026/5/3/1777819682809_763.webp'
