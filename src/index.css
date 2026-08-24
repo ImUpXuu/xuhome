@@ -900,13 +900,11 @@ body { font-weight: 500 !important; }
 #site-bg {
   background-color: #faf8f5;
   background-image:
-    radial-gradient(circle, rgba(253,246,227,0.35) 1px, transparent 1px),
-    linear-gradient(rgba(250,248,245,0.45), rgba(250,248,245,0.45)),
-    url("https://img.upxuu.lcrworld.xyz/images/2026/7/1.webp");
-  background-size: 24px 24px, cover, cover;
-  background-position: 0 0, center, center;
-  background-repeat: repeat, no-repeat, no-repeat;
-  background-attachment: fixed, fixed, fixed;
+    radial-gradient(circle, rgba(253,246,227,0.35) 1px, transparent 1px);
+  background-size: 24px 24px;
+  background-position: 0 0;
+  background-repeat: repeat;
+  background-attachment: scroll;
 }
 body[data-is-article="true"] #site-bg {
   background-image: radial-gradient(circle, rgba(253,246,227,0.35) 1px, transparent 1px);
@@ -918,13 +916,11 @@ body[data-is-article="true"] #site-bg {
 .dark #site-bg {
   background-color: #0f172a;
   background-image:
-    radial-gradient(circle, rgba(253,246,227,0.35) 1px, transparent 1px),
-    linear-gradient(rgba(15,23,42,0.62), rgba(15,23,42,0.62)),
-    url("https://img.upxuu.lcrworld.xyz/images/2026/7/1.webp");
-  background-size: 24px 24px, cover, cover;
-  background-position: 0 0, center, center;
-  background-repeat: repeat, no-repeat, no-repeat;
-  background-attachment: fixed, fixed, fixed;
+    radial-gradient(circle, rgba(253,246,227,0.35) 1px, transparent 1px);
+  background-size: 24px 24px;
+  background-position: 0 0;
+  background-repeat: repeat;
+  background-attachment: scroll;
 }
 .dark body[data-is-article="true"] #site-bg {
   background-image: radial-gradient(circle, rgba(253,246,227,0.35) 1px, transparent 1px);
