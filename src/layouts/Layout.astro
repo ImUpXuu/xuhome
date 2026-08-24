@@ -625,8 +625,8 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
       </svg>
     </button>
 
-    {/* 全站音乐播放器：transition:persist 跨页保活，离开音乐页可继续播放（后台播放开启时显示迷你胶囊） */}
-    {!isAboutPage && (
+    {/* 只有音乐页才加载播放器，其它页面不请求任何音乐播放器代码 */}
+    {isMusicPage && (
       <MusicPlayer client:load transition:persist="music-player" />
     )}
   </body>
