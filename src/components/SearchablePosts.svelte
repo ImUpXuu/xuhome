@@ -1,6 +1,6 @@
 <script lang="ts">
   import PageViews from './PageViews.svelte';
-  import { onMount } from 'svelte';
+  import { afterUpdate, onMount } from 'svelte';
   import { flip } from 'svelte/animate';
   import { fade } from 'svelte/transition';
   import { siteConfig, i18nConfig } from '../config/site';
@@ -24,6 +24,125 @@
   let currentPage = 1;
   let isLoadingPosts = false;
   let loadFailed = false;
+  let feedEl: HTMLElement;
+
+  // Keep client bandwidth predictable: at most two article HTML requests run together.
+  const MAX_PREFETCH_REQUESTS = 2;
+  const PREFETCH_ROOT_MARGIN = '300px';
+  const prefetchedUrls = new Set<string>();
+  const queuedUrls = new Set<string>();
+  const inflightUrls = new Set<string>();
+  let prefetchObserver: IntersectionObserver | null = null;
+  let prefetchAbortController: AbortController | null = null;
+
+  function getConnection() {
+    return (navigator as Navigator & {
+      connection?: {
+        saveData?: boolean;
+        effectiveType?: string;
+      };
+    }).connection;
+  }
+
+  function getMaxConcurrentPrefetches() {
+    const connection = getConnection();
+    if (connection?.saveData) return 0;
+    if (/^(slow-)?2g$/.test(connection?.effectiveType || '')) return 0;
+    if (connection?.effectiveType === '3g') return 1;
+    return MAX_PREFETCH_REQUESTS;
+  }
+
+  async function prefetchArticle(url: string) {
+    if (!prefetchAbortController) return;
+
+    try {
+      const response = await fetch(url, {
+        signal: prefetchAbortController.signal,
+        credentials: 'same-origin',
+        redirect: 'follow',
+        priority: 'low',
+      } as RequestInit);
+
+      if (response.ok) await response.arrayBuffer();
+    } catch {
+      // A failed prefetch must never turn into a visible homepage error.
+    } finally {
+      inflightUrls.delete(url);
+      drainPrefetchQueue();
+    }
+  }
+
+  function drainPrefetchQueue() {
+    const limit = Math.max(0, getMaxConcurrentPrefetches() - inflightUrls.size);
+    const urls = Array.from(queuedUrls).slice(0, limit);
+
+    for (const url of urls) {
+      queuedUrls.delete(url);
+      inflightUrls.add(url);
+      void prefetchArticle(url);
+    }
+  }
+
+  function queuePrefetch(link: HTMLAnchorElement) {
+    const url = link.href;
+    if (
+      prefetchedUrls.has(url) ||
+      queuedUrls.has(url) ||
+      inflightUrls.has(url) ||
+      url === window.location.href
+    ) return;
+
+    prefetchedUrls.add(url);
+    queuedUrls.add(url);
+    drainPrefetchQueue();
+  }
+
+  function scanPrefetchTargets(root: HTMLElement) {
+    if (!prefetchObserver || getConnection()?.saveData) return;
+
+    for (const link of root.querySelectorAll<HTMLAnchorElement>('a[href^="/posts/"]')) {
+      const url = new URL(link.href, window.location.href);
+      if (
+        url.origin !== window.location.origin ||
+        url.pathname === '/posts/' ||
+        prefetchedUrls.has(url.href)
+      ) continue;
+
+      prefetchObserver.observe(link);
+    }
+  }
+
+  function handlePrefetchEntries(entries: IntersectionObserverEntry[]) {
+    const visible = entries
+      .filter(entry => entry.isIntersecting)
+      .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+
+    for (const entry of visible) {
+      const link = entry.target;
+      prefetchObserver?.unobserve(link);
+      if (link instanceof HTMLAnchorElement) queuePrefetch(link);
+    }
+  }
+
+  function setupPrefetcher() {
+    if (!feedEl || prefetchObserver) return;
+
+    prefetchAbortController = new AbortController();
+    prefetchObserver = new IntersectionObserver(handlePrefetchEntries, {
+      rootMargin: PREFETCH_ROOT_MARGIN,
+      threshold: 0,
+    });
+    scanPrefetchTargets(feedEl);
+  }
+
+  function teardownPrefetcher() {
+    prefetchObserver?.disconnect();
+    prefetchObserver = null;
+    prefetchAbortController?.abort();
+    prefetchAbortController = null;
+    queuedUrls.clear();
+    inflightUrls.clear();
+  }
 
   const placeholderImg = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="190" height="120"%3E%3C/svg%3E';
 
@@ -71,7 +190,14 @@
 
     return () => {
       window.removeEventListener('blog-search', handleGlobalSearch);
+      teardownPrefetcher();
     };
+  });
+
+  afterUpdate(() => {
+    if (isLoadingPosts || !feedEl) return;
+    setupPrefetcher();
+    scanPrefetchTargets(feedEl);
   });
 
   $: filteredPosts = posts.filter(post => {
@@ -184,7 +310,7 @@
     </div>
   </div>
 
-  <div class="flex flex-col gap-4 sm:gap-6 md:gap-8 mt-2 sm:mt-1">
+  <div bind:this={feedEl} class="flex flex-col gap-4 sm:gap-6 md:gap-8 mt-2 sm:mt-1">
     {#if isLoadingPosts}
       <div class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] p-12 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm text-center">
         <p class="text-[#0284c7] font-black tracking-widest uppercase">文章加载中...</p>
