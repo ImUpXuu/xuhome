@@ -4,6 +4,7 @@ import { infoConfig } from '../config/info';
 import { seoConfig } from '../config/seo';
 import { ClientRouter } from 'astro:transitions';
 import NavBar from '../components/NavBar.astro';
+import PrefetchLinks from '../components/PrefetchLinks.svelte';
 // 暂时禁用：import WelcomeToast from '../components/WelcomeToast.astro';
 import { PageBanner } from '../components/PageBanner';
 import MusicPlayer from '../components/MusicPlayer.svelte';
@@ -626,6 +627,7 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
     </button>
 
     {/* 只有音乐页才加载播放器，其它页面不请求任何音乐播放器代码 */}
+    <PrefetchLinks client:load />
     {isMusicPage && (
       <MusicPlayer client:load transition:persist="music-player" />
     )}
