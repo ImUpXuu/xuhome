@@ -27,7 +27,7 @@
   let feedEl: HTMLElement;
 
   // Keep client bandwidth predictable: at most two article HTML requests run together.
-  const MAX_PREFETCH_REQUESTS = 2;
+  const MAX_PREFETCH_REQUESTS = 4;
   const PREFETCH_ROOT_MARGIN = '300px';
   const prefetchedUrls = new Set<string>();
   const queuedUrls = new Set<string>();
