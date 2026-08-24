@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
 
-  const MAX_PREFETCH_REQUESTS = 4;
+  const MAX_PREFETCH_REQUESTS = 6;
   const attemptedUrls = new Set<string>();
   const queuedUrls = new Set<string>();
   const inflightUrls = new Set<string>();
