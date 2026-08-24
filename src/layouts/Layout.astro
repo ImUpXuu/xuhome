@@ -11,7 +11,7 @@ import MusicPlayer from '../components/MusicPlayer.svelte';
 import { execSync } from 'child_process';
 import '../index.css';
 
-let bgCount = 6;
+const DEFAULT_BG_URL = 'https://img.upxuu.lcrworld.xyz/images/2026/7/1.webp';
 
 interface Props {
   title?: string;
@@ -147,6 +147,7 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
     {/* 自托管字体（CDN: img.upxuu.lcrworld.xyz），不再请求 Google Fonts */}
     <link rel="preconnect" href="https://img.upxuu.lcrworld.xyz" crossorigin />
     <link rel="stylesheet" href="https://img.upxuu.lcrworld.xyz/font/fonts.css" />
+    {!isArticle && <link rel="preload" as="image" href={DEFAULT_BG_URL} fetchpriority="high" />}
 
     {siteConfig.analytics.umami.map(u => (
       <script defer src={u.src} data-website-id={u.id}></script>
@@ -224,7 +225,7 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
   </script>
   <ClientRouter />
 </head>
-  <body data-bg-count={bgCount} data-is-article={isArticle ? "true" : "false"} class="dark:bg-slate-900 text-slate-900 dark:text-slate-100 selection:bg-[#fde68a] selection:text-[#0284c7]">
+  <body data-bg-url={!isArticle ? DEFAULT_BG_URL : ''} data-is-article={isArticle ? "true" : "false"} class="dark:bg-slate-900 text-slate-900 dark:text-slate-100 selection:bg-[#fde68a] selection:text-[#0284c7]">
     {/* Persistent full-page bg layer (survives View Transitions) */}
     <div
       id="site-bg"
@@ -380,8 +381,6 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
 </script>
 <script is:inline>
   (function () {
-    var KEY = 'xuhome-bg-idx';
-
     function applySiteBg() {
       var el = document.getElementById('site-bg');
       if (!el) return;
@@ -394,8 +393,8 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
         if (loader) loader.classList.remove('is-on');
         return;
       }
-      var bgCount = Number(document.body && document.body.dataset.bgCount) || 0;
-      if (bgCount <= 0) {
+      var url = document.body && document.body.getAttribute('data-bg-url');
+      if (!url) {
         var isMobile0 = window.innerWidth < 768;
         var attach0 = isMobile0 ? 'scroll' : 'fixed';
         el.style.backgroundImage =
@@ -410,18 +409,6 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
       }
 
       var isMobile = window.innerWidth < 768;
-      var min = isMobile ? 4 : 1;
-      var max = isMobile ? 6 : 3;
-      var i = 0;
-      try {
-        i = parseInt(sessionStorage.getItem(KEY) || '0', 10) || 0;
-      } catch (e) {}
-      if (i < min || i > max) {
-        i = Math.floor(Math.random() * (max - min + 1)) + min;
-        try { sessionStorage.setItem(KEY, String(i)); } catch (e) {}
-      }
-
-      var url = 'https://img.upxuu.lcrworld.xyz/images/2026/7/' + i + '.webp';
       var attach = isMobile ? 'scroll' : 'fixed';
 
       // Paint a stable dot-grid background immediately so navigation never
