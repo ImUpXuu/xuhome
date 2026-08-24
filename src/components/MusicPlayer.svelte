@@ -376,7 +376,9 @@
 <!-- 页面主体：左侧歌单 + 右侧歌曲列表（仅音乐页渲染） -->
 <!-- ============================================================ -->
 {#if isMusicPage}
-<div class="w-full max-w-6xl mx-auto px-2 sm:px-4 pb-4 flex flex-col h-[calc(100dvh-150px)] lg:h-[calc(100vh-200px)] min-h-0 overflow-hidden">
+<div
+  class="fixed inset-x-0 top-[var(--navbar-height)] bottom-[70px] z-10 pt-2 sm:pt-4 md:bottom-[76px] w-full max-w-6xl mx-auto px-2 sm:px-4 pb-4 flex flex-col min-h-0 overflow-hidden"
+>
 
   <!-- 顶部搜索框：输入关键词搜索音乐（netease） -->
   <form

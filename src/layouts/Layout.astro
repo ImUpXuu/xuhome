@@ -51,6 +51,7 @@ const pageDescription = (description || seoConfig.defaultDescription).length < 1
 
 const canonicalURL = new URL(Astro.url.pathname, siteConfig.url).href;
 const resolvedImage = image || seoConfig.defaultImage;
+const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.startsWith('/music/');
 ---
 
 <!doctype html>
@@ -257,12 +258,16 @@ const resolvedImage = image || seoConfig.defaultImage;
       ></div>
     </div>
     {/* 暂时禁用：<WelcomeToast /> */}
-    <div class="flex flex-col min-h-screen">
+    <div class={isMusicPage ? 'flex flex-col h-[100dvh] overflow-hidden' : 'flex flex-col min-h-screen'}>
       <NavBar />
       
       {!isAboutPage ? (
         <div 
-          class={`min-h-screen dark:bg-slate-900 py-2 px-2 sm:py-6 sm:px-6 md:py-8 md:px-8 font-sans transition-all duration-300 ${isArticle ? "article-paper-shell" : ""}`}
+          class={`dark:bg-slate-900 px-2 font-sans transition-all duration-300 ${
+            isMusicPage
+              ? 'h-full overflow-hidden'
+              : 'min-h-screen py-2 sm:py-6 sm:px-6 md:py-8 md:px-8'
+          } ${isArticle ? "article-paper-shell" : ""}`}
           style={!isArticle ? { backgroundImage: "radial-gradient(#0284c70d 2px, transparent 2px)", backgroundSize: "24px 24px" } : undefined}
         >
           <div class="max-w-[1440px] w-full mx-auto flex flex-col gap-3 sm:gap-6">
