@@ -28,11 +28,32 @@ warm_url() {
   metric="$(curl -sS -o /dev/null -m "$REQUEST_TIMEOUT" -D "$header_file" \
     -w '%{http_code}\t%{time_total}\t%{remote_ip}' "$url" 2>/dev/null || true)"
   IFS=$'\t' read -r http_code response_time remote_ip <<< "$metric"
-  cache_status="$(awk 'tolower($1) == "x-vercel-cache:" { sub(/\r$/, "", $2); print $2 }' "$header_file" | tail -n 1)"
+  cache_status="$(awk '
+    tolower($0) ~ /^x-vercel-cache:/ {
+      value = $0
+      sub(/^[^:]*:[[:space:]]*/, "", value)
+      sub(/\r$/, "", value)
+      print value
+    }
+  ' "$header_file" | tail -n 1)"
   if [ -z "$cache_status" ]; then
-    cache_status="$(awk 'tolower($1) == "cf-cache-status:" { sub(/\r$/, "", $2); print $2 }' "$header_file" | tail -n 1)"
+    cache_status="$(awk '
+      tolower($0) ~ /^cf-cache-status:/ {
+        value = $0
+        sub(/^[^:]*:[[:space:]]*/, "", value)
+        sub(/\r$/, "", value)
+        print value
+      }
+    ' "$header_file" | tail -n 1)"
   fi
-  age_seconds="$(awk 'tolower($1) == "age:" && $2 ~ /^[0-9]+$/ { sub(/\r$/, "", $2); print $2 }' "$header_file" | tail -n 1)"
+  age_seconds="$(awk '
+    tolower($0) ~ /^age:/ {
+      value = $0
+      sub(/^[^:]*:[[:space:]]*/, "", value)
+      sub(/\r$/, "", value)
+      if (value ~ /^[0-9]+$/) print value
+    }
+  ' "$header_file" | tail -n 1)"
 
   printf '%s\t%s\t%s\t%s\t%s\t%s\n' \
     "$url" \
