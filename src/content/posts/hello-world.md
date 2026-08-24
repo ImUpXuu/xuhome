@@ -1,5 +1,6 @@
 ---
 title: "我的第一篇博客文章"
+keywords: ["博客", "Astro", "Markdown", "初体验"]
 date: "2026-06-01"
 description: "这是把动态网站扩展为博客架构后的第一篇文章。测试Markdown渲染能力以及侧边栏的目录。"
 img: "https://picsum.photos/seed/post1/800/400"

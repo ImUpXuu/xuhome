@@ -1,5 +1,6 @@
 ---
 title: "在 Astro 中使用 Tailwind 的艺术"
+keywords: ["Astro", "Tailwind CSS", "岛屿架构", "前端样式"]
 date: "2026-06-03"
 description: "短暂探讨如何在 Astro 岛屿架构下，利用 Tailwind CSS 优雅地组织和设计组件样式。包括复用、变体以及最佳实践。"
 img: "https://picsum.photos/seed/tailwindp/800/400"

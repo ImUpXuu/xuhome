@@ -1,5 +1,6 @@
 ---
 title: "7月之前，再“活的”UpXuu"
+keywords: ["UpXuu", "更新说明", "中考", "博客"]
 published: 2026-05-05 00:00:00
 ---
 

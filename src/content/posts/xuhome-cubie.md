@@ -1,5 +1,6 @@
 ---
 title: "换新博客了！全新极简主题 Cubie 上线"
+keywords: ["Cubie", "博客主题", "Astro", "改版"]
 published: 2026-06-05 08:50:00
 tags:
   - 博客

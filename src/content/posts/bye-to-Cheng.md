@@ -1,5 +1,6 @@
 ---
 title: "中考前一周，提前和生物老师再见..."
+keywords: ["生物老师", "临别", "中考", "师生情"]
 date: "2026-06-12"
 description: "谨以本文予吾程老师"
 img: "https://img.upxuu.lcrworld.xyz/images/2026/6/12/20260612222321_404.webp"

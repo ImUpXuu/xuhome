@@ -1,5 +1,6 @@
 ---
 title: "在经历注入后 我还是放弃了wp"
+keywords: ["WordPress", "博客迁移", "木马注入", "静态博客"]
 published: 2026-02-14 21:18:00
 image: "https://img.upxuu.lcrworld.xyz/images/20260214214231.webp"
 tags: []

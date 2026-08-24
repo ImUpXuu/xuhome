@@ -1,5 +1,6 @@
 ---
 title: "讲个笑话，飞舞博主nginx日志飙了20GB"
+keywords: ["Nginx日志", "磁盘占用", "服务器排错"]
 published: 2026-08-02 10:47:54
 description: ""
 tags: []

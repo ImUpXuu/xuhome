@@ -1,5 +1,6 @@
 ---
 title: "什么才是真正的背水一战！"
+keywords: ["中考", "背水一战", "学习", "地生"]
 published: 2026-04-18 19:00:00
 image: "https://img.upxuu.lcrworld.xyz/images/2026/4/18/20260418184552_290.webp"
 category: "学习"

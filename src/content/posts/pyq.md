@@ -1,5 +1,6 @@
 ---
 title: 为什么upxuu 不发朋友圈
+keywords: ["朋友圈", "UpXuu", "随笔", "生活"]
 published: 2026-08-16 09:03:45
 category: 生活
 tags: []

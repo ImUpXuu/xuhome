@@ -1,5 +1,6 @@
 ---
 title: "cui"
+keywords: ["Cui", "微信文件", "鸿蒙", "安装"]
 published: 2026-02-18 09:40:00
 tags: []
 ---

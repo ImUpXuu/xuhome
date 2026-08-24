@@ -1,6 +1,7 @@
 ---
 
 title: "记录一次超级“敷衍”的实践作业"
+keywords: ["低碳海报", "语文作业", "Gamma AI", "AI生成"]
 published: 2026-04-19 15:40:00
 description: "众所周知 语文课本有一个需要做宣传低碳海报的单元 于是..."
 category: "学习"

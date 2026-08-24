@@ -52,6 +52,7 @@ const tags = Object.entries(tagMap)
   title={`${categoryName}${i18nConfig.category.titleSuffix}`}
   categoryName={categoryName}
   description={i18nConfig.category.descriptionTemplate.replace('{name}', categoryName || '')}
+  keywords={[categoryName || '未分类', `${categoryName || '未分类'} 文章`, 'UpXuu 博客', '分类']}
   postsCount={catPosts.length}
 >
   <HorizontalCategories 

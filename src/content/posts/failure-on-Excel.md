@@ -1,5 +1,6 @@
 ---
 title: "我的信息中考一模复盘：非常xx的数据分析题 使我的一分消失"
+keywords: ["信息中考", "Excel", "数据分析", "一模复盘"]
 published: 2026-05-01 00:00:00
 image: "https://img.upxuu.lcrworld.xyz/images/2026/5/1/1777639970869_427.webp"
 description: "4.30 记录我在石家庄初中信息中考市一模中的逆天错误"

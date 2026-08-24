@@ -38,6 +38,7 @@ const seoDescription = talkSeoDescription(talk.content || '');
 <Layout 
   title={talk.title || i18nConfig.talk.detailFallbackTitle}
   description={seoDescription}
+  keywords={[talk.title || 'UpXuu 说说', ...(talk.tags || []), 'UpXuu 说说']}
 >
   <SvelteTalkDetail talk={talk} client:load />
   <div class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] p-4 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm flex items-center justify-center mt-6">

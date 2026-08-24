@@ -1,5 +1,6 @@
 ---
 title: "0元首发？匿名模型 Ox Alpha 空降 OpenRouter！1M 上下文 + 多模态，疑似智谱出品|免费AI"
+keywords: ["Ox Alpha", "OpenRouter", "匿名模型", "免费AI", "多模态"]
 published: 2026-08-21 12:30:00
 description: "昨天晚上 OpenRouter 上突然冒出一个名为 Ox Alpha 的匿名模型：输入输出全部 0 元、1M 上下文、原生多模态，opencode 官方推文还承诺免费一周 + 每日 100T token 容量。全网都在猜它到底是谁家的孩子……"
 tags: ["AI"]

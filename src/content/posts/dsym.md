@@ -1,6 +1,7 @@
 ---
 
 title: "地理生物一模，还有...4天！"
+keywords: ["地生一模", "中考", "复习", "万唯"]
 published: 2026-04-26 21:15:00
 description: "好快啊"
 category: "学习"

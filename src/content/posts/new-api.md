@@ -1,5 +1,6 @@
 ---
 title: "我的公益中转站上线啦！"
+keywords: ["New API", "NVIDIA NIM", "AI中转站", "DeepSeek", "GLM"]
 published: 2026-08-03 11:52:34
 description: "基于 New API 搭建的 NVIDIA NIM 免费模型聚合中转站，支持 DeepSeek、GLM、Gemma 等十余种模型"
 tags: ["AI", "技术"]

@@ -1,5 +1,6 @@
 ---
 title: "什么？你的vercel还没深绿？一文研究透vercel优选|缓存配置"
+keywords: ["Vercel", "优选IP", "缓存配置", "CDN优化"]
 published: 2026-08-13 11:00:00
 description: "从地区优选、IP优选到边缘缓存配置与缓存预热，让你的 Vercel 站点在国内测速全绿、加载飞快"
 tags: ["Vercel", "CDN", "缓存", "优化"]

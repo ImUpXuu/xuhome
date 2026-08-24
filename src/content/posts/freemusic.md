@@ -1,5 +1,6 @@
 ---
 title: "完全免费的PC端音乐软件！酷狗概念版 echomusic !"
+keywords: ["EchoMusic", "酷狗概念版", "免费音乐", "开源播放器"]
 published: 2026-04-12 00:00:00
 image: "https://img.upxuu.lcrworld.xyz/images/2026/4/12/1775960413659_63.webp"
 description: "还在寻找音乐软件吗 来看看这个 无广告 自动领取每日会员 开源.."

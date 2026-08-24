@@ -1,5 +1,6 @@
 ---
 title: "在受够了nginx的繁琐配置和奇奇怪怪的问题后,我换了caddy"
+keywords: ["Nginx", "Caddy", "服务器", "SSL证书", "HTTP/2"]
 published: 2026-07-12 21:33:53
 description: "从Nginx转投Caddy，彻底告别繁琐配置与SSL证书手动续签的烦恼。借助AI辅助转换配置，不仅一键部署Memos，更惊喜的是HTTP/2及TLS性能优化显著，极大提升了博客与香港CN2服务器的并发响应速度。Caddy让站点访问速度从2s降至0.7s，是追求极致运维效率与Web性能的不二之选。"
 tags: []

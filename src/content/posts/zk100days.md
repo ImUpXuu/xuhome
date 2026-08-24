@@ -1,5 +1,6 @@
 ---
 title: "我做了一个100天的梦..."
+keywords: ["中考", "100天倒计时", "学习", "地生"]
 published: 2026-03-14 18:24:00
 image: "https://img.upxuu.lcrworld.xyz/images/20260315214606_913.webp"
 description: "地生中考将近，我做了一个100day的梦..."

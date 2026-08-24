@@ -1,5 +1,6 @@
 ﻿---
 title: "无需服务器，让文件在各个设备自由流转——LocalSend"
+keywords: ["LocalSend", "局域网传输", "跨设备文件", "开源"]
 published: 2026-07-23 17:44:34
 description: "跨设备传输文件不靠服务器！LocalSend 局域网直连，N100 小机器也能跑，鸿蒙卓易通可用，比 Python HTTP 服务器更省心。"
 tags: []

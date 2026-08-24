@@ -1,5 +1,6 @@
 ---
 title: "请祝我中考顺利！！！！"
+keywords: ["中考", "地生中考", "祝福", "考试"]
 published: 2026-06-18 21:28:00
 image: "https://img.upxuu.lcrworld.xyz/images/2026/6/18/20260618212938_768.webp"
 ---

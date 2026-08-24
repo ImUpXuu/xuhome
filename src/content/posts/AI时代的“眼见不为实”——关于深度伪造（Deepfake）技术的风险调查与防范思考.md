@@ -1,5 +1,6 @@
 ---
 title: AI时代的“眼见不为实”——关于深度伪造（Deepfake）技术的风险调查与防范思考
+keywords: ["深度伪造", "Deepfake", "AI安全", "网络安全", "防范诈骗"]
 published: 2026-01-12 14:54:34
 slug: aiarticle
 tags:

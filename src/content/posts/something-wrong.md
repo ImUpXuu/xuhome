@@ -1,5 +1,6 @@
 ---
 title: 中考，复习与病痛
+keywords: ["中考", "复习", "病痛", "坚持"]
 published: 2026-06-09 22:15:00
 category: 生活
 tags: []

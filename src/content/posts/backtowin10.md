@@ -1,5 +1,6 @@
 ---
 title: "关于我用了 3 年 Win11 回退到 win10 了这件事.."
+keywords: ["Windows 10", "Windows 11", "降级", "系统安装"]
 published: 2026-03-21 19:19:00
 image: "https://img.upxuu.lcrworld.xyz/images/img_1774092034282_image.webp"
 description: "Windows11 降级到 Windows10 2026"

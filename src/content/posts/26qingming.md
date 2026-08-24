@@ -1,5 +1,6 @@
 ---
 title: 假期将尽，再更博客
+keywords: ["清明", "博客更新", "Umami统计", "Uptime Kuma"]
 published: 2026-04-06
 description: '清明假期随笔，清明最后一天了，更新点东西'
 image: ''

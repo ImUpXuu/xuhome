@@ -1,5 +1,6 @@
 ---
 title: "开源我的地生中考资料~"
+keywords: ["中考资料", "地生中考", "真题", "openlist"]
 published: 2026-06-14 19:11:34
 category: "学习"
 ---

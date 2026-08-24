@@ -1,5 +1,6 @@
 ---
 title: "友链自助申请系统上线啦"
+keywords: ["友链", "友链申请", "GitHub Issues", "自动化"]
 published: 2026-04-24
 description: "博客友链申请流程已全面自动化，基于 GitHub Issues 和 Actions 实现"
 tags: ["博客", "工具"]

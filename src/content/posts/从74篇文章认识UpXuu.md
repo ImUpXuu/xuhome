@@ -1,5 +1,6 @@
 ---
 title: 从 74 篇文章认识 UpXuu
+keywords: ["UpXuu", "博客", "文章回顾", "网友"]
 published: 2026-05-24 22:00:00
 slug: about-upxuu-from-74-posts
 tags: ["随笔"]

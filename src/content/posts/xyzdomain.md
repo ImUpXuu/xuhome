@@ -1,5 +1,6 @@
 ---
 title: "最便宜的域名：xyz数字域名注册方法"
+keywords: ["xyz域名", "便宜域名", "域名注册"]
 published: 2026-05-10 11:00:00
 image: "https://img.upxuu.lcrworld.xyz/images/2026/5/10/1778388844407_935.webp"
 description: "手把手教你以不到5元年的价格搞到一个好记得xyz域名"

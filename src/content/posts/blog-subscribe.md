@@ -1,5 +1,6 @@
 ---
 title: "基于 GitHub Issues 的博客更新订阅方案"
+keywords: ["博客订阅", "GitHub Issues", "更新通知", "RSS"]
 published: 2026-05-10 00:00:00
 image: "https://img.upxuu.lcrworld.xyz/images/2026/5/10/1778388844407_935.webp"
 description: "告别 RSS 被拦截和邮件滥用，用 GitHub Issues 实现零配置的博客更新通知"

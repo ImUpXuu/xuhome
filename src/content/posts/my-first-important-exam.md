@@ -1,5 +1,6 @@
 ---
 title: "第一次以亲历者的身份参加中考！"
+keywords: ["中考", "地生中考", "考试记录", "亲历"]
 published: 2026-07-17 15:50:51
 description: ""
 tags: []

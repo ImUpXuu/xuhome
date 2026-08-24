@@ -1,5 +1,6 @@
 ---
 title: "To countryside"
+keywords: ["辽中", "乡下", "旅行", "随笔"]
 published: 2026-02-15 11:10:00
 tags: []
 ---

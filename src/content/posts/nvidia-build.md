@@ -1,5 +1,6 @@
 ---
 title: "NVIDIA Build：不花一分钱，免费部署DeepSeek等顶级 AI 模型|NVIDIA NIM|免费AI API "
+keywords: ["NVIDIA Build", "NIM", "DeepSeek", "免费AI模型"]
 published: 2026-05-24 08:42:00
 description: "介绍 NVIDIA Build 平台的七大免费亮点：零成本调用 DeepSeek V4 Pro、GLM-5.1 等前沿大模型，GPU 实例免费体验，一站式 AI 应用构建。"
 tags: ["AI"]

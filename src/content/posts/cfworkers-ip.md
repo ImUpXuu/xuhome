@@ -1,5 +1,6 @@
 ---
 title: "你平时经常用的workers，竟还是一个实用的的ip查询接口! Cloudflare Workers request.cf 对象完全指南"
+keywords: ["Cloudflare Workers", "request.cf", "IP查询", "边缘计算"]
 published: 2026-05-16 18:20:00
 description: "request.cf 是 Cloudflare Workers 运行时提供的一个内置对象，包含由 Cloudflare 全球网络自动检测并注入的请求相关元数据。它无须额外配置即可使用，且数据来源可靠、无法被客户端伪造"
 category: "技术"
