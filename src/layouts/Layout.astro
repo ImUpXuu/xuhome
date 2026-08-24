@@ -423,6 +423,17 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
       var url = 'https://img.upxuu.lcrworld.xyz/images/2026/7/' + i + '.webp';
       var attach = isMobile ? 'scroll' : 'fixed';
 
+      // Paint a stable dot-grid background immediately so navigation never
+      // flashes a blank page while the decorative image is still loading.
+      el.style.backgroundImage =
+        'radial-gradient(circle, rgba(253,246,227,0.35) 1px, transparent 1px)';
+      el.style.backgroundSize = '24px 24px';
+      el.style.backgroundPosition = '0 0';
+      el.style.backgroundRepeat = 'repeat';
+      el.style.backgroundAttachment = attach;
+      el.classList.add('is-ready');
+      if (loader) loader.classList.remove('is-on');
+
       function paintBg() {
         el.style.backgroundImage =
           'radial-gradient(circle, rgba(253,246,227,0.35) 1px, transparent 1px),' +
@@ -441,9 +452,6 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
         if (loader) loader.classList.remove('is-on');
         return;
       }
-
-      el.classList.remove('is-ready');
-      if (loader) loader.classList.add('is-on');
 
       var bgPromise = new Promise(function (resolve) {
         var img = new Image();

@@ -897,12 +897,21 @@ body { font-weight: 500 !important; }
 #resource-progress > span[hidden] {
   display: none !important;
 }
+#site-bg {
+  background-color: #faf8f5;
+  background-image: radial-gradient(circle, rgba(253,246,227,0.35) 1px, transparent 1px);
+  background-size: 24px 24px;
+  background-repeat: repeat;
+}
+.dark #site-bg {
+  background-color: #0f172a;
+}
 #site-bg.is-ready {
   opacity: 1;
   transition: opacity 0.5s ease;
 }
 #site-bg:not(.is-ready) {
-  opacity: 0;
+  opacity: 1;
 }
 @media (prefers-reduced-motion: reduce) {
   #site-bg-loader .bg-brick {
