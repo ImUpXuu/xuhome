@@ -45,8 +45,10 @@ const {
   hideBanner = false,
 } = Astro.props;
 
-const pageTitle = title 
-  ? `${title}${seoConfig.titleTemplate}` 
+const pageTitle = title
+  ? (title.endsWith(seoConfig.titleTemplate)
+      ? title
+      : `${title}${seoConfig.titleTemplate}`)
   : `${siteConfig.title} - ${siteConfig.subtitle.split(' / ')[0]}`;
 const pageDescription = (description || seoConfig.defaultDescription).length < 10 
   ? seoConfig.defaultDescription 

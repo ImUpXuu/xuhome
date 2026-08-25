@@ -1,5 +1,5 @@
 ---
-title: "一文讲透英伟达免费模型的白嫖技巧,零成本蹬顶级模型之nvida 的mimimax m3"
+title: "一文讲透英伟达免费模型的白嫖技巧,零成本蹬顶级模型之nvida 的minimax m3"
 keywords: ["英伟达", "NVIDIA NIM", "minimax m3", "免费模型", "白嫖", "AI"]
 published: 2026-08-25 09:14:15
 description: "英伟达 NIM 平台 minimax m3 模型实测:首字节约 5s 但吞吐量可达 100 tok/s;附白嫖免费顶级开源模型的几个实战技巧,以及我的公益中转 ai.love7.top。"
@@ -9,13 +9,13 @@ category: "技术"
 
 首先先说个题外废话吧，这可能是今年upxuu出的最后一篇白嫖模型教程了，马上要开学咯~
 
-直接进入正题，用过英伟达模型的小伙伴们都知道，nvida nim平台的大多数模型都十分卡顿，不过今天早上我忽然发现一个特别牛逼的模型 mimimax m3，首字节延迟较高可能在5s左右（图为我的网关统计，有一点问题），但是 其吞吐量看可以达到恐怖的100tok/s
+直接进入正题，用过英伟达模型的小伙伴们都知道，nvida nim平台的大多数模型都十分卡顿，不过今天早上我忽然发现一个特别牛逼的模型 minimax m3，首字节延迟较高可能在5s左右（图为我的网关统计，有一点问题），但是 其吞吐量看可以达到恐怖的100tok/s
 
 ![image-20260825092018395](https://img.upxuu.lcrworld.xyz/images/2026/8/25/1787620818966_499.png)
 
 模型的nvida nim平台链接如下 [minimax-m3 Model by Minimaxai | NVIDIA NIM](https://build.nvidia.com/minimaxai/minimax-m3)
 
-这个是真的特别出乎意料，作为一个已然上架2mon的模型突然如此快速,其实该模型和glm ds相比本身就已经比较可用了，但我个人认为可能是DeepSeek v4 flash 0731的上架导致大多数人去挤ds去了，mimimax的资源自然就被释放了
+这个是真的特别出乎意料，作为一个已然上架2mon的模型突然如此快速,其实该模型和glm ds相比本身就已经比较可用了，但我个人认为可能是DeepSeek v4 flash 0731的上架导致大多数人去挤ds去了，minimax的资源自然就被释放了
 
 这里我也简单讲一下https://build.nvidia.com/ 这个平台的特性，或者说是潜规则吧
 

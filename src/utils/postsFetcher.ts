@@ -83,6 +83,20 @@ export async function getProcessedPosts(): Promise<PostItem[]> {
       }
     }
 
+    // 1) frontmatter 里显式声明的封面图
+    // 2) 正文里第一张 Markdown/HTML 图片（![](...)、<img src=...>）
+    // 3) 默认兜底（通常是站长头像）
+    const firstBodyImg = (() => {
+      const body = post.body || '';
+      // 优先匹配 Markdown 图片 ![alt](url) —— 取括号里的 URL
+      const md = body.match(/!\[[^\]]*\]\(([^)\s]+)(?:\s+"[^"]*")?\)/);
+      if (md) return md[1];
+      // 其次匹配 HTML <img src="..."> / <img src=...>
+      const html = body.match(/<img\b[^>]*\bsrc=["']?([^"'\s>]+)/i);
+      if (html) return html[1];
+      return '';
+    })();
+
     return {
       id: post.id || customSlug,
       slug: customSlug,
@@ -101,7 +115,7 @@ export async function getProcessedPosts(): Promise<PostItem[]> {
         }
         return desc;
       })(),
-      img: data.img || data.image || data.cover || seoConfig.defaultImage,
+      img: data.img || data.image || data.cover || firstBodyImg || seoConfig.defaultImage,
       tags,
       keywords,
       category
