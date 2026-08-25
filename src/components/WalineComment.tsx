@@ -6,6 +6,30 @@ import { siteConfig } from '../config/site';
 export function WalineComment() {
   const containerRef = useRef<HTMLDivElement>(null);
   const walineInstanceConfig = useRef<any>(null);
+  const lastPathRef = useRef<string>('');
+
+  // 计算评论绑定的路由 path
+  const resolvedPath = () => {
+    let p = window.location.pathname.replace(/\/+/g, '/');
+    if (!p.endsWith('/')) p += '/';
+    return p;
+  };
+
+  const initWaline = () => {
+    if (!containerRef.current) return;
+    const p = resolvedPath();
+    lastPathRef.current = p;
+    // 先销毁旧实例，再按新路径重新初始化（View Transitions 切换文章/页面时）
+    walineInstanceConfig.current?.destroy();
+    walineInstanceConfig.current = init({
+      el: containerRef.current,
+      serverURL: siteConfig.waline.serverURL,
+      path: p,
+      dark: 'html.dark',
+      search: false,
+      imageUploader: false,
+    });
+  };
 
   useEffect(() => {
     const handleRejection = (e: PromiseRejectionEvent) => {
@@ -16,21 +40,19 @@ export function WalineComment() {
     };
     window.addEventListener('unhandledrejection', handleRejection);
 
-    if (containerRef.current) {
-      let p = window.location.pathname.replace(/\/+/g, '/');
-      if (!p.endsWith('/')) p += '/';
-      walineInstanceConfig.current = init({
-        el: containerRef.current,
-        serverURL: siteConfig.waline.serverURL,
-        path: p,
-        dark: 'html.dark',
-        search: false,
-        imageUploader: false,
-      });
-    }
+    initWaline();
+
+    // View Transitions 每次导航完成后重新对齐评论路由
+    const onPageLoad = () => {
+      if (resolvedPath() !== lastPathRef.current) {
+        initWaline();
+      }
+    };
+    document.addEventListener('astro:page-load', onPageLoad);
 
     return () => {
       walineInstanceConfig.current?.destroy();
+      document.removeEventListener('astro:page-load', onPageLoad);
       window.removeEventListener('unhandledrejection', handleRejection);
     };
   }, []);
