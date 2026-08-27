@@ -30,7 +30,6 @@ jobs:
       - name: 预热 Vercel 缓存（解析到 76.76.21.21）
         env:
           RESOLVE_IP: '76.76.21.21'
-          ONE_PASS: '1'
           TZ: Asia/Shanghai
         run: bash .github/scripts/cache-warming.sh
 
@@ -70,6 +69,5 @@ jobs:
 
       - name: 预热 Cloudflare 缓存（默认解析）
         env:
-          ONE_PASS: '1'
           TZ: Asia/Shanghai
         run: bash .github/scripts/cache-warming.sh
