@@ -9,171 +9,319 @@ import { siteConfig } from '../config/site';
   hideBanner={true}
 >
   <div class="w-full max-w-6xl mx-auto px-2 sm:px-4 pb-24">
+
     <!-- 标题区 -->
-    <div class="mb-6 flex items-center justify-between gap-3">
+    <div class="mb-5 flex items-center justify-between gap-3 animate-stat-in" style="--d:0s">
       <div>
         <h1 class="text-xl sm:text-2xl font-black text-[#0284c7]">📊 网站统计</h1>
-        <p class="text-xs sm:text-sm font-bold text-slate-500 dark:text-slate-400 mt-1">数据来自 Umami · 每 60 秒刷新</p>
+        <p class="text-xs sm:text-sm font-bold text-slate-500 dark:text-slate-400 mt-1">数据来自 Umami · 每 60 秒自动刷新</p>
       </div>
-      <span class="text-xs font-black text-slate-400 bg-white dark:bg-slate-800 border-2 border-[#0284c7] px-3 py-1.5 rounded-sm shadow-[2px_2px_0px_0px_#0284c7]" id="update-time">--:--</span>
+      <span id="update-time" class="text-xs font-black text-slate-400 bg-white dark:bg-slate-800 border-2 border-[#0284c7] px-3 py-1.5 rounded-md shadow-[2px_2px_0px_0px_#0284c7]">--:--</span>
     </div>
 
     <!-- 总览卡 -->
-    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6" id="totals">
-      <div class="bg-white dark:bg-slate-800 border-2 border-[#0284c7] rounded-sm p-4 shadow-[3px_3px_0px_0px_#0284c7]">
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
+      <div class="stat-card" style="--d:0.05s">
         <div class="text-[11px] font-black text-slate-400 uppercase tracking-wider">今日 PV</div>
         <div class="text-2xl font-black text-[#0284c7] tabular-nums" id="total-pv">-</div>
       </div>
-      <div class="bg-white dark:bg-slate-800 border-2 border-[#0284c7] rounded-sm p-4 shadow-[3px_3px_0px_0px_#0284c7]">
+      <div class="stat-card" style="--d:0.1s">
         <div class="text-[11px] font-black text-slate-400 uppercase tracking-wider">今日 UV</div>
-        <div class="text-2xl font-black text-[#0284c7] tabular-nums" id="total-uv">-</div>
+        <div class="text-2xl font-black text-[#f59e0b] tabular-nums" id="total-uv">-</div>
       </div>
-      <div class="bg-white dark:bg-slate-800 border-2 border-[#0284c7] rounded-sm p-4 shadow-[3px_3px_0px_0px_#0284c7]">
-        <div class="text-[11px] font-black text-slate-400 uppercase tracking-wider">访问次数</div>
-        <div class="text-2xl font-black text-[#0284c7] tabular-nums" id="total-visits">-</div>
+      <div class="stat-card" style="--d:0.15s">
+        <div class="text-[11px] font-black text-slate-400 uppercase tracking-wider">今日 Visits</div>
+        <div class="text-2xl font-black text-[#10b981] tabular-nums" id="total-visits">-</div>
       </div>
-      <div class="bg-white dark:bg-slate-800 border-2 border-[#0284c7] rounded-sm p-4 shadow-[3px_3px_0px_0px_#0284c7]">
-        <div class="text-[11px] font-black text-slate-400 uppercase tracking-wider">总 PV</div>
-        <div class="text-2xl font-black text-[#0284c7] tabular-nums" id="total-all">-</div>
+      <div class="stat-card" style="--d:0.2s">
+        <div class="text-[11px] font-black text-slate-400 uppercase tracking-wider">总 PV (全时段)</div>
+        <div class="text-2xl font-black text-slate-700 dark:text-slate-200 tabular-nums" id="total-all">-</div>
       </div>
     </div>
 
     <!-- 趋势图 -->
-    <div class="bg-white dark:bg-slate-800 border-2 border-[#0284c7] rounded-sm p-4 sm:p-5 shadow-[3px_3px_0px_0px_#0284c7] mb-6">
-      <div class="flex items-center justify-between gap-3 mb-3 flex-wrap">
-        <h2 class="text-sm font-black text-[#0284c7]">24 小时请求趋势</h2>
-        <div class="flex gap-3 text-[11px] font-bold text-slate-500 dark:text-slate-400">
-          <span class="flex items-center gap-1"><span class="w-3 h-1.5 inline-block bg-[#0284c7]"></span>PV</span>
-          <span class="flex items-center gap-1"><span class="w-3 h-1.5 inline-block bg-[#f59e0b]"></span>UV</span>
-          <span class="flex items-center gap-1"><span class="w-3 h-1.5 inline-block bg-[#10b981]"></span>Visits</span>
+    <div class="chart-card mb-5" style="--d:0.25s">
+      <div class="flex items-center justify-between gap-3 mb-2 flex-wrap">
+        <h2 class="text-sm font-black text-[#0284c7] flex items-center gap-2">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+          24 小时趋势
+        </h2>
+        <div class="flex gap-3 text-[11px] font-bold text-slate-500 dark:text-slate-400 select-none">
+          <span class="flex items-center gap-1 cursor-pointer" data-line-toggle="pv"><span class="w-3 h-3 rounded-sm inline-block bg-[#0284c7]"></span>PV</span>
+          <span class="flex items-center gap-1 cursor-pointer" data-line-toggle="uv"><span class="w-3 h-3 rounded-sm inline-block bg-[#f59e0b]"></span>UV</span>
+          <span class="flex items-center gap-1 cursor-pointer" data-line-toggle="visits"><span class="w-3 h-3 rounded-sm inline-block bg-[#10b981]"></span>Visits</span>
         </div>
       </div>
-      <canvas id="trend-chart" class="w-full" height="260" style="max-height:300px"></canvas>
+      <div class="relative">
+        <canvas id="trend-chart" height="300" class="w-full block cursor-crosshair"></canvas>
+        <!-- 悬停浮窗 -->
+        <div id="trend-tip" class="absolute hidden pointer-events-none z-10 rounded-lg bg-slate-900/90 text-white text-xs px-3 py-2 shadow-xl backdrop-blur-sm"></div>
+      </div>
     </div>
 
     <!-- 页面排行 -->
-    <div class="bg-white dark:bg-slate-800 border-2 border-[#0284c7] rounded-sm p-4 sm:p-5 shadow-[3px_3px_0px_0px_#0284c7]">
+    <div class="chart-card" style="--d:0.35s">
       <div class="flex items-center justify-between gap-3 mb-3">
-        <h2 class="text-sm font-black text-[#0284c7]">24 小时页面访问排行</h2>
-        <select id="page-range" class="text-xs font-bold text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-700 border-2 border-[#0284c7] rounded-sm px-2 py-1">
-          <option value="24">24 小时</option>
-          <option value="168">7 天</option>
-          <option value="720">30 天</option>
+        <h2 class="text-sm font-black text-[#0284c7] flex items-center gap-2">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17V7m4 10V11m4 6V8M5 21h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+          页面访问排行
+        </h2>
+        <select id="page-range" class="text-xs font-bold text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-700 border-2 border-[#0284c7] rounded-md px-2 py-1 cursor-pointer outline-none">
+          <option value="24">近 24 小时</option>
+          <option value="168">近 7 天</option>
+          <option value="720">近 30 天</option>
+          <option value="0">全部</option>
         </select>
       </div>
-      <div id="page-list" class="space-y-1.5"></div>
+      <div id="page-list" class="space-y-1"></div>
     </div>
   </div>
 </Layout>
 
+<style>
+  .stat-card {
+    background: var(--color-panel, #fff);
+    border: 1.5px solid rgba(2, 132, 199, 0.25);
+    border-radius: 12px;
+    padding: 14px 16px;
+    animation: stat-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: var(--d, 0s);
+    transition: transform .18s ease, box-shadow .18s ease;
+  }
+  .stat-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(2,132,199,.15); }
+  @media (prefers-color-scheme: dark) {
+    .stat-card { background: #1e293b; border-color: rgba(2, 132, 199, 0.4); }
+  }
+
+  .chart-card {
+    background: var(--color-panel, #fff);
+    border: 1.5px solid rgba(2, 132, 199, 0.25);
+    border-radius: 14px;
+    padding: 16px 18px;
+    box-shadow: 0 4px 18px rgba(2, 132, 199, 0.07);
+    animation: stat-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: var(--d, 0s);
+  }
+  @media (prefers-color-scheme: dark) {
+    .chart-card { background: #1e293b; border-color: rgba(2, 132, 199, 0.4); }
+  }
+
+  @keyframes stat-in {
+    from { opacity: 0; transform: translateY(22px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  #page-list .row-item {
+    animation: stat-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: var(--rd, 0s);
+  }
+  [data-line-off="true"] { opacity: 0.3; filter: grayscale(1); }
+
+  canvas { display: block; }
+</style>
+
 <script>
   const API = 'https://blog.api.upxuu.com';
-  let trendCache = null;
-  let pageRange = 24;
+  const $id = (i) => document.getElementById(i);
+  let trendSeries = [];
+  let trendTimer = null;
 
-  function $(id) { return document.getElementById(id); }
+  // 关闭的线
+  const lineOff = new Set();
 
   function esc(s) {
-    return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({
-      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-    }[c]));
+    return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   }
 
   async function getJSON(url) {
-    const r = await fetch(url, { headers: { 'Accept': 'application/json' } });
+    const r = await fetch(url, { headers: { Accept: 'application/json' } });
     if (!r.ok) throw new Error('HTTP ' + r.status);
     return r.json();
   }
 
-  // ===== 绘制多线趋势图（canvas 手绘，零依赖） =====
-  function drawTrend(series) {
-    const canvas = $('trend-chart');
-    if (!canvas || !series || !series.length) return;
+  // ===== 平滑曲线绘制 =====
+  // Catmull-Rom → 贝塞尔平滑
+  function smoothPath(ctx, pts) {
+    if (!pts.length) return;
+    ctx.moveTo(pts[0].x, pts[0].y);
+    if (pts.length < 3) {
+      pts.forEach(p => ctx.lineTo(p.x, p.y));
+      return;
+    }
+    for (let i = 0; i < pts.length - 1; i++) {
+      const p0 = pts[Math.max(0, i - 1)], p1 = pts[i], p2 = pts[i + 1], p3 = pts[Math.min(pts.length - 1, i + 2)];
+      ctx.bezierCurveTo(
+        p1.x + (p2.x - p0.x) / 6, p1.y + (p2.y - p0.y) / 6,
+        p2.x - (p3.x - p1.x) / 6, p2.y - (p3.y - p1.y) / 6,
+        p2.x, p2.y,
+      );
+    }
+  }
+
+  function drawTrend(series, hoverIdx = -1) {
+    const canvas = $id('trend-chart');
+    if (!canvas || !series.length) return;
     const dpr = window.devicePixelRatio || 1;
-    const w = canvas.clientWidth || 800;
-    const h = 260;
+    const w = canvas.clientWidth || 900;
+    const h = Number(canvas.getAttribute('height') || 300);
     canvas.width = w * dpr;
     canvas.height = h * dpr;
     const ctx = canvas.getContext('2d');
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.scale(dpr, dpr);
 
-    const padL = 34, padR = 10, padT = 12, padB = 24;
+    const padL = 36, padR = 12, padT = 14, padB = 26;
     const plotW = w - padL - padR;
     const plotH = h - padT - padB;
 
-    const maxVal = Math.max(1, ...series.map(s => Math.max(s.pv, s.uv, s.visits)));
+    // 计算各线最大值：只统计打开的线
+    const activeKeys = ['pv', 'uv', 'visits'].filter(k => !lineOff.has(k));
+    let maxVal = 1;
+    series.forEach(s => activeKeys.forEach(k => { maxVal = Math.max(maxVal, s[k] || 0); }));
+    // Y 轴向上取整到 50 的倍数，好看
+    maxVal = Math.ceil(maxVal / 50) * 50 || 50;
     const n = series.length;
 
     const xAt = i => padL + (n === 1 ? plotW / 2 : (i / (n - 1)) * plotW);
-    const yAt = v => padT + plotH - (v / maxVal) * plotH;
+    const yAt = v => padT + plotH - ((v / maxVal) * plotH);
 
-    // 网格
-    ctx.strokeStyle = 'rgba(2,132,199,0.12)';
+    // 背景
+    ctx.clearRect(0, 0, w, h);
+
+    // 网格 + Y 轴刻度
+    ctx.strokeStyle = 'rgba(148,163,184,0.16)';
     ctx.lineWidth = 1;
-    for (let g = 0; g <= 4; g++) {
-      const gy = padT + (g / 4) * plotH;
-      ctx.beginPath(); ctx.moveTo(padL, gy); ctx.lineTo(w - padR, gy); ctx.stroke();
-      ctx.fillStyle = '#94a3b8';
-      ctx.font = '10px monospace';
-      ctx.textAlign = 'right';
-      ctx.fillText(Math.round(maxVal * (1 - g / 4)), padL - 6, gy + 3);
-    }
-
-    // X 轴时间标签（每 ~3 个点标一个）
-    ctx.fillStyle = '#94a3b8';
     ctx.font = '10px monospace';
-    ctx.textAlign = 'center';
-    const labelStep = Math.max(1, Math.ceil(n / 8));
-    for (let i = 0; i < n; i += labelStep) {
-      const t = new Date(series[i].t);
-      ctx.fillText(String(t.getHours()).padStart(2, '0') + ':00', xAt(i), h - 6);
+    ctx.fillStyle = '#94a3b8';
+    ctx.textAlign = 'right';
+    for (let g = 0; g <= 5; g++) {
+      const gy = padT + (g / 5) * plotH;
+      ctx.beginPath(); ctx.moveTo(padL, gy); ctx.lineTo(w - padR, gy); ctx.stroke();
+      ctx.fillText(String(Math.round((maxVal * (5 - g)) / 5)), padL - 7, gy + 3);
     }
 
-    // 画线（pv / uv / visits）
-    const drawLine = (key, color) => {
-      ctx.strokeStyle = color;
-      ctx.lineWidth = 2;
-      ctx.lineJoin = 'round';
+    // X 轴时间标签
+    ctx.textAlign = 'center';
+    const step = Math.max(1, Math.ceil(n / 8));
+    for (let i = 0; i < n; i += step) {
+      const d = new Date(series[i].t);
+      const label = n <= 24 ? String(d.getHours()).padStart(2, '0') + ':00' : `${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+      ctx.fillText(label, xAt(i), h - 8);
+    }
+
+    // hover 竖线
+    if (hoverIdx >= 0 && hoverIdx < n) {
+      ctx.strokeStyle = 'rgba(100,116,139,0.35)';
+      ctx.lineWidth = 1;
+      ctx.setLineDash([4, 3]);
       ctx.beginPath();
-      series.forEach((s, i) => {
-        const x = xAt(i), y = yAt(s[key] || 0);
-        i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-      });
+      ctx.moveTo(xAt(hoverIdx), padT);
+      ctx.lineTo(xAt(hoverIdx), padT + plotH);
       ctx.stroke();
-      // 端点小圆点
-      ctx.fillStyle = color;
-      series.forEach((s, i) => {
-        ctx.beginPath();
-        ctx.arc(xAt(i), yAt(s[key] || 0), 2, 0, Math.PI * 2);
-        ctx.fill();
-      });
+      ctx.setLineDash([]);
+    }
+
+    const colors = { pv: '#0284c7', uv: '#f59e0b', visits: '#10b981' };
+    const fills = {
+      pv: 'rgba(2,132,199,0.14)',
+      uv: 'rgba(245,158,11,0.10)',
+      visits: 'rgba(16,185,129,0.08)',
     };
-    drawLine('pv', '#0284c7');
-    drawLine('uv', '#f59e0b');
-    drawLine('visits', '#10b981');
+
+    activeKeys.forEach(key => {
+      const pts = series.map((s, i) => ({ x: xAt(i), y: yAt(s[key] || 0) }));
+      // 面积渐变填充
+      const grad = ctx.createLinearGradient(0, padT, 0, padT + plotH);
+      grad.addColorStop(0, fills[key]);
+      grad.addColorStop(1, 'rgba(255,255,255,0)');
+      ctx.beginPath();
+      smoothPath(ctx, pts);
+      ctx.lineTo(pts[pts.length - 1].x, padT + plotH);
+      ctx.lineTo(pts[0].x, padT + plotH);
+      ctx.closePath();
+      ctx.fillStyle = grad;
+      ctx.fill();
+
+      // 曲线
+      ctx.strokeStyle = colors[key];
+      ctx.lineWidth = 2.2;
+      ctx.lineJoin = 'round';
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      smoothPath(ctx, pts);
+      ctx.stroke();
+
+      // 数据点
+      pts.forEach((p, i) => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, hoverIdx === i ? 4 : 2.2, 0, Math.PI * 2);
+        ctx.fillStyle = hoverIdx === i ? colors[key] : '#fff';
+        ctx.fill();
+        ctx.strokeStyle = colors[key];
+        ctx.lineWidth = hoverIdx === i ? 2.5 : 1.4;
+        ctx.stroke();
+      });
+    });
   }
 
-  // ===== 渲染页面排行 =====
-  function renderPages(pages, totalPv) {
-    const list = $('page-list');
+  // ===== hover tooltip =====
+  function bindHover(seriesRef) {
+    const canvas = $id('trend-chart');
+    const tip = $id('trend-tip');
+    if (!canvas || !tip) return;
+
+    canvas.addEventListener('mousemove', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const s = seriesRef.get();
+      if (!s || !s.length) return;
+      const padL = 36, padR = 12;
+      const plotW = rect.width - padL - padR;
+      const idx = Math.round(((x - padL) / plotW) * (s.length - 1));
+      if (idx < 0 || idx >= s.length) { tip.classList.add('hidden'); drawTrend(s); return; }
+      drawTrend(s, idx);
+      const point = s[idx];
+      const d = new Date(point.t);
+      const dateStr = `${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')} ${String(d.getHours()).padStart(2, '0')}:00`;
+      tip.innerHTML =
+        `<div style="font-weight:800;margin-bottom:4px">${esc(dateStr)}</div>` +
+        `<div style="display:flex;align-items:center;gap:5px;margin-bottom:2px"><span style="width:8px;height:8px;border-radius:50%;background:#0284c7;display:inline-block"></span>PV: ${point.pv}</div>` +
+        `<div style="display:flex;align-items:center;gap:5px;margin-bottom:2px"><span style="width:8px;height:8px;border-radius:50%;background:#f59e0b;display:inline-block"></span>UV: ${point.uv}</div>` +
+        `<div style="display:flex;align-items:center;gap:5px"><span style="width:8px;height:8px;border-radius:50%;background:#10b981;display:inline-block"></span>Visits: ${point.visits}</div>`;
+      tip.classList.remove('hidden');
+      // 定位：跟随鼠标上方
+      const tipX = Math.min(Math.max(x + 14, 4), rect.width - 150);
+      const cardRect = canvas.parentElement.getBoundingClientRect();
+      tip.style.left = tipX + 'px';
+      tip.style.top = e.clientY - cardRect.top + 10 + 'px';
+    });
+
+    canvas.addEventListener('mouseleave', () => {
+      tip.classList.add('hidden');
+      drawTrend(seriesRef.get());
+    });
+  }
+
+  // ===== 页面排行（带入场动画）=====
+  function renderPages(pages) {
+    const list = $id('page-list');
     if (!pages || !pages.length) {
       list.innerHTML = '<p class="text-sm text-slate-400 text-center py-6">暂无数据</p>';
       return;
     }
     const max = pages[0].views;
     list.innerHTML = pages.map((p, i) => {
-      const pct = max > 0 ? Math.round((p.views / max) * 100) : 0;
-      const barW = Math.max(pct, 2);
+      const barW = Math.max(Math.round((p.views / max) * 100), 2);
       return `
-        <div class="flex items-center gap-3">
-          <span class="w-6 shrink-0 text-center text-xs font-black tabular-nums ${i === 0 ? 'text-[#0284c7]' : 'text-slate-400'}">${i + 1}</span>
+        <div class="row-item flex items-center gap-3 py-1" style="--rd:${Math.min(i * 0.04, 0.6)}s">
+          <span class="w-6 shrink-0 text-center text-xs font-black tabular-nums ${i === 0 ? 'text-white bg-[#0284c7] rounded-full py-0.5' : 'text-slate-400'}">${i + 1}</span>
           <div class="flex-1 min-w-0">
             <div class="flex items-center justify-between gap-2">
-              <span class="text-xs font-bold text-slate-700 dark:text-slate-200 truncate" title="${esc(p.path)}">${esc(p.path || '/')}</span>
-              <span class="text-xs font-black text-[#0284c7] tabular-nums shrink-0">${p.views}</span>
+              <a href="${esc(p.path)}" class="text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-200 truncate hover:text-[#0ea5e9] transition-colors" title="${esc(p.path)}">${esc(p.title || p.path || '/')}</a>
+              <span class="text-xs font-black text-[#0284c7] tabular-nums shrink-0 ml-2">${p.views.toLocaleString()}</span>
             </div>
-            <div class="mt-1 h-1.5 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
-              <div class="h-full bg-[#0284c7] rounded-full" style="width:${barW}%"></div>
+            <div class="mt-1 h-1.5 w-full bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
+              <div class="h-full rounded-full transition-all duration-700 ease-out" style="width:${barW}%;background:linear-gradient(90deg,#38bdf8,#0284c7)"></div>
             </div>
           </div>
         </div>`;
@@ -183,49 +331,65 @@ import { siteConfig } from '../config/site';
   // ===== 加载 =====
   async function loadTrend() {
     try {
-      const data = await getJSON(`${API}/api/trend?hours=24`);
-      trendCache = data;
-      $('total-pv').textContent = data.total.pv.toLocaleString();
-      $('total-uv').textContent = data.total.uv.toLocaleString();
-      $('total-visits').textContent = data.total.visits.toLocaleString();
-      drawTrend(data.series);
-      $('update-time').textContent = new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+      const d = await getJSON(`${API}/api/trend?hours=24`);
+      trendSeries = d.series;
+      $id('total-pv').textContent = d.total.pv.toLocaleString();
+      $id('total-uv').textContent = d.total.uv.toLocaleString();
+      $id('total-visits').textContent = d.total.visits.toLocaleString();
+      drawTrend(trendSeries);
+      $id('update-time').textContent = new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
     } catch (e) {
-      $('total-pv').textContent = '—';
       console.warn('trend load failed', e);
     }
   }
 
-  async function loadPages() {
+  async function loadPages(hours) {
     try {
-      const data = await getJSON(`${API}/api/pages?hours=${pageRange}&limit=20`);
-      renderPages(data.pages, data.total);
+      const d = await getJSON(`${API}/api/pages?hours=${hours}&limit=20`);
+      renderPages(d.pages);
     } catch (e) {
-      $('page-list').innerHTML = '<p class="text-sm text-slate-400 text-center py-6">加载失败</p>';
+      $id('page-list').innerHTML = '<p class="text-sm text-slate-400 text-center py-6">加载失败</p>';
     }
   }
 
-  // 总 PV（全时段）
   async function loadAllTime() {
     try {
-      const data = await getJSON(`${API}/api/stats`);
-      $('total-all').textContent = data.pv.toLocaleString();
-    } catch (e) { $('total-all').textContent = '—'; }
+      const d = await getJSON(`${API}/api/stats`);
+      $id('total-all').textContent = d.pv.toLocaleString();
+    } catch (_) {}
   }
 
-  // 初始化
-  $('page-range').addEventListener('change', (e) => {
-    pageRange = Number(e.target.value);
-    loadPages();
-  });
-  window.addEventListener('resize', () => { if (trendCache) drawTrend(trendCache.series); });
+  // ===== 初始化 =====
+  function initStatsPage() {
+    const rangeEl = $id('page-range');
+    if (!rangeEl) return;
+    let pageHours = 24;
+    const seriesHolder = { get: () => trendSeries };
 
-  loadTrend();
-  loadPages();
-  loadAllTime();
-  setInterval(() => { loadTrend(); }, 60000);
+    loadTrend();
+    loadPages(pageHours);
+    loadAllTime();
+    bindHover(seriesHolder);
+    setInterval(loadTrend, 60000);
+
+    rangeEl.addEventListener('change', () => {
+      pageHours = Number(rangeEl.value) || 24;
+      loadPages(pageHours);
+    });
+
+    window.addEventListener('resize', () => drawTrend(trendSeries));
+
+    // 线条开关：点击图例隐藏/显示该线
+    document.querySelectorAll('[data-line-toggle]').forEach(el => {
+      el.addEventListener('click', () => {
+        const key = el.dataset.lineToggle;
+        const nowOff = lineOff.has(key);
+        if (nowOff) lineOff.delete(key); else lineOff.add(key);
+        el.dataset.lineOff = String(!nowOff);
+        drawTrend(trendSeries);
+      });
+    });
+  }
+
+  initStatsPage();
 </script>
-
-<style>
-  canvas { display: block; }
-</style>
