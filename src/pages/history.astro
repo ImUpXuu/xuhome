@@ -277,6 +277,7 @@ const dataJSON = JSON.stringify({
   .heat-month-label {
     font-size: 10px; color: #64748b; font-weight: 700;
     grid-row: 1; grid-column: span 1;
+    white-space: nowrap;
   }
   .heat-weekday-label {
     font-size: 10px; color: #94a3b8; font-weight: 600;
@@ -795,20 +796,15 @@ const dataJSON = JSON.stringify({
       ctx.fillText(v >= 1000 ? (v / 1000).toFixed(1) + 'k' : String(v), padL - 6, gy + 3);
     }
 
-    // X 轴标签（按年份显示）
+    // X 轴标签（只在首个点与年份切换处显示，避免末尾重复）
     ctx.textAlign = 'center';
     let lastY = -1;
     for (let i = 0; i < n; i++) {
       const y = parseInt(series[i].m.split('-')[0], 10);
       const m = parseInt(series[i].m.split('-')[1], 10);
-      if (y !== lastY && m === 1) {
+      if (i === 0 || (y !== lastY && m === 1)) {
         ctx.fillText(String(y), xAt(i), h - 8);
         lastY = y;
-      } else if (i === 0) {
-        ctx.fillText(String(y), xAt(i), h - 8);
-        lastY = y;
-      } else if (i === n - 1) {
-        ctx.fillText(String(y), xAt(i), h - 8);
       }
     }
 

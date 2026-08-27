@@ -5,7 +5,7 @@
  * 安全性：本脚本只读取 git 历史与内容文件，不涉及任何密钥/账号信息。
  */
 import { execSync } from 'child_process';
-import { readFileSync, writeFileSync, readdirSync, mkdirSync } from 'fs';
+import { readFileSync, writeFileSync, readdirSync, mkdirSync, existsSync } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -24,14 +24,24 @@ const run = (cmd) => execSync(cmd, {
 });
 
 // 1) 从 GitHub 拉取最新 commit 历史（读 origin/main，不动本地工作区/当前分支）。
-//    部署环境一般在构建前已 pull/checkout，因此这里 fetch 只是兜底刷新历史；
-//    失败时回退到本地 HEAD，绝不会影响构建产物。
+//    Vercel 等平台默认 shallow clone（depth=1），git log 只能看到 1 条提交；
+//    必须先 --unshallow 补全历史，否则热力图/时间线全是空数据。
 let ref = 'HEAD';
 try {
+  const shallowFile = join(root, '.git', 'shallow');
+  if (existsSync(shallowFile)) {
+    try {
+      run('git fetch origin main --unshallow --quiet');
+      console.log('[generate-history] 检测到 shallow clone，已 --unshallow 拉全量历史');
+    } catch {
+      console.warn('[generate-history] --unshallow 失败，尝试普通 fetch');
+    }
+  }
   run('git fetch origin main --quiet');
   run('git rev-parse origin/main');   // 确认 origin/main 存在
   ref = 'origin/main';
-  console.log('[generate-history] 已从 GitHub (origin) 拉取最新 commit 历史');
+  const cnt = run('git rev-list --count ' + ref).trim();
+  console.log(`[generate-history] 已从 GitHub (origin) 拉取 commit 历史，共 ${cnt} 条`);
 } catch (e) {
   console.warn('[generate-history] git fetch 失败，使用本地历史：', String(e.message || e).split('\n')[0]);
 }
