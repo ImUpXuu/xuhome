@@ -9,6 +9,10 @@ category: "技术"
 
 是的你没有看错，就是那个极其昂贵的kimi k3模型已经上架英伟达的免费ai平台了！！目前的模型id：moonshotai/kimi-k3  https://integrate.api.nvidia.com/v1
 
+> [!NOTE]
+>
+> 目前kimi 不太稳 但是今天(26.8.27)英伟达推出了DeepSeek v4 pro 0813 十分好用速度吊打kimi 可以看我的文章[免费的...DeepSeek v4 pro 0813?!! - UpXuu's blog](https://upxuu.com/posts/free-deepseek-pro-on-nvidia/)
+
 说实话这回的发布有点奇怪，目前的状况是你无法在nvida nim的模型页上看到kimi，但是！它可以调用！
 
 同时因为**暂时**没有正式上架，所以用的人相对较少，速度也是很可以
