@@ -737,5 +737,11 @@
     "url": "https://blog.somoe.xyz/",
     "avatar": "https://www.google.com/s2/favicons?domain=blog.somoe.xyz&sz=128",
     "description": "在文字的深海里，拾贝而行"
+  },
+  {
+    "name": "HJ",
+    "url": "https://blog.hjz0713.cn/",
+    "avatar": "https://www.google.com/s2/favicons?domain=blog.hjz0713.cn&sz=128",
+    "description": "Never stop discovering!"
   }
 ]
