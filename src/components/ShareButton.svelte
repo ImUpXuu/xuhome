@@ -21,11 +21,10 @@
     try {
       var p = new URL(shareUrl).pathname;
       if (!p.endsWith('/')) p += '/';
-      const res = await fetch('https://beat.345696.xyz/api/stats?p=' + encodeURIComponent(p), { signal: AbortSignal.timeout(5000) });
+      const res = await fetch('https://blog.api.upxuu.com/api/views?path=' + encodeURIComponent(p), { signal: AbortSignal.timeout(5000) });
       const data = await res.json();
-      if (data) {
-        var v = data[p];
-        pageViews = v !== undefined ? v : 0;
+      if (data && typeof data.views === 'number') {
+        pageViews = data.views;
       }
     } catch {}
   });

@@ -487,21 +487,8 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
       }
     }
 
-    // Send page view beacon manually on every navigation
-    // (beat.js loads once in <head>; its pushState hook may not fire
-    //  reliably with Astro View Transitions, so we send directly)
-    function trackPage() {
-      var url = 'https://beat.345696.xyz/api/track?p=' + encodeURIComponent(location.pathname) + location.hash;
-      if (navigator.sendBeacon) {
-        navigator.sendBeacon(url);
-      } else {
-        new Image().src = url;
-      }
-    }
-
     function onPage() {
       applySiteBg();
-      trackPage();
     }
 
     applySiteBg();
