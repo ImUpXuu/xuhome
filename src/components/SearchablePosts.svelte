@@ -35,6 +35,9 @@
   let prefetchObserver: IntersectionObserver | null = null;
   let prefetchAbortController: AbortController | null = null;
 
+  // 预加载进度状态：link.href → 0~100（Svelte 响应式，用于卡片进度条）
+  let prefetchProgress = new Map<string, number>();
+
   function getConnection() {
     return (navigator as Navigator & {
       connection?: {
@@ -63,9 +66,44 @@
         priority: 'low',
       } as RequestInit);
 
-      if (response.ok) await response.arrayBuffer();
+      if (!response.ok || !response.body) {
+        inflightUrls.delete(url);
+        prefetchProgress.delete(url);
+        prefetchProgress = prefetchProgress;
+        drainPrefetchQueue();
+        return;
+      }
+
+      // 流式读取计算进度（有 Content-Length 按比例，否则按累计字节估算）
+      const total = Number(response.headers.get('Content-Length')) || 0;
+      const reader = response.body.getReader();
+      let received = 0;
+      const chunks: Uint8Array[] = [];
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        if (value) {
+          chunks.push(value);
+          received += value.length;
+          const pct = total
+            ? Math.min(100, Math.round((received / total) * 100))
+            : Math.min(99, Math.round(received / 1024));
+          prefetchProgress.set(url, pct);
+          prefetchProgress = prefetchProgress; // 触发响应式更新
+        }
+      }
+      prefetchProgress.set(url, 100);
+      prefetchProgress = prefetchProgress;
+      // 完成后短暂展示满条，再淡出清除（视觉上"预加载完成"的提示）
+      setTimeout(() => {
+        prefetchProgress.delete(url);
+        prefetchProgress = prefetchProgress;
+      }, 400);
     } catch {
       // A failed prefetch must never turn into a visible homepage error.
+      prefetchProgress.delete(url);
+      prefetchProgress = prefetchProgress;
     } finally {
       inflightUrls.delete(url);
       drainPrefetchQueue();
@@ -142,6 +180,8 @@
     prefetchAbortController = null;
     queuedUrls.clear();
     inflightUrls.clear();
+    prefetchProgress.clear();
+    prefetchProgress = prefetchProgress;
   }
 
   const placeholderImg = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="190" height="120"%3E%3C/svg%3E';
@@ -329,6 +369,14 @@
         animate:flip={{ duration: 400 }}
         transition:fade={{ duration: 250 }}
       >
+        {#if prefetchProgress.has(`/posts/${encodeURIComponent(post.slug)}/`)}
+          <div class="prefetch-bar-container">
+            <div
+              class="prefetch-bar"
+              style="width: {prefetchProgress.get(`/posts/${encodeURIComponent(post.slug)}/`) ?? 0}%"
+            ></div>
+          </div>
+        {/if}
         <div class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] rounded-sm p-0 flex flex-row overflow-hidden shadow-[6px_6px_0px_0px_#0284c7] hover:shadow-[10px_10px_0px_0px_#10b981] hover:-translate-y-1 transition-all duration-300">
           <div class="flex-1 p-3.5 sm:p-5 md:p-6 flex flex-col justify-between min-w-0">
             <a href={`/posts/${encodeURIComponent(post.slug)}/`} class="block group">
@@ -468,3 +516,25 @@
     {/if}
   </div>
 </div>
+
+<style>
+  :global(.prefetch-bar-container) {
+    position: absolute;
+    left: 8px;
+    right: 8px;
+    top: 4px;
+    height: 3px;
+    background: rgba(2, 132, 199, 0.15);
+    border-radius: 999px;
+    overflow: hidden;
+    z-index: 10;
+    pointer-events: none;
+  }
+  :global(.prefetch-bar) {
+    height: 100%;
+    background: linear-gradient(90deg, #34d399, #10b981);
+    border-radius: 999px;
+    transition: width 0.18s ease-out;
+    box-shadow: 0 0 6px rgba(16, 185, 129, 0.7);
+  }
+</style>
