@@ -74,20 +74,14 @@ warm_url() {
   rm -f "$header_file"
 }
 
-# 单次模式：跑一轮就退出；持续模式：按 deadline 循环
-if [ "$ONE_PASS" = "1" ]; then
-  deadline=0
-  cycle=0
-  echo "📍 单次预热模式"
-else
-  deadline=$(( $(date +%s) + RUN_SECONDS ))
-  cycle=0
-fi
+# 目标命中率模式：每轮结束检查 HIT 率，≥ 95% 退出，否则继续
+# 安全上限：最多 MAX_CYCLES 轮，防止无限循环
+HIT_TARGET="${HIT_TARGET:-95}"
+MAX_CYCLES="${MAX_CYCLES:-5}"
+cycle=0
+echo "🎯 目标 HIT 率 ${HIT_TARGET}%（最多 ${MAX_CYCLES} 轮）"
 
-while [ "$ONE_PASS" = "1" ] || [ "$(date +%s)" -lt "$deadline" ]; do
-  if [ "$ONE_PASS" = "1" ] && [ "$cycle" -ge 1 ]; then
-    break
-  fi
+while [ "$cycle" -lt "$MAX_CYCLES" ]; do
   cycle=$((cycle + 1))
   cycle_start="$(date +%s)"
 
@@ -161,13 +155,26 @@ while [ "$ONE_PASS" = "1" ] || [ "$(date +%s)" -lt "$deadline" ]; do
     echo "::warning::[$(date '+%Y-%m-%d %H:%M:%S')] 获取 sitemap 失败，本轮跳过"
   fi
 
-  next_cycle=$(( cycle_start + INTERVAL_SECONDS ))
-  now="$(date +%s)"
-  if [ "$now" -lt "$next_cycle" ] && [ "$next_cycle" -lt "$deadline" ]; then
-    sleep $(( next_cycle - now ))
-  elif [ "$next_cycle" -lt "$deadline" ]; then
-    sleep 5
+  # 检查是否达到目标命中率
+  if [ "$requested" -gt 0 ]; then
+    hit_pct=$(echo "$hit_rate" | cut -d. -f1)
+    if [ "$hit_pct" -ge "$HIT_TARGET" ]; then
+      echo "✅ HIT 率 ${hit_rate}% ≥ 目标 ${HIT_TARGET}%，预热完成"
+      rm -f urls.txt
+      break
+    else
+      echo "⏳ HIT 率 ${hit_rate}% < 目标 ${HIT_TARGET}%，继续下一轮..."
+    fi
   fi
+
+  # 达到最大轮数则退出
+  if [ "$cycle" -ge "$MAX_CYCLES" ]; then
+    echo "⚠️ 已达最大轮数 ${MAX_CYCLES}，当前 HIT 率 ${hit_rate}%"
+    rm -f urls.txt
+    break
+  fi
+
+  sleep "$INTERVAL_SECONDS"
 done
 
-echo "保温窗口结束：共执行 $cycle 轮"
+echo "预热结束：共执行 $cycle 轮，最终 HIT 率 ${hit_rate}%"
