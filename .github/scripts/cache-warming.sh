@@ -2,10 +2,12 @@
 set -u -o pipefail
 
 BASE_URL="${BASE_URL:-https://upxuu.com}"
-RUN_SECONDS="${RUN_SECONDS:-21480}"
+RUN_SECONDS="${RUN_SECONDS:-0}"
 INTERVAL_SECONDS="${INTERVAL_SECONDS:-300}"
 PARALLEL="${PARALLEL:-8}"
 REQUEST_TIMEOUT="${REQUEST_TIMEOUT:-20}"
+RESOLVE_IP="${RESOLVE_IP:-}"
+ONE_PASS="${ONE_PASS:-0}"
 
 for variable_name in RUN_SECONDS INTERVAL_SECONDS PARALLEL REQUEST_TIMEOUT; do
   if [[ ! "${!variable_name}" =~ ^[0-9]+$ ]]; then
@@ -13,6 +15,13 @@ for variable_name in RUN_SECONDS INTERVAL_SECONDS PARALLEL REQUEST_TIMEOUT; do
     exit 1
   fi
 done
+
+# 当 RESOLVE_IP 设置时，所有 curl 请求强制解析到指定 IP
+RESOLVE_FLAG=""
+if [ -n "$RESOLVE_IP" ]; then
+  RESOLVE_FLAG="--resolve upxuu.com:443:${RESOLVE_IP}"
+  echo "🌐 强制解析到 ${RESOLVE_IP}"
+fi
 
 warm_url() {
   local url="$1"
@@ -25,7 +34,7 @@ warm_url() {
   local age_seconds
 
   header_file="$(mktemp)"
-  metric="$(curl -sS -o /dev/null -m "$REQUEST_TIMEOUT" -D "$header_file" \
+  metric="$(curl -sS -o /dev/null -m "$REQUEST_TIMEOUT" $RESOLVE_FLAG -D "$header_file" \
     -w '%{http_code}\t%{time_total}\t%{remote_ip}' "$url" 2>/dev/null || true)"
   IFS=$'\t' read -r http_code response_time remote_ip <<< "$metric"
   cache_status="$(awk '
@@ -65,14 +74,24 @@ warm_url() {
   rm -f "$header_file"
 }
 
-deadline=$(( $(date +%s) + RUN_SECONDS ))
-cycle=0
+# 单次模式：跑一轮就退出；持续模式：按 deadline 循环
+if [ "$ONE_PASS" = "1" ]; then
+  deadline=0
+  cycle=0
+  echo "📍 单次预热模式"
+else
+  deadline=$(( $(date +%s) + RUN_SECONDS ))
+  cycle=0
+fi
 
-while [ "$(date +%s)" -lt "$deadline" ]; do
+while [ "$ONE_PASS" = "1" ] || [ "$(date +%s)" -lt "$deadline" ]; do
+  if [ "$ONE_PASS" = "1" ] && [ "$cycle" -ge 1 ]; then
+    break
+  fi
   cycle=$((cycle + 1))
   cycle_start="$(date +%s)"
 
-  if curl -fsS --retry 2 --retry-delay 2 -m 30 "${BASE_URL}/sitemap.xml" \
+  if curl -fsS --retry 2 --retry-delay 2 -m 30 $RESOLVE_FLAG "${BASE_URL}/sitemap.xml" \
     | grep -oP '(?<=<loc>)[^<]+' \
     | sed 's/\r$//' > urls.txt; then
     printf '%s\n' \
