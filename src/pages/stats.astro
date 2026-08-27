@@ -80,30 +80,33 @@ import { siteConfig } from '../config/site';
 
 <style>
   .stat-card {
-    background: var(--color-panel, #fff);
-    border: 1.5px solid rgba(2, 132, 199, 0.25);
-    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(6px);
+    border: 1.5px solid rgba(2, 132, 199, 0.22);
+    border-radius: 14px;
     padding: 14px 16px;
     animation: stat-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
     animation-delay: var(--d, 0s);
-    transition: transform .18s ease, box-shadow .18s ease;
+    transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
   }
-  .stat-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(2,132,199,.15); }
+  .stat-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(2,132,199,.15); background: rgba(255,255,255,.8); }
   @media (prefers-color-scheme: dark) {
-    .stat-card { background: #1e293b; border-color: rgba(2, 132, 199, 0.4); }
+    .stat-card { background: rgba(30, 41, 59, 0.55); border-color: rgba(2, 132, 199, 0.4); }
+    .stat-card:hover { background: rgba(30, 41, 59, 0.8); }
   }
 
   .chart-card {
-    background: var(--color-panel, #fff);
-    border: 1.5px solid rgba(2, 132, 199, 0.25);
-    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(8px);
+    border: 1.5px solid rgba(2, 132, 199, 0.22);
+    border-radius: 16px;
     padding: 16px 18px;
-    box-shadow: 0 4px 18px rgba(2, 132, 199, 0.07);
+    box-shadow: 0 4px 18px rgba(2, 132, 199, 0.06);
     animation: stat-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
     animation-delay: var(--d, 0s);
   }
   @media (prefers-color-scheme: dark) {
-    .chart-card { background: #1e293b; border-color: rgba(2, 132, 199, 0.4); }
+    .chart-card { background: rgba(30, 41, 59, 0.55); border-color: rgba(2, 132, 199, 0.4); }
   }
 
   @keyframes stat-in {
@@ -373,7 +376,8 @@ import { siteConfig } from '../config/site';
     setInterval(loadTrend, 60000);
 
     rangeEl.addEventListener('change', () => {
-      pageHours = Number(rangeEl.value) || 24;
+      const v = Number(rangeEl.value);
+      pageHours = Number.isNaN(v) ? 24 : v; // 0 = 全部时段，不能 || 24
       loadPages(pageHours);
     });
 
