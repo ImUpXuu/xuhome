@@ -1,7 +1,12 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { siteConfig } from '../config/site';
-import historyData from '../data/history-data.json';
+import { readFileSync } from 'fs';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const historyData = JSON.parse(readFileSync(join(__dirname, '..', 'data', 'history-data.json'), 'utf8'));
 
 const { meta, commits, wordTrend, pieCounts, monthly, dailyCounts } = historyData as {
   meta: { repo: string; commitCount: number; firstCommit: string; lastCommit: string; years: number[] };
