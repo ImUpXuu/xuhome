@@ -1,4 +1,4 @@
-name: Cloudflare 缓存持续保温
+name: 构建预热（Vercel + Cloudflare）
 
 on:
   push:
@@ -6,34 +6,47 @@ on:
     # HIT.txt 提交不触发本工作流，避免死循环
     paths-ignore:
       - 'HIT.txt'
-  schedule:
-    # 每 6 小时唤起下一次；本次最长运行 5 小时 58 分，留出交接缓冲
-    - cron: '0 */6 * * *'
   workflow_dispatch:
 
 permissions:
   contents: write
 
 concurrency:
-  group: cloudflare-cache-warming
+  group: cache-warming-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  cache-warming:
+  # 第一次预热：强制解析到 Vercel IP，预热 Vercel 边缘缓存
+  warm-vercel:
     runs-on: ubuntu-latest
-    timeout-minutes: 359
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
 
-      # 构建约 30s，缓冲 80s 确保部署完成
       - name: 等待部署完成
         if: github.event_name == 'push'
         run: sleep 80
+
+      - name: 预热 Vercel 缓存（解析到 76.76.21.21）
+        env:
+          RESOLVE_IP: '76.76.21.21'
+          ONE_PASS: '1'
+          TZ: Asia/Shanghai
+        run: bash .github/scripts/cache-warming.sh
+
+  # 第二次预热：默认解析（Cloudflare），预热 CF 边缘缓存
+  warm-cloudflare:
+    needs: warm-vercel
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
 
       # ---- 预热前先清空 Cloudflare 全站缓存，确保边缘缓存放的是最新版本 ----
       # 注意：upxuu.com 挂在 SaaS zone 476543.xyz（自定义主机名）下，
       # CLOUDFLARE_ZONE_ID 必须是 476543.xyz 的 zone id（不是账号 id！）
       - name: 清除 Cloudflare 全站缓存
+        if: github.event_name == 'push'
         env:
           CLOUDFLARE_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -55,9 +68,8 @@ jobs:
             exit 1
           fi
 
-      - name: 持续预热全站页面（每 5 分钟一轮）
+      - name: 预热 Cloudflare 缓存（默认解析）
         env:
-          RUN_SECONDS: '21480'
-          INTERVAL_SECONDS: '300'
+          ONE_PASS: '1'
           TZ: Asia/Shanghai
         run: bash .github/scripts/cache-warming.sh
