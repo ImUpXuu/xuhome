@@ -128,13 +128,17 @@
       canvas.style.height = H + 'px';
       ctx.scale(dpr, dpr);
 
-      const warmWhite = '#f8fbff';
-      const ink = '#17324d';
-      const muted = '#6b8298';
-      const blue = '#dceefa';
-      const blueStrong = '#78b9dc';
-      const pad = 58;
+      // ===== 配色：呼应博客 Toy Brick Brutalism（天空蓝 + 黄 + 暖白），精致化 =====
+      const bg = '#faf8f5';
+      const brand = '#0284c7';
+      const brandSoft = '#e0f2fe';
+      const accent = '#fde68a';
+      const ink = '#0f172a';
+      const muted = '#64748b';
+      const FONT = '"PingFang SC", "Noto Sans SC", system-ui, sans-serif';
+      const pad = 56;
       const contentW = W - pad * 2;
+
       const roundedRect = (x: number, y: number, w: number, h: number, r: number) => {
         ctx.beginPath();
         ctx.moveTo(x + r, y);
@@ -149,24 +153,69 @@
         ctx.fillStyle = color;
         ctx.fill();
       };
+      // 截断 + 省略号（超长标题/描述）
+      const ellipsize = (lines: string[], max: number): string[] => {
+        if (lines.length <= max) return lines;
+        const out = lines.slice(0, max);
+        let last = out[max - 1];
+        while (last.length && ctx.measureText(last + '…').width > contentW) last = last.slice(0, -1);
+        out[max - 1] = last + '…';
+        return out;
+      };
 
-      ctx.fillStyle = warmWhite;
+      // ===== 背景 =====
+      ctx.fillStyle = bg;
       ctx.fillRect(0, 0, W, H);
-      ctx.fillStyle = blue;
-      ctx.fillRect(0, 0, W, 18);
-      ctx.fillStyle = '#eef7fc';
-      ctx.fillRect(0, H - 16, W, 16);
 
+      // ===== 顶部 masthead =====
+      // 黄色 logo 方块（积木感）
+      fillRound(pad, 40, 34, 34, 7, accent);
+      ctx.strokeStyle = brand;
+      ctx.lineWidth = 2.5;
+      roundedRect(pad, 40, 34, 34, 7);
+      ctx.stroke();
+      ctx.fillStyle = brand;
+      ctx.font = `bold 20px ${FONT}`;
+      ctx.textAlign = 'center';
+      ctx.fillText('U', pad + 17, 63);
       ctx.textAlign = 'left';
-      ctx.fillStyle = blueStrong;
-      ctx.font = 'bold 24px "Noto Sans SC", system-ui, sans-serif';
-      ctx.fillText('UPXUU  ·  STORY', pad, 68);
-      ctx.fillStyle = muted;
-      ctx.font = '16px "Noto Sans SC", system-ui, sans-serif';
-      ctx.fillText('把值得分享的内容，留在一张卡片里', pad, 96);
 
-      let y = 126;
-      const coverH = 370;
+      ctx.fillStyle = ink;
+      ctx.font = `bold 26px ${FONT}`;
+      ctx.fillText('UpXuu', pad + 48, 62);
+      ctx.fillStyle = muted;
+      ctx.font = `14px ${FONT}`;
+      ctx.fillText('upxuu.com', pad + 48, 84);
+
+      // 右侧标签 + 黄色小条
+      ctx.textAlign = 'right';
+      ctx.fillStyle = brand;
+      ctx.font = `bold 15px ${FONT}`;
+      ctx.fillText('READ · 阅读分享', W - pad, 58);
+      ctx.fillStyle = accent;
+      ctx.fillRect(W - pad - 130, 66, 130, 7);
+      ctx.textAlign = 'left';
+
+      // ===== 封面 =====
+      let y = 108;
+      const coverH = 380;
+      const drawCoverPlaceholder = () => {
+        fillRound(pad, y, contentW, coverH, 24, brandSoft);
+        ctx.strokeStyle = brand;
+        ctx.lineWidth = 2.5;
+        roundedRect(pad, y, contentW, coverH, 24);
+        ctx.stroke();
+        ctx.fillStyle = brand;
+        ctx.font = `bold 120px ${FONT}`;
+        ctx.textAlign = 'center';
+        ctx.fillText('U', W / 2, y + coverH / 2 + 42);
+        const dotY = y + coverH / 2 + 74;
+        ctx.fillStyle = accent; ctx.fillRect(W / 2 - 64, dotY, 26, 26);
+        ctx.fillStyle = brand;  ctx.fillRect(W / 2 - 13, dotY, 26, 26);
+        ctx.fillStyle = '#7dd3fc'; ctx.fillRect(W / 2 + 38, dotY, 26, 26);
+        ctx.textAlign = 'left';
+      };
+
       if (image) {
         try {
           const img = await loadImage(image);
@@ -180,55 +229,58 @@
           ctx.clip();
           ctx.drawImage(img, sx, sy, sw, sh, pad, y, contentW, coverH);
           ctx.restore();
-          ctx.strokeStyle = '#c5e2f2';
-          ctx.lineWidth = 3;
+          ctx.strokeStyle = brand;
+          ctx.lineWidth = 2.5;
           roundedRect(pad, y, contentW, coverH, 24);
           ctx.stroke();
-          y += coverH + 42;
+          // 右下角黄色标签
+          fillRound(W - pad - 92, y + coverH - 34, 80, 28, 8, accent);
+          ctx.fillStyle = brand;
+          ctx.font = `bold 13px ${FONT}`;
+          ctx.textAlign = 'center';
+          ctx.fillText('UPXUU', W - pad - 52, y + coverH - 15);
+          ctx.textAlign = 'left';
         } catch {
-          y += 12;
+          drawCoverPlaceholder();
         }
       } else {
-        fillRound(pad, y, contentW, 150, 24, blue);
-        ctx.fillStyle = blueStrong;
-        ctx.font = 'bold 48px system-ui, sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText('UPXUU', W / 2, y + 92);
-        ctx.textAlign = 'left';
-        y += 188;
+        drawCoverPlaceholder();
       }
+      y += coverH + 40;
 
+      // ===== 标题 =====
       ctx.fillStyle = ink;
-      ctx.font = 'bold 40px "Noto Sans SC", system-ui, sans-serif';
-      const titleLines = wrapText(ctx, title || '无标题', contentW);
-      titleLines.slice(0, 3).forEach((line, i) => ctx.fillText(line, pad, y + i * 52));
-      y += Math.min(titleLines.length, 3) * 52 + 18;
+      ctx.font = `bold 42px ${FONT}`;
+      const titleLines = ellipsize(wrapText(ctx, title || '无标题', contentW), 3);
+      titleLines.forEach((line, i) => ctx.fillText(line, pad, y + i * 54));
+      y += titleLines.length * 54 + 20;
 
-      ctx.fillStyle = blueStrong;
-      ctx.font = 'bold 18px "Noto Sans SC", system-ui, sans-serif';
+      // ===== 元信息 =====
+      ctx.fillStyle = accent;
+      ctx.fillRect(pad, y - 14, 14, 14);
+      ctx.fillStyle = brand;
+      ctx.font = `bold 18px ${FONT}`;
       const metaParts: string[] = [];
       if (date) metaParts.push(date);
       metaParts.push(`${pageViews} 次阅读`);
-      ctx.fillText(metaParts.join('  ·  '), pad, y);
-      y += 34;
+      ctx.fillText(metaParts.join('  ·  '), pad + 24, y);
+      y += 40;
 
+      // ===== 描述 =====
       if (description) {
         ctx.fillStyle = muted;
-        ctx.font = '21px "Noto Sans SC", system-ui, sans-serif';
-        const descLines = wrapText(ctx, description, contentW);
-        descLines.slice(0, 3).forEach((line, i) => ctx.fillText(line, pad, y + i * 31));
+        ctx.font = `20px ${FONT}`;
+        const descLines = ellipsize(wrapText(ctx, description, contentW), 2);
+        descLines.forEach((line, i) => ctx.fillText(line, pad, y + i * 30));
       }
 
-      const footerY = H - 210;
-      const footerH = 142;
-      fillRound(pad, footerY, contentW, footerH, 22, '#edf7fc');
-      ctx.strokeStyle = '#c5e2f2';
-      ctx.lineWidth = 2;
-      roundedRect(pad, footerY, contentW, footerH, 22);
-      ctx.stroke();
+      // ===== 底部作者卡 =====
+      const footerY = 948;
+      const footerH = 160;
+      fillRound(pad, footerY, contentW, footerH, 22, brandSoft);
 
       const av = 72;
-      const avX = pad + 24;
+      const avX = pad + 26;
       const avY = footerY + (footerH - av) / 2;
       ctx.save();
       ctx.beginPath();
@@ -238,25 +290,38 @@
         const avImg = await loadImage('https://upxuu.com/images/me.jpg');
         ctx.drawImage(avImg, avX, avY, av, av);
       } catch {
-        ctx.fillStyle = blueStrong;
+        ctx.fillStyle = brand;
         ctx.fillRect(avX, avY, av, av);
       }
       ctx.restore();
-      ctx.fillStyle = ink;
-      ctx.font = 'bold 26px "Noto Sans SC", system-ui, sans-serif';
-      ctx.fillText('UPXUU', avX + av + 20, footerY + 58);
-      ctx.fillStyle = muted;
-      ctx.font = '16px "Noto Sans SC", system-ui, sans-serif';
-      ctx.fillText('upxuu.com', avX + av + 20, footerY + 88);
+      ctx.strokeStyle = brand;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(avX + av / 2, avY + av / 2, av / 2, 0, Math.PI * 2);
+      ctx.stroke();
 
-      const qr = 100;
-      const qrX = pad + contentW - qr - 28;
+      ctx.fillStyle = ink;
+      ctx.font = `bold 24px ${FONT}`;
+      ctx.fillText('UpXuu', avX + av + 22, footerY + 60);
+      ctx.fillStyle = muted;
+      ctx.font = `14px ${FONT}`;
+      ctx.fillText('upxuu.com', avX + av + 22, footerY + 86);
+
+      // 二维码
+      const qr = 96;
+      const qrX = W - pad - qr - 24;
       const qrY = footerY + (footerH - qr) / 2;
-      fillRound(qrX - 9, qrY - 9, qr + 18, qr + 18, 14, '#ffffff');
+      fillRound(qrX - 8, qrY - 8, qr + 16, qr + 16, 14, '#ffffff');
       try {
         const qrImg = await loadImage('https://api.qrserver.com/v1/create-qr-code/?size=140x140&margin=8&data=' + encodeURIComponent(shareUrl));
         ctx.drawImage(qrImg, qrX, qrY, qr, qr);
-      } catch {}
+      } catch {
+        ctx.fillStyle = muted;
+        ctx.font = `12px ${FONT}`;
+        ctx.textAlign = 'center';
+        ctx.fillText('扫码阅读', qrX + qr / 2, qrY + qr / 2);
+        ctx.textAlign = 'left';
+      }
 
       posterDataUrl = canvas.toDataURL('image/png');
       showPoster = true;
