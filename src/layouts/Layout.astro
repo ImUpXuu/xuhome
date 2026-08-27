@@ -9,7 +9,19 @@ import PrefetchLinks from '../components/PrefetchLinks.svelte';
 import { PageBanner } from '../components/PageBanner';
 import MusicPlayer from '../components/MusicPlayer.svelte';
 import { execSync } from 'child_process';
+import { getCollection } from 'astro:content';
 import '../index.css';
+
+// 页脚字数统计：文章 + 说说的正文字符数合计（去掉图片语法与空白）
+const footerPosts = await getCollection('posts');
+const footerTalks = await getCollection('talks');
+const stripMarkdown = (s: string) => s
+  .replace(/!\[[^\]]*\]\([^)]*\)/g, '')
+  .replace(/<img[^>]*>/gi, '')
+  .replace(/\s+/g, '');
+const footerChars = footerPosts.reduce((sum, p) => sum + stripMarkdown(p.body || '').length, 0)
+  + footerTalks.reduce((sum, t) => sum + stripMarkdown(t.body || '').length, 0);
+const wordCountK = (footerChars / 1000).toFixed(1);
 
 const DEFAULT_BG_URL = 'https://img.upxuu.lcrworld.xyz/images/2026/7/1.webp';
 
@@ -318,8 +330,8 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
       )}
       
       {!hideFooter && (
-      <footer class="w-full dark:bg-slate-900 border-t-4 border-[#0284c7] select-none">
-        <div class="max-w-5xl mx-auto px-4 py-6 text-center text-xs font-mono text-slate-500 dark:text-slate-400 leading-relaxed space-y-3">
+      <footer class="w-full select-none">
+        <div class="max-w-5xl mx-auto px-4 py-6 text-center text-xs font-mono text-black dark:text-slate-300 leading-relaxed space-y-3">
           {/* 导航链接：积木粗野主义按钮组 */}
           <div class="flex flex-wrap justify-center gap-2">
             {infoConfig.footer.links.map((link) => (
@@ -331,7 +343,7 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
           </div>
           {/* 版权 + 备案 */}
           <div class="font-bold">
-            <span class="text-slate-700 dark:text-slate-300">{infoConfig.footer.copyrightText}</span>
+            <span>{infoConfig.footer.copyrightText}</span>
             {infoConfig.footer.icp.text && <>
               <span class="mx-1.5 text-slate-400">·</span>
               <a href={infoConfig.footer.icp.link} target="_blank" rel="noopener noreferrer" class="text-[#0284c7] hover:underline">{infoConfig.footer.icp.text}</a>
@@ -358,7 +370,10 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
               }
             })()}
           </div>
-          <div id="footer-uptime" class="text-[10px] sm:text-xs text-slate-400 dark:text-slate-500">
+          <div class="font-bold">
+            本站文章与说说累计 <span class="text-[#0284c7]">{wordCountK}k 字</span>
+          </div>
+          <div id="footer-uptime" class="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400">
             本站已在互联网中航行 <span id="uptime-display" class="font-bold text-[#0284c7]">计算中...</span>
           </div>
           <div class="mt-3 flex justify-center">
@@ -472,21 +487,8 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
       }
     }
 
-    // Send page view beacon manually on every navigation
-    // (beat.js loads once in <head>; its pushState hook may not fire
-    //  reliably with Astro View Transitions, so we send directly)
-    function trackPage() {
-      var url = 'https://beat.345696.xyz/api/track?p=' + encodeURIComponent(location.pathname) + location.hash;
-      if (navigator.sendBeacon) {
-        navigator.sendBeacon(url);
-      } else {
-        new Image().src = url;
-      }
-    }
-
     function onPage() {
       applySiteBg();
-      trackPage();
     }
 
     applySiteBg();
