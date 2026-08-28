@@ -146,6 +146,8 @@ const relatedPosts = (() => {
                   url={Astro.url.href}
                   image={post.img}
                   date={post.date}
+                  readTime={readTime}
+                  tags={post.tags || []}
                   client:only="svelte"
                 />
               </div>
