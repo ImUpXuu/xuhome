@@ -29,6 +29,8 @@
   // Keep client bandwidth predictable: at most two article HTML requests run together.
   const MAX_PREFETCH_REQUESTS = 6;
   const PREFETCH_ROOT_MARGIN = '800px';
+  const CACHE_NAME = 'xuhome-article-cache-v1';
+  const CACHE_TTL = 30 * 60 * 1000; // 30 分钟有效期
   const prefetchedUrls = new Set<string>();
   const queuedUrls = new Set<string>();
   const inflightUrls = new Set<string>();
@@ -37,6 +39,58 @@
 
   // 预加载进度状态：link.href → 0~100（Svelte 响应式，用于卡片进度条）
   let prefetchProgress = new Map<string, number>();
+
+  // ===== Cache Storage API =====
+
+  async function getCache(): Promise<Cache | null> {
+    try {
+      if (!('caches' in window)) return null;
+      return await caches.open(CACHE_NAME);
+    } catch { return null; }
+  }
+
+  async function storeCachedArticle(url: string, html: string) {
+    const cache = await getCache();
+    if (!cache) return;
+    const payload = JSON.stringify({ ts: Date.now(), html });
+    const req = new Request(url.startsWith('http') ? url : location.origin + url);
+    await cache.put(req, new Response(payload, {
+      headers: { 'Content-Type': 'application/json' }
+    }));
+  }
+
+  async function getCachedArticle(url: string): Promise<{ hit: boolean; html: string }> {
+    const cache = await getCache();
+    if (!cache) return { hit: false, html: '' };
+    const req = new Request(url.startsWith('http') ? url : location.origin + url);
+    const res = await cache.match(req);
+    if (!res) return { hit: false, html: '' };
+    try {
+      const data = await res.json();
+      if (!data || !data.html) return { hit: false, html: '' };
+      if (Date.now() - data.ts > CACHE_TTL) {
+        cache.delete(req);
+        return { hit: false, html: '' };
+      }
+      return { hit: true, html: data.html };
+    } catch { return { hit: false, html: '' }; }
+  }
+
+  async function cleanupExpiredCache() {
+    const cache = await getCache();
+    if (!cache) return;
+    const keys = await cache.keys();
+    for (const req of keys) {
+      try {
+        const res = await cache.match(req);
+        if (!res) continue;
+        const data = await res.json();
+        if (!data || !data.ts || Date.now() - data.ts > CACHE_TTL) {
+          await cache.delete(req);
+        }
+      } catch { await cache.delete(req); }
+    }
+  }
 
   function getConnection() {
     return (navigator as Navigator & {
@@ -93,6 +147,15 @@
           prefetchProgress = prefetchProgress; // 触发响应式更新
         }
       }
+      // 将完整 HTML 存入 Cache Storage
+      const decoder = new TextDecoder();
+      let html = '';
+      for (const chunk of chunks) {
+        html += decoder.decode(chunk, { stream: true });
+      }
+      html += decoder.decode();
+      await storeCachedArticle(url, html);
+
       prefetchProgress.set(url, 100);
       prefetchProgress = prefetchProgress;
       // 完成后短暂展示满条，再淡出清除（视觉上"预加载完成"的提示）
@@ -162,6 +225,97 @@
     }
   }
 
+  // ===== 点击拦截器：同步阻止 + 异步查缓存 =====
+
+  function setupClickInterceptor() {
+    document.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement;
+      const link = target.closest('a[href^="/posts/"]') as HTMLAnchorElement | null;
+      if (!link) return;
+
+      // 只拦截普通点击
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+
+      const url = link.href;
+      if (/\/posts\/?$/.test(url)) return; // 跳过归档列表页
+
+      // ★ 关键：同步阻止默认跳转
+      e.preventDefault();
+      e.stopPropagation();
+
+      // 异步检查缓存
+      void handleArticleClick(url);
+    }, true); // capture 阶段
+  }
+
+  async function handleArticleClick(url: string) {
+    const { hit, html } = await getCachedArticle(url);
+    if (!hit) {
+      // 未命中 → 手动导航（因为已经 preventDefault 了）
+      window.location.href = url;
+      return;
+    }
+    const targetPath = new URL(url).pathname;
+    await renderCachedArticle(html, targetPath);
+  }
+
+  // 渲染缓存文章：只替换中间列 + View Transition 动画 + 超时兜底
+  async function renderCachedArticle(html: string, path: string) {
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    const newTitle = doc.querySelector('title')?.textContent || document.title;
+    const newArticle = doc.querySelector('article');
+    const newCopyright = doc.querySelector('#post-copyright-card');
+
+    if (!newArticle) {
+      window.location.href = path;
+      return;
+    }
+
+    document.title = newTitle;
+
+    // 找到中间列（首页是 xl:flex-1，文章页是 flex-1）
+    const centerColumn = document.querySelector('#main-content > div > div.xl\\:flex-1')
+                      || document.querySelector('#main-content .xl\\:flex-1')
+                      || document.querySelector('main#main-content');
+
+    if (!centerColumn) {
+      window.location.href = path;
+      return;
+    }
+
+    // 给中间列标记 view-transition-name，动画只作用于这一块
+    centerColumn.style.viewTransitionName = 'cached-content';
+
+    const doSwap = () => {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'w-full flex flex-col gap-6 relative';
+      const inner = document.createElement('div');
+      inner.className = 'flex flex-col lg:flex-row gap-6 lg:gap-8 items-start w-full';
+      const center = document.createElement('div');
+      center.className = 'flex-1 min-w-0 w-full space-y-8 lg:order-2';
+      center.appendChild(newArticle);
+      if (newCopyright) center.appendChild(newCopyright);
+      inner.appendChild(center);
+      wrapper.appendChild(inner);
+
+      centerColumn.innerHTML = '';
+      centerColumn.appendChild(wrapper);
+      centerColumn.style.viewTransitionName = '';
+
+      window.scrollTo({ top: 0, behavior: 'instant' });
+      window.history.pushState({ fromCache: true }, '', path);
+      document.dispatchEvent(new CustomEvent('astro:page-load'));
+    };
+
+    if (document.startViewTransition) {
+      const vt = document.startViewTransition(doSwap);
+      const timeout = new Promise(r => setTimeout(r, 2000));
+      await Promise.race([vt.finished, timeout]);
+    } else {
+      doSwap();
+    }
+  }
+
   function setupPrefetcher() {
     if (!feedEl || prefetchObserver) return;
 
@@ -209,6 +363,10 @@
     };
 
     window.addEventListener('blog-search', handleGlobalSearch);
+
+    // 启动点击拦截器 + 清理过期缓存
+    setupClickInterceptor();
+    cleanupExpiredCache();
 
     if (dataUrl) {
       isLoadingPosts = posts.length === 0;

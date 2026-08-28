@@ -224,6 +224,28 @@ html {
   --tw-prose-code: #7dd3fc;
 }
 
+/* View Transition：缓存文章切换淡入淡出（仅作用于标记了 view-transition-name 的元素） */
+::view-transition-old(cached-content) {
+  animation: cache-fade-out 0.2s ease-in forwards;
+}
+::view-transition-new(cached-content) {
+  animation: cache-fade-in 0.35s ease-out forwards;
+}
+@keyframes cache-fade-out {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+@keyframes cache-fade-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(cached-content),
+  ::view-transition-new(cached-content) {
+    animation: none;
+  }
+}
+
 /* Strong = blue highlighter mark */
 .prose strong,
 .prose b {
