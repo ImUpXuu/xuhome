@@ -624,30 +624,29 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
 </html>
 
   <script is:inline>
-  // 缓存调试面板：路径切换时更新显隐 + 内容
+  // 缓存调试面板：访问 /cachelog 后全局可见
   (function () {
     var panel = document.getElementById('cache-debug-panel');
-    if (!panel) {
-      console.log('[CacheDebug] panel not found');
-      return;
+    if (!panel) return;
+
+    // 访问 /cachelog 开启调试模式（sessionStorage 持久化）
+    if (window.location.pathname === '/cachelog' || window.location.pathname === '/cachelog/') {
+      try { sessionStorage.setItem('cacheDebug', '1'); } catch {}
     }
-    console.log('[CacheDebug] panel found, path=', window.location.pathname);
 
     function update() {
-      var p = window.location.pathname;
-      var isDebug = p === '/cachelog' || p === '/cachelog/';
-      panel.style.display = isDebug ? '' : 'none';
-      if (isDebug) {
+      var debugMode = (sessionStorage.getItem('cacheDebug') === '1');
+      panel.style.display = debugMode ? '' : 'none';
+      if (debugMode) {
         var s = window.__cacheStats || {};
         panel.textContent = '⚡ ' + (s.cached || 0) + ' cached · ' + (s.queued || 0) + ' queued · ' + (s.loading || 0) + ' loading';
       }
     }
 
-    // 初始检查 + 定期刷新
     update();
     setInterval(update, 500);
 
-    // 监听 SPA 导航
+    // SPA 导航时也刷新
     document.addEventListener('astro:page-load', update);
     document.addEventListener('astro:after-swap', update);
   })();
