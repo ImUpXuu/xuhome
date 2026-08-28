@@ -343,12 +343,12 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
         class="h-full bg-gradient-to-r from-[#0284c7] via-[#0ea5e9] to-[#f59e0b] origin-left w-0 transition-all duration-75"
       ></div>
     </div>
-    {/* 缓存系统：面板 + HIT/MISS 弹出提示 */}
-    <div id="cache-panel" class="cache-panel" style="display:none">
+    {/* 缓存系统：面板 + HIT/MISS 弹出提示（persist 保持跨页面） */}
+    <div id="cache-panel" class="cache-panel" transition:persist="cache-panel" style="display:none">
       <div class="cache-panel-header">⚡ Cache</div>
       <div id="cache-panel-stats" class="cache-panel-stats">—</div>
     </div>
-    <div id="cache-toast" class="cache-toast" style="display:none"></div>
+    <div id="cache-toast" class="cache-toast" transition:persist="cache-toast" style="display:none"></div>
     <script is:inline>
     (function () {
       var panel = document.getElementById('cache-panel');
