@@ -627,10 +627,15 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
   // 缓存调试面板：路径切换时更新显隐 + 内容
   (function () {
     var panel = document.getElementById('cache-debug-panel');
-    if (!panel) return;
+    if (!panel) {
+      console.log('[CacheDebug] panel not found');
+      return;
+    }
+    console.log('[CacheDebug] panel found, path=', window.location.pathname);
 
     function update() {
       var isDebug = window.location.pathname === '/cachelog';
+      console.log('[CacheDebug] update', 'path=', window.location.pathname, 'isDebug=', isDebug);
       panel.style.display = isDebug ? '' : 'none';
       if (isDebug) {
         var s = window.__cacheStats || {};
@@ -638,14 +643,13 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
       }
     }
 
+    // 初始检查 + 定期刷新
     update();
+    setInterval(update, 500);
 
     // 监听 SPA 导航
     document.addEventListener('astro:page-load', update);
     document.addEventListener('astro:after-swap', update);
-
-    // 定期刷新数字
-    setInterval(update, 500);
   })();
   </script>
 
