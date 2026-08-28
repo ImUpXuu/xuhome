@@ -225,8 +225,71 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
       }
     }
 
+    /* ===== 缓存调试面板 ===== */
+    .cache-panel {
+      position: fixed;
+      bottom: 12px;
+      right: 12px;
+      z-index: 99999;
+      font: 10px/1.5 ui-monospace, "JetBrains Mono", monospace;
+      background: rgba(15, 23, 42, 0.92);
+      border: 1px solid rgba(51, 65, 85, 0.8);
+      border-radius: 8px;
+      padding: 0;
+      pointer-events: none;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+      overflow: hidden;
+      min-width: 140px;
+    }
+    .cache-panel-header {
+      padding: 5px 10px;
+      font-weight: 700;
+      font-size: 10px;
+      color: #64748b;
+      background: rgba(30, 41, 59, 0.6);
+      border-bottom: 1px solid rgba(51, 65, 85, 0.5);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .cache-panel-stats {
+      padding: 6px 10px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .cache-stat {
+      display: block;
+      white-space: nowrap;
+    }
+    .cache-stat-cached { color: #34d399; }
+    .cache-stat-queued { color: #fbbf24; }
+    .cache-stat-loading { color: #60a5fa; }
+    .cache-stat-hit { color: #34d399; font-weight: 700; }
+    .cache-stat-miss { color: #f87171; font-weight: 700; }
 
-
+    /* ===== HIT/MISS 弹出提示 ===== */
+    .cache-toast {
+      position: fixed;
+      z-index: 999999;
+      font: 700 11px/1 ui-monospace, monospace;
+      padding: 4px 8px;
+      border-radius: 4px;
+      pointer-events: none;
+      transition: opacity 0.18s ease, transform 0.18s ease;
+      transform: translateY(0);
+      letter-spacing: 0.02em;
+    }
+    .cache-toast-hit {
+      background: rgba(52, 211, 153, 0.95);
+      color: #064e3b;
+      box-shadow: 0 2px 8px rgba(52, 211, 153, 0.3);
+    }
+    .cache-toast-miss {
+      background: rgba(248, 113, 113, 0.95);
+      color: #7f1d1d;
+      box-shadow: 0 2px 8px rgba(248, 113, 113, 0.3);
+    }
 
   </style>
   {/* Dark mode init: read persisted theme before first paint */}
@@ -280,26 +343,97 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
         class="h-full bg-gradient-to-r from-[#0284c7] via-[#0ea5e9] to-[#f59e0b] origin-left w-0 transition-all duration-75"
       ></div>
     </div>
-    {/* 缓存调试面板：访问 /cachelog 后全局可见 */}
-    <div id="cache-debug-panel" style="position:fixed;bottom:8px;right:8px;z-index:99999;font:11px/1.4 monospace;color:#94a3b8;background:rgba(15,23,42,0.85);border:1px solid #334155;border-radius:6px;padding:6px 10px;pointer-events:none;white-space:nowrap;backdrop-filter:blur(4px);display:none"></div>
+    {/* 缓存系统：面板 + HIT/MISS 弹出提示 */}
+    <div id="cache-panel" class="cache-panel" style="display:none">
+      <div class="cache-panel-header">⚡ Cache</div>
+      <div id="cache-panel-stats" class="cache-panel-stats">—</div>
+    </div>
+    <div id="cache-toast" class="cache-toast" style="display:none"></div>
     <script is:inline>
     (function () {
-      var panel = document.getElementById('cache-debug-panel');
-      if (!panel) return;
+      var panel = document.getElementById('cache-panel');
+      var statsEl = document.getElementById('cache-panel-stats');
+      var toast = document.getElementById('cache-toast');
+      if (!panel || !statsEl || !toast) return;
+
+      // /cachelog 路径开启
       if (window.location.pathname === '/cachelog' || window.location.pathname === '/cachelog/') {
         try { sessionStorage.setItem('cacheDebug', '1'); } catch {}
       }
-      function update() {
-        if (sessionStorage.getItem('cacheDebug') !== '1') { panel.style.display = 'none'; return; }
-        var s = window.__cacheStats || {};
-        var last = sessionStorage.getItem('[cache]lastClick') || '';
+
+      // 更新面板内容
+      function updatePanel() {
+        if (sessionStorage.getItem('cacheDebug') !== '1') {
+          panel.style.display = 'none';
+          return;
+        }
         panel.style.display = '';
-        panel.textContent = '⚡ ' + (s.cached || 0) + ' cached · ' + (s.queued || 0) + ' queued · ' + (s.loading || 0) + ' loading' + (last ? ' | ' + last : '');
+        var s = window.__cacheStats || {};
+        var parts = [];
+        parts.push('<span class="cache-stat cache-stat-cached">' + (s.cached || 0) + ' cached</span>');
+        parts.push('<span class="cache-stat cache-stat-queued">' + (s.queued || 0) + ' queued</span>');
+        parts.push('<span class="cache-stat cache-stat-loading">' + (s.loading || 0) + ' loading</span>');
+        var last = sessionStorage.getItem('[cache]lastClick');
+        if (last) {
+          var isHit = last.indexOf('HIT ') === 0;
+          var slug = last.replace(/^(HIT|MISS) /, '');
+          parts.push('<span class="cache-stat ' + (isHit ? 'cache-stat-hit' : 'cache-stat-miss') + '">' + (isHit ? '✓ HIT ' : '✗ MISS ') + slug + '</span>');
+        }
+        statsEl.innerHTML = parts.join('');
       }
-      update();
-      setInterval(update, 400);
-      document.addEventListener('astro:page-load', update);
-      document.addEventListener('astro:after-swap', update);
+
+      updatePanel();
+      setInterval(updatePanel, 500);
+      document.addEventListener('astro:page-load', updatePanel);
+      document.addEventListener('astro:after-swap', updatePanel);
+
+      // HIT/MISS 弹出提示
+      var toastTimer = null;
+      function showToast(hit, x, y) {
+        toast.textContent = hit ? '✓ HIT' : '✗ MISS';
+        toast.className = 'cache-toast cache-toast-' + (hit ? 'hit' : 'miss');
+        toast.style.left = x + 'px';
+        toast.style.top = (y - 30) + 'px';
+        toast.style.display = '';
+        toast.style.opacity = '1';
+        toast.style.transform = 'translateY(0)';
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(function () {
+          toast.style.opacity = '0';
+          toast.style.transform = 'translateY(-8px)';
+          setTimeout(function () { toast.style.display = 'none'; }, 200);
+        }, 1200);
+      }
+
+      // 监听点击：弹出 HIT/MISS
+      document.addEventListener('click', async function (e) {
+        var link = e.target.closest('a[href^="/posts/"]');
+        if (!link) return;
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+        var url = link.href;
+        if (/\/posts\/?$/.test(url)) return;
+
+        // 查缓存
+        var hit = false;
+        try {
+          var cache = await caches.open('xuhome-article-cache-v1');
+          var req = new Request(url.startsWith('http') ? url : location.origin + url);
+          var res = await cache.match(req);
+          if (res) {
+            var data = await res.json();
+            if (data && data.html && Date.now() - data.ts < 30 * 60 * 1000) hit = true;
+          }
+        } catch {}
+
+        var slug = url.split('/').filter(Boolean).pop() || '';
+        try { sessionStorage.setItem('[cache]lastClick', (hit ? 'HIT ' : 'MISS ') + slug); } catch {}
+
+        // 弹出提示
+        showToast(hit, e.clientX, e.clientY);
+
+        // 更新面板
+        if (sessionStorage.getItem('cacheDebug') === '1') updatePanel();
+      }, true);
     })();
     </script>
     {/* 暂时禁用：<WelcomeToast /> */}
