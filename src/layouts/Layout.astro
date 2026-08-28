@@ -634,8 +634,8 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
     console.log('[CacheDebug] panel found, path=', window.location.pathname);
 
     function update() {
-      var isDebug = window.location.pathname === '/cachelog';
-      console.log('[CacheDebug] update', 'path=', window.location.pathname, 'isDebug=', isDebug);
+      var p = window.location.pathname;
+      var isDebug = p === '/cachelog' || p === '/cachelog/';
       panel.style.display = isDebug ? '' : 'none';
       if (isDebug) {
         var s = window.__cacheStats || {};
