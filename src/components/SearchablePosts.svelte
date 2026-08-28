@@ -40,6 +40,39 @@
   // 预加载进度状态：link.href → 0~100（Svelte 响应式，用于卡片进度条）
   let prefetchProgress = new Map<string, number>();
 
+  // ===== 缓存模块 =====
+
+  function getCache(): Promise<Cache | null> {
+    try { return caches.open(CACHE_NAME); }
+    catch { return Promise.resolve(null); }
+  }
+
+  async function storeCachedArticle(url: string, html: string) {
+    const cache = await getCache();
+    if (!cache) return;
+    const payload = JSON.stringify({ ts: Date.now(), html });
+    const req = new Request(url.startsWith('http') ? url : location.origin + url);
+    await cache.put(req, new Response(payload, { headers: { 'Content-Type': 'application/json' } }));
+  }
+
+  // 更新全局统计 + 面板显示
+  function updatePanel() {
+    if (typeof window === 'undefined') return;
+    (window as any).__cacheStats = {
+      cached: prefetchedUrls.size,
+      queued: queuedUrls.size,
+      loading: prefetchProgress.size,
+    };
+  }
+
+  // 标记点击 HIT/MISS（供 Layout 面板读取）
+  function markClick(hit: boolean, slug: string) {
+    try {
+      sessionStorage.setItem('[cache]lastClick', (hit ? 'HIT ' : 'MISS ') + slug);
+    } catch {}
+    updatePanel();
+  }
+
   function getConnection() {
     return (navigator as Navigator & {
       connection?: {
@@ -95,22 +128,21 @@
           prefetchProgress = prefetchProgress; // 触发响应式更新
         }
       }
-      // 将完整 HTML 存入 Cache Storage
+      // 存入 Cache Storage
       const decoder = new TextDecoder();
       let html = '';
-      for (const chunk of chunks) {
-        html += decoder.decode(chunk, { stream: true });
-      }
+      for (const chunk of chunks) html += decoder.decode(chunk, { stream: true });
       html += decoder.decode();
       await storeCachedArticle(url, html);
 
       prefetchProgress.set(url, 100);
       prefetchProgress = prefetchProgress;
+      updatePanel();
       // 完成后短暂展示满条，再淡出清除（视觉上"预加载完成"的提示）
       setTimeout(() => {
         prefetchProgress.delete(url);
         prefetchProgress = prefetchProgress;
-        updateCacheStats();
+        updatePanel();
       }, 400);
     } catch {
       // A failed prefetch must never turn into a visible homepage error.
@@ -119,18 +151,6 @@
     } finally {
       inflightUrls.delete(url);
       drainPrefetchQueue();
-      updateCacheStats();
-    }
-  }
-
-  // 更新全局缓存统计（供 Layout 中的调试面板读取）
-  function updateCacheStats() {
-    if (typeof window !== 'undefined') {
-      (window as any).__cacheStats = {
-        cached: prefetchedUrls.size,
-        queued: queuedUrls.size,
-        loading: prefetchProgress.size,
-      };
     }
   }
 
@@ -143,7 +163,6 @@
       inflightUrls.add(url);
       void prefetchArticle(url);
     }
-    updateCacheStats();
   }
 
   function queuePrefetch(link: HTMLAnchorElement) {
@@ -160,6 +179,18 @@
     drainPrefetchQueue();
   }
 
+  function addPrefetchLink(href: string) {
+    if (prefetchedUrls.has(href)) return;
+    const existing = document.querySelector(`link[rel="prefetch"][href="${href}"]`);
+    if (existing) return;
+    const link = document.createElement('link');
+    link.rel = 'prefetch';
+    link.href = href;
+    link.as = 'document';
+    link.crossOrigin = 'anonymous';
+    document.head.appendChild(link);
+  }
+
   function scanPrefetchTargets(root: HTMLElement) {
     if (!prefetchObserver || getConnection()?.saveData) return;
 
@@ -171,35 +202,9 @@
         prefetchedUrls.has(url.href)
       ) continue;
 
-      // 添加 <link rel="prefetch"> 让浏览器原生缓存页面
       addPrefetchLink(url.href);
       prefetchObserver.observe(link);
     }
-  }
-
-  // Cache Storage 读写
-  async function storeCachedArticle(url: string, html: string) {
-    try {
-      if (!('caches' in window)) return;
-      var cache = await caches.open(CACHE_NAME);
-      var payload = JSON.stringify({ ts: Date.now(), html: html });
-      var req = new Request(url.startsWith('http') ? url : location.origin + url);
-      await cache.put(req, new Response(payload, { headers: { 'Content-Type': 'application/json' } }));
-    } catch {}
-  }
-
-  // 添加 <link rel="prefetch"> 到 <head>，浏览器自动缓存目标页面
-  function addPrefetchLink(href: string) {
-    if (prefetchedUrls.has(href)) return;
-    const existing = document.querySelector(`link rel="prefetch"][href="${href}"]`);
-    if (existing) return;
-
-    const link = document.createElement('link');
-    link.rel = 'prefetch';
-    link.href = href;
-    link.as = 'document';
-    link.crossOrigin = 'anonymous';
-    document.head.appendChild(link);
   }
 
   function handlePrefetchEntries(entries: IntersectionObserverEntry[]) {
@@ -261,6 +266,20 @@
     };
 
     window.addEventListener('blog-search', handleGlobalSearch);
+
+    // 点击追踪：判断 HIT/MISS（不阻止导航）
+    document.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement;
+      const link = target.closest('a[href^="/posts/"]') as HTMLAnchorElement | null;
+      if (!link) return;
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+      const url = link.href;
+      if (/\/posts\/?$/.test(url)) return;
+      const slug = url.split('/').filter(Boolean).pop() || '';
+      markClick(prefetchedUrls.has(url), slug);
+    }, true);
+
+    updatePanel();
 
     if (dataUrl) {
       isLoadingPosts = posts.length === 0;
