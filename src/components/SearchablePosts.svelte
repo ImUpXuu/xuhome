@@ -29,6 +29,8 @@
   // Keep client bandwidth predictable: at most two article HTML requests run together.
   const MAX_PREFETCH_REQUESTS = 6;
   const PREFETCH_ROOT_MARGIN = '800px';
+  const CACHE_NAME = 'xuhome-article-cache-v1';
+  const CACHE_TTL = 30 * 60 * 1000; // 30 分钟
   const prefetchedUrls = new Set<string>();
   const queuedUrls = new Set<string>();
   const inflightUrls = new Set<string>();
@@ -93,6 +95,15 @@
           prefetchProgress = prefetchProgress; // 触发响应式更新
         }
       }
+      // 将完整 HTML 存入 Cache Storage
+      const decoder = new TextDecoder();
+      let html = '';
+      for (const chunk of chunks) {
+        html += decoder.decode(chunk, { stream: true });
+      }
+      html += decoder.decode();
+      await storeCachedArticle(url, html);
+
       prefetchProgress.set(url, 100);
       prefetchProgress = prefetchProgress;
       // 完成后短暂展示满条，再淡出清除（视觉上"预加载完成"的提示）
@@ -164,6 +175,17 @@
       addPrefetchLink(url.href);
       prefetchObserver.observe(link);
     }
+  }
+
+  // Cache Storage 读写
+  async function storeCachedArticle(url: string, html: string) {
+    try {
+      if (!('caches' in window)) return;
+      var cache = await caches.open(CACHE_NAME);
+      var payload = JSON.stringify({ ts: Date.now(), html: html });
+      var req = new Request(url.startsWith('http') ? url : location.origin + url);
+      await cache.put(req, new Response(payload, { headers: { 'Content-Type': 'application/json' } }));
+    } catch {}
   }
 
   // 添加 <link rel="prefetch"> 到 <head>，浏览器自动缓存目标页面
