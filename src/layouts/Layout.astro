@@ -333,22 +333,23 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
     <div id="cache-toast" class="cache-toast" transition:persist="cache-toast" style="display:none"></div>
     <script is:inline>
     (function () {
+      // 不开 debug 就什么都不运行
+      if (sessionStorage.getItem('cacheDebug') !== '1') {
+        // 只在 /cachelog 路径开启
+        if (window.location.pathname === '/cachelog' || window.location.pathname === '/cachelog/') {
+          try { sessionStorage.setItem('cacheDebug', '1'); } catch {}
+        } else {
+          return; // 不是 debug 模式，直接退出
+        }
+      }
+
       var panel = document.getElementById('cache-panel');
       var statsEl = document.getElementById('cache-panel-stats');
       var toast = document.getElementById('cache-toast');
       if (!panel || !statsEl || !toast) return;
 
-      // /cachelog 路径开启
-      if (window.location.pathname === '/cachelog' || window.location.pathname === '/cachelog/') {
-        try { sessionStorage.setItem('cacheDebug', '1'); } catch {}
-      }
-
       // 更新面板内容
       function updatePanel() {
-        if (sessionStorage.getItem('cacheDebug') !== '1') {
-          panel.style.display = 'none';
-          return;
-        }
         panel.style.display = '';
         var s = window.__cacheStats || {};
         var parts = [];
@@ -387,34 +388,30 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
         }, 1200);
       }
 
-      // 监听点击：弹出 HIT/MISS
-      document.addEventListener('click', async function (e) {
+      // 只在 debug 模式下监听点击（不阻塞导航）
+      document.addEventListener('click', function (e) {
         var link = e.target.closest('a[href^="/posts/"]');
         if (!link) return;
         if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
         var url = link.href;
         if (/\/posts\/?$/.test(url)) return;
 
-        // 查缓存
-        var hit = false;
-        try {
-          var cache = await caches.open('xuhome-article-cache-v1');
-          var req = new Request(url.startsWith('http') ? url : location.origin + url);
-          var res = await cache.match(req);
-          if (res) {
-            var data = await res.json();
-            if (data && data.html && Date.now() - data.ts < 30 * 60 * 1000) hit = true;
-          }
-        } catch {}
-
         var slug = url.split('/').filter(Boolean).pop() || '';
-        try { sessionStorage.setItem('[cache]lastClick', (hit ? 'HIT ' : 'MISS ') + slug); } catch {}
+        var absUrl = url.startsWith('http') ? url : location.origin + url;
 
-        // 弹出提示
-        showToast(hit, e.clientX, e.clientY);
-
-        // 更新面板
-        if (sessionStorage.getItem('cacheDebug') === '1') updatePanel();
+        // 异步查缓存，不阻塞导航
+        caches.open('xuhome-article-cache-v1').then(function (cache) {
+          return cache.match(new Request(absUrl));
+        }).then(function (res) {
+          if (!res) return false;
+          return res.json().then(function (data) {
+            return data && data.html && Date.now() - data.ts < 30 * 60 * 1000;
+          });
+        }).then(function (hit) {
+          try { sessionStorage.setItem('[cache]lastClick', (hit ? 'HIT ' : 'MISS ') + slug); } catch {}
+          showToast(hit, e.clientX, e.clientY);
+          updatePanel();
+        }).catch(function () {});
       }, true);
     })();
     </script>
