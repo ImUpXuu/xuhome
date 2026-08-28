@@ -6,6 +6,8 @@
   export let url: string = '';
   export let image: string = '';
   export let date: string = '';
+  export let readTime: number | null = null;
+  export let tags: string[] = [];
 
   let expanded = false;
   let pageViews = 0;
@@ -118,8 +120,8 @@
     try {
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d')!;
-      const W = 900;
-      const H = 1200;
+      const W = 1080;
+      const H = 1080; // 1:1 方形
       const dpr = Math.max(1, Math.min(3, window.devicePixelRatio || 1));
       canvas.width = Math.round(W * dpr);
       canvas.height = Math.round(H * dpr);
@@ -127,15 +129,15 @@
       canvas.style.height = H + 'px';
       ctx.scale(dpr, dpr);
 
-      // ===== 配色：呼应博客 Toy Brick Brutalism（天空蓝 + 黄 + 暖白），精致化 =====
+      // ===== 配色：积木粗野主义（天空蓝 + 黄 + 暖白）=====
       const bg = '#faf8f5';
       const brand = '#0284c7';
       const brandSoft = '#e0f2fe';
       const accent = '#fde68a';
       const ink = '#0f172a';
       const muted = '#64748b';
-      const FONT = '"PingFang SC", "Noto Sans SC", system-ui, sans-serif';
-      const pad = 56;
+      const FONT = '"Fredoka", "PingFang SC", "Noto Sans SC", system-ui, sans-serif';
+      const pad = 60;
       const contentW = W - pad * 2;
 
       const roundedRect = (x: number, y: number, w: number, h: number, r: number) => {
@@ -152,7 +154,6 @@
         ctx.fillStyle = color;
         ctx.fill();
       };
-      // 截断 + 省略号（超长标题/描述）
       const ellipsize = (lines: string[], max: number): string[] => {
         if (lines.length <= max) return lines;
         const out = lines.slice(0, max);
@@ -162,128 +163,210 @@
         return out;
       };
 
-      // ===== 背景 =====
+      // ===== 背景 + 积木点阵 =====
       ctx.fillStyle = bg;
       ctx.fillRect(0, 0, W, H);
+      ctx.fillStyle = 'rgba(2, 132, 199, 0.07)';
+      for (let gx = 12; gx < W; gx += 24) {
+        for (let gy = 12; gy < H; gy += 24) {
+          ctx.fillRect(gx, gy, 2.2, 2.2);
+        }
+      }
 
-      // ===== 顶部 masthead =====
-      // 黄色 logo 方块（积木感）
-      fillRound(pad, 40, 34, 34, 7, accent);
+      // ===== 顶部双色条 =====
+      ctx.fillStyle = brand;
+      ctx.fillRect(0, 0, W, 14);
+      ctx.fillStyle = accent;
+      ctx.fillRect(0, 14, W, 5);
+
+      // ===== 头部 masthead =====
+      const logoS = 46;
+      const logoX = pad, logoY = 48;
+      ctx.save();
+      ctx.translate(logoX + logoS / 2, logoY + logoS / 2);
+      ctx.rotate(-0.1);
+      ctx.fillStyle = accent;
       ctx.strokeStyle = brand;
-      ctx.lineWidth = 2.5;
-      roundedRect(pad, 40, 34, 34, 7);
+      ctx.lineWidth = 3;
+      roundedRect(-logoS / 2, -logoS / 2, logoS, logoS, 9);
+      ctx.fill();
       ctx.stroke();
       ctx.fillStyle = brand;
-      ctx.font = `bold 20px ${FONT}`;
+      ctx.font = `900 26px ${FONT}`;
       ctx.textAlign = 'center';
-      ctx.fillText('U', pad + 17, 63);
+      ctx.textBaseline = 'middle';
+      ctx.fillText('U', 0, 1);
+      ctx.restore();
       ctx.textAlign = 'left';
+      ctx.textBaseline = 'alphabetic';
 
       ctx.fillStyle = ink;
-      ctx.font = `bold 26px ${FONT}`;
-      ctx.fillText('UpXuu', pad + 48, 62);
+      ctx.font = `900 27px ${FONT}`;
+      ctx.fillText('UpXuu', logoX + logoS + 18, logoY + 24);
       ctx.fillStyle = muted;
-      ctx.font = `14px ${FONT}`;
-      ctx.fillText('upxuu.com', pad + 48, 84);
+      ctx.font = `500 15px ${FONT}`;
+      ctx.fillText('upxuu.com', logoX + logoS + 18, logoY + 46);
 
-      // 右侧标签 + 黄色小条
-      ctx.textAlign = 'right';
+      // 右侧「文章分享」标签
+      const pillText = '文章分享';
+      ctx.font = `800 19px ${FONT}`;
+      const pillW = ctx.measureText(pillText).width + 40;
+      const pillH = 44;
+      const pillX = W - pad - pillW;
+      const pillY = 48;
+      ctx.save();
+      ctx.shadowColor = accent;
+      ctx.shadowOffsetX = 5;
+      ctx.shadowOffsetY = 5;
+      ctx.shadowBlur = 0;
+      fillRound(pillX, pillY, pillW, pillH, 9, '#ffffff');
+      ctx.restore();
+      ctx.strokeStyle = brand;
+      ctx.lineWidth = 3;
+      roundedRect(pillX, pillY, pillW, pillH, 9);
+      ctx.stroke();
       ctx.fillStyle = brand;
-      ctx.font = `bold 15px ${FONT}`;
-      ctx.fillText('READ · 阅读分享', W - pad, 58);
-      ctx.fillStyle = accent;
-      ctx.fillRect(W - pad - 130, 66, 130, 7);
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(pillText, pillX + pillW / 2, pillY + pillH / 2 + 1);
       ctx.textAlign = 'left';
+      ctx.textBaseline = 'alphabetic';
 
-      // ===== 封面 =====
-      let y = 108;
-      const coverH = 380;
+      // ===== 封面（厚边框 + 硬阴影）=====
+      const covX = pad, covY = 122, covW = contentW, covH = 336;
       const drawCoverPlaceholder = () => {
-        fillRound(pad, y, contentW, coverH, 24, brandSoft);
-        ctx.strokeStyle = brand;
-        ctx.lineWidth = 2.5;
-        roundedRect(pad, y, contentW, coverH, 24);
-        ctx.stroke();
+        ctx.fillStyle = brandSoft;
+        roundedRect(covX, covY, covW, covH, 20);
+        ctx.fill();
         ctx.fillStyle = brand;
-        ctx.font = `bold 120px ${FONT}`;
+        ctx.font = `900 110px ${FONT}`;
         ctx.textAlign = 'center';
-        ctx.fillText('U', W / 2, y + coverH / 2 + 42);
-        const dotY = y + coverH / 2 + 74;
-        ctx.fillStyle = accent; ctx.fillRect(W / 2 - 64, dotY, 26, 26);
-        ctx.fillStyle = brand;  ctx.fillRect(W / 2 - 13, dotY, 26, 26);
-        ctx.fillStyle = '#7dd3fc'; ctx.fillRect(W / 2 + 38, dotY, 26, 26);
+        ctx.textBaseline = 'middle';
+        ctx.fillText('U', W / 2, covY + covH / 2 - 12);
+        const bs = 22, gap = 14;
+        const total = bs * 3 + gap * 2;
+        const dotY = covY + covH / 2 + 58;
         ctx.textAlign = 'left';
+        ctx.textBaseline = 'alphabetic';
+        ctx.fillStyle = accent; ctx.fillRect(W / 2 - total / 2, dotY, bs, bs);
+        ctx.fillStyle = brand; ctx.fillRect(W / 2 - total / 2 + bs + gap, dotY, bs, bs);
+        ctx.fillStyle = '#7dd3fc'; ctx.fillRect(W / 2 - total / 2 + (bs + gap) * 2, dotY, bs, bs);
       };
 
+      ctx.save();
+      ctx.shadowColor = brand;
+      ctx.shadowOffsetX = 10;
+      ctx.shadowOffsetY = 10;
+      ctx.shadowBlur = 0;
+      fillRound(covX, covY, covW, covH, 20, '#ffffff');
+      ctx.restore();
       if (image) {
         try {
           const img = await loadImage(image);
-          const scale = Math.max(contentW / img.width, coverH / img.height);
-          const sw = contentW / scale;
-          const sh = coverH / scale;
+          const scale = Math.max(covW / img.width, covH / img.height);
+          const sw = covW / scale;
+          const sh = covH / scale;
           const sx = (img.width - sw) / 2;
           const sy = (img.height - sh) / 2;
           ctx.save();
-          roundedRect(pad, y, contentW, coverH, 24);
+          roundedRect(covX, covY, covW, covH, 20);
           ctx.clip();
-          ctx.drawImage(img, sx, sy, sw, sh, pad, y, contentW, coverH);
+          ctx.drawImage(img, sx, sy, sw, sh, covX, covY, covW, covH);
           ctx.restore();
-          ctx.strokeStyle = brand;
-          ctx.lineWidth = 2.5;
-          roundedRect(pad, y, contentW, coverH, 24);
-          ctx.stroke();
-          // 右下角黄色标签
-          fillRound(W - pad - 92, y + coverH - 34, 80, 28, 8, accent);
-          ctx.fillStyle = brand;
-          ctx.font = `bold 13px ${FONT}`;
-          ctx.textAlign = 'center';
-          ctx.fillText('UPXUU', W - pad - 52, y + coverH - 15);
-          ctx.textAlign = 'left';
         } catch {
           drawCoverPlaceholder();
         }
       } else {
         drawCoverPlaceholder();
       }
-      y += coverH + 40;
+      ctx.strokeStyle = brand;
+      ctx.lineWidth = 5;
+      roundedRect(covX, covY, covW, covH, 20);
+      ctx.stroke();
 
       // ===== 标题 =====
+      let ty = covY + covH + 66;
       ctx.fillStyle = ink;
-      ctx.font = `bold 42px ${FONT}`;
-      const titleLines = ellipsize(wrapText(ctx, title || '无标题', contentW), 3);
-      titleLines.forEach((line, i) => ctx.fillText(line, pad, y + i * 54));
-      y += titleLines.length * 54 + 20;
+      ctx.font = `900 44px ${FONT}`;
+      const titleLines = ellipsize(wrapText(ctx, title || '无标题', contentW), 2);
+      titleLines.forEach((line, i) => ctx.fillText(line, pad, ty + i * 58));
+      ty += titleLines.length * 58;
+
+      // ===== 摘要 =====
+      if (description) {
+        ty += 28;
+        ctx.fillStyle = muted;
+        ctx.font = `400 22px ${FONT}`;
+        const descLines = ellipsize(wrapText(ctx, description, contentW), 2);
+        descLines.forEach((line, i) => ctx.fillText(line, pad, ty + i * 34));
+        ty += descLines.length * 34;
+      }
 
       // ===== 元信息 =====
+      ty += 42;
+      const metaY = ty;
       ctx.fillStyle = accent;
-      ctx.fillRect(pad, y - 14, 14, 14);
+      ctx.strokeStyle = brand;
+      ctx.lineWidth = 2.5;
+      roundedRect(pad, metaY - 14, 14, 14, 3);
+      ctx.fill();
+      ctx.stroke();
       ctx.fillStyle = brand;
-      ctx.font = `bold 18px ${FONT}`;
+      ctx.font = `700 19px ${FONT}`;
+      const date10 = (date || '').slice(0, 10);
       const metaParts: string[] = [];
-      if (date) metaParts.push(date);
-      metaParts.push(`${pageViews} 次阅读`);
-      ctx.fillText(metaParts.join('  ·  '), pad + 24, y);
-      y += 40;
+      if (date10) metaParts.push(date10);
+      if (readTime) metaParts.push(`阅读约 ${readTime} 分钟`);
+      if (pageViews > 0) metaParts.push(`${pageViews} 次阅读`);
+      ctx.fillText(metaParts.join('  ·  '), pad + 26, metaY);
 
-      // ===== 描述 =====
-      if (description) {
-        ctx.fillStyle = muted;
-        ctx.font = `20px ${FONT}`;
-        const descLines = ellipsize(wrapText(ctx, description, contentW), 2);
-        descLines.forEach((line, i) => ctx.fillText(line, pad, y + i * 30));
+      // ===== 标签（积木药丸）=====
+      ty += 46;
+      ctx.font = `700 20px ${FONT}`;
+      let tx = pad;
+      const tagH = 46;
+      for (const t of (tags || []).slice(0, 3)) {
+        const label = '# ' + t;
+        const w = ctx.measureText(label).width + 40;
+        if (tx + w > W - pad) break;
+        ctx.save();
+        ctx.shadowColor = '#bae6fd';
+        ctx.shadowOffsetX = 4;
+        ctx.shadowOffsetY = 4;
+        ctx.shadowBlur = 0;
+        fillRound(tx, ty, w, tagH, 10, '#ffffff');
+        ctx.restore();
+        ctx.strokeStyle = brand;
+        ctx.lineWidth = 2.5;
+        roundedRect(tx, ty, w, tagH, 10);
+        ctx.stroke();
+        ctx.fillStyle = '#475569';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(label, tx + 20, ty + tagH / 2 + 1);
+        ctx.textBaseline = 'alphabetic';
+        tx += w + 14;
       }
 
       // ===== 底部作者卡 =====
-      const footerY = 948;
-      const footerH = 160;
-      fillRound(pad, footerY, contentW, footerH, 22, brandSoft);
-
-      const av = 72;
-      const avX = pad + 26;
-      const avY = footerY + (footerH - av) / 2;
+      const footH = 150;
+      const footY = H - pad - footH;
       ctx.save();
-      ctx.beginPath();
-      ctx.arc(avX + av / 2, avY + av / 2, av / 2, 0, Math.PI * 2);
+      ctx.shadowColor = brand;
+      ctx.shadowOffsetX = 8;
+      ctx.shadowOffsetY = 8;
+      ctx.shadowBlur = 0;
+      fillRound(pad, footY, contentW, footH, 18, '#ffffff');
+      ctx.restore();
+      ctx.strokeStyle = brand;
+      ctx.lineWidth = 4;
+      roundedRect(pad, footY, contentW, footH, 18);
+      ctx.stroke();
+
+      const av = 92;
+      const avX = pad + 26;
+      const avY = footY + (footH - av) / 2;
+      ctx.save();
+      roundedRect(avX, avY, av, av, 18);
       ctx.clip();
       try {
         const avImg = await loadImage('https://upxuu.com/images/me.jpg');
@@ -291,36 +374,54 @@
       } catch {
         ctx.fillStyle = brand;
         ctx.fillRect(avX, avY, av, av);
+        ctx.fillStyle = '#ffffff';
+        ctx.font = `900 44px ${FONT}`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('U', avX + av / 2, avY + av / 2);
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'alphabetic';
       }
       ctx.restore();
       ctx.strokeStyle = brand;
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.arc(avX + av / 2, avY + av / 2, av / 2, 0, Math.PI * 2);
+      ctx.lineWidth = 3.5;
+      roundedRect(avX, avY, av, av, 18);
       ctx.stroke();
 
       ctx.fillStyle = ink;
-      ctx.font = `bold 24px ${FONT}`;
-      ctx.fillText('UpXuu', avX + av + 22, footerY + 60);
+      ctx.font = `900 25px ${FONT}`;
+      ctx.fillText('UpXuu', avX + av + 22, footY + 58);
       ctx.fillStyle = muted;
-      ctx.font = `14px ${FONT}`;
-      ctx.fillText('upxuu.com', avX + av + 22, footerY + 86);
+      ctx.font = `500 16px ${FONT}`;
+      ctx.fillText('逐光而上！ · upxuu.com', avX + av + 22, footY + 88);
 
       // 二维码
-      const qr = 96;
-      const qrX = W - pad - qr - 24;
-      const qrY = footerY + (footerH - qr) / 2;
-      fillRound(qrX - 8, qrY - 8, qr + 16, qr + 16, 14, '#ffffff');
+      const qr = 108;
+      const qrX = pad + contentW - qr - 22;
+      const qrY = footY + (footH - qr) / 2;
+      fillRound(qrX - 7, qrY - 7, qr + 14, qr + 14, 10, '#ffffff');
+      ctx.strokeStyle = brand;
+      ctx.lineWidth = 2.5;
+      roundedRect(qrX - 7, qrY - 7, qr + 14, qr + 14, 10);
+      ctx.stroke();
       try {
-        const qrImg = await loadImage('https://api.qrserver.com/v1/create-qr-code/?size=140x140&margin=8&data=' + encodeURIComponent(shareUrl));
+        const qrImg = await loadImage('https://api.qrserver.com/v1/create-qr-code/?size=200x200&margin=0&data=' + encodeURIComponent(shareUrl));
         ctx.drawImage(qrImg, qrX, qrY, qr, qr);
       } catch {
         ctx.fillStyle = muted;
-        ctx.font = `12px ${FONT}`;
+        ctx.font = `600 13px ${FONT}`;
         ctx.textAlign = 'center';
-        ctx.fillText('扫码阅读', qrX + qr / 2, qrY + qr / 2);
+        ctx.textBaseline = 'middle';
+        ctx.fillText('二维码', qrX + qr / 2, qrY + qr / 2);
         ctx.textAlign = 'left';
+        ctx.textBaseline = 'alphabetic';
       }
+      ctx.fillStyle = muted;
+      ctx.font = `500 15px ${FONT}`;
+      ctx.textAlign = 'right';
+      ctx.fillText('扫描二维码', qrX - 20, footY + footH / 2 - 9);
+      ctx.fillText('阅读全文', qrX - 20, footY + footH / 2 + 15);
+      ctx.textAlign = 'left';
 
       posterDataUrl = canvas.toDataURL('image/png');
       showPoster = true;
@@ -415,7 +516,7 @@
 
 {#if showPoster && posterDataUrl}
   <div use:portal class="fixed inset-0 z-[2147483001] flex items-end sm:items-center justify-center p-0 sm:p-6" style="background: rgba(23,50,77,0.38); backdrop-filter: blur(8px);" role="dialog" aria-modal="true" on:click={closePoster}>
-    <div class="w-full sm:max-w-[440px] max-h-[94vh] overflow-y-auto bg-[#f8fbff] dark:bg-slate-800 rounded-t-[28px] sm:rounded-[28px] shadow-[0_24px_80px_rgba(23,50,77,0.28)] border border-[#c5e2f2]" on:click|stopPropagation>
+    <div class="w-full sm:max-w-[480px] max-h-[94vh] overflow-y-auto bg-[#f8fbff] dark:bg-slate-800 rounded-t-[28px] sm:rounded-[28px] shadow-[0_24px_80px_rgba(23,50,77,0.28)] border border-[#c5e2f2]" on:click|stopPropagation>
       <div class="flex items-center justify-between px-5 py-4 border-b border-[#dceefa] sticky top-0 z-10 bg-[#f8fbff]/95 dark:bg-slate-800/95 backdrop-blur">
         <div><h3 class="font-bold text-[#17324d] dark:text-slate-100 text-base">分享海报</h3><p class="text-xs text-[#6b8298] mt-0.5">下载或复制给朋友</p></div>
         <button on:click={closePoster} aria-label="关闭" class="w-9 h-9 flex items-center justify-center rounded-full bg-[#dceefa] text-[#4b83a5] hover:bg-[#c5e2f2] transition-colors cursor-pointer">
