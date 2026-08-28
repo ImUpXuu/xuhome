@@ -225,43 +225,25 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
       }
     }
 
-    /* ===== 缓存调试面板 ===== */
+    /* ===== 缓存调试面板：右下角横条 ===== */
     .cache-panel {
       position: fixed;
-      bottom: 12px;
-      right: 12px;
+      bottom: 8px;
+      right: 8px;
       z-index: 99999;
-      font: 10px/1.5 ui-monospace, "JetBrains Mono", monospace;
-      background: rgba(15, 23, 42, 0.92);
-      border: 1px solid rgba(51, 65, 85, 0.8);
-      border-radius: 8px;
-      padding: 0;
+      font: 11px/1.4 ui-monospace, monospace;
+      color: #94a3b8;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid #334155;
+      border-radius: 6px;
+      padding: 6px 10px;
       pointer-events: none;
-      backdrop-filter: blur(8px);
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
-      overflow: hidden;
-      min-width: 140px;
-    }
-    .cache-panel-header {
-      padding: 5px 10px;
-      font-weight: 700;
-      font-size: 10px;
-      color: #64748b;
-      background: rgba(30, 41, 59, 0.6);
-      border-bottom: 1px solid rgba(51, 65, 85, 0.5);
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-    }
-    .cache-panel-stats {
-      padding: 6px 10px 8px;
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-    .cache-stat {
-      display: block;
       white-space: nowrap;
+      backdrop-filter: blur(4px);
     }
+    .cache-panel-header { display: none; }
+    .cache-panel-stats { display: inline; }
+    .cache-stat { display: inline; margin: 0 2px; }
     .cache-stat-cached { color: #34d399; }
     .cache-stat-queued { color: #fbbf24; }
     .cache-stat-loading { color: #60a5fa; }
