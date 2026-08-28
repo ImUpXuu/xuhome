@@ -166,6 +166,44 @@
     document.head.appendChild(link);
   }
 
+  // 缓存调试面板：默认隐藏，访问 /cachelog 时显示
+  function setupCacheDebugPanel() {
+    const isDebugPage = window.location.pathname === '/cachelog';
+
+    const panel = document.createElement('div');
+    panel.id = 'cache-debug-panel';
+    panel.style.cssText = [
+      'position:fixed', 'bottom:8px', 'right:8px', 'z-index:99999',
+      'font:11px/1.4 monospace', 'color:#94a3b8',
+      'background:rgba(15,23,42,0.85)', 'border:1px solid #334155',
+      'border-radius:6px', 'padding:6px 10px', 'pointer-events:none',
+      'white-space:nowrap', 'backdrop-filter:blur(4px)',
+      isDebugPage ? '' : 'display:none'
+    ].join(';');
+
+    document.body.appendChild(panel);
+
+    // 定期刷新显示内容
+    const update = () => {
+      const prefetchCount = prefetchedUrls.size;
+      const queueCount = queuedUrls.size;
+      const progressCount = prefetchProgress.size;
+      panel.textContent = `⚡ ${prefetchCount} cached · ${queueCount} queued · ${progressCount} loading`;
+    };
+    update();
+    const timer = setInterval(update, 500);
+
+    // 监听路径变化（SPA 导航）
+    const observer = new MutationObserver(() => {
+      const show = window.location.pathname === '/cachelog';
+      panel.style.display = show ? '' : 'none';
+    });
+    observer.observe(document.documentElement, { childList: true, subtree: true });
+
+    // 清理
+    return () => { clearInterval(timer); observer.disconnect(); panel.remove(); };
+  }
+
   function handlePrefetchEntries(entries: IntersectionObserverEntry[]) {
     const visible = entries
       .filter(entry => entry.isIntersecting)
@@ -225,6 +263,9 @@
     };
 
     window.addEventListener('blog-search', handleGlobalSearch);
+
+    // 缓存调试面板：默认隐藏，访问 /cachelog 时显示
+    setupCacheDebugPanel();
 
     if (dataUrl) {
       isLoadingPosts = posts.length === 0;
