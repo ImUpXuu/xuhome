@@ -115,17 +115,24 @@
       let received = 0;
       const chunks: Uint8Array[] = [];
 
+      const progressMinInterval = 100;
+      let lastProgressAt = 0;
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
         if (value) {
           chunks.push(value);
           received += value.length;
-          const pct = total
-            ? Math.min(100, Math.round((received / total) * 100))
-            : Math.min(99, Math.round(received / 1024));
-          prefetchProgress.set(url, pct);
-          prefetchProgress = prefetchProgress; // 触发响应式更新
+          const now = Date.now();
+          // 节流：100ms 内不重复触发 Svelte 重渲染（避免 afterUpdate 风暴）
+          if (now - lastProgressAt >= progressMinInterval) {
+            lastProgressAt = now;
+            const pct = total
+              ? Math.min(100, Math.round((received / total) * 100))
+              : Math.min(99, Math.round(received / 1024));
+            prefetchProgress.set(url, pct);
+            prefetchProgress = prefetchProgress;
+          }
         }
       }
       // 存入 Cache Storage
@@ -268,16 +275,18 @@
     window.addEventListener('blog-search', handleGlobalSearch);
 
     // 点击追踪：判断 HIT/MISS（不阻止导航）
-    document.addEventListener('click', (e) => {
+    // 提到具名变量，cleanup 中一并移除，避免 View Transitions 换页后堆积
+    const handleClickTrack = (e: Event) => {
       const target = e.target as HTMLElement;
       const link = target.closest('a[href^="/posts/"]') as HTMLAnchorElement | null;
       if (!link) return;
-      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+      if ((e as MouseEvent).metaKey || (e as MouseEvent).ctrlKey || (e as MouseEvent).shiftKey || (e as MouseEvent).altKey || (e as MouseEvent).button !== 0) return;
       const url = link.href;
       if (/\/posts\/?$/.test(url)) return;
       const slug = url.split('/').filter(Boolean).pop() || '';
       markClick(prefetchedUrls.has(url), slug);
-    }, true);
+    };
+    document.addEventListener('click', handleClickTrack, true);
 
     updatePanel();
 
@@ -301,14 +310,23 @@
 
     return () => {
       window.removeEventListener('blog-search', handleGlobalSearch);
+      document.removeEventListener('click', handleClickTrack, true);
       teardownPrefetcher();
     };
   });
 
+  // 多个 chunk 在同一帧触发更新时，afterUpdate 只合帧跑一次
+  let rafPending = false;
   afterUpdate(() => {
     if (isLoadingPosts || !feedEl) return;
     setupPrefetcher();
-    scanPrefetchTargets(feedEl);
+    if (!rafPending && prefetchObserver) {
+      rafPending = true;
+      requestAnimationFrame(() => {
+        rafPending = false;
+        if (feedEl && prefetchObserver) scanPrefetchTargets(feedEl);
+      });
+    }
   });
 
   $: filteredPosts = posts.filter(post => {
