@@ -269,13 +269,10 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
       <i></i>
       <span id="resource-progress-meta" hidden>0 / 0 · 0%</span>
     </div>
-  <!-- 缓存调试面板：默认隐藏，/cachelog 时显示 -->
-  <div id="cache-debug-panel" style="position:fixed;bottom:8px;right:8px;z-index:99999;font:11px/1.4 monospace;color:#94a3b8;background:rgba(15,23,42,0.85);border:1px solid #334155;border-radius:6px;padding:6px 10px;pointer-events:none;white-space:nowrap;backdrop-filter:blur(4px);display:none"></div>
-
-  <!-- Skip to content for keyboard users -->
-  <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[200] focus:bg-[#0284c7] focus:text-white focus:px-4 focus:py-2 focus:rounded-sm focus:font-black focus:text-sm focus:shadow-[4px_4px_0px_0px_#fde68a] focus:no-underline focus:outline-none">
-    跳转到主要内容
-  </a>
+    <!-- Skip to content for keyboard users -->
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[200] focus:bg-[#0284c7] focus:text-white focus:px-4 focus:py-2 focus:rounded-sm focus:font-black focus:text-sm focus:shadow-[4px_4px_0px_0px_#fde68a] focus:no-underline focus:outline-none">
+      跳转到主要内容
+    </a>
     {/* Global reading progress bar */}
     <div class="fixed top-0 left-0 w-full h-[5px] bg-transparent z-[110] pointer-events-none">
       <div 
@@ -283,6 +280,28 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
         class="h-full bg-gradient-to-r from-[#0284c7] via-[#0ea5e9] to-[#f59e0b] origin-left w-0 transition-all duration-75"
       ></div>
     </div>
+    {/* 缓存调试面板：访问 /cachelog 后全局可见 */}
+    <div id="cache-debug-panel" style="position:fixed;bottom:8px;right:8px;z-index:99999;font:11px/1.4 monospace;color:#94a3b8;background:rgba(15,23,42,0.85);border:1px solid #334155;border-radius:6px;padding:6px 10px;pointer-events:none;white-space:nowrap;backdrop-filter:blur(4px);display:none"></div>
+    <script is:inline>
+    (function () {
+      var panel = document.getElementById('cache-debug-panel');
+      if (!panel) return;
+      if (window.location.pathname === '/cachelog' || window.location.pathname === '/cachelog/') {
+        try { sessionStorage.setItem('cacheDebug', '1'); } catch {}
+      }
+      function update() {
+        if (sessionStorage.getItem('cacheDebug') !== '1') { panel.style.display = 'none'; return; }
+        var s = window.__cacheStats || {};
+        var last = sessionStorage.getItem('[cache]lastClick') || '';
+        panel.style.display = '';
+        panel.textContent = '⚡ ' + (s.cached || 0) + ' cached · ' + (s.queued || 0) + ' queued · ' + (s.loading || 0) + ' loading' + (last ? ' | ' + last : '');
+      }
+      update();
+      setInterval(update, 400);
+      document.addEventListener('astro:page-load', update);
+      document.addEventListener('astro:after-swap', update);
+    })();
+    </script>
     {/* 暂时禁用：<WelcomeToast /> */}
     <div class={isMusicPage ? 'flex flex-col h-[100dvh] overflow-hidden' : 'flex flex-col min-h-screen'}>
       <NavBar />
@@ -622,62 +641,6 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
     )}
   </body>
 </html>
-
-  <script is:inline>
-  // 缓存调试面板：访问 /cachelog 后全局可见 + 点击显示 HIT/MISS
-  (function () {
-    var panel = document.getElementById('cache-debug-panel');
-    if (!panel) return;
-
-    // 访问 /cachelog 开启调试模式
-    if (window.location.pathname === '/cachelog' || window.location.pathname === '/cachelog/') {
-      try { sessionStorage.setItem('cacheDebug', '1'); } catch {}
-    }
-
-    function update() {
-      var debugMode = (sessionStorage.getItem('cacheDebug') === '1');
-      panel.style.display = debugMode ? '' : 'none';
-      if (debugMode) {
-        var s = window.__cacheStats || {};
-        var lastClick = sessionStorage.getItem('[cache]lastClick') || '';
-        var base = '⚡ ' + (s.cached || 0) + ' cached · ' + (s.queued || 0) + ' queued · ' + (s.loading || 0) + ' loading';
-        panel.textContent = lastClick ? base + ' | ' + lastClick : base;
-      }
-    }
-
-    update();
-    setInterval(update, 500);
-
-    // SPA 导航时刷新
-    document.addEventListener('astro:page-load', update);
-    document.addEventListener('astro:after-swap', update);
-
-    // ★ 监听点击：查缓存显示 HIT/MISS，但不阻止导航（动画保留）
-    document.addEventListener('click', async function (e) {
-      var link = e.target.closest('a[href^="/posts/"]');
-      if (!link) return;
-      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
-
-      var url = link.href;
-      // 查缓存（不阻止导航！）
-      var hit = false;
-      try {
-        var cache = await caches.open('xuhome-article-cache-v1');
-        var req = new Request(url.startsWith('http') ? url : location.origin + url);
-        var res = await cache.match(req);
-        if (res) {
-          var data = await res.json();
-          if (data && data.html && Date.now() - data.ts < 30 * 60 * 1000) hit = true;
-        }
-      } catch {}
-
-      try {
-        sessionStorage.setItem('[cache]lastClick', (hit ? 'HIT ' : 'MISS ') + url.split('/').pop());
-      } catch {}
-      update();
-    }, true);
-  })();
-  </script>
 
   <script is:inline data-astro-rerun>
 {
