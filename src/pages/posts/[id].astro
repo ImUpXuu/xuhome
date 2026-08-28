@@ -538,11 +538,23 @@ const relatedPosts = (() => {
       }
     }, observerOptions);
 
+    // 断开旧的 observer 和 scroll 监听（View Transitions 重进文章页时避免重复注册）
+    const w = window as any;
+    if (w.__tocObserver) {
+      try { w.__tocObserver.disconnect(); } catch (_) {}
+      w.__tocObserver = null;
+    }
+    if (w.__tocScrollHandler) {
+      try { window.removeEventListener('scroll', w.__tocScrollHandler); } catch (_) {}
+      w.__tocScrollHandler = null;
+    }
+    w.__tocObserver = headingObserver;
+
     articleHeadings.forEach(h => headingObserver.observe(h));
 
     // Fallback scroll listener for cases where observer might be sluggish
     let scrollTimeout: any;
-    window.addEventListener('scroll', () => {
+    const tocScrollHandler = () => {
       if (isNavigating) return;
       clearTimeout(scrollTimeout);
       scrollTimeout = setTimeout(() => {
@@ -554,7 +566,9 @@ const relatedPosts = (() => {
         }
         if (current) updateTOCHighlight(current);
       }, 50);
-    }, { passive: true });
+    };
+    w.__tocScrollHandler = tocScrollHandler;
+    window.addEventListener('scroll', tocScrollHandler, { passive: true });
 
     // Initial detection
     setTimeout(() => {
