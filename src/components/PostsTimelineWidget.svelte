@@ -13,6 +13,7 @@
   let openGroups = new Set<string>();
 
   onMount(() => {
+    if (posts.length > 0) return;
     if (!dataUrl) return;
 
     fetch(dataUrl)
