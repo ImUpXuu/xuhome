@@ -17,7 +17,7 @@ const CRAWLER_RE = /(
   ccbot|dataforseobot|brightbot|neevabot|
   siteauditbot|linkdexbot|exabot|blexbot|
   yandeximages|yandexvideo|yandexbot|
-  baiduspider|baiduimage|baiduboxapp|
+  baiduspider|baiduimage|
   sogou|soso|youdao|haosou|
   duckduckbot|duckduckgobot|
   yahoo|teoma|altavista|lycos|
