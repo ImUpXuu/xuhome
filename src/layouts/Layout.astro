@@ -92,7 +92,7 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
     <link rel="icon" href={siteConfig.avatar} />
     <link rel="apple-touch-icon" href={siteConfig.avatar} />
     {/* WebMCP 工具注册 */}
-    <script src="/webmcp-register.js"></script>
+    <script is:inline src="/webmcp-register.js"></script>
 
     {/* Open Graph Tags */}
     <meta property="og:title" content={pageTitle} />
