@@ -80,24 +80,33 @@ jobs:
       - name: Ensure directory + backup on ${{ matrix.host }}
         run: |
           if [ "$AUTH_METHOD" = "key" ]; then
-            SSH_CMD="ssh -i ~/.ssh/deploy_key -p ${{ matrix.port }}"
+            ssh -i ~/.ssh/deploy_key \
+              -p ${{ matrix.port }} \
+              -o StrictHostKeyChecking=yes \
+              -o ConnectTimeout=15 \
+              "${{ secrets[matrix.user_secret] }}@${{ matrix.host }}" \
+              "mkdir -p ${{ matrix.target_dir }} && ([ -f ${{ matrix.target_dir }}/index.html ] && cp -r ${{ matrix.target_dir }} ${{ matrix.target_dir }}.bak.\$(date +%Y%m%d%H%M) || true)"
           else
-            SSH_CMD="sshpass -e ssh -o PreferredAuthentications=password -o PubkeyAuthentication=no -p ${{ matrix.port }}"
+            sshpass -e ssh \
+              -p ${{ matrix.port }} \
+              -o PreferredAuthentications=password \
+              -o PubkeyAuthentication=no \
+              -o StrictHostKeyChecking=yes \
+              -o ConnectTimeout=15 \
+              "${{ secrets[matrix.user_secret] }}@${{ matrix.host }}" \
+              "mkdir -p ${{ matrix.target_dir }} && ([ -f ${{ matrix.target_dir }}/index.html ] && cp -r ${{ matrix.target_dir }} ${{ matrix.target_dir }}.bak.\$(date +%Y%m%d%H%M) || true)"
           fi
-          $SSH_CMD \
-            -o StrictHostKeyChecking=yes \
-            -o ConnectTimeout=15 \
-            "${{ secrets[matrix.user_secret] }}@${{ matrix.host }}" \
-            "mkdir -p ${{ matrix.target_dir }} && ([ -f ${{ matrix.target_dir }}/index.html ] && cp -r ${{ matrix.target_dir }} ${{ matrix.target_dir }}.bak.$(date +%Y%m%d%H%M) || true)"
 
       - name: Sync to ${{ matrix.host }}
         run: |
           if [ "$AUTH_METHOD" = "key" ]; then
-            RSYNC_SSH="ssh -i ~/.ssh/deploy_key -p ${{ matrix.port }}"
+            rsync -avz --delete \
+              -e "ssh -i ~/.ssh/deploy_key -p ${{ matrix.port }} -o StrictHostKeyChecking=yes -o ConnectTimeout=15" \
+              dist/ \
+              "${{ secrets[matrix.user_secret] }}@${{ matrix.host }}:${{ matrix.target_dir }}/"
           else
-            RSYNC_SSH="sshpass -e ssh -o PreferredAuthentications=password -o PubkeyAuthentication=no -p ${{ matrix.port }}"
+            rsync -avz --delete \
+              -e "sshpass -e ssh -p ${{ matrix.port }} -o PreferredAuthentications=password -o PubkeyAuthentication=no -o StrictHostKeyChecking=yes -o ConnectTimeout=15" \
+              dist/ \
+              "${{ secrets[matrix.user_secret] }}@${{ matrix.host }}:${{ matrix.target_dir }}/"
           fi
-          rsync -avz --delete \
-            -e "$RSYNC_SSH -o StrictHostKeyChecking=yes -o ConnectTimeout=15" \
-            dist/ \
-            "${{ secrets[matrix.user_secret] }}@${{ matrix.host }}:${{ matrix.target_dir }}/"
