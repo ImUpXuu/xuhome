@@ -12,101 +12,56 @@ jobs:
       commit: ${{ steps.commit.outputs.sha }}
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-
-      - name: Install pnpm
-        run: npm install -g pnpm@9
-
+      - run: npm install -g pnpm@9
       - run: pnpm install --no-frozen-lockfile
-
       - run: pnpm build
         env:
           INDEXNOW_SECRET: ${{ secrets.INDEXNOW_SECRET }}
-
-      - name: Save commit SHA
-        id: commit
+      - id: commit
         run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
-
       - uses: actions/upload-artifact@v4
         with:
           name: dist
           path: dist/
 
-  deploy:
+  deploy-caddy:
     needs: build
     runs-on: ubuntu-latest
-    strategy:
-      # 加服务器：复制一段 include，改 host / name / target_dir 即可
-      # 密钥服务器共用 secrets.SERVER_SSH_KEY；密码服务器用 secrets.SERVER_PASSWORD
-      matrix:
-        include:
-          - host: 8.220.197.92
-            name: server-caddy
-            port: 22
-            auth: key
-            target_dir: /var/www/upxuu
-            user_secret: SERVER_USER
-          - host: 47.243.228.164
-            name: server-hk-nginx
-            port: 22
-            auth: password
-            target_dir: /www/sites/upxuu/index
-            user_secret: SERVER_HK_USER
-      fail-fast: false
-    name: deploy → ${{ matrix.name }} (${{ matrix.host }})
     steps:
       - uses: actions/download-artifact@v4
         with:
           name: dist
           path: dist/
-
-      - name: Setup SSH
+      - name: Deploy to Caddy server
         run: |
           mkdir -p ~/.ssh
-          ssh-keyscan -p ${{ matrix.port }} -H ${{ matrix.host }} >> ~/.ssh/known_hosts 2>/dev/null
-          if [ "${{ matrix.auth }}" = "key" ]; then
-            printf '%s\n' "${{ secrets.SERVER_SSH_KEY }}" | tr -d '\r' > ~/.ssh/deploy_key
-            chmod 600 ~/.ssh/deploy_key
-            echo "AUTH_METHOD=key" >> $GITHUB_ENV
-          else
-            echo "AUTH_METHOD=password" >> $GITHUB_ENV
-            echo "SSHPASS=${{ secrets.SERVER_PASSWORD }}" >> $GITHUB_ENV
-            sudo apt-get update -qq && sudo apt-get install -y -qq sshpass
-          fi
+          ssh-keyscan -H 8.220.197.92 >> ~/.ssh/known_hosts 2>/dev/null
+          printf '%s\n' "${{ secrets.SERVER_SSH_KEY }}" | tr -d '\r' > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          rsync -avz --delete \
+            -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=yes -o ConnectTimeout=15" \
+            dist/ \
+            "${{ secrets.SERVER_USER }}@8.220.197.92:/var/www/upxuu/"
 
-      - name: Ensure directory + backup on ${{ matrix.host }}
+  deploy-hk:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+      - name: Deploy to HK Nginx server
         run: |
-          if [ "$AUTH_METHOD" = "key" ]; then
-            ssh -i ~/.ssh/deploy_key \
-              -p ${{ matrix.port }} \
-              -o StrictHostKeyChecking=yes \
-              -o ConnectTimeout=15 \
-              "${{ secrets[matrix.user_secret] }}@${{ matrix.host }}" \
-              "mkdir -p ${{ matrix.target_dir }} && ([ -f ${{ matrix.target_dir }}/index.html ] && cp -r ${{ matrix.target_dir }} ${{ matrix.target_dir }}.bak.\$(date +%Y%m%d%H%M) || true)"
-          else
-            sshpass -e ssh \
-              -p ${{ matrix.port }} \
-              -o PreferredAuthentications=password \
-              -o PubkeyAuthentication=no \
-              -o StrictHostKeyChecking=yes \
-              -o ConnectTimeout=15 \
-              "${{ secrets[matrix.user_secret] }}@${{ matrix.host }}" \
-              "mkdir -p ${{ matrix.target_dir }} && ([ -f ${{ matrix.target_dir }}/index.html ] && cp -r ${{ matrix.target_dir }} ${{ matrix.target_dir }}.bak.\$(date +%Y%m%d%H%M) || true)"
-          fi
-
-      - name: Sync to ${{ matrix.host }}
-        run: |
-          if [ "$AUTH_METHOD" = "key" ]; then
-            rsync -avz --delete \
-              -e "ssh -i ~/.ssh/deploy_key -p ${{ matrix.port }} -o StrictHostKeyChecking=yes -o ConnectTimeout=15" \
-              dist/ \
-              "${{ secrets[matrix.user_secret] }}@${{ matrix.host }}:${{ matrix.target_dir }}/"
-          else
-            rsync -avz --delete \
-              -e "sshpass -e ssh -p ${{ matrix.port }} -o PreferredAuthentications=password -o PubkeyAuthentication=no -o StrictHostKeyChecking=yes -o ConnectTimeout=15" \
-              dist/ \
-              "${{ secrets[matrix.user_secret] }}@${{ matrix.host }}:${{ matrix.target_dir }}/"
-          fi
+          mkdir -p ~/.ssh
+          ssh-keyscan -H 47.243.228.164 >> ~/.ssh/known_hosts 2>/dev/null
+          sudo apt-get update -qq && sudo apt-get install -y -qq sshpass
+          rsync -avz --delete \
+            -e "sshpass -e ssh -o PreferredAuthentications=password -o PubkeyAuthentication=no -o StrictHostKeyChecking=yes -o ConnectTimeout=15" \
+            dist/ \
+            "root@47.243.228.164:/www/sites/upxuu/index/"
+        env:
+          SSHPASS: ${{ secrets.SERVER_PASSWORD }}
