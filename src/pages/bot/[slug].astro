@@ -44,6 +44,8 @@ const { Content } = articleEntry ? await render(articleEntry) : { Content: () =>
     <meta name="author" content={siteConfig.author} />
     <meta name="keywords" content={pageKeywords.join(", ")} />
     <meta name="msvalidate.01" content="8814B55DAA53801F47B998FE06421544" />
+    <link rel="icon" href={siteConfig.avatar} />
+    <link rel="apple-touch-icon" href={siteConfig.avatar} />
 
     <!-- Geo Tags -->
     <meta name="geo.region" content="CN-HE" />
