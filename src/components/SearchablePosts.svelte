@@ -419,9 +419,11 @@
   <div class="relative w-full hidden sm:block">
     <input
       type="text"
+      name="q"
       placeholder={i18nConfig.search.placeholder}
       value={searchQuery}
       on:input={handleSearchInput}
+      toolparamdescription="搜索关键词，支持按文章标题、描述、标签或分类进行模糊匹配"
       class="w-full bg-white dark:bg-slate-700 border-4 border-[#0284c7] font-extrabold focus:outline-none px-4 sm:px-5 py-3 rounded-sm text-sm text-[#0284c7] dark:text-slate-200 placeholder-slate-400 shadow-[4px_4px_0px_0px_#0284c7] focus:shadow-[6px_6px_0px_0px_#0284c7] focus:-translate-x-0.5 focus:-translate-y-0.5 transition-all outline-none"
     />
     <div class="absolute right-4.5 top-1/2 -translate-y-1/2 text-[#0284c7] flex items-center gap-2">
@@ -570,9 +572,11 @@
           <div class="relative">
             <input 
               type="number" 
+              name="page"
               min="1" 
               max={totalPages}
               placeholder={i18nConfig.search.jumpTo}
+              toolparamdescription="输入要跳转的页码（1-{totalPages}）"
               class="w-20 pl-3 pr-2 py-1.5 text-sm font-bold border-3 border-[#0284c7] rounded-sm bg-white dark:bg-slate-700 dark:text-slate-200 focus:outline-none focus:shadow-[2px_2px_0px_0px_#0284c7] transition-all placeholder-slate-400 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               on:keydown={(e) => {
                 if (e.key === 'Enter') {

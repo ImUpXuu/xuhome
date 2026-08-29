@@ -384,14 +384,19 @@
   <form
     class="mb-4 shrink-0"
     on:submit|preventDefault={() => doSearch()}
+    toolname="search_music"
+    tooldescription="搜索网易云音乐，支持按歌曲名或歌手名搜索"
+    toolautosubmit
   >
-    <div class="flex items-center gap-2 bg-white dark:bg-slate-800 border-4 border-[#0284c7] shadow-[4px_4px_0px_0px_#0284c7] rounded-sm p-2">
+    <div class="flex items-center gap-2 bg-white dark:bg-slate-800 border-4 border-[#0284c7] shadow-[4px_4px_0px_0px#0284c7] rounded-sm p-2">
       <svg class="w-5 h-5 shrink-0 text-[#0284c7] ml-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
       <input
         type="search"
+        name="q"
         placeholder="搜索歌曲 / 歌手…（回车搜索）"
         bind:value={searchQuery}
         aria-label="搜索音乐"
+        toolparamdescription="搜索关键词，可以是歌曲名、歌手名或专辑名"
         class="flex-1 min-w-0 bg-transparent outline-none text-sm font-bold text-slate-800 dark:text-slate-100 placeholder:text-slate-400 placeholder:font-medium"
       />
       {#if searchMode}
