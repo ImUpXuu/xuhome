@@ -61,11 +61,11 @@ jobs:
           sudo apt-get update -qq && sudo apt-get install -y -qq sshpass
           # 先创建目标目录
           sshpass -e ssh -o PreferredAuthentications=password -o PubkeyAuthentication=no -o StrictHostKeyChecking=yes -o ConnectTimeout=15 \
-            root@47.243.228.164 "mkdir -p /www/sites/upxuu/index"
+            root@47.243.228.164 "mkdir -p /opt/1panel/www/sites/upxuu/index"
           # 再同步文件
           rsync -avz --delete \
             -e "sshpass -e ssh -o PreferredAuthentications=password -o PubkeyAuthentication=no -o StrictHostKeyChecking=yes -o ConnectTimeout=15" \
             dist/ \
-            "root@47.243.228.164:/www/sites/upxuu/index/"
+            "root@47.243.228.164:/opt/1panel/www/sites/upxuu/index/"
         env:
           SSHPASS: ${{ secrets.SERVER_PASSWORD }}
