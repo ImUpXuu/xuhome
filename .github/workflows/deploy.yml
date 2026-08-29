@@ -48,13 +48,13 @@ jobs:
             port: 22
             auth: key
             target_dir: /var/www/upxuu
-            user: ${{ secrets.SERVER_USER }}
+            user_secret: SERVER_USER
           - host: 47.243.228.164
             name: server-hk-nginx
             port: 22
             auth: password
             target_dir: /www/sites/upxuu/index
-            user: root
+            user_secret: SERVER_HK_USER
       fail-fast: false
     name: deploy → ${{ matrix.name }} (${{ matrix.host }})
     steps:
@@ -87,7 +87,7 @@ jobs:
           $SSH_CMD \
             -o StrictHostKeyChecking=yes \
             -o ConnectTimeout=15 \
-            "${{ matrix.user }}@${{ matrix.host }}" \
+            "${{ secrets[matrix.user_secret] }}@${{ matrix.host }}" \
             "mkdir -p ${{ matrix.target_dir }} && ([ -f ${{ matrix.target_dir }}/index.html ] && cp -r ${{ matrix.target_dir }} ${{ matrix.target_dir }}.bak.$(date +%Y%m%d%H%M) || true)"
 
       - name: Sync to ${{ matrix.host }}
@@ -100,4 +100,4 @@ jobs:
           rsync -avz --delete \
             -e "$RSYNC_SSH -o StrictHostKeyChecking=yes -o ConnectTimeout=15" \
             dist/ \
-            "${{ matrix.user }}@${{ matrix.host }}:${{ matrix.target_dir }}/"
+            "${{ secrets[matrix.user_secret] }}@${{ matrix.host }}:${{ matrix.target_dir }}/"
