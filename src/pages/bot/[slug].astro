@@ -20,6 +20,7 @@ const pageTitle = post.title
   ? `${post.title}${seoConfig.titleTemplate}`
   : `${siteConfig.title} - ${siteConfig.subtitle.split(' / ')[0]}`;
 const pageDescription = post.description || '';
+const pageKeywords = post.keywords?.length ? post.keywords : seoConfig.keywords;
 
 const rawPosts = await getCollection('posts');
 const articleEntry = rawPosts.find(p =>
@@ -41,6 +42,8 @@ const { Content } = articleEntry ? await render(articleEntry) : { Content: () =>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="canonical" href={canonicalURL} />
     <meta name="author" content={siteConfig.author} />
+    <meta name="keywords" content={pageKeywords.join(", ")} />
+    <meta name="msvalidate.01" content="8814B55DAA53801F47B998FE06421544" />
 
     <!-- Geo Tags -->
     <meta name="geo.region" content="CN-HE" />
@@ -63,6 +66,8 @@ const { Content } = articleEntry ? await render(articleEntry) : { Content: () =>
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@ImUpXuu" />
+    <meta name="twitter:creator" content="@ImUpXuu" />
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={pageDescription} />
     <meta name="twitter:image" content={pageImage} />
