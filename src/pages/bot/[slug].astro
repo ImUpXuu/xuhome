@@ -34,24 +34,40 @@ const { Content } = articleEntry ? await render(articleEntry) : { Content: () =>
     <meta charset="utf-8" />
     <title>{pageTitle}</title>
     <meta name="description" content={pageDescription} />
-    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large" />
+    <meta name="bingbot" content="index, follow" />
+    <meta name="baiduspider" content="index, follow" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="canonical" href={canonicalURL} />
+    <meta name="author" content={siteConfig.author} />
 
+    <!-- Geo Tags -->
+    <meta name="geo.region" content="CN-HE" />
+    <meta name="geo.placename" content="Shijiazhuang" />
+    <meta name="geo.position" content="38.0428;114.5149" />
+    <meta name="ICBM" content="38.0428, 114.5149" />
+
+    <!-- Open Graph -->
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={pageDescription} />
     <meta property="og:url" content={canonicalURL} />
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content={siteConfig.title} />
-    <meta property="og:locale" content="zh-CN" />
+    <meta property="og:locale" content="zh_CN" />
+    <meta property="og:locale:alternate" content="en_US" />
     {post.dateISO && <meta property="article:published_time" content={post.dateISO} />}
     <meta property="og:image" content={pageImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
 
+    <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={pageDescription} />
     <meta name="twitter:image" content={pageImage} />
 
+    <!-- Article Schema -->
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
       "@type": "Article",
@@ -78,7 +94,7 @@ const { Content } = articleEntry ? await render(articleEntry) : { Content: () =>
   <body>
     <article>
       <h1>{pageTitle}</h1>
-      {post.date && <p>发布于 {post.date}</p>}
+      {post.date && <p>发布于 <time dateTime={post.dateISO}>{post.date}</time></p>}
       <Content />
       <p><a href={canonicalURL}>前往 upxuu.com 阅读完整版本（含交互功能）</a></p>
     </article>
