@@ -315,7 +315,9 @@ const isMusicPage = pathname === '/music';
       <input
         type="text"
         id="mobile-search-input"
+        name="q"
         placeholder={i18nConfig.search.placeholder}
+        toolparamdescription="搜索关键词，支持按文章标题、描述、标签或分类进行模糊匹配"
         class="w-full bg-white dark:bg-slate-700 border-3 border-[#0284c7] font-extrabold focus:outline-none px-4 py-2.5 rounded-sm text-sm text-[#0284c7] dark:text-slate-200 placeholder-slate-400 shadow-[2px_2px_0px_0px_#0284c7] outline-none"
       />
       <div class="absolute right-4 top-1/2 -translate-y-1/2 text-[#0284c7] flex items-center gap-2">

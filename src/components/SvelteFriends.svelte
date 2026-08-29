@@ -95,8 +95,10 @@
         <div class="relative max-w-full md:max-w-xs w-full shrink-0">
           <input
             type="text"
+            name="q"
             placeholder="搜索好友、博客名称..."
             bind:value={searchTerm}
+            toolparamdescription="搜索关键词，支持按好友昵称或博客名称进行模糊匹配"
             class="w-full pl-9 pr-4 py-2 text-xs sm:text-sm font-bold bg-[rgba(250,248,245,0.55)] text-slate-700 border-3 border-[#0284c7] rounded-sm focus:outline-none focus:bg-white focus:shadow-[2px_2px_0px_0px_#0284c7] transition-all placeholder-slate-400"
           />
           <svg xmlns="http://www.w3.org/2000/svg" class="absolute left-3 top-2.5 w-4 h-4 text-slate-400 stroke-[3]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
