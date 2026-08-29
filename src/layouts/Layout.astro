@@ -85,9 +85,18 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
     <meta name="keywords" content={pageKeywords.join(", ")} />
     <meta name="author" content={siteConfig.author} />
     <meta name="robots" content={seoConfig.robots} />
+    <meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large" />
+    <meta name="bingbot" content="index, follow" />
+    <meta name="baiduspider" content="index, follow" />
     <link rel="canonical" href={canonicalURL} />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="msvalidate.01" content="8814B55DAA53801F47B998FE06421544" />
+
+    <!-- Geo Tags -->
+    <meta name="geo.region" content="CN-HE" />
+    <meta name="geo.placename" content="Shijiazhuang" />
+    <meta name="geo.position" content="38.0428;114.5149" />
+    <meta name="ICBM" content="38.0428, 114.5149" />
     {/* Favicon - use avatar image */}
     <link rel="icon" href={siteConfig.avatar} />
     <link rel="apple-touch-icon" href={siteConfig.avatar} />
