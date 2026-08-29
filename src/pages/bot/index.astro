@@ -5,12 +5,10 @@ import { siteConfig, seoConfig, i18nConfig } from '../../config/site';
 const posts = await getProcessedPosts();
 const talks = await getProcessedTalks();
 
-// 与真人首页标题一致
 const pageTitle = `${i18nConfig.home.title}${seoConfig.titleTemplate}`;
 const pageDescription = i18nConfig.home.description;
 const canonicalURL = `${siteConfig.url}/`;
 
-// 按年月分组（与归档页一致）
 const archiveMap: Record<string, typeof posts> = {};
 posts.forEach(post => {
   const dateStr = post.date || '';
@@ -32,7 +30,7 @@ const archiveKeys = Object.keys(archiveMap).sort((a, b) => b.localeCompare(a));
     <meta charset="utf-8" />
     <title>{pageTitle}</title>
     <meta name="description" content={pageDescription} />
-    <meta name="keywords" content="UpXuu, blog, 开发者, 生活, 学习, 技术分享, upxuu的碎碎念, 前端, Astro, 中学生博客" />
+    <meta name="keywords" content="UpXuu, blog, 开发者, 生活, 学习, 技术分享, 前端, Astro" />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large" />
     <meta name="bingbot" content="index, follow" />
@@ -112,37 +110,52 @@ const archiveKeys = Object.keys(archiveMap).sort((a, b) => b.localeCompare(a));
         "name": p.title
       }))
     })} />
+    <style>
+      body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; line-height: 1.6; color: #333; }
+      h1 { color: #1a1a2e; border-bottom: 2px solid #0284c7; padding-bottom: 10px; }
+      h2 { color: #16213e; margin-top: 30px; }
+      h3 { color: #0f3460; }
+      a { color: #0284c7; text-decoration: underline; }
+      a:hover { color: #0369a1; }
+      nav { background: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+      nav ul { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 15px; }
+      time { color: #666; font-size: 0.9em; }
+      ul { padding-left: 20px; }
+      li { margin-bottom: 8px; }
+      footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; color: #666; font-size: 0.9em; }
+      strong { color: #1a1a2e; }
+    </style>
   </head>
   <body>
     <header>
       <h1>{i18nConfig.home.title}</h1>
-      <p>{pageDescription}</p>
+      <p><strong>{pageDescription}</strong></p>
     </header>
 
     <nav aria-label="主导航">
-      <h2>导航</h2>
+      <strong>导航：</strong>
       <ul>
         <li><a href={`${siteConfig.url}/`}>首页（完整版）</a></li>
-        <li><a href={`${siteConfig.url}/talks/`}>说说 / Talks</a></li>
-        <li><a href={`${siteConfig.url}/posts/`}>归档 / Archive</a></li>
-        <li><a href={`${siteConfig.url}/about/`}>关于 / About</a></li>
-        <li><a href={`${siteConfig.url}/friends/`}>友链 / Friends</a></li>
-        <li><a href={`${siteConfig.url}/tags/`}>标签 / Tags</a></li>
+        <li><a href={`${siteConfig.url}/talks/`}>说说</a></li>
+        <li><a href={`${siteConfig.url}/posts/`}>归档</a></li>
+        <li><a href={`${siteConfig.url}/about/`}>关于</a></li>
+        <li><a href={`${siteConfig.url}/friends/`}>友链</a></li>
+        <li><a href={`${siteConfig.url}/tags/`}>标签</a></li>
         <li><a href={`${siteConfig.url}/rss.xml`}>RSS</a></li>
       </ul>
     </nav>
 
     <main>
       <section>
-        <h2>全部文章（共 {posts.length} 篇）</h2>
+        <h2>全部文章（共 <strong>{posts.length}</strong> 篇）</h2>
         {archiveKeys.map(key => (
           <div key={key}>
             <h3>{key}（{archiveMap[key].length} 篇）</h3>
             <ul>
               {archiveMap[key].map(p => (
                 <li key={p.slug}>
-                  {p.date && <time dateTime={p.dateISO}>{p.date}</time>} -
-                  <a href={`${siteConfig.url}/posts/${encodeURIComponent(p.slug)}/`}>{p.title}</a>
+                  {p.date && <time dateTime={p.dateISO}>{p.date}</time>} —
+                  <a href={`${siteConfig.url}/posts/${encodeURIComponent(p.slug)}/`}><strong>{p.title}</strong></a>
                   {p.description && <p>{p.description}</p>}
                 </li>
               ))}
@@ -152,12 +165,12 @@ const archiveKeys = Object.keys(archiveMap).sort((a, b) => b.localeCompare(a));
       </section>
 
       <section>
-        <h2>最新说说（共 {talks.length} 条）</h2>
+        <h2>最新说说（共 <strong>{talks.length}</strong> 条）</h2>
         <ul>
           {talks.slice(0, 20).map(t => (
             <li key={t.slug}>
-              {t.date && <time dateTime={t.date}>{t.date}</time>} -
-              <a href={`${siteConfig.url}/talk/${encodeURIComponent(t.slug)}/`}>{t.title || t.date}</a>
+              {t.date && <time dateTime={t.date}>{t.date}</time>} —
+              <a href={`${siteConfig.url}/talk/${encodeURIComponent(t.slug)}/`}><strong>{t.title || t.date}</strong></a>
             </li>
           ))}
         </ul>
@@ -165,8 +178,12 @@ const archiveKeys = Object.keys(archiveMap).sort((a, b) => b.localeCompare(a));
     </main>
 
     <footer>
-      <p>© {new Date().getFullYear()} {siteConfig.title}</p>
-      <p><a href={siteConfig.url}>访问完整站点</a> · <a href={`${siteConfig.url}/rss.xml`}>RSS订阅</a> · <a href={`${siteConfig.url}/sitemap.xml`}>Sitemap</a></p>
+      <p>© {new Date().getFullYear()} <strong>{siteConfig.title}</strong></p>
+      <p>
+        <a href={siteConfig.url}>访问完整站点</a> ·
+        <a href={`${siteConfig.url}/rss.xml`}>RSS订阅</a> ·
+        <a href={`${siteConfig.url}/sitemap.xml`}>Sitemap</a>
+      </p>
     </footer>
   </body>
 </html>
