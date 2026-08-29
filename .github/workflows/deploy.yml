@@ -5,9 +5,6 @@ on:
     branches: [main]
   workflow_dispatch:
 
-env:
-  TARGET_DIR: /var/www/upxuu
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -42,18 +39,22 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     strategy:
-      # 加服务器：复制一段 include，改 host / name 即可
-      # 所有机器共用 secrets.SERVER_SSH_KEY（私钥）+ secrets.SERVER_USER
+      # 加服务器：复制一段 include，改 host / name / target_dir 即可
+      # 密钥服务器共用 secrets.SERVER_SSH_KEY；密码服务器用 secrets.SERVER_PASSWORD
       matrix:
         include:
           - host: 8.220.197.92
-            name: server-3
+            name: server-caddy
             port: 22
             auth: key
+            target_dir: /var/www/upxuu
+            user: ${{ secrets.SERVER_USER }}
           - host: 47.243.228.164
-            name: server-hk
+            name: server-hk-nginx
             port: 22
             auth: password
+            target_dir: /www/sites/upxuu/index
+            user: root
       fail-fast: false
     name: deploy → ${{ matrix.name }} (${{ matrix.host }})
     steps:
@@ -67,30 +68,27 @@ jobs:
           mkdir -p ~/.ssh
           ssh-keyscan -p ${{ matrix.port }} -H ${{ matrix.host }} >> ~/.ssh/known_hosts 2>/dev/null
           if [ "${{ matrix.auth }}" = "key" ]; then
-            # 密钥认证
             printf '%s\n' "${{ secrets.SERVER_SSH_KEY }}" | tr -d '\r' > ~/.ssh/deploy_key
             chmod 600 ~/.ssh/deploy_key
             echo "AUTH_METHOD=key" >> $GITHUB_ENV
           else
-            # 密码认证
             echo "AUTH_METHOD=password" >> $GITHUB_ENV
             echo "SSHPASS=${{ secrets.SERVER_PASSWORD }}" >> $GITHUB_ENV
-            # 安装 sshpass（密码认证需要）
             sudo apt-get update -qq && sudo apt-get install -y -qq sshpass
           fi
 
-      - name: Ensure directory exists on ${{ matrix.host }}
+      - name: Ensure directory + backup on ${{ matrix.host }}
         run: |
           if [ "$AUTH_METHOD" = "key" ]; then
             SSH_CMD="ssh -i ~/.ssh/deploy_key -p ${{ matrix.port }}"
           else
-            SSH_CMD="sshpass -e ssh -o PreferredAuthentications=password -o PubkeyAuthentication=no"
+            SSH_CMD="sshpass -e ssh -o PreferredAuthentications=password -o PubkeyAuthentication=no -p ${{ matrix.port }}"
           fi
           $SSH_CMD \
             -o StrictHostKeyChecking=yes \
             -o ConnectTimeout=15 \
-            "${{ secrets.SERVER_USER }}@${{ matrix.host }}" \
-            "mkdir -p ${{ env.TARGET_DIR }}"
+            "${{ matrix.user }}@${{ matrix.host }}" \
+            "mkdir -p ${{ matrix.target_dir }} && ([ -f ${{ matrix.target_dir }}/index.html ] && cp -r ${{ matrix.target_dir }} ${{ matrix.target_dir }}.bak.$(date +%Y%m%d%H%M) || true)"
 
       - name: Sync to ${{ matrix.host }}
         run: |
@@ -102,4 +100,4 @@ jobs:
           rsync -avz --delete \
             -e "$RSYNC_SSH -o StrictHostKeyChecking=yes -o ConnectTimeout=15" \
             dist/ \
-            "${{ secrets.SERVER_USER }}@${{ matrix.host }}:${{ env.TARGET_DIR }}/"
+            "${{ matrix.user }}@${{ matrix.host }}:${{ matrix.target_dir }}/"
