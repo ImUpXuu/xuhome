@@ -32,23 +32,43 @@ const archiveKeys = Object.keys(archiveMap).sort((a, b) => b.localeCompare(a));
     <meta charset="utf-8" />
     <title>{pageTitle}</title>
     <meta name="description" content={pageDescription} />
-    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="keywords" content="UpXuu, blog, 开发者, 生活, 学习, 技术分享, upxuu的碎碎念, 前端, Astro, 中学生博客" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large" />
+    <meta name="bingbot" content="index, follow" />
+    <meta name="baiduspider" content="index, follow" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="canonical" href={canonicalURL} />
+    <meta name="author" content={siteConfig.author} />
+    <meta name="theme-color" content="#0284c7" />
 
+    <!-- Geo Tags -->
+    <meta name="geo.region" content="CN-HE" />
+    <meta name="geo.placename" content="Shijiazhuang" />
+    <meta name="geo.position" content="38.0428;114.5149" />
+    <meta name="ICBM" content="38.0428, 114.5149" />
+
+    <!-- Open Graph -->
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={pageDescription} />
     <meta property="og:url" content={canonicalURL} />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={siteConfig.title} />
-    <meta property="og:locale" content="zh-CN" />
+    <meta property="og:locale" content="zh_CN" />
+    <meta property="og:locale:alternate" content="en_US" />
     <meta property="og:image" content={siteConfig.avatar} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
 
+    <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@ImUpXuu" />
+    <meta name="twitter:creator" content="@ImUpXuu" />
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={pageDescription} />
     <meta name="twitter:image" content={siteConfig.avatar} />
 
+    <!-- Structured Data -->
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
       "@type": "WebSite",
@@ -56,12 +76,35 @@ const archiveKeys = Object.keys(archiveMap).sort((a, b) => b.localeCompare(a));
       "url": siteConfig.url,
       "name": siteConfig.title,
       "description": siteConfig.description,
-      "inLanguage": "zh-CN"
+      "inLanguage": ["zh-CN", "en"],
+      "author": {
+        "@type": "Person",
+        "name": siteConfig.author,
+        "url": siteConfig.url,
+        "sameAs": [
+          "https://github.com/ImUpXuu",
+          "https://space.bilibili.com/3546855124240550"
+        ]
+      },
+      "publisher": {
+        "@type": "Person",
+        "name": siteConfig.author,
+        "image": siteConfig.avatar
+      },
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": `${siteConfig.url}/?s={search_term_string}`
+        },
+        "query-input": "required name=search_term_string"
+      }
     })} />
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
       "@type": "ItemList",
       "name": "最新文章",
+      "numberOfItems": posts.length,
       "itemListElement": posts.slice(0, 100).map((p, i) => ({
         "@type": "ListItem",
         "position": i + 1,
@@ -76,14 +119,16 @@ const archiveKeys = Object.keys(archiveMap).sort((a, b) => b.localeCompare(a));
       <p>{pageDescription}</p>
     </header>
 
-    <nav>
+    <nav aria-label="主导航">
       <h2>导航</h2>
       <ul>
+        <li><a href={`${siteConfig.url}/`}>首页（完整版）</a></li>
         <li><a href={`${siteConfig.url}/talks/`}>说说 / Talks</a></li>
         <li><a href={`${siteConfig.url}/posts/`}>归档 / Archive</a></li>
         <li><a href={`${siteConfig.url}/about/`}>关于 / About</a></li>
         <li><a href={`${siteConfig.url}/friends/`}>友链 / Friends</a></li>
         <li><a href={`${siteConfig.url}/tags/`}>标签 / Tags</a></li>
+        <li><a href={`${siteConfig.url}/rss.xml`}>RSS</a></li>
       </ul>
     </nav>
 
@@ -91,12 +136,12 @@ const archiveKeys = Object.keys(archiveMap).sort((a, b) => b.localeCompare(a));
       <section>
         <h2>全部文章（共 {posts.length} 篇）</h2>
         {archiveKeys.map(key => (
-          <div>
+          <div key={key}>
             <h3>{key}（{archiveMap[key].length} 篇）</h3>
             <ul>
               {archiveMap[key].map(p => (
-                <li>
-                  {p.date && <time>{p.date}</time>} -
+                <li key={p.slug}>
+                  {p.date && <time dateTime={p.dateISO}>{p.date}</time>} -
                   <a href={`${siteConfig.url}/posts/${encodeURIComponent(p.slug)}/`}>{p.title}</a>
                   {p.description && <p>{p.description}</p>}
                 </li>
@@ -110,8 +155,8 @@ const archiveKeys = Object.keys(archiveMap).sort((a, b) => b.localeCompare(a));
         <h2>最新说说（共 {talks.length} 条）</h2>
         <ul>
           {talks.slice(0, 20).map(t => (
-            <li>
-              {t.date && <time>{t.date}</time>} -
+            <li key={t.slug}>
+              {t.date && <time dateTime={t.date}>{t.date}</time>} -
               <a href={`${siteConfig.url}/talk/${encodeURIComponent(t.slug)}/`}>{t.title || t.date}</a>
             </li>
           ))}
@@ -121,6 +166,7 @@ const archiveKeys = Object.keys(archiveMap).sort((a, b) => b.localeCompare(a));
 
     <footer>
       <p>© {new Date().getFullYear()} {siteConfig.title}</p>
+      <p><a href={siteConfig.url}>访问完整站点</a> · <a href={`${siteConfig.url}/rss.xml`}>RSS订阅</a> · <a href={`${siteConfig.url}/sitemap.xml`}>Sitemap</a></p>
     </footer>
   </body>
 </html>

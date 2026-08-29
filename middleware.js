@@ -1,7 +1,30 @@
 import { next, rewrite } from '@vercel/functions/middleware';
 
-// 爬虫 User-Agent 正则（与 Caddy 规则保持一致）
-const CRAWLER_RE = /(bot|crawl|spider|gpt|claude|perplexity|anthropic|cohere)/i;
+// 爬虫/AI/搜索引擎 User-Agent 正则 —— 覆盖所有已知爬虫
+const CRAWLER_RE = /(
+  bot|spider|crawl|slurp|mediapartners|
+  google|bing|baidu|yandex|duckduckgo|sogou|360|so\.com|
+  gpt|claude|perplexity|anthropic|cohere|openai|llama|mistral|gemini|
+  facebook|twitter|linkedin|telegram|whatsapp|discord|slack|
+  semrush|ahrefs|moz|majestic|serpstat|
+  petal|yisou|soso|easou|iask|
+  ia_archiver|wayback|archive\.org|
+  seokicks|rogerbot|dotbot|mj12bot|screaming frog|
+  bingpreview|googleinspectiontool|googleother|
+  applebot|twitterbot|linkedinbot|slackbot|telegrambot|
+  whatsappbot|discordbot|skypeuripreview|
+  ccbot|dataforseobot|brightbot|neevabot|
+  siteauditbot|linkdexbot|exabot|blexbot|
+  yandeximages|yandexvideo|yandexbot|
+  baiduspider|baiduimage|baiduboxapp|
+  sogou|soso|youdao|haosou|
+  duckduckbot|duckduckgobot|
+  yahoo|teoma|altavista|lycos|
+  facebookexternalhit|facebot|
+  quora|reddit|pinterest|tumblr|
+  curl|wget|python|java|httpclient|
+  headless|phantomjs|selenium|puppeteer|playwright
+)/i;
 
 export const config = {
   matcher: ['/', '/posts/:path*', '/talks/:path*', '/talk', '/talk/:path*'],
