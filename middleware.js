@@ -1,9 +1,10 @@
 import { next, rewrite } from '@vercel/functions/middleware';
 
-// 爬虫/AI/搜索引擎 User-Agent 正则 —— 覆盖所有已知爬虫
+// 爬虫/AI/搜索引擎 User-Agent 正则
+// ⚠️ 注意：不能用纯数字如"360"，会误伤360浏览器用户
 const CRAWLER_RE = /(
   bot|spider|crawl|slurp|mediapartners|
-  google|bing|baidu|yandex|duckduckgo|sogou|360|so\.com|
+  google|bing|baidu|yandex|duckduckgo|sogou|so\.com|360spider|360seccrawler|
   gpt|claude|perplexity|anthropic|cohere|openai|llama|mistral|gemini|
   facebook|twitter|linkedin|telegram|whatsapp|discord|slack|
   semrush|ahrefs|moz|majestic|serpstat|
