@@ -58,8 +58,11 @@ export interface CommitIndex {
 
 export const commitIndex = indexRaw as unknown as CommitIndex;
 
-/** 明细分页大小：单片约 25KB，够小到可以按需拉取 */
-export const COMMITS_PER_SHARD = 50;
+/**
+ * 明细分页大小。行默认折叠，一页 100 条的视觉高度比以前 50 条展开时还短，
+ * 单片约 68KB（gzip 后更小），仍远小于整份索引。
+ */
+export const COMMITS_PER_SHARD = 100;
 
 export function shardCount(): number {
   return Math.max(1, Math.ceil(commitIndex.commits.length / COMMITS_PER_SHARD));
@@ -68,6 +71,20 @@ export function shardCount(): number {
 export function shardSlice(page: number): CommitEntry[] {
   const start = (page - 1) * COMMITS_PER_SHARD;
   return commitIndex.commits.slice(start, start + COMMITS_PER_SHARD);
+}
+
+/** 某天的提交落在第几片（热力图点格子跳转用） */
+export function dayShardMap(): Record<string, number> {
+  const map: Record<string, number> = {};
+  commitIndex.commits.forEach((c, i) => {
+    const d = new Date(c.ts);
+    const p = (v: number) => String(v).padStart(2, '0');
+    const key = `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
+    // 同一天可能跨片，记最早出现的那片
+    const page = Math.floor(i / COMMITS_PER_SHARD) + 1;
+    if (map[key] === undefined || page < map[key]) map[key] = page;
+  });
+  return map;
 }
 
 /**
@@ -104,5 +121,7 @@ export function buildSummary() {
       .sort((a, b) => b.commits - a.commits),
     shards: shardCount(),
     perShard: COMMITS_PER_SHARD,
+    // 热力图点格子直接跳到那天所在的明细页
+    dayShards: dayShardMap(),
   };
 }

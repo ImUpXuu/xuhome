@@ -413,6 +413,12 @@ const busiest = summary.daily.reduce(
     background: rgba(2, 132, 199, .06);
     cursor: default;
   }
+  /* 有提交的格子可点击跳转 */
+  #heatmap .heat-cell[data-lv]:not([data-lv="0"]) { cursor: pointer; }
+  #heatmap .heat-cell[data-lv]:not([data-lv="0"]):hover {
+    outline: 2px solid #f59e0b;
+    outline-offset: 1px;
+  }
   #heatmap .heat-cell[data-lv="1"] { background: #bae6fd; border-color: #7dd3fc; }
   #heatmap .heat-cell[data-lv="2"] { background: #7dd3fc; border-color: #38bdf8; }
   #heatmap .heat-cell[data-lv="3"] { background: #38bdf8; border-color: #0ea5e9; }
@@ -434,8 +440,19 @@ const busiest = summary.daily.reduce(
     background: rgba(2, 132, 199, .04);
     border: 2px solid rgba(2, 132, 199, .18);
     border-radius: 4px;
+    transition: background .15s, border-color .15s;
   }
   .dark #commit-list .cm-row { background: rgba(56, 189, 248, .06); border-color: rgba(56, 189, 248, .2); }
+
+  /* 热力图点某天后，那天的提交高亮一下，好在长列表里找到位置 */
+  #commit-list .cm-row.is-flash {
+    background: #fef3c7;
+    border-color: #f59e0b;
+  }
+  .dark #commit-list .cm-row.is-flash {
+    background: rgba(245, 158, 11, .18);
+    border-color: #f59e0b;
+  }
 
   #commit-list .cm-kind {
     flex-shrink: 0;
@@ -449,10 +466,27 @@ const busiest = summary.daily.reduce(
   #commit-list .cm-row[data-kind="friend"] .cm-kind { background: #fde68a; }
 
   #commit-list .cm-body { flex: 1; min-width: 0; }
-  #commit-list .cm-line1 {
-    display: flex; align-items: baseline; justify-content: space-between; gap: 8px;
+
+  /* 整行标题区可点击展开，用 button 保证键盘可达 */
+  #commit-list .cm-toggle {
+    display: block; width: 100%;
+    background: none; border: 0; padding: 0;
+    font: inherit; color: inherit; text-align: left;
+    cursor: pointer;
   }
+  #commit-list .cm-line1 {
+    display: flex; align-items: baseline; gap: 8px;
+  }
+  #commit-list .cm-caret {
+    flex-shrink: 0;
+    font-size: 9px; font-weight: 900; color: #0284c7;
+    transition: transform .18s ease;
+    display: inline-block;
+  }
+  #commit-list .cm-row[aria-expanded="true"] .cm-caret { transform: rotate(90deg); }
+
   #commit-list .cm-subject {
+    flex: 1; min-width: 0;
     font-size: 13px; font-weight: 800; color: #334155;
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   }
@@ -475,17 +509,38 @@ const busiest = summary.daily.reduce(
   #commit-list .cm-add { color: #10b981; }
   #commit-list .cm-del { color: #ef4444; }
 
+  /* 折叠区：默认收起，只有 aria-expanded="true" 时展开 */
+  #commit-list .cm-detail { display: none; }
+  #commit-list .cm-row[aria-expanded="true"] .cm-detail { display: block; }
+
   #commit-list .cm-files {
-    margin-top: 5px; padding-top: 5px;
+    margin-top: 6px; padding-top: 6px;
     border-top: 1px dashed rgba(2, 132, 199, .22);
-    display: flex; flex-direction: column; gap: 2px;
+    display: flex; flex-direction: column; gap: 3px;
   }
   #commit-list .cm-file {
+    display: flex; align-items: baseline; gap: 6px;
     font-family: var(--font-mono, ui-monospace, monospace);
     font-size: 10px; font-weight: 700; color: #64748b;
+  }
+  #commit-list .cm-fpath {
+    flex: 1; min-width: 0;
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   }
+  .dark #commit-list .cm-file { color: #94a3b8; }
   #commit-list .cm-more { font-size: 10px; font-weight: 800; color: #94a3b8; }
+
+  #commit-list .cm-actions {
+    margin-top: 6px;
+    display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+  }
+  #commit-list .cm-link {
+    font-size: 10px; font-weight: 900; color: #0284c7;
+    text-decoration: none;
+    border: 2px solid rgba(2, 132, 199, .3);
+    border-radius: 3px; padding: 2px 7px;
+  }
+  #commit-list .cm-link:hover { background: #fde68a; }
 
   #commit-list .list-msg,
   #ratio-list .list-msg {
@@ -635,8 +690,8 @@ const busiest = summary.daily.reduce(
           if (rec.kinds[k]) parts.push(`${KIND_META[k].name}${rec.kinds[k]}`);
         }
       }
-      const title = n ? `${key} · ${n} 次提交${parts.length ? ' · ' + parts.join(' ') : ''}` : `${key} · 无提交`;
-      cells.push(`<div class="heat-cell" data-lv="${lv}" data-tip="${esc(title)}"></div>`);
+      const title = n ? `${key} · ${n} 次提交${parts.length ? ' · ' + parts.join(' ') : ''}${n ? ' · 点击查看' : ''}` : `${key} · 无提交`;
+      cells.push(`<div class="heat-cell" data-lv="${lv}" data-date="${key}" data-tip="${esc(title)}"></div>`);
     }
 
     box.innerHTML = cells.join('');
@@ -660,7 +715,7 @@ const busiest = summary.daily.reduce(
     }
   }
 
-  function bindHeatTip(state, signal) {
+  function bindHeatTip(state, signal, onPickDay) {
     const box = $('heatmap');
     const tip = $('heat-tip');
     if (!box || !tip) return;
@@ -701,10 +756,14 @@ const busiest = summary.daily.reduce(
       if (cell) show(cell);
     }, { signal });
     box.addEventListener('mouseleave', () => { tip.hidden = true; }, { signal });
-    // 手机端点击也能看
+
+    // 点格子：先弹提示（手机端只有点击能看），有提交的话再跳到当天的明细
     box.addEventListener('click', (e) => {
       const cell = e.target.closest('.heat-cell');
-      if (cell) show(cell); else tip.hidden = true;
+      if (!cell) { tip.hidden = true; return; }
+      show(cell);
+      const date = cell.dataset.date;
+      if (date && cell.dataset.lv !== '0' && onPickDay) onPickDay(date);
     }, { signal });
 
     // 横向滚动后标签会脱离原格子，直接收起
@@ -1086,37 +1145,55 @@ const busiest = summary.daily.reduce(
     return j;
   }
 
+  function ymdOf(ts) {
+    const d = new Date(ts);
+    return `${d.getFullYear()}-${p2(d.getMonth() + 1)}-${p2(d.getDate())}`;
+  }
+
   function commitRow(c, repo) {
     const m = KIND_META[c.kind] || KIND_META.other;
     const d = new Date(c.ts);
-    const when = `${d.getFullYear()}-${p2(d.getMonth() + 1)}-${p2(d.getDate())} ${p2(d.getHours())}:${p2(d.getMinutes())}`;
-    const shown = c.files.slice(0, 3);
-    const rest = c.files.length - shown.length;
+    const when = `${ymdOf(c.ts)} ${p2(d.getHours())}:${p2(d.getMinutes())}`;
 
+    // 展开区列出全部改动文件；40 个以上截断，避免个别大提交把 DOM 撑爆
+    const cap = 40;
+    const shown = c.files.slice(0, cap);
+    const rest = c.files.length - shown.length;
     const files = shown.map(([path, add, del]) =>
-      `<div class="cm-file">${esc(path)} <span class="cm-add">+${add}</span> <span class="cm-del">-${del}</span></div>`
+      `<div class="cm-file"><span class="cm-fpath" title="${esc(path)}">${esc(path)}</span>` +
+      `<span class="cm-add">+${add}</span><span class="cm-del">-${del}</span></div>`
     ).join('') + (rest > 0 ? `<div class="cm-more">…还有 ${rest} 个文件</div>` : '');
 
-    return `<div class="cm-row" data-kind="${c.kind}">
+    return `<div class="cm-row" data-kind="${c.kind}" data-date="${ymdOf(c.ts)}" data-sha="${esc(c.sha)}" aria-expanded="false">
   <span class="cm-kind" title="${m.name}">${m.icon}</span>
   <div class="cm-body">
-    <div class="cm-line1">
-      <span class="cm-subject" title="${esc(c.subject)}">${esc(c.subject)}</span>
-      <a class="cm-sha" href="https://github.com/${repo}/commit/${esc(c.sha)}" target="_blank" rel="noopener">${esc(c.sha.slice(0, 7))}</a>
+    <button type="button" class="cm-toggle">
+      <div class="cm-line1">
+        <span class="cm-caret">▶</span>
+        <span class="cm-subject" title="${esc(c.subject)}">${esc(c.subject)}</span>
+      </div>
+      <div class="cm-meta">
+        <span>${when}</span>
+        <span>${esc(c.author)}</span>
+        <span class="cm-add">+${c.added}</span>
+        <span class="cm-del">-${c.removed}</span>
+        <span>${c.fileCount} 个文件</span>
+      </div>
+    </button>
+    <div class="cm-detail">
+      ${c.files.length ? `<div class="cm-files">${files}</div>` : '<div class="cm-more">这次提交没有可统计的文件改动</div>'}
+      <div class="cm-actions">
+        <a class="cm-link" href="https://github.com/${repo}/commit/${esc(c.sha)}" target="_blank" rel="noopener">在 GitHub 查看 ${esc(c.sha.slice(0, 7))} →</a>
+      </div>
     </div>
-    <div class="cm-meta">
-      <span>${when}</span>
-      <span>${esc(c.author)}</span>
-      <span class="cm-add">+${c.added}</span>
-      <span class="cm-del">-${c.removed}</span>
-      <span>${c.fileCount} 个文件</span>
-    </div>
-    ${c.files.length ? `<div class="cm-files">${files}</div>` : ''}
   </div>
 </div>`;
   }
 
-  async function renderPage(state, page) {
+  /**
+   * 渲染某一页明细。focusDate 来自热力图点击：渲染完后滚到那天第一条并高亮。
+   */
+  async function renderPage(state, page, focusDate) {
     const list = $('commit-list');
     if (!list) return;
     const seq = ++pageSeq;
@@ -1143,10 +1220,24 @@ const busiest = summary.daily.reduce(
     $('page-prev').disabled = page <= 1;
     $('page-next').disabled = page >= total;
 
+    if (focusDate) focusOnDate(list, focusDate);
+
     // 预取下一页，翻页时几乎无等待
     if (page < total && !shardCache.has(page + 1)) {
       loadShard(page + 1).catch(() => {});
     }
+  }
+
+  /** 高亮并滚动到某天的第一条提交 */
+  function focusOnDate(list, date) {
+    const rows = list.querySelectorAll(`.cm-row[data-date="${date}"]`);
+    if (!rows.length) return;
+    for (const r of rows) r.classList.add('is-flash');
+    rows[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+    // 高亮只是定位提示，两秒后褪掉，别一直亮着
+    setTimeout(() => {
+      for (const r of rows) r.classList.remove('is-flash');
+    }, 2200);
   }
   /* ================= 初始化 / 清理 ================= */
   // 监听器与观察器统一挂在 AbortController 上，view transition 换页时一次性注销
@@ -1175,11 +1266,25 @@ const busiest = summary.daily.reduce(
     ac = new AbortController();
     const signal = ac.signal;
 
+    // 点热力图某天 → 翻到那天所在的明细页并高亮
+    const jumpToDay = (date) => {
+      const page = (summary.dayShards || {})[date];
+      if (!page) return;
+      const list = $('commit-list');
+      if (page === curPage && list) {
+        focusOnDate(list, date);
+        list.closest('.brick').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        return;
+      }
+      renderPage(state, page, date);
+      if (list) list.closest('.brick').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+
     // 热力图：默认最近一年
     const years = [...document.querySelectorAll('[data-year]')];
     const initialYear = years.length ? years[0].dataset.year : String(new Date().getFullYear());
     renderHeatmap(state, initialYear);
-    bindHeatTip(state, signal);
+    bindHeatTip(state, signal, jumpToDay);
     for (const btn of years) {
       btn.addEventListener('click', () => {
         years.forEach((b) => b.classList.toggle('is-on', b === btn));
@@ -1225,6 +1330,16 @@ const busiest = summary.daily.reduce(
     $('page-next').addEventListener('click', () => {
       renderPage(state, curPage + 1);
     }, { signal });
+
+    // 折叠展开：事件委托到列表，避免每次渲染重新绑 100 个监听器
+    $('commit-list').addEventListener('click', (e) => {
+      const btn = e.target.closest('.cm-toggle');
+      if (!btn) return;
+      const row = btn.closest('.cm-row');
+      if (!row) return;
+      row.setAttribute('aria-expanded', row.getAttribute('aria-expanded') === 'true' ? 'false' : 'true');
+    }, { signal });
+
     renderPage(state, 1);
 
     // 容器高度由 CSS 固定，这里只重算位图密度与坐标

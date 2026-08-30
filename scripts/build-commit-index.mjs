@@ -30,6 +30,18 @@ const log = (...a) => console.log('[commit-index]', ...a);
  * 路径分类：决定「更新内容比」里每次提交算哪一类
  * ------------------------------------------------------------------ */
 
+/**
+ * 不计入统计的路径。索引文件自己被 CI 每次推送后回写，
+ * 留着会让明细里全是「src/data/commit-index.json +1 -1」这种噪音。
+ */
+const IGNORED_PATHS = [
+  /^src\/data\/commit-index\.json$/,
+];
+
+function isIgnoredPath(path) {
+  return IGNORED_PATHS.some((re) => re.test(path));
+}
+
 const RULES = [
   { kind: 'post', test: (p) => /^src\/content\/posts\//.test(p) },
   { kind: 'talk', test: (p) => /^src\/content\/talks\//.test(p) },
@@ -318,15 +330,17 @@ async function buildContentWordCounts(entries) {
  * ------------------------------------------------------------------ */
 
 function toEntry(c) {
-  const { primary, kinds } = classifyCommit(c.files);
+  // 先滤掉噪音路径，再算分类与行数统计
+  const files = c.files.filter((f) => !isIgnoredPath(f.path));
+  const { primary, kinds } = classifyCommit(files);
   let added = 0;
   let removed = 0;
-  for (const f of c.files) { added += f.added; removed += f.removed; }
+  for (const f of files) { added += f.added; removed += f.removed; }
 
   // 只统计正文内容（文章/说说）的净增字数，代码改动不算进"字数变化"
   let contentAdded = 0;
   let contentRemoved = 0;
-  for (const f of c.files) {
+  for (const f of files) {
     const k = classifyPath(f.path);
     if (k === 'post' || k === 'talk') {
       contentAdded += f.added;
@@ -345,9 +359,18 @@ function toEntry(c) {
     removed,
     contentAdded,
     contentRemoved,
-    fileCount: c.files.length,
-    files: c.files.map((f) => [f.path, f.added, f.removed]),
+    fileCount: files.length,
+    files: files.map((f) => [f.path, f.added, f.removed]),
   };
+}
+
+/**
+ * CI 回写索引的提交只动 commit-index.json，滤掉噪音后一个文件都不剩，
+ * 整条剔除，免得明细里出现一串 0 改动的空提交。
+ * files 为空但有增删行数的走 API 兜底（detail 预算耗尽），要保留。
+ */
+function isMeaningful(entry) {
+  return entry.files.length > 0 || entry.added > 0 || entry.removed > 0;
 }
 
 function readExisting() {
@@ -379,7 +402,7 @@ async function main() {
   if (gitAvailable()) {
     const shallow = gitIsShallow();
     try {
-      const local = readLocalCommits().map(toEntry);
+      const local = readLocalCommits().map(toEntry).filter(isMeaningful);
       if (shallow) {
         // 浅克隆只看得到最近几条，必须叠加仓库里已提交的索引
         log(`shallow clone — merging ${local.length} local commits with ${base.length} cached`);
@@ -404,7 +427,7 @@ async function main() {
 
     let fresh = [];
     try {
-      fresh = (await readApiCommits({ repo, sinceISO })).map(toEntry);
+      fresh = (await readApiCommits({ repo, sinceISO })).map(toEntry).filter(isMeaningful);
     } catch (e) {
       log('API fetch failed:', e.message);
       if (!base.length) log('no data at all — writing empty index so the build still succeeds');
