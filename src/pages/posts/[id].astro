@@ -681,8 +681,43 @@ const relatedPosts = (() => {
       return `${d.getFullYear()}-${p2(d.getMonth() + 1)}-${p2(d.getDate())} ${p2(d.getHours())}:${p2(d.getMinutes())}`;
     };
 
+    // 一次最多露 5 条，剩下的点「显示更多」逐批展开，
+    // 改动多的文章（最多 24 次）不会一下铺出一大片
+    const PAGE = 5;
+    let allRows = [];
+    let shown = 0;
     let loaded = false;
     let loading = false;
+
+    function rowHtml(e, repo) {
+      return `<div class="hist-row">
+  <span class="hist-dot"></span>
+  <div class="hist-main">
+    <div class="hist-subject" title="${esc(e.subject)}">${esc(e.subject)}</div>
+    <div class="hist-meta">
+      <span>${fmt(e.ts)}</span>
+      <a class="hist-sha" href="https://github.com/${repo}/commit/${esc(e.sha)}" target="_blank" rel="noopener">${esc(e.sha.slice(0, 7))}</a>
+      <span class="hist-add">+${e.added}</span>
+      <span class="hist-del">-${e.removed}</span>
+    </div>
+  </div>
+</div>`;
+    }
+
+    function renderRows(repo) {
+      if (!allRows.length) {
+        list.innerHTML = '<p class="hist-msg">没有找到这篇文章的提交记录</p>';
+        return;
+      }
+      shown = Math.min(shown + PAGE, allRows.length);
+      const rest = allRows.length - shown;
+      list.innerHTML =
+        allRows.slice(0, shown).map((e) => rowHtml(e, repo)).join('') +
+        (rest > 0 ? `<button type="button" class="hist-more">显示更多（还有 ${rest} 次）</button>` : '');
+
+      const more = list.querySelector('.hist-more');
+      if (more) more.addEventListener('click', () => renderRows(repo));
+    }
 
     async function load() {
       if (loaded || loading) return;
@@ -695,21 +730,9 @@ const relatedPosts = (() => {
         });
         if (!r.ok) throw new Error('HTTP ' + r.status);
         const data = await r.json();
-        const rows = (data.files || {})[box.dataset.key] || [];
-        const repo = box.dataset.repo || '';
-
-        list.innerHTML = rows.length ? rows.map((e) => `<div class="hist-row">
-  <span class="hist-dot"></span>
-  <div class="hist-main">
-    <div class="hist-subject" title="${esc(e.subject)}">${esc(e.subject)}</div>
-    <div class="hist-meta">
-      <span>${fmt(e.ts)}</span>
-      <a class="hist-sha" href="https://github.com/${repo}/commit/${esc(e.sha)}" target="_blank" rel="noopener">${esc(e.sha.slice(0, 7))}</a>
-      <span class="hist-add">+${e.added}</span>
-      <span class="hist-del">-${e.removed}</span>
-    </div>
-  </div>
-</div>`).join('') : '<p class="hist-msg">没有找到这篇文章的提交记录</p>';
+        allRows = (data.files || {})[box.dataset.key] || [];
+        shown = 0;
+        renderRows(box.dataset.repo || '');
         loaded = true;
       } catch (err) {
         list.innerHTML = '<p class="hist-msg">历史加载失败，请稍后重试</p>';
@@ -833,4 +856,18 @@ const relatedPosts = (() => {
     padding: 14px 0; text-align: center;
     font-size: 12px; font-weight: 800; color: #a8a29e;
   }
+
+  .hist-more {
+    align-self: center;
+    margin-top: 2px;
+    padding: 5px 12px;
+    font-size: 11px; font-weight: 900; color: #0284c7;
+    background: rgba(255, 255, 255, .6);
+    border: 2px solid #0284c7; border-radius: 4px;
+    box-shadow: 2px 2px 0 0 #0284c7;
+    cursor: pointer;
+    transition: transform .15s, box-shadow .15s, background .15s;
+  }
+  .hist-more:hover { background: #fde68a; transform: translate(1px, 1px); box-shadow: 1px 1px 0 0 #0284c7; }
+  .dark .hist-more { background: rgba(56, 189, 248, .1); }
 </style>

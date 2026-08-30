@@ -106,6 +106,23 @@ function gitIsShallow() {
 }
 
 /**
+ * 浅克隆的边界提交（.git/shallow 里列的那些）没有父提交，
+ * git 会把它和空树比，--numstat 于是吐出整个仓库的所有文件。
+ * 实测 --depth 1 时那一条会显示「405 个文件 +34950 行」而不是真实的 7 个文件。
+ * 这些条目必须丢掉，改用仓库里已提交的索引中那一份正确数据。
+ */
+function shallowBoundary() {
+  try {
+    const p = git(['rev-parse', '--git-path', 'shallow']).trim();
+    return new Set(
+      readFileSync(p, 'utf8').split('\n').map((s) => s.trim()).filter(Boolean),
+    );
+  } catch {
+    return new Set();
+  }
+}
+
+/**
  * git log 的 --numstat 输出没有稳定的记录分隔符，用自定义前缀切分。
  * 字段里可能含制表符/换行（提交信息），所以用 \x1f 作字段分隔、\x1e 作记录起始标记。
  */
@@ -355,6 +372,22 @@ function buildFileHistory(entries) {
   return map;
 }
 
+/** 单个提交的准确 diff 统计（浅克隆边界提交只能靠 API 补） */
+async function fetchCommitDetail(repo, sha) {
+  const d = await apiGet(`https://api.github.com/repos/${repo}/commits/${sha}`);
+  return {
+    sha: d.sha,
+    ts: new Date(d.commit.author.date).getTime(),
+    author: d.commit.author.name || (d.author && d.author.login) || '',
+    subject: (d.commit.message || '').split('\n')[0],
+    files: (d.files || []).map((f) => ({
+      path: f.filename,
+      added: f.additions || 0,
+      removed: f.deletions || 0,
+    })),
+  };
+}
+
 /* ------------------------------------------------------------------ *
  * 索引组装
  * ------------------------------------------------------------------ */
@@ -432,11 +465,33 @@ async function main() {
   if (gitAvailable()) {
     const shallow = gitIsShallow();
     try {
-      const local = readLocalCommits().map(toEntry).filter(isMeaningful);
+      let local = readLocalCommits().map(toEntry).filter(isMeaningful);
+
       if (shallow) {
-        // 浅克隆只看得到最近几条，必须叠加仓库里已提交的索引
-        log(`shallow clone — merging ${local.length} local commits with ${base.length} cached`);
-        entries = mergeBySha(base, local);
+        // 边界提交的 diff 是「整个仓库 vs 空树」，数据是错的，必须丢掉
+        const boundary = shallowBoundary();
+        const dropped = local.filter((c) => boundary.has(c.sha));
+        local = local.filter((c) => !boundary.has(c.sha));
+
+        // 缓存里没有这条（刚推的提交就是边界）时，去 API 拿一次准确的 diff，
+        // 否则这条提交会整条丢失，文章历史里也就看不到最新那次改动
+        const cachedShas = new Set(base.map((c) => c.sha));
+        const recovered = [];
+        for (const c of dropped) {
+          if (cachedShas.has(c.sha)) continue;
+          try {
+            recovered.push(toEntry(await fetchCommitDetail(repo, c.sha)));
+          } catch (e) {
+            log(`could not recover boundary commit ${c.sha.slice(0, 7)}:`, e.message);
+          }
+        }
+        if (dropped.length) {
+          log(`dropped ${dropped.length} shallow-boundary commit(s), recovered ${recovered.length} via API`);
+        }
+
+        // 缓存条目优先级最高（完整克隆下算出来的），local/recovered 只补缺失的
+        log(`shallow clone — merging ${local.length} local + ${recovered.length} recovered with ${base.length} cached`);
+        entries = mergeBySha(local, recovered, base).filter(isMeaningful);
         source = base.length ? 'git-shallow+cache' : 'git-shallow';
       } else {
         // 完整克隆下全量重算：比逐提交打 API 便宜得多，且能自动修正
