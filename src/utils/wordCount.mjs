@@ -8,9 +8,16 @@
  * 这是中文语境下"多少字"的常规理解，也是页脚一直在显示的那个数。
  */
 
-/** 去掉 frontmatter（getCollection 的 body 已不含，直接读文件时需要） */
+/**
+ * 去掉 frontmatter（getCollection 的 body 已不含，直接读文件时需要）。
+ *
+ * 先剥 BOM：src/content/posts/seed-file.md 带 UTF-8 BOM，`^---` 会因为
+ * 前面多一个 U+FEFF 而匹配不上，整段 frontmatter 被算进字数（多 213 字），
+ * 于是页脚（走 Astro getCollection，BOM 已处理）和统计页又对不上。
+ */
 export function stripFrontmatter(raw) {
-  return String(raw || '').replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n/, '');
+  const s = String(raw || '').replace(/^\uFEFF/, '');
+  return s.replace(/^---\r?\n[\s\S]*?\r?\n---[ \t]*\r?\n/, '');
 }
 
 /** 统计正文字数（不去 frontmatter，供已拿到 body 的调用方使用） */
