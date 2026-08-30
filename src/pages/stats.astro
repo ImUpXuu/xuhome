@@ -5,154 +5,511 @@ import { siteConfig } from '../config/site';
 
 <Layout
   title={`网站统计${siteConfig.titleTemplate}`}
-  description="UpXuu 博客访问统计：24 小时请求趋势、页面访问排行"
+  description="UpXuu 博客访问统计：请求趋势、页面访问排行"
+  keywords={['UpXuu', '网站统计', '访问量', 'Umami']}
   hideBanner={true}
 >
-  <div class="w-full max-w-6xl mx-auto px-2 sm:px-4 pb-24">
+  <div class="w-full max-w-5xl mx-auto pb-20 space-y-4 sm:space-y-5">
 
-    <!-- 标题区 -->
-    <div class="mb-5 flex items-center justify-between gap-3 animate-stat-in" style="--d:0s">
-      <div>
-        <h1 class="text-xl sm:text-2xl font-black text-[#0284c7]">📊 网站统计</h1>
-        <p class="text-xs sm:text-sm font-bold text-slate-500 dark:text-slate-400 mt-1">数据来自 Umami · 每 60 秒自动刷新</p>
-      </div>
-      <span id="update-time" class="text-xs font-black text-slate-400 bg-white dark:bg-slate-800 border-2 border-[#0284c7] px-3 py-1.5 rounded-md shadow-[2px_2px_0px_0px_#0284c7]">--:--</span>
-    </div>
-
-    <!-- 总览卡 -->
-    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
-      <div class="stat-card" style="--d:0.05s">
-        <div class="text-[11px] font-black text-slate-400 uppercase tracking-wider">今日 PV</div>
-        <div class="text-2xl font-black text-[#0284c7] tabular-nums" id="total-pv">-</div>
-      </div>
-      <div class="stat-card" style="--d:0.1s">
-        <div class="text-[11px] font-black text-slate-400 uppercase tracking-wider">今日 UV</div>
-        <div class="text-2xl font-black text-[#f59e0b] tabular-nums" id="total-uv">-</div>
-      </div>
-      <div class="stat-card" style="--d:0.15s">
-        <div class="text-[11px] font-black text-slate-400 uppercase tracking-wider">今日 Visits</div>
-        <div class="text-2xl font-black text-[#10b981] tabular-nums" id="total-visits">-</div>
-      </div>
-      <div class="stat-card" style="--d:0.2s">
-        <div class="text-[11px] font-black text-slate-400 uppercase tracking-wider">总 PV (全时段)</div>
-        <div class="text-2xl font-black text-slate-700 dark:text-slate-200 tabular-nums" id="total-all">-</div>
-      </div>
-    </div>
-
-    <!-- 趋势图 -->
-    <div class="chart-card mb-5" style="--d:0.25s">
-      <div class="flex items-center justify-between gap-3 mb-2 flex-wrap">
-        <h2 class="text-sm font-black text-[#0284c7] flex items-center gap-2">
-          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
-          24 小时趋势
-        </h2>
-        <div class="flex gap-3 text-[11px] font-bold text-slate-500 dark:text-slate-400 select-none">
-          <span class="flex items-center gap-1 cursor-pointer" data-line-toggle="pv"><span class="w-3 h-3 rounded-sm inline-block bg-[#0284c7]"></span>PV</span>
-          <span class="flex items-center gap-1 cursor-pointer" data-line-toggle="uv"><span class="w-3 h-3 rounded-sm inline-block bg-[#f59e0b]"></span>UV</span>
-          <span class="flex items-center gap-1 cursor-pointer" data-line-toggle="visits"><span class="w-3 h-3 rounded-sm inline-block bg-[#10b981]"></span>Visits</span>
+    {/* 标题砖 */}
+    <div class="brick flex flex-wrap items-center justify-between gap-3" style="--d:0s">
+      <div class="flex items-center gap-3">
+        <span class="head-icon">📊</span>
+        <div>
+          <h1 class="text-xl sm:text-2xl font-black text-[#0284c7] tracking-wide">网站统计</h1>
+          <p class="text-[11px] sm:text-xs font-bold text-slate-500 dark:text-slate-400 mt-0.5">
+            数据来自 Umami · 每 60 秒自动刷新
+          </p>
         </div>
       </div>
-      <div class="relative">
-        <canvas id="trend-chart" height="300" class="w-full block cursor-crosshair"></canvas>
-        <!-- 悬停浮窗 -->
-        <div id="trend-tip" class="absolute hidden pointer-events-none z-10 rounded-lg bg-slate-900/90 text-white text-xs px-3 py-2 shadow-xl backdrop-blur-sm"></div>
+      <span id="update-time" class="chip">--:--</span>
+    </div>
+
+    {/* 数字砖 */}
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+      <div class="brick num-brick" data-accent="sky" style="--d:.05s">
+        <div class="num-label">今日 PV</div>
+        <div class="num-value" id="n-today">-</div>
+        <div class="num-sub">从零点算起</div>
+      </div>
+      <div class="brick num-brick" data-accent="amber" style="--d:.1s">
+        <div class="num-label">近 <span class="range-label">24 小时</span> 访客</div>
+        <div class="num-value" id="n-uv">-</div>
+        <div class="num-sub">独立会话去重</div>
+      </div>
+      <div class="brick num-brick" data-accent="green" style="--d:.15s">
+        <div class="num-label">近 <span class="range-label">24 小时</span> PV</div>
+        <div class="num-value" id="n-pv">-</div>
+        <div class="num-sub">页面浏览次数</div>
+      </div>
+      <div class="brick num-brick" data-accent="slate" style="--d:.2s">
+        <div class="num-label">总 PV</div>
+        <div class="num-value" id="n-all">-</div>
+        <div class="num-sub"><span id="n-sessions">-</span> 次会话</div>
+      </div>
+    </div>
+    {/* 趋势砖 */}
+    <div class="brick" style="--d:.25s">
+      <div class="brick-head">
+        <h2 class="brick-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+          访问趋势
+        </h2>
+        <div class="seg" role="group" aria-label="时间范围">
+          <button type="button" class="seg-btn is-on" data-range="24">24 小时</button>
+          <button type="button" class="seg-btn" data-range="168">7 天</button>
+          <button type="button" class="seg-btn" data-range="720">30 天</button>
+        </div>
+      </div>
+
+      <div class="legend">
+        <button type="button" class="lg" data-line="pv" aria-pressed="true"><i style="background:#0284c7"></i>PV</button>
+        <button type="button" class="lg" data-line="uv" aria-pressed="true"><i style="background:#f59e0b"></i>访客</button>
+        <button type="button" class="lg" data-line="visits" aria-pressed="true"><i style="background:#10b981"></i>会话</button>
+      </div>
+
+      <div class="chart-wrap">
+        <canvas id="trend-chart" aria-label="访问趋势图"></canvas>
+        <div id="trend-tip" class="tip" hidden></div>
+        <div id="trend-empty" class="empty" hidden>暂无数据</div>
       </div>
     </div>
 
-    <!-- 页面排行 -->
-    <div class="chart-card" style="--d:0.35s">
-      <div class="flex items-center justify-between gap-3 mb-3">
-        <h2 class="text-sm font-black text-[#0284c7] flex items-center gap-2">
-          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17V7m4 10V11m4 6V8M5 21h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
-          页面访问排行
+    {/* 排行砖 */}
+    <div class="brick" style="--d:.3s">
+      <div class="brick-head">
+        <h2 class="brick-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17V7m4 10V11m4 6V8M5 21h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+          页面排行
         </h2>
-        <select id="page-range" class="text-xs font-bold text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-700 border-2 border-[#0284c7] rounded-md px-2 py-1 cursor-pointer outline-none">
-          <option value="24">近 24 小时</option>
-          <option value="168">近 7 天</option>
-          <option value="720">近 30 天</option>
-          <option value="0">全部</option>
-        </select>
+        <span class="chip-soft">跟随上方时间范围</span>
       </div>
-      <div id="page-list" class="space-y-1"></div>
+      <div id="page-list" class="rank-list"></div>
     </div>
+
   </div>
 </Layout>
 
 <style>
-  .stat-card {
-    background: rgba(255, 255, 255, 0.55);
-    backdrop-filter: blur(6px);
-    border: 1.5px solid rgba(2, 132, 199, 0.22);
-    border-radius: 14px;
-    padding: 14px 16px;
-    animation: stat-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
-    animation-delay: var(--d, 0s);
-    transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
-  }
-  .stat-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(2,132,199,.15); background: rgba(255,255,255,.8); }
-  @media (prefers-color-scheme: dark) {
-    .stat-card { background: rgba(30, 41, 59, 0.55); border-color: rgba(2, 132, 199, 0.4); }
-    .stat-card:hover { background: rgba(30, 41, 59, 0.8); }
-  }
-
-  .chart-card {
-    background: rgba(255, 255, 255, 0.55);
-    backdrop-filter: blur(8px);
-    border: 1.5px solid rgba(2, 132, 199, 0.22);
-    border-radius: 16px;
+  /* ---------- 积木砖块基底 ---------- */
+  .brick {
+    background: #fff;
+    border: 4px solid #0284c7;
+    border-radius: 4px;
+    box-shadow: 6px 6px 0 0 #0284c7;
     padding: 16px 18px;
-    box-shadow: 0 4px 18px rgba(2, 132, 199, 0.06);
-    animation: stat-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation: brick-in .55s cubic-bezier(.34, 1.56, .64, 1) both;
     animation-delay: var(--d, 0s);
   }
-  @media (prefers-color-scheme: dark) {
-    .chart-card { background: rgba(30, 41, 59, 0.55); border-color: rgba(2, 132, 199, 0.4); }
+  :global(.dark) .brick {
+    background: #1e293b;
+    box-shadow: 6px 6px 0 0 #0369a1;
+  }
+  @keyframes brick-in {
+    from { opacity: 0; transform: translateY(18px); }
+    to { opacity: 1; transform: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .brick { animation: none; }
   }
 
-  @keyframes stat-in {
-    from { opacity: 0; transform: translateY(22px); }
-    to { opacity: 1; transform: translateY(0); }
+  .head-icon {
+    display: grid;
+    place-items: center;
+    width: 42px; height: 42px;
+    font-size: 20px;
+    background: #fde68a;
+    border: 3px solid #0284c7;
+    border-radius: 4px;
+    box-shadow: 3px 3px 0 0 #0284c7;
+    flex-shrink: 0;
   }
 
-  #page-list .row-item {
-    animation: stat-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+  .chip {
+    font-family: var(--font-mono, monospace);
+    font-weight: 900;
+    font-size: 12px;
+    color: #0284c7;
+    background: #fff;
+    border: 3px solid #0284c7;
+    border-radius: 4px;
+    box-shadow: 3px 3px 0 0 #f59e0b;
+    padding: 5px 10px;
+    white-space: nowrap;
+  }
+  :global(.dark) .chip { background: #0f172a; }
+
+  .chip-soft {
+    font-size: 11px;
+    font-weight: 800;
+    color: #64748b;
+    background: rgba(2, 132, 199, .08);
+    border: 2px solid rgba(2, 132, 199, .25);
+    border-radius: 4px;
+    padding: 3px 8px;
+    white-space: nowrap;
+  }
+
+  /* ---------- 数字砖 ---------- */
+  .num-brick { padding: 14px 16px; position: relative; overflow: hidden; }
+  .num-brick::after {
+    content: '';
+    position: absolute;
+    inset: auto -6px -6px auto;
+    width: 46px; height: 46px;
+    background: var(--accent, #0284c7);
+    opacity: .12;
+    border-radius: 4px;
+    transform: rotate(18deg);
+  }
+  .num-brick[data-accent="sky"] { --accent: #0284c7; }
+  .num-brick[data-accent="amber"] { --accent: #f59e0b; }
+  .num-brick[data-accent="green"] { --accent: #10b981; }
+  .num-brick[data-accent="slate"] { --accent: #64748b; }
+
+  .num-label {
+    font-size: 11px;
+    font-weight: 900;
+    color: #64748b;
+    letter-spacing: .04em;
+  }
+  .num-value {
+    font-family: var(--font-mono, monospace);
+    font-variant-numeric: tabular-nums;
+    font-weight: 900;
+    font-size: clamp(1.4rem, 6vw, 2rem);
+    line-height: 1.15;
+    color: var(--accent, #0284c7);
+    margin-top: 2px;
+    word-break: break-all;
+  }
+  .num-sub {
+    font-size: 10px;
+    font-weight: 700;
+    color: #94a3b8;
+    margin-top: 2px;
+  }
+  /* ---------- 砖块标题行 ---------- */
+  .brick-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding-bottom: 10px;
+    margin-bottom: 12px;
+    border-bottom: 2px dashed rgba(2, 132, 199, .25);
+  }
+  .brick-title {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 15px;
+    font-weight: 900;
+    color: #0284c7;
+  }
+  .brick-title svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+  /* ---------- 分段选择器 ---------- */
+  .seg {
+    display: inline-flex;
+    border: 3px solid #0284c7;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 3px 3px 0 0 #0284c7;
+  }
+  .seg-btn {
+    font-size: 11px;
+    font-weight: 900;
+    color: #0284c7;
+    background: #fff;
+    padding: 5px 10px;
+    border: 0;
+    border-left: 2px solid rgba(2, 132, 199, .3);
+    cursor: pointer;
+    transition: background .15s, color .15s;
+  }
+  .seg-btn:first-child { border-left: 0; }
+  .seg-btn:hover { background: #fde68a; }
+  .seg-btn.is-on { background: #0284c7; color: #fff; }
+  :global(.dark) .seg-btn { background: #0f172a; }
+  :global(.dark) .seg-btn.is-on { background: #0284c7; color: #fff; }
+
+  /* ---------- 图例 ---------- */
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .lg {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 800;
+    color: #475569;
+    background: rgba(2, 132, 199, .06);
+    border: 2px solid rgba(2, 132, 199, .22);
+    border-radius: 4px;
+    padding: 3px 8px;
+    cursor: pointer;
+    transition: opacity .15s, filter .15s;
+  }
+  .lg i { width: 9px; height: 9px; border-radius: 2px; display: inline-block; }
+  .lg[aria-pressed="false"] { opacity: .4; filter: grayscale(1); }
+  :global(.dark) .lg { color: #cbd5e1; }
+
+  /* ---------- 图表容器：固定比例，杜绝无限拉长 ---------- */
+  .chart-wrap {
+    position: relative;
+    width: 100%;
+    height: 300px;
+    touch-action: pan-y;
+  }
+  @media (max-width: 640px) {
+    .chart-wrap { height: 210px; }
+  }
+  #trend-chart {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  .tip {
+    position: absolute;
+    z-index: 5;
+    pointer-events: none;
+    background: #0f172a;
+    color: #fff;
+    border: 2px solid #0284c7;
+    border-radius: 4px;
+    box-shadow: 3px 3px 0 0 rgba(2, 132, 199, .5);
+    padding: 7px 9px;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1.5;
+    white-space: nowrap;
+  }
+  .tip[hidden] { display: none; }
+  .empty {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    font-size: 13px;
+    font-weight: 800;
+    color: #94a3b8;
+  }
+  .empty[hidden] { display: none; }
+
+  .rank-list { display: flex; flex-direction: column; gap: 8px; }
+
+  /* ---------- 暗色微调 ---------- */
+  :global(.dark) .num-label,
+  :global(.dark) .chip-soft { color: #94a3b8; }
+  :global(.dark) .num-sub { color: #64748b; }
+  :global(.dark) .brick-head { border-bottom-color: rgba(56, 189, 248, .3); }
+
+  /* ---------- 窄屏收紧 ---------- */
+  @media (max-width: 640px) {
+    .brick {
+      padding: 12px 13px;
+      border-width: 3px;
+      box-shadow: 4px 4px 0 0 #0284c7;
+    }
+    :global(.dark) .brick { box-shadow: 4px 4px 0 0 #0369a1; }
+    .head-icon { width: 36px; height: 36px; font-size: 17px; }
+    .num-brick { padding: 11px 12px; }
+  }
+</style>
+
+<!-- 排行行是运行时 innerHTML 注入的，拿不到 Astro 的作用域属性，必须走全局选择器 -->
+<style is:global>
+  @keyframes stats-row-in {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  #page-list .rank-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: stats-row-in .4s cubic-bezier(.34, 1.56, .64, 1) both;
     animation-delay: var(--rd, 0s);
   }
-  [data-line-off="true"] { opacity: 0.3; filter: grayscale(1); }
+  @media (prefers-reduced-motion: reduce) {
+    #page-list .rank-row { animation: none; }
+  }
 
-  canvas { display: block; }
+  #page-list .rank-no {
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    width: 24px; height: 24px;
+    font-family: var(--font-mono, ui-monospace, monospace);
+    font-variant-numeric: tabular-nums;
+    font-size: 11px;
+    font-weight: 900;
+    color: #64748b;
+    background: rgba(2, 132, 199, .07);
+    border: 2px solid rgba(2, 132, 199, .2);
+    border-radius: 4px;
+  }
+  #page-list .rank-row[data-top="1"] .rank-no {
+    color: #fff;
+    background: #0284c7;
+    border-color: #0284c7;
+    box-shadow: 2px 2px 0 0 #f59e0b;
+  }
+  #page-list .rank-row[data-top="2"] .rank-no,
+  #page-list .rank-row[data-top="3"] .rank-no {
+    color: #0284c7;
+    background: #fde68a;
+    border-color: #0284c7;
+  }
+
+  #page-list .rank-body { flex: 1; min-width: 0; }
+  #page-list .rank-line {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  #page-list .rank-name {
+    display: block;
+    font-size: 13px;
+    font-weight: 800;
+    color: #334155;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-decoration: none;
+    transition: color .15s;
+  }
+  #page-list .rank-name:hover { color: #0ea5e9; }
+  .dark #page-list .rank-name { color: #e2e8f0; }
+
+  #page-list .rank-num {
+    flex-shrink: 0;
+    font-family: var(--font-mono, ui-monospace, monospace);
+    font-variant-numeric: tabular-nums;
+    font-size: 12px;
+    font-weight: 900;
+    color: #0284c7;
+  }
+  #page-list .rank-bar {
+    margin-top: 4px;
+    height: 8px;
+    background: rgba(2, 132, 199, .1);
+    border: 2px solid rgba(2, 132, 199, .25);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  #page-list .rank-fill {
+    height: 100%;
+    background: repeating-linear-gradient(45deg, #0ea5e9 0 6px, #0284c7 6px 12px);
+    transition: width .6s cubic-bezier(.22, 1, .36, 1);
+  }
+
+  #page-list .list-msg {
+    text-align: center;
+    padding: 22px 0;
+    font-size: 13px;
+    font-weight: 800;
+    color: #94a3b8;
+  }
 </style>
 
 <script>
   const API = 'https://blog.api.upxuu.com';
-  const $id = (i) => document.getElementById(i);
-  let trendSeries = [];
-  let trendTimer = null;
+  const COLORS = { pv: '#0284c7', uv: '#f59e0b', visits: '#10b981' };
+  const NAMES = { pv: 'PV', uv: '访客', visits: '会话' };
+  const KEYS = ['pv', 'uv', 'visits'];
 
-  // 关闭的线
-  const lineOff = new Set();
+  const $ = (id) => document.getElementById(id);
 
   function esc(s) {
-    return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    return String(s ?? '').replace(/[&<>"']/g, (c) =>
+      ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+  }
+
+  function nfmt(n) {
+    const v = Number(n) || 0;
+    if (v >= 100000) return (v / 10000).toFixed(1) + '万';
+    return v.toLocaleString('en-US');
   }
 
   async function getJSON(url) {
-    const r = await fetch(url, { headers: { Accept: 'application/json' } });
+    const r = await fetch(url, { headers: { Accept: 'application/json' }, signal: AbortSignal.timeout(12000) });
     if (!r.ok) throw new Error('HTTP ' + r.status);
     return r.json();
   }
 
-  // ===== 平滑曲线绘制 =====
-  // Catmull-Rom → 贝塞尔平滑
+  // 后端返回的是 Python str(datetime)，形如 "2026-08-30 12:00:00+00:00"。
+  // 空格分隔符不属于 ISO 8601，部分浏览器会解析成 Invalid Date。
+  function parseT(t) {
+    const d = new Date(String(t).replace(' ', 'T'));
+    return isNaN(d.getTime()) ? new Date(t) : d;
+  }
+
+  // 超过两天的范围按天聚合，否则 30 天会画出 720 个小时点，密到看不清
+  function bucket(raw, hours) {
+    const rows = (raw || []).map((s) => ({
+      d: parseT(s.t),
+      pv: s.pv || 0,
+      uv: s.uv || 0,
+      visits: s.visits || 0,
+    })).filter((s) => !isNaN(s.d.getTime()));
+
+    if (hours <= 48) return rows.map((s) => ({ ...s, daily: false }));
+
+    const map = new Map();
+    for (const s of rows) {
+      const key = `${s.d.getFullYear()}-${s.d.getMonth()}-${s.d.getDate()}`;
+      const hit = map.get(key);
+      if (hit) {
+        hit.pv += s.pv;
+        hit.uv += s.uv;
+        hit.visits += s.visits;
+      } else {
+        map.set(key, {
+          d: new Date(s.d.getFullYear(), s.d.getMonth(), s.d.getDate()),
+          pv: s.pv, uv: s.uv, visits: s.visits, daily: true,
+        });
+      }
+    }
+    return [...map.values()].sort((a, b) => a.d - b.d);
+  }
+  /* ================= 图表绘制 ================= */
+  // 只有打开的线参与 Y 轴刻度计算
+  const lineOff = new Set();
+  let series = [];
+  let hoverIdx = -1;
+  let curHours = 24;
+
+  // 绘图区域缓存，供命中测试复用
+  let geo = { padL: 40, padR: 14, padT: 14, padB: 26, w: 0, h: 0, n: 0 };
+
+  function niceMax(raw) {
+    if (raw <= 5) return 5;
+    const mag = Math.pow(10, Math.floor(Math.log10(raw)));
+    const norm = raw / mag;
+    const step = norm <= 1 ? 1 : norm <= 2 ? 2 : norm <= 5 ? 5 : 10;
+    return step * mag;
+  }
+
   function smoothPath(ctx, pts) {
     if (!pts.length) return;
     ctx.moveTo(pts[0].x, pts[0].y);
     if (pts.length < 3) {
-      pts.forEach(p => ctx.lineTo(p.x, p.y));
+      for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i].x, pts[i].y);
       return;
     }
     for (let i = 0; i < pts.length - 1; i++) {
-      const p0 = pts[Math.max(0, i - 1)], p1 = pts[i], p2 = pts[i + 1], p3 = pts[Math.min(pts.length - 1, i + 2)];
+      const p0 = pts[Math.max(0, i - 1)];
+      const p1 = pts[i];
+      const p2 = pts[i + 1];
+      const p3 = pts[Math.min(pts.length - 1, i + 2)];
       ctx.bezierCurveTo(
         p1.x + (p2.x - p0.x) / 6, p1.y + (p2.y - p0.y) / 6,
         p2.x - (p3.x - p1.x) / 6, p2.y - (p3.y - p1.y) / 6,
@@ -161,61 +518,86 @@ import { siteConfig } from '../config/site';
     }
   }
 
-  function drawTrend(series, hoverIdx = -1) {
-    const canvas = $id('trend-chart');
-    if (!canvas || !series.length) return;
-    const dpr = window.devicePixelRatio || 1;
-    const w = canvas.clientWidth || 900;
-    const h = Number(canvas.getAttribute('height') || 300);
-    canvas.width = w * dpr;
-    canvas.height = h * dpr;
+  function labelFor(s) {
+    const p2 = (v) => String(v).padStart(2, '0');
+    if (s.daily) return p2(s.d.getMonth() + 1) + '/' + p2(s.d.getDate());
+    return p2(s.d.getHours()) + ':00';
+  }
+
+  function draw() {
+    const canvas = $('trend-chart');
+    if (!canvas) return;
+
+    // 尺寸完全由 CSS 决定（.chart-wrap 固定高度），canvas 只跟随，
+    // 因此不会出现「设置 canvas.height → 内在比例变化 → 容器变高」的正反馈。
+    const cssW = canvas.clientWidth;
+    const cssH = canvas.clientHeight;
+    if (!cssW || !cssH) return;
+
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const bw = Math.round(cssW * dpr);
+    const bh = Math.round(cssH * dpr);
+    if (canvas.width !== bw) canvas.width = bw;
+    if (canvas.height !== bh) canvas.height = bh;
+
     const ctx = canvas.getContext('2d');
-    ctx.setTransform(1, 0, 0, 1, 0, 0);
-    ctx.scale(dpr, dpr);
+    if (!ctx) return;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, cssW, cssH);
 
-    const padL = 36, padR = 12, padT = 14, padB = 26;
-    const plotW = w - padL - padR;
-    const plotH = h - padT - padB;
-
-    // 计算各线最大值：只统计打开的线
-    const activeKeys = ['pv', 'uv', 'visits'].filter(k => !lineOff.has(k));
-    let maxVal = 1;
-    series.forEach(s => activeKeys.forEach(k => { maxVal = Math.max(maxVal, s[k] || 0); }));
-    // Y 轴向上取整到 50 的倍数，好看
-    maxVal = Math.ceil(maxVal / 50) * 50 || 50;
     const n = series.length;
+    $('trend-empty').hidden = n > 0;
+    if (!n) return;
 
-    const xAt = i => padL + (n === 1 ? plotW / 2 : (i / (n - 1)) * plotW);
-    const yAt = v => padT + plotH - ((v / maxVal) * plotH);
+    const narrow = cssW < 480;
+    const padL = narrow ? 30 : 40;
+    const padR = 12;
+    const padT = 12;
+    const padB = 24;
+    const plotW = cssW - padL - padR;
+    const plotH = cssH - padT - padB;
+    geo = { padL, padR, padT, padB, w: cssW, h: cssH, n };
+    if (plotW <= 0 || plotH <= 0) return;
 
-    // 背景
-    ctx.clearRect(0, 0, w, h);
+    const active = KEYS.filter((k) => !lineOff.has(k));
+    let peak = 0;
+    for (const s of series) for (const k of active) peak = Math.max(peak, s[k] || 0);
+    const maxVal = niceMax(peak || 1);
 
-    // 网格 + Y 轴刻度
-    ctx.strokeStyle = 'rgba(148,163,184,0.16)';
+    const xAt = (i) => padL + (n === 1 ? plotW / 2 : (i / (n - 1)) * plotW);
+    const yAt = (v) => padT + plotH - (v / maxVal) * plotH;
+
+    // 网格与 Y 轴刻度
+    const dark = document.documentElement.classList.contains('dark');
+    const grid = dark ? 'rgba(148,163,184,.18)' : 'rgba(2,132,199,.14)';
+    const gridSteps = narrow ? 3 : 5;
     ctx.lineWidth = 1;
-    ctx.font = '10px monospace';
+    ctx.font = '900 10px ui-monospace, monospace';
     ctx.fillStyle = '#94a3b8';
     ctx.textAlign = 'right';
-    for (let g = 0; g <= 5; g++) {
-      const gy = padT + (g / 5) * plotH;
-      ctx.beginPath(); ctx.moveTo(padL, gy); ctx.lineTo(w - padR, gy); ctx.stroke();
-      ctx.fillText(String(Math.round((maxVal * (5 - g)) / 5)), padL - 7, gy + 3);
+    ctx.textBaseline = 'middle';
+    for (let g = 0; g <= gridSteps; g++) {
+      const gy = Math.round(padT + (g / gridSteps) * plotH) + .5;
+      ctx.strokeStyle = grid;
+      ctx.beginPath();
+      ctx.moveTo(padL, gy);
+      ctx.lineTo(cssW - padR, gy);
+      ctx.stroke();
+      ctx.fillText(nfmt(Math.round((maxVal * (gridSteps - g)) / gridSteps)), padL - 6, gy);
     }
-
     // X 轴时间标签
     ctx.textAlign = 'center';
-    const step = Math.max(1, Math.ceil(n / 8));
+    ctx.textBaseline = 'alphabetic';
+    const maxTicks = narrow ? 4 : 8;
+    const step = Math.max(1, Math.ceil(n / maxTicks));
     for (let i = 0; i < n; i += step) {
-      const d = new Date(series[i].t);
-      const label = n <= 24 ? String(d.getHours()).padStart(2, '0') + ':00' : `${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-      ctx.fillText(label, xAt(i), h - 8);
+      ctx.fillText(labelFor(series[i]), xAt(i), cssH - 7);
     }
 
     // hover 竖线
     if (hoverIdx >= 0 && hoverIdx < n) {
-      ctx.strokeStyle = 'rgba(100,116,139,0.35)';
-      ctx.lineWidth = 1;
+      ctx.strokeStyle = 'rgba(2,132,199,.45)';
+      ctx.lineWidth = 1.5;
       ctx.setLineDash([4, 3]);
       ctx.beginPath();
       ctx.moveTo(xAt(hoverIdx), padT);
@@ -224,19 +606,14 @@ import { siteConfig } from '../config/site';
       ctx.setLineDash([]);
     }
 
-    const colors = { pv: '#0284c7', uv: '#f59e0b', visits: '#10b981' };
-    const fills = {
-      pv: 'rgba(2,132,199,0.14)',
-      uv: 'rgba(245,158,11,0.10)',
-      visits: 'rgba(16,185,129,0.08)',
-    };
-
-    activeKeys.forEach(key => {
+    // 面积 + 折线
+    const showDots = n <= 40;
+    for (const key of active) {
       const pts = series.map((s, i) => ({ x: xAt(i), y: yAt(s[key] || 0) }));
-      // 面积渐变填充
+
       const grad = ctx.createLinearGradient(0, padT, 0, padT + plotH);
-      grad.addColorStop(0, fills[key]);
-      grad.addColorStop(1, 'rgba(255,255,255,0)');
+      grad.addColorStop(0, COLORS[key] + '38');
+      grad.addColorStop(1, COLORS[key] + '00');
       ctx.beginPath();
       smoothPath(ctx, pts);
       ctx.lineTo(pts[pts.length - 1].x, padT + plotH);
@@ -245,155 +622,213 @@ import { siteConfig } from '../config/site';
       ctx.fillStyle = grad;
       ctx.fill();
 
-      // 曲线
-      ctx.strokeStyle = colors[key];
-      ctx.lineWidth = 2.2;
+      ctx.strokeStyle = COLORS[key];
+      ctx.lineWidth = 2.5;
       ctx.lineJoin = 'round';
       ctx.lineCap = 'round';
       ctx.beginPath();
       smoothPath(ctx, pts);
       ctx.stroke();
 
-      // 数据点
-      pts.forEach((p, i) => {
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, hoverIdx === i ? 4 : 2.2, 0, Math.PI * 2);
-        ctx.fillStyle = hoverIdx === i ? colors[key] : '#fff';
-        ctx.fill();
-        ctx.strokeStyle = colors[key];
-        ctx.lineWidth = hoverIdx === i ? 2.5 : 1.4;
-        ctx.stroke();
-      });
-    });
+      if (showDots || hoverIdx >= 0) {
+        pts.forEach((p, i) => {
+          const on = hoverIdx === i;
+          if (!showDots && !on) return;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, on ? 4.5 : 2.4, 0, Math.PI * 2);
+          ctx.fillStyle = on ? COLORS[key] : (dark ? '#1e293b' : '#fff');
+          ctx.fill();
+          ctx.strokeStyle = COLORS[key];
+          ctx.lineWidth = on ? 2.5 : 1.6;
+          ctx.stroke();
+        });
+      }
+    }
+  }
+  /* ================= 悬停/触摸提示 ================= */
+  function idxFromClientX(canvas, clientX) {
+    const rect = canvas.getBoundingClientRect();
+    const x = clientX - rect.left;
+    const plotW = rect.width - geo.padL - geo.padR;
+    if (plotW <= 0 || geo.n === 0) return -1;
+    const raw = Math.round(((x - geo.padL) / plotW) * (geo.n - 1));
+    return Math.min(Math.max(raw, 0), geo.n - 1);
   }
 
-  // ===== hover tooltip =====
-  function bindHover(seriesRef) {
-    const canvas = $id('trend-chart');
-    const tip = $id('trend-tip');
-    if (!canvas || !tip) return;
+  function showTip(clientX) {
+    const canvas = $('trend-chart');
+    const tip = $('trend-tip');
+    if (!canvas || !tip || !series.length) return;
 
-    canvas.addEventListener('mousemove', (e) => {
-      const rect = canvas.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const s = seriesRef.get();
-      if (!s || !s.length) return;
-      const padL = 36, padR = 12;
-      const plotW = rect.width - padL - padR;
-      const idx = Math.round(((x - padL) / plotW) * (s.length - 1));
-      if (idx < 0 || idx >= s.length) { tip.classList.add('hidden'); drawTrend(s); return; }
-      drawTrend(s, idx);
-      const point = s[idx];
-      const d = new Date(point.t);
-      const dateStr = `${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')} ${String(d.getHours()).padStart(2, '0')}:00`;
-      tip.innerHTML =
-        `<div style="font-weight:800;margin-bottom:4px">${esc(dateStr)}</div>` +
-        `<div style="display:flex;align-items:center;gap:5px;margin-bottom:2px"><span style="width:8px;height:8px;border-radius:50%;background:#0284c7;display:inline-block"></span>PV: ${point.pv}</div>` +
-        `<div style="display:flex;align-items:center;gap:5px;margin-bottom:2px"><span style="width:8px;height:8px;border-radius:50%;background:#f59e0b;display:inline-block"></span>UV: ${point.uv}</div>` +
-        `<div style="display:flex;align-items:center;gap:5px"><span style="width:8px;height:8px;border-radius:50%;background:#10b981;display:inline-block"></span>Visits: ${point.visits}</div>`;
-      tip.classList.remove('hidden');
-      // 定位：跟随鼠标上方
-      const tipX = Math.min(Math.max(x + 14, 4), rect.width - 150);
-      const cardRect = canvas.parentElement.getBoundingClientRect();
-      tip.style.left = tipX + 'px';
-      tip.style.top = e.clientY - cardRect.top + 10 + 'px';
-    });
+    const idx = idxFromClientX(canvas, clientX);
+    if (idx < 0) return hideTip();
+    hoverIdx = idx;
+    draw();
 
-    canvas.addEventListener('mouseleave', () => {
-      tip.classList.add('hidden');
-      drawTrend(seriesRef.get());
-    });
+    const p = series[idx];
+    const p2 = (v) => String(v).padStart(2, '0');
+    const head = p.daily
+      ? `${p2(p.d.getMonth() + 1)}-${p2(p.d.getDate())}`
+      : `${p2(p.d.getMonth() + 1)}-${p2(p.d.getDate())} ${p2(p.d.getHours())}:00`;
+    const rows = KEYS.filter((k) => !lineOff.has(k)).map((k) =>
+      `<div><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:${COLORS[k]};margin-right:5px"></span>${NAMES[k]} ${nfmt(p[k])}</div>`
+    ).join('');
+    tip.innerHTML = `<div style="font-weight:900;margin-bottom:3px">${esc(head)}</div>${rows}`;
+    tip.hidden = false;
+
+    // 定位：贴近数据点，靠右时翻到左侧，避免溢出砖块
+    const rect = canvas.getBoundingClientRect();
+    const plotW = rect.width - geo.padL - geo.padR;
+    const px = geo.padL + (geo.n === 1 ? plotW / 2 : (idx / (geo.n - 1)) * plotW);
+    const tw = tip.offsetWidth;
+    let left = px + 12;
+    if (left + tw > rect.width - 2) left = px - tw - 12;
+    tip.style.left = Math.max(2, left) + 'px';
+    tip.style.top = '8px';
   }
 
-  // ===== 页面排行（带入场动画）=====
+  function hideTip() {
+    const tip = $('trend-tip');
+    if (tip) tip.hidden = true;
+    hoverIdx = -1;
+    draw();
+  }
+  /* ================= 页面排行 ================= */
   function renderPages(pages) {
-    const list = $id('page-list');
+    const list = $('page-list');
+    if (!list) return;
     if (!pages || !pages.length) {
-      list.innerHTML = '<p class="text-sm text-slate-400 text-center py-6">暂无数据</p>';
+      list.innerHTML = '<p class="list-msg">暂无数据</p>';
       return;
     }
-    const max = pages[0].views;
+    const max = pages[0].views || 1;
     list.innerHTML = pages.map((p, i) => {
-      const barW = Math.max(Math.round((p.views / max) * 100), 2);
-      return `
-        <div class="row-item flex items-center gap-3 py-1" style="--rd:${Math.min(i * 0.04, 0.6)}s">
-          <span class="w-6 shrink-0 text-center text-xs font-black tabular-nums ${i === 0 ? 'text-white bg-[#0284c7] rounded-full py-0.5' : 'text-slate-400'}">${i + 1}</span>
-          <div class="flex-1 min-w-0">
-            <div class="flex items-center justify-between gap-2">
-              <a href="${esc(p.path)}" class="text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-200 truncate hover:text-[#0ea5e9] transition-colors" title="${esc(p.path)}">${esc(p.title || p.path || '/')}</a>
-              <span class="text-xs font-black text-[#0284c7] tabular-nums shrink-0 ml-2">${p.views.toLocaleString()}</span>
-            </div>
-            <div class="mt-1 h-1.5 w-full bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
-              <div class="h-full rounded-full transition-all duration-700 ease-out" style="width:${barW}%;background:linear-gradient(90deg,#38bdf8,#0284c7)"></div>
-            </div>
-          </div>
-        </div>`;
+      const w = Math.max(Math.round((p.views / max) * 100), 2);
+      const name = p.title || p.path || '/';
+      return `<div class="rank-row" data-top="${i + 1}" style="--rd:${Math.min(i * 0.03, 0.4)}s">
+  <span class="rank-no">${i + 1}</span>
+  <div class="rank-body">
+    <div class="rank-line">
+      <a class="rank-name" href="${esc(p.path || '/')}" title="${esc(p.path || '')}">${esc(name)}</a>
+      <span class="rank-num">${nfmt(p.views)}</span>
+    </div>
+    <div class="rank-bar"><div class="rank-fill" style="width:${w}%"></div></div>
+  </div>
+</div>`;
     }).join('');
   }
 
-  // ===== 加载 =====
-  async function loadTrend() {
-    try {
-      const d = await getJSON(`${API}/api/trend?hours=24`);
-      trendSeries = d.series;
-      $id('total-pv').textContent = d.total.pv.toLocaleString();
-      $id('total-uv').textContent = d.total.uv.toLocaleString();
-      $id('total-visits').textContent = d.total.visits.toLocaleString();
-      drawTrend(trendSeries);
-      $id('update-time').textContent = new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
-    } catch (e) {
-      console.warn('trend load failed', e);
+  /* ================= 数据加载 ================= */
+  // 快速连点范围按钮时，晚到的旧响应不能覆盖新范围的数据
+  let reqSeq = 0;
+
+  async function loadRange(hours) {
+    const seq = ++reqSeq;
+    const [trend, pages] = await Promise.allSettled([
+      getJSON(`${API}/api/trend?hours=${hours}`),
+      getJSON(`${API}/api/pages?hours=${hours}&limit=20`),
+    ]);
+    if (seq !== reqSeq) return;
+
+    if (trend.status === 'fulfilled') {
+      const d = trend.value;
+      series = bucket(d.series, hours);
+      $('n-pv').textContent = nfmt(d.total?.pv);
+      $('n-uv').textContent = nfmt(d.total?.uv);
+      hoverIdx = -1;
+      draw();
+      $('update-time').textContent = new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+    } else {
+      $('n-pv').textContent = '—';
+      $('n-uv').textContent = '—';
+      series = [];
+      draw();
     }
+
+    if (pages.status === 'fulfilled') renderPages(pages.value.pages);
+    else $('page-list').innerHTML = '<p class="list-msg">加载失败</p>';
   }
 
-  async function loadPages(hours) {
-    try {
-      const d = await getJSON(`${API}/api/pages?hours=${hours}&limit=20`);
-      renderPages(d.pages);
-    } catch (e) {
-      $id('page-list').innerHTML = '<p class="text-sm text-slate-400 text-center py-6">加载失败</p>';
-    }
-  }
-
-  async function loadAllTime() {
+  async function loadTotals() {
     try {
       const d = await getJSON(`${API}/api/stats`);
-      $id('total-all').textContent = d.pv.toLocaleString();
-    } catch (_) {}
+      $('n-all').textContent = nfmt(d.pv);
+      $('n-today').textContent = nfmt(d.todayPv);
+      $('n-sessions').textContent = nfmt(d.sessions);
+    } catch {
+      $('n-all').textContent = '—';
+      $('n-today').textContent = '—';
+      $('n-sessions').textContent = '—';
+    }
+  }
+  /* ================= 初始化 / 清理 ================= */
+  // 监听器统一挂在 AbortController 上，view transition 换页时一次性注销，
+  // 避免反复进出统计页导致监听器和定时器叠加。
+  let ac = null;
+  let timer = null;
+  let ro = null;
+
+  function teardown() {
+    if (ac) { ac.abort(); ac = null; }
+    if (timer) { clearInterval(timer); timer = null; }
+    if (ro) { ro.disconnect(); ro = null; }
   }
 
-  // ===== 初始化 =====
-  function initStatsPage() {
-    const rangeEl = $id('page-range');
-    if (!rangeEl) return;
-    let pageHours = 24;
-    const seriesHolder = { get: () => trendSeries };
+  function setup() {
+    const canvas = $('trend-chart');
+    teardown();
+    if (!canvas) return;
 
-    loadTrend();
-    loadPages(pageHours);
-    loadAllTime();
-    bindHover(seriesHolder);
-    setInterval(loadTrend, 60000);
+    ac = new AbortController();
+    const opt = { signal: ac.signal };
+    series = [];
+    hoverIdx = -1;
+    lineOff.clear();
+    curHours = 24;
 
-    rangeEl.addEventListener('change', () => {
-      const v = Number(rangeEl.value);
-      pageHours = Number.isNaN(v) ? 24 : v; // 0 = 全部时段，不能 || 24
-      loadPages(pageHours);
+    loadTotals();
+    loadRange(curHours);
+    timer = setInterval(() => loadRange(curHours), 60000);
+
+    document.querySelectorAll('.seg-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const h = Number(btn.dataset.range) || 24;
+        if (h === curHours) return;
+        curHours = h;
+        document.querySelectorAll('.seg-btn').forEach((b) => b.classList.toggle('is-on', b === btn));
+        document.querySelectorAll('.range-label').forEach((el) => { el.textContent = btn.textContent; });
+        hideTip();
+        loadRange(curHours);
+      }, opt);
     });
 
-    window.addEventListener('resize', () => drawTrend(trendSeries));
-
-    // 线条开关：点击图例隐藏/显示该线
-    document.querySelectorAll('[data-line-toggle]').forEach(el => {
-      el.addEventListener('click', () => {
-        const key = el.dataset.lineToggle;
-        const nowOff = lineOff.has(key);
-        if (nowOff) lineOff.delete(key); else lineOff.add(key);
-        el.dataset.lineOff = String(!nowOff);
-        drawTrend(trendSeries);
-      });
+    document.querySelectorAll('.lg').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const key = btn.dataset.line;
+        const off = lineOff.has(key);
+        if (!off && lineOff.size >= KEYS.length - 1) return; // 至少保留一条线
+        if (off) lineOff.delete(key); else lineOff.add(key);
+        btn.setAttribute('aria-pressed', String(off));
+        draw();
+      }, opt);
     });
+
+    canvas.addEventListener('mousemove', (e) => showTip(e.clientX), opt);
+    canvas.addEventListener('mouseleave', hideTip, opt);
+    canvas.addEventListener('touchstart', (e) => { if (e.touches[0]) showTip(e.touches[0].clientX); }, { signal: ac.signal, passive: true });
+    canvas.addEventListener('touchmove', (e) => { if (e.touches[0]) showTip(e.touches[0].clientX); }, { signal: ac.signal, passive: true });
+    canvas.addEventListener('touchend', hideTip, opt);
+
+    // 容器高度由 CSS 固定，这里只重算位图密度与坐标，不会反向撑高布局
+    if ('ResizeObserver' in window) {
+      ro = new ResizeObserver(() => draw());
+      ro.observe(canvas.parentElement);
+    } else {
+      window.addEventListener('resize', () => draw(), opt);
+    }
   }
 
-  initStatsPage();
+  setup();
+  document.addEventListener('astro:page-load', setup);
+  document.addEventListener('astro:before-swap', teardown);
 </script>
