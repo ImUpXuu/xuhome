@@ -19,8 +19,10 @@ permissions:
 jobs:
   rebuild:
     runs-on: ubuntu-latest
-    # 防循环：本 workflow 自己的回写提交不再触发下一轮
-    if: "!contains(github.event.head_commit.message, '[skip index]')"
+    # 防循环：跳过本 workflow 自己的回写提交。
+    # 按提交作者判断而不是搜提交信息里的标记——任何提到该标记的正常提交
+    # （比如说明这套机制的 commit）都会被误跳过。
+    if: github.event_name == 'workflow_dispatch' || github.event.head_commit.author.name != 'github-actions[bot]'
     steps:
       - uses: actions/checkout@v4
         with:
@@ -43,5 +45,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add src/data/commit-index.json
-          git commit -m "chore(stats): 更新提交索引 [skip index]"
+          git commit -m "chore(stats): 更新提交索引"
           git push
