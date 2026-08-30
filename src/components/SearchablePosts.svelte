@@ -26,21 +26,21 @@
   let loadFailed = false;
   let feedEl: HTMLElement;
 
-  // Keep client bandwidth predictable: at most two article HTML requests run together.
+  
   const MAX_PREFETCH_REQUESTS = 6;
   const PREFETCH_ROOT_MARGIN = '800px';
   const CACHE_NAME = 'xuhome-article-cache-v1';
-  const CACHE_TTL = 30 * 60 * 1000; // 30 分钟
+  const CACHE_TTL = 30 * 60 * 1000; 
   const prefetchedUrls = new Set<string>();
   const queuedUrls = new Set<string>();
   const inflightUrls = new Set<string>();
   let prefetchObserver: IntersectionObserver | null = null;
   let prefetchAbortController: AbortController | null = null;
 
-  // 预加载进度状态：link.href → 0~100（Svelte 响应式，用于卡片进度条）
+  
   let prefetchProgress = new Map<string, number>();
 
-  // ===== 缓存模块 =====
+  
 
   function getCache(): Promise<Cache | null> {
     try { return caches.open(CACHE_NAME); }
@@ -55,7 +55,7 @@
     await cache.put(req, new Response(payload, { headers: { 'Content-Type': 'application/json' } }));
   }
 
-  // 更新全局统计 + 面板显示
+  
   function updatePanel() {
     if (typeof window === 'undefined') return;
     (window as any).__cacheStats = {
@@ -65,7 +65,7 @@
     };
   }
 
-  // 标记点击 HIT/MISS（供 Layout 面板读取）
+  
   function markClick(hit: boolean, slug: string) {
     try {
       sessionStorage.setItem('[cache]lastClick', (hit ? 'HIT ' : 'MISS ') + slug);
@@ -109,7 +109,7 @@
         return;
       }
 
-      // 流式读取计算进度（有 Content-Length 按比例，否则按累计字节估算）
+      
       const total = Number(response.headers.get('Content-Length')) || 0;
       const reader = response.body.getReader();
       let received = 0;
@@ -124,7 +124,7 @@
           chunks.push(value);
           received += value.length;
           const now = Date.now();
-          // 节流：100ms 内不重复触发 Svelte 重渲染（避免 afterUpdate 风暴）
+          
           if (now - lastProgressAt >= progressMinInterval) {
             lastProgressAt = now;
             const pct = total
@@ -135,7 +135,7 @@
           }
         }
       }
-      // 存入 Cache Storage
+      
       const decoder = new TextDecoder();
       let html = '';
       for (const chunk of chunks) html += decoder.decode(chunk, { stream: true });
@@ -145,14 +145,14 @@
       prefetchProgress.set(url, 100);
       prefetchProgress = prefetchProgress;
       updatePanel();
-      // 完成后短暂展示满条，再淡出清除（视觉上"预加载完成"的提示）
+      
       setTimeout(() => {
         prefetchProgress.delete(url);
         prefetchProgress = prefetchProgress;
         updatePanel();
       }, 400);
     } catch {
-      // A failed prefetch must never turn into a visible homepage error.
+      
       prefetchProgress.delete(url);
       prefetchProgress = prefetchProgress;
     } finally {
@@ -250,9 +250,9 @@
 
   const placeholderImg = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="190" height="120"%3E%3C/svg%3E';
 
-  // React to search queries sent from navbar
+  
   onMount(() => {
-    // Populate from URL query parameter
+    
     const urlParams = new URLSearchParams(window.location.search);
     const initialQ = urlParams.get('q') || '';
     searchQuery = initialQ;
@@ -274,8 +274,8 @@
 
     window.addEventListener('blog-search', handleGlobalSearch);
 
-    // 点击追踪：判断 HIT/MISS（不阻止导航）
-    // 提到具名变量，cleanup 中一并移除，避免 View Transitions 换页后堆积
+    
+    
     const handleClickTrack = (e: Event) => {
       const target = e.target as HTMLElement;
       const link = target.closest('a[href^="/posts/"]') as HTMLAnchorElement | null;
@@ -315,7 +315,7 @@
     };
   });
 
-  // 多个 chunk 在同一帧触发更新时，afterUpdate 只合帧跑一次
+  
   let rafPending = false;
   afterUpdate(() => {
     if (isLoadingPosts || !feedEl) return;
@@ -348,7 +348,7 @@
   function clearSearch() {
     searchQuery = '';
     currentPage = 1;
-    // Notify navbar input to clear
+    
     const input = document.getElementById('mobile-search-input') as HTMLInputElement;
     if (input) input.value = '';
     const mobileClear = document.getElementById('mobile-search-clear');
@@ -415,7 +415,7 @@
 </script>
 
 <div class="w-full flex flex-col gap-4 sm:gap-6">
-  <!-- Interactive Search input inside Desktop view -->
+  
   <div class="relative w-full hidden sm:block">
     <input
       type="text"
@@ -524,7 +524,7 @@
             </svg>
           </button>
 
-          <!-- Page numbers hidden on small screens, show only arrows -->
+          
           <div class="hidden sm:flex items-center gap-2 sm:gap-3">
             {#if pageNumbers[0] > 1}
               <button on:click={() => goToPage(1)} class="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-white dark:bg-slate-700 border-3 sm:border-4 border-[#0284c7] rounded-sm font-black text-sm sm:text-base text-[#0284c7] hover:bg-[#0ea5e9] hover:text-white transition-colors shadow-[3px_3px_0px_0px_#0284c7] sm:shadow-[4px_4px_0px_0px_#0284c7] cursor-pointer">1</button>
@@ -550,7 +550,7 @@
             {/if}
           </div>
 
-          <!-- Mobile page indicator -->
+          
           <div class="sm:hidden px-4 h-10 flex items-center justify-center font-black text-sm font-mono text-[#0284c7] bg-[#fde68a] dark:bg-amber-700/50 border-3 border-[#0284c7] shadow-[3px_3px_0px_0px_#0284c7] rounded-sm">
             {currentPage} / {totalPages}
           </div>
@@ -567,7 +567,7 @@
           </button>
         </div>
 
-        <!-- Jump to page input -->
+        
         <div class="flex items-center gap-2">
           <div class="relative">
             <input 

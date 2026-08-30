@@ -121,7 +121,7 @@
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d')!;
       const W = 1080;
-      const H = 1080; // 1:1 方形
+      const H = 1080; 
       const dpr = Math.max(1, Math.min(3, window.devicePixelRatio || 1));
       canvas.width = Math.round(W * dpr);
       canvas.height = Math.round(H * dpr);
@@ -129,7 +129,7 @@
       canvas.style.height = H + 'px';
       ctx.scale(dpr, dpr);
 
-      // ===== 配色：积木粗野主义（天空蓝 + 黄 + 暖白）=====
+      
       const bg = '#faf8f5';
       const brand = '#0284c7';
       const brandSoft = '#e0f2fe';
@@ -163,7 +163,7 @@
         return out;
       };
 
-      // ===== 背景 + 积木点阵 =====
+      
       ctx.fillStyle = bg;
       ctx.fillRect(0, 0, W, H);
       ctx.fillStyle = 'rgba(2, 132, 199, 0.07)';
@@ -173,13 +173,13 @@
         }
       }
 
-      // ===== 顶部双色条 =====
+      
       ctx.fillStyle = brand;
       ctx.fillRect(0, 0, W, 14);
       ctx.fillStyle = accent;
       ctx.fillRect(0, 14, W, 5);
 
-      // ===== 头部 masthead =====
+      
       const logoS = 46;
       const logoX = pad, logoY = 48;
       ctx.save();
@@ -207,7 +207,7 @@
       ctx.font = `500 15px ${FONT}`;
       ctx.fillText('upxuu.com', logoX + logoS + 18, logoY + 46);
 
-      // 右侧「文章分享」标签
+      
       const pillText = '文章分享';
       ctx.font = `800 19px ${FONT}`;
       const pillW = ctx.measureText(pillText).width + 40;
@@ -232,7 +232,7 @@
       ctx.textAlign = 'left';
       ctx.textBaseline = 'alphabetic';
 
-      // ===== 封面（厚边框 + 硬阴影）=====
+      
       const covX = pad, covY = 122, covW = contentW, covH = 336;
       const drawCoverPlaceholder = () => {
         ctx.fillStyle = brandSoft;
@@ -284,7 +284,7 @@
       roundedRect(covX, covY, covW, covH, 20);
       ctx.stroke();
 
-      // ===== 标题 =====
+      
       let ty = covY + covH + 66;
       ctx.fillStyle = ink;
       ctx.font = `900 44px ${FONT}`;
@@ -292,7 +292,7 @@
       titleLines.forEach((line, i) => ctx.fillText(line, pad, ty + i * 58));
       ty += titleLines.length * 58;
 
-      // ===== 摘要 =====
+      
       if (description) {
         ty += 28;
         ctx.fillStyle = muted;
@@ -302,7 +302,7 @@
         ty += descLines.length * 34;
       }
 
-      // ===== 元信息 =====
+      
       ty += 42;
       const metaY = ty;
       ctx.fillStyle = accent;
@@ -320,7 +320,7 @@
       if (pageViews > 0) metaParts.push(`${pageViews} 次阅读`);
       ctx.fillText(metaParts.join('  ·  '), pad + 26, metaY);
 
-      // ===== 标签（积木药丸）=====
+      
       ty += 46;
       ctx.font = `700 20px ${FONT}`;
       let tx = pad;
@@ -347,7 +347,7 @@
         tx += w + 14;
       }
 
-      // ===== 底部作者卡 =====
+      
       const footH = 150;
       const footY = H - pad - footH;
       ctx.save();
@@ -395,7 +395,7 @@
       ctx.font = `500 16px ${FONT}`;
       ctx.fillText('逐光而上！ · upxuu.com', avX + av + 22, footY + 88);
 
-      // 二维码
+      
       const qr = 108;
       const qrX = pad + contentW - qr - 22;
       const qrY = footY + (footH - qr) / 2;
@@ -443,11 +443,7 @@
     }
   }
 
-  /**
-   * Portal：把弹窗移动到 <body> 顶层。
-   * 文章卡片有 transform 动画，会让 position:fixed 退化为相对定位，
-   * 导致弹窗被困在卡片里、无法覆盖全屏。挂到 body 后彻底脱离任何容器。
-   */
+  
   function portal(node: HTMLElement) {
     document.body.appendChild(node);
     return { destroy() { node.remove(); } };

@@ -19,7 +19,7 @@ export function getAllTalks(): TalkEntry[] {
     : [];
 
   if (talks.length === 0) {
-    // Return dummy data if no talks found
+    
     const dummyTags = ['技术', '生活', '随笔'];
     talks = Array.from({ length: 15 }).map((_, i) => ({
       id: `dummy-${i}`,

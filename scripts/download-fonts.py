@@ -31,14 +31,14 @@ CSS_OUT = os.path.join(OUT_DIR, "fonts.css")
 MAX_WORKERS = 6
 RETRIES = 3
 
-# 仅允许抓取 Google Fonts 白名单域名，防止 SSRF
+
 ALLOWED_HOSTS = {"fonts.googleapis.com", "fonts.gstatic.com"}
 
 
 def safe_join(base, name):
     """把 name 拼到 base 下并强制落在 base 内，杜绝路径穿越。"""
     base = os.path.abspath(base)
-    name = os.path.basename(name)  # 剥离任何目录成分
+    name = os.path.basename(name)  
     path = os.path.abspath(os.path.join(base, name))
     if not path.startswith(base + os.sep):
         raise ValueError(f"拒绝写入 base 之外的文件名: {name!r}")
@@ -88,7 +88,7 @@ def main():
     print(f"CSS 获取成功，{len(css)} 字节")
 
     faces = parse_font_faces(css)
-    # 去重（按 URL，同 family+url 只留一份）
+    
     seen = {}
     for f in faces:
         key = (f["family"], f["url"])
@@ -97,7 +97,7 @@ def main():
     items = list(seen.values())
     print(f"解析出 {len(items)} 个字体文件")
 
-    # 按家族分组、顺序编号命名
+    
     counters = {}
     for it in items:
         fam = re.sub(r"[^A-Za-z0-9]+", "", it["family"]).lower()
@@ -105,7 +105,7 @@ def main():
         it["file"] = f"{fam}-{counters[fam]:03d}.woff2"
         it["path"] = safe_join(WOFF_DIR, it["file"])
 
-    # 并发下载
+    
     def dl(it):
         for attempt in range(1, RETRIES + 1):
             try:
@@ -135,7 +135,7 @@ def main():
     if fails:
         print("失败：", *fails, sep="\n  ")
 
-    # 改写 CSS → 相对路径
+    
     url_map = {it["url"]: f"./woff2/{it['file']}" for it in items}
     new_css = css
     for u, local in url_map.items():

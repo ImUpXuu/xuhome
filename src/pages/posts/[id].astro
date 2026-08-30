@@ -25,7 +25,7 @@ export async function getStaticPaths() {
 const { id } = Astro.params;
 const { post } = Astro.props;
 
-// Render original collection Markdown using Astro compiler
+
 import { render } from 'astro:content';
 const rawPosts = await getCollection('posts');
 const articleEntry = rawPosts.find(p => (p.slug || p.id) === post.slug);
@@ -35,7 +35,7 @@ if (!articleEntry) {
 const { Content, headings } = await render(articleEntry);
 const readTime = calculateReadingTime(articleEntry.body || "");
 
-// Calculate adjacent posts
+
 const allPosts = await getProcessedPosts();
 const tagMap: Record<string, number> = {};
 allPosts.forEach(p => { if (p.tags) { p.tags.forEach(t => { tagMap[t] = (tagMap[t] || 0) + 1; }); } });
@@ -44,7 +44,7 @@ const idx = allPosts.findIndex(p => p.slug === post.slug);
 const prevPost = idx < allPosts.length - 1 ? allPosts[idx + 1] : null;
 const nextPost = idx > 0 ? allPosts[idx - 1] : null;
 
-// Map headings to our toc format
+
 const toc = headings.map(h => ({
   level: h.depth,
   text: h.text,
@@ -53,7 +53,7 @@ const toc = headings.map(h => ({
 
 const minTocLevel = toc.length > 0 ? Math.min(...toc.map(item => item.level)) : 1;
 
-// Compute related posts by tag overlap
+
 const relatedPosts = (() => {
   if (!post.tags || post.tags.length === 0) return [];
   const scored = allPosts
@@ -82,7 +82,7 @@ const relatedPosts = (() => {
   <div class="w-full flex flex-col gap-6 relative">
     <div class="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start w-full">
       
-      {/* Main post body center panel */}
+      
       <div class="flex-1 min-w-0 w-full space-y-8 lg:order-2">
         <article class="article-paper bg-[#efe1bf] dark:bg-slate-800 border-4 border-[#0284c7] p-4 sm:p-6 md:p-10 shadow-[6px_6px_0px_0px_#0284c7] sm:shadow-[8px_8px_0px_0px_#0284c7] rounded-sm animate-card-entrance opacity-0">
           <div class="border-b-4 border-[#0284c7] pb-6 mb-8 text-center md:text-left flex flex-col md:flex-row justify-between items-center gap-4">
@@ -119,13 +119,13 @@ const relatedPosts = (() => {
 
           </div>
 
-          {/* Prose Content block */}
+          
           <div class="prose prose-slate dark:prose-invert prose-lg max-w-none w-full min-w-0 break-words">
             <Content />
           </div>
         </article>
 
-        {/* Copyright Metadata block */}
+        
         <div 
           class="bg-[#efe1bf] dark:bg-slate-800 border-4 border-[#0284c7] p-5 md:p-7 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm relative transition-all duration-300 group/copyright animate-card-entrance opacity-0"
           id="post-copyright-card"
@@ -138,7 +138,7 @@ const relatedPosts = (() => {
           <div class="relative z-10 space-y-4">
             <div class="flex items-start justify-between gap-3">
               <h3 class="text-base sm:text-lg font-black text-[#0284c7] leading-snug min-w-0">{post.title}</h3>
-              {/* 分享按钮：放在底部版权卡片右上角 */}
+              
               <div class="shrink-0">
                 <ShareButton
                   title={post.title}
@@ -180,7 +180,7 @@ const relatedPosts = (() => {
           </div>
         </div>
 
-        {/* Related Posts */}
+        
         {relatedPosts.length > 0 && (
           <div class="animate-card-entrance opacity-0" style="animation-delay: 0.08s" data-prefetch="post-bottom">
             <div class="bg-[#efe1bf] dark:bg-slate-800 border-4 border-[#0284c7] p-4 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm">
@@ -205,7 +205,7 @@ const relatedPosts = (() => {
           </div>
         )}
 
-        {/* Previous / Next pagination navigation blocks */}
+        
         <div class="flex flex-col sm:flex-row gap-3 w-full animate-card-entrance opacity-0" style="animation-delay: 0.1s" data-prefetch="post-bottom">
           {prevPost ? (
             <a 
@@ -242,16 +242,16 @@ const relatedPosts = (() => {
           )}
         </div>
 
-        {/* Waline Comments */}
+        
         <WalineComment client:idle />
       </div>
 
-      {/* Left Sidebar - AFTER main content in DOM for SEO */}
+      
       <aside class="hidden lg:flex w-[260px] shrink-0 flex-col gap-6 sticky top-[100px] lg:order-1">
         <LeftSidebar posts={allPosts.map(p => ({ slug: p.slug, title: p.title, date: p.date, description: p.description }))} tags={allTags} showTags={false} />
       </aside>
 
-      {/* Right Desktop Sticky TOC Side Menu */}
+      
       <div class="hidden lg:block w-[260px] shrink-0 sticky top-[100px] z-10 self-start lg:order-3">
         <div class="bg-[#efe1bf] dark:bg-slate-800 border-4 border-[#0284c7] p-5 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm max-h-[calc(100vh-120px)] flex flex-col">
           <h3 class="font-black text-[#0284c7] text-lg mb-4 flex items-center gap-2 shrink-0">
@@ -292,7 +292,7 @@ const relatedPosts = (() => {
   import { Fancybox } from '@fancyapps/ui';
 
   function setupPostDetail() {
-    // Render image captions for images with alt text
+    
     function setupImageCaptions() {
       const content = document.querySelector('.prose');
       if (!content) return;
@@ -309,12 +309,12 @@ const relatedPosts = (() => {
       });
     }
 
-    // Initialize Fancybox for images in article
+    
     function setupFancybox() {
       const article = document.querySelector('article');
       if (!article) return;
       
-      // Select only images inside the prose content
+      
       const content = article.querySelector('.prose');
       if (!content) return;
 
@@ -356,26 +356,26 @@ const relatedPosts = (() => {
       }
     }
 
-    // Enhance Code Blocks with Mac Style
+    
     function enhanceCodeBlocks() {
-      // Find all pre elements - Shiki puts language info on the pre tag usually
+      
       const codeBlocks = document.querySelectorAll('.prose pre');
       codeBlocks.forEach(pre => {
         if (pre.hasAttribute('data-enhanced')) return;
         pre.setAttribute('data-enhanced', 'true');
         
-        // Language detection - check data attributes first then classes
+        
         let language = pre.getAttribute('data-language') || 'code';
         if (language === 'code') {
           const match = pre.className.match(/language-(\w+)/);
           if (match) language = match[1];
         }
         
-        // Create container
+        
         const container = document.createElement('div');
         container.className = 'my-8 relative border-4 border-[#0284c7] rounded-sm overflow-hidden bg-[#1e293b] shadow-[6px_6px_0px_0px_#0284c7] group animate-card-entrance';
         
-        // Header
+        
         const header = document.createElement('div');
         header.className = 'bg-[#f1f5f9] border-b-4 border-[#0284c7] px-4 py-2 flex items-center justify-between select-none';
         header.innerHTML = `
@@ -401,21 +401,21 @@ const relatedPosts = (() => {
           });
         });
 
-        // Content Wrapper
+        
         const content = document.createElement('div');
         content.className = 'relative flex flex-col min-h-0';
         
         const scrollArea = document.createElement('div');
         scrollArea.className = 'overflow-x-auto custom-scrollbar text-sm font-mono leading-relaxed';
         
-        // Reparent
+        
         pre.parentNode.insertBefore(container, pre);
         container.appendChild(header);
         container.appendChild(content);
         content.appendChild(scrollArea);
         scrollArea.appendChild(pre);
         
-        // Folding logic
+        
         const lines = pre.innerText.split('\n').filter(l => l.trim()).length;
         if (lines > 40) {
           scrollArea.classList.add('max-h-[600px]', 'transition-all', 'duration-500');
@@ -435,7 +435,7 @@ const relatedPosts = (() => {
             scrollArea.style.maxHeight = 'none';
             overlay.classList.add('hidden');
             
-            // Add collapse button at bottom
+            
             const footer = document.createElement('div');
             footer.className = 'border-t-2 border-dashed border-[#0284c7]/20 bg-[#1e293b]/50 p-2 flex justify-center collapse-footer';
             footer.innerHTML = `
@@ -448,7 +448,7 @@ const relatedPosts = (() => {
               scrollArea.style.maxHeight = '600px';
               overlay.classList.remove('hidden');
               footer.remove();
-              // Smooth scroll back to top of container if hidden
+              
               const rect = container.getBoundingClientRect();
               if (rect.top < 0) {
                 window.scrollTo({
@@ -460,7 +460,7 @@ const relatedPosts = (() => {
           });
         }
 
-        // Apply clean styles to the original pre
+        
         pre.style.margin = '0';
         pre.style.padding = '1.25rem';
         pre.style.borderRadius = '0';
@@ -471,7 +471,7 @@ const relatedPosts = (() => {
     setupImageCaptions();
     setupFancybox();
     enhanceCodeBlocks();
-    // Desktop TOC highlight via IntersectionObserver
+    
     const tocNavLinks = Array.from(document.querySelectorAll('.toc-nav-link'));
     const articleHeadings = Array.from(document.querySelectorAll('.prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6'));
     let activeId = '';
@@ -510,7 +510,7 @@ const relatedPosts = (() => {
       });
     }
 
-    // Use IntersectionObserver for performant detection
+    
     const observerOptions = {
       rootMargin: '-10% 0px -80% 0px',
       threshold: 0
@@ -519,12 +519,12 @@ const relatedPosts = (() => {
     const headingObserver = new IntersectionObserver((entries) => {
       if (isNavigating) return;
       
-      // Find the first heading that is currently intersecting our trigger zone
+      
       const visibleHeading = entries.find(e => e.isIntersecting);
       if (visibleHeading) {
         updateTOCHighlight(visibleHeading.target.id);
       } else {
-        // Fallback: if no heading is in the zone, check which one is above it
+        
         const scrollPos = window.scrollY + 150;
         let bestCandidate = '';
         for (const heading of articleHeadings) {
@@ -538,7 +538,7 @@ const relatedPosts = (() => {
       }
     }, observerOptions);
 
-    // 断开旧的 observer 和 scroll 监听（View Transitions 重进文章页时避免重复注册）
+    
     const w = window as any;
     if (w.__tocObserver) {
       try { w.__tocObserver.disconnect(); } catch (_) {}
@@ -552,7 +552,7 @@ const relatedPosts = (() => {
 
     articleHeadings.forEach(h => headingObserver.observe(h));
 
-    // Fallback scroll listener for cases where observer might be sluggish
+    
     let scrollTimeout: any;
     const tocScrollHandler = () => {
       if (isNavigating) return;
@@ -570,7 +570,7 @@ const relatedPosts = (() => {
     w.__tocScrollHandler = tocScrollHandler;
     window.addEventListener('scroll', tocScrollHandler, { passive: true });
 
-    // Initial detection
+    
     setTimeout(() => {
       const scrollPos = window.scrollY + 130;
       let current = '';
@@ -591,7 +591,7 @@ const relatedPosts = (() => {
             isNavigating = true;
             updateTOCHighlight(id);
             
-            // Native smooth scroll to target
+            
             window.scrollTo({
               top: targetEl.offsetTop - 100,
               behavior: 'smooth'
@@ -607,10 +607,10 @@ const relatedPosts = (() => {
     setupLinksClick(tocNavLinks);
   }
 
-  // Initial run
+  
   requestAnimationFrame(setupPostDetail);
 
-  // Re-run on page transitions (guard against duplicates)
+  
   if (!window._postDetailListenersInited) {
     document.addEventListener('astro:page-load', () => requestAnimationFrame(setupPostDetail));
     window._postDetailListenersInited = true;

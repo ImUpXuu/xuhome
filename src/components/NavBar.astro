@@ -3,7 +3,7 @@ import { siteConfig, navConfig, i18nConfig } from '../config/site';
 
 const { pathname } = Astro.url;
 
-// 从配置中获取导航项
+
 const nav = navConfig.desktop;
 const ext = navConfig.external;
 const mob = navConfig.mobileMore;
@@ -215,7 +215,7 @@ const isMusicPage = pathname === '/music';
         </div>
       </div>
 
-      {/* Search button for mobile */}
+      
       <div class="block sm:hidden relative self-center mr-0.5">
         <button
           id="mobile-search-toggle"
@@ -227,7 +227,7 @@ const isMusicPage = pathname === '/music';
         </button>
       </div>
 
-      {/* Hamburger menu for mobile */}
+      
       <div class="block sm:hidden relative self-center">
         <button
           id="mobile-menu-toggle"
@@ -309,7 +309,7 @@ const isMusicPage = pathname === '/music';
     </div>
   </div>
   
-  {/* Mobile slide-down search dialog */}
+  
   <div id="mobile-search-dialog" class="absolute left-0 right-0 top-full bg-[rgba(250,248,245,0.55)] dark:bg-slate-800 border-b-4 border-[#0284c7] px-4 py-3 shadow-[0px_6px_0px_0px_rgba(2,132,199,0.15)] flex flex-col gap-2 z-[90] hidden">
     <div class="relative w-full">
       <input
@@ -334,7 +334,7 @@ const isMusicPage = pathname === '/music';
     </div>
   </div>
 </div>
-{/* Spacer to prevent content from going under the fixed navbar */}
+
 <div style="height: var(--navbar-height)"></div>
 
 <script is:inline data-astro-rerun define:vars={{
@@ -372,7 +372,7 @@ const isMusicPage = pathname === '/music';
     }
   }
 
-  // Theme handling: single source of truth, persisted in localStorage
+  
   function applyTheme(dark) {
     const root = document.documentElement;
     if (dark) root.classList.add('dark');
@@ -395,8 +395,8 @@ const isMusicPage = pathname === '/music';
     return document.documentElement.classList.contains('dark');
   }
 
-  // Sync theme: restore from localStorage first, then update UI
-  // Astro View Transitions can strip the dark class from <html>, so we force it back
+  
+  
   function initThemeUI() {
     try {
       const saved = localStorage.getItem('theme');
@@ -409,7 +409,7 @@ const isMusicPage = pathname === '/music';
     updateThemeUI(isDarkTheme());
   }
 
-  // Bind theme toggle once globally — use document (not body) so it survives view transitions
+  
   if (!window.__themeToggleBound) {
     document.addEventListener('click', (e) => {
       const btn = e.target.closest('[data-theme-toggle]');
@@ -421,9 +421,9 @@ const isMusicPage = pathname === '/music';
     window.__themeToggleBound = true;
   }
 
-  // Bind navbar interactions once globally — use document for all listeners
+  
   if (!window.__navBarBound) {
-    // Desktop more dropdown
+    
     document.addEventListener('click', (e) => {
       const desktopMoreToggle = document.getElementById('desktop-more-toggle');
       const desktopMoreDropdown = document.getElementById('desktop-more-dropdown');
@@ -443,7 +443,7 @@ const isMusicPage = pathname === '/music';
       closeNavDropdowns();
     });
 
-    // Mobile menu toggle
+    
     document.addEventListener('click', (e) => {
       const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
       const mobileMenuDropdown = document.getElementById('mobile-menu-dropdown');
@@ -467,7 +467,7 @@ const isMusicPage = pathname === '/music';
       }
     });
 
-    // Mobile search toggle
+    
     document.addEventListener('click', (e) => {
       const mobileSearchToggle = document.getElementById('mobile-search-toggle');
       const mobileSearchDialog = document.getElementById('mobile-search-dialog');
@@ -489,7 +489,7 @@ const isMusicPage = pathname === '/music';
       }
     });
 
-    // Close dropdowns on Escape
+    
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') closeNavDropdowns();
     });
@@ -497,7 +497,7 @@ const isMusicPage = pathname === '/music';
     window.__navBarBound = true;
   }
 
-  // Mobile search input behavior: refresh bindings on each page load because the input node is new
+  
   function setupMobileSearchInput() {
     const mobileSearchInput = document.getElementById('mobile-search-input');
     const mobileSearchClear = document.getElementById('mobile-search-clear');

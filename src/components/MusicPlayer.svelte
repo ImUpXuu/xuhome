@@ -6,7 +6,7 @@
 
   const API = 'https://music.upxuu.com/api';
 
-  /** 歌单配置：把你的歌单放第一位 */
+  
   const PLAYLISTS = [
     { id: '18169619282', name: '我的收藏歌单' },
     { id: '19723756', name: '云音乐飙升榜' },
@@ -15,7 +15,7 @@
     { id: '2884035', name: '原创音乐榜' },
   ];
 
-  // ==================== 状态 ====================
+  
   let activePlaylistId = PLAYLISTS[0].id;
   let songs: Song[] = [];
   let loading = false;
@@ -23,7 +23,7 @@
   let listScrollEl: HTMLElement;
   let showPlaylistMobile = false;
 
-  // 搜索状态
+  
   let searchMode = false;
   let searchQuery = '';
   let searching = false;
@@ -35,7 +35,7 @@
   let duration = 0;
   let currentTime = 0;
   let volume = 0.8;
-  /** 播放模式：列表循环 list / 单曲循环 single / 随机 random */
+  
   let mode: 'list' | 'single' | 'random' = 'list';
   let lyrics: LyricLine[] = [];
   let lyricText = '';
@@ -46,16 +46,16 @@
   let audio: HTMLAudioElement;
   let mounted = false;
 
-  // 路由感知：是否在音乐页（View Transitions 导航后由 astro:page-load 更新）
+  
   let isMusicPage = true;
-  // 后台播放：开启后离开音乐页音乐继续，并在其他页面显示迷你播放胶囊
+  
   let backgroundPlay = false;
 
-  // 用户手动滚动歌词时暂停自动跟随（网易云行为）
+  
   let userScrolling = false;
   let userScrollTimer: ReturnType<typeof setTimeout> | null = null;
 
-  // 歌词面板高度（vh），可通过拖拽把手动态调整
+  
   let sheetHeight = 62;
   let draggingSheet = false;
   let dragStartY = 0;
@@ -64,7 +64,7 @@
 
   let playlistCounts: Record<string, number> = {};
 
-  // ==================== 生命周期 ====================
+  
   onMount(() => {
     audio = new Audio();
     audio.preload = 'none';
@@ -105,7 +105,7 @@
     try { backgroundPlay = sessionStorage.getItem('music-bg') === '1'; } catch {}
     loadPlaylist(activePlaylistId);
 
-    // View Transitions 导航后更新路由状态
+    
     const onPageLoad = () => {
       isMusicPage = window.location.pathname === '/music' || window.location.pathname.startsWith('/music/');
     };
@@ -120,13 +120,13 @@
     };
   });
 
-  /** 切换后台播放 */
+  
   function toggleBackgroundPlay() {
     backgroundPlay = !backgroundPlay;
     try { sessionStorage.setItem('music-bg', backgroundPlay ? '1' : '0'); } catch {}
   }
 
-  // ==================== 数据 ====================
+  
   function apiUrl(...params: [string, string][]) {
     return `${API}?server=netease&${params.map(([k, v]) => `${k}=${encodeURIComponent(v)}`).join('&')}`;
   }
@@ -159,7 +159,7 @@
     }
   }
 
-  /** 搜索音乐（netease search），结果进入搜索模式列表 */
+  
   async function doSearch() {
     const q = searchQuery.trim();
     if (!q) return;
@@ -178,7 +178,7 @@
         url: fixUrl(s.url) || '',
         lrc: fixUrl(s.lrc) || '',
       }));
-      // 搜索模式用这组结果作为播放列表
+      
       songs = searchResults;
       if (listScrollEl) listScrollEl.scrollTop = 0;
     } catch (e: any) {
@@ -190,7 +190,7 @@
     }
   }
 
-  /** 退出搜索模式，回到当前歌单 */
+  
   function exitSearch() {
     searchMode = false;
     searchQuery = '';
@@ -223,7 +223,7 @@
     return out.sort((a, b) => a.time - b.time);
   }
 
-  // ==================== 播放控制 ====================
+  
   async function play(index: number) {
     if (index < 0 || index >= songs.length) return;
     currentIndex = index;
@@ -254,7 +254,7 @@
     return r === currentIndex ? (r + 1) % songs.length : r;
   }
 
-  // ==================== UI ====================
+  
   $: progressPct = duration > 0 ? (currentTime / duration) * 100 : 0;
   $: currentSong = currentIndex >= 0 ? songs[currentIndex] : null;
   $: activeName = PLAYLISTS.find(p => p.id === activePlaylistId)?.name || '';
@@ -280,7 +280,7 @@
 
   function changeMode() { mode = mode === 'list' ? 'single' : mode === 'single' ? 'random' : 'list'; }
 
-  /** 当前正在唱的第几句（-1 表示还没有） */
+  
   $: activeLyricIdx = (() => {
     if (!lyrics.length) return -1;
     let idx = -1;
@@ -291,29 +291,29 @@
     return idx;
   })();
 
-  // 歌词面板打开/当前句变化时，把当前句滚动到面板中央（网易云式跟随）
+  
   afterUpdate(() => {
     if (!lyricsOpen || !lyricScrollEl || activeLyricIdx < 0) return;
-    // 用户正在手动滚动时暂停自动跟随
+    
     if (userScrolling) return;
     if (lastScrolledIdx === activeLyricIdx) return;
     lastScrolledIdx = activeLyricIdx;
     const el = lyricScrollEl.querySelector(`[data-lyric-idx="${activeLyricIdx}"]`);
     if (!el) return;
-    // 只滚歌词容器本身，不触发页面滚动；用 smooth 过渡更丝滑
+    
     const top = (el as HTMLElement).offsetTop - lyricScrollEl.offsetTop;
     const target = top - lyricScrollEl.clientHeight / 2 + (el as HTMLElement).offsetHeight / 2;
     lyricScrollEl.scrollTo({ top: target, behavior: 'smooth' });
   });
 
-  /** 用户滚动歌词容器时标记为手动滚动，2.5 秒内不抢回滚动条 */
+  
   function onLyricUserScroll() {
     userScrolling = true;
     if (userScrollTimer) clearTimeout(userScrollTimer);
     userScrollTimer = setTimeout(() => { userScrolling = false; }, 2500);
   }
 
-  /** 锁定/恢复页面滚动：html 和 body 都要锁，避免滚轮穿过面板滚到底部页面 */
+  
   function setBodyScrollLock(lock: boolean) {
     const v = lock ? 'hidden' : '';
     document.documentElement.style.overflow = v;
@@ -322,7 +322,7 @@
 
   function toggleLyrics() {
     lyricsOpen = !lyricsOpen;
-    lastScrolledIdx = -1; // 每次打开都重新定位到当前句
+    lastScrolledIdx = -1; 
     setBodyScrollLock(lyricsOpen);
   }
 
@@ -333,7 +333,7 @@
     setBodyScrollLock(false);
   }
 
-  /** 点击歌词行跳转到对应时间 */
+  
   function seekLyricLine(i: number) {
     const line = lyrics[i];
     if (!audio || !line) return;
@@ -341,7 +341,7 @@
     currentTime = line.time;
   }
 
-  // ==================== 歌词面板拖拽调高 ====================
+  
   function defaultSheetHeight() {
     return typeof window !== 'undefined' && window.innerWidth >= 640 ? 70 : 62;
   }
@@ -364,7 +364,7 @@
   function onSheetDragEnd() {
     if (!draggingSheet) return;
     draggingSheet = false;
-    // 快速下滑超过 12% 屏高 → 直接关闭并重置高度
+    
     if (dragMovedY > window.innerHeight * 0.12) {
       closeLyrics();
       sheetHeight = defaultSheetHeight();
@@ -372,15 +372,15 @@
   }
 </script>
 
-<!-- ============================================================ -->
-<!-- 页面主体：左侧歌单 + 右侧歌曲列表（仅音乐页渲染） -->
-<!-- ============================================================ -->
+
+
+
 {#if isMusicPage}
 <div
   class="fixed inset-x-0 top-[var(--navbar-height)] bottom-[70px] z-10 pt-2 sm:pt-4 md:bottom-[76px] w-full max-w-6xl mx-auto px-2 sm:px-4 pb-4 flex flex-col min-h-0 overflow-hidden"
 >
 
-  <!-- 顶部搜索框：输入关键词搜索音乐（netease） -->
+  
   <form
     class="mb-4 shrink-0"
     on:submit|preventDefault={() => doSearch()}
@@ -411,7 +411,7 @@
     </div>
   </form>
 
-  <!-- 手机端：歌单折叠触发条（lg 以下显示，点开弹覆盖层） -->
+  
   <div class="lg:hidden mb-3 shrink-0">
     <button
       on:click={() => showPlaylistMobile = !showPlaylistMobile}
@@ -429,7 +429,7 @@
 
   <div class="flex flex-col lg:flex-row gap-4 items-stretch flex-1 min-h-0">
 
-    <!-- 桌面歌单侧栏（lg 以上常驻，flex 撑满右列高度） -->
+    
     <aside class="hidden lg:block lg:w-52 shrink-0 min-h-0">
       <div class="h-full bg-white dark:bg-slate-800 border-4 border-[#0284c7] shadow-[4px_4px_0px_0px_#0284c7] rounded-sm overflow-hidden flex flex-col">
         <div class="px-4 py-3 border-b-2 border-[#0284c7] bg-[#fde68a] shrink-0">
@@ -454,10 +454,10 @@
       </div>
     </aside>
 
-    <!-- 右侧：歌曲列表（手机端被歌单覆盖） -->
+    
     <div class="relative flex-1 min-w-0 min-h-0 flex flex-col">
 
-      <!-- 手机端歌单覆盖层（默认收起，点按钮展开，覆盖在歌单上方） -->
+      
       {#if showPlaylistMobile}
         <div class="lg:hidden absolute inset-x-0 top-0 z-20 bg-white dark:bg-slate-800 border-4 border-[#0284c7] shadow-[4px_4px_0px_0px_#0284c7] rounded-sm overflow-hidden">
           <div class="px-4 py-2.5 border-b-2 border-[#0284c7] bg-[#fde68a] flex items-center justify-between">
@@ -483,10 +483,10 @@
         </div>
       {/if}
 
-      <!-- 歌单内容卡片：header 固定，列表内部滚动，不撑高页面 -->
+      
       <div class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] shadow-[4px_4px_0px_0px_#0284c7] rounded-sm overflow-hidden flex flex-col h-full min-h-0">
 
-      <!-- 歌单头部（搜索模式显示搜索词） -->
+      
       <div class="px-5 py-4 border-b-2 border-[#0284c7] bg-[#fde68a] flex items-center justify-between gap-3">
         <div class="min-w-0">
           {#if searchMode}
@@ -507,7 +507,7 @@
         {/if}
       </div>
 
-      <!-- 列表 -->
+      
       {#if loadError}
         <div class="p-10 text-center text-[#0284c7]">
           <p class="font-black mb-3">加载失败：{loadError}</p>
@@ -558,23 +558,23 @@
 </div>
 {/if}
 
-<!-- ============================================================ -->
-<!-- 底部播放器（独立于页面，固定视口底部；仅音乐页或开启后台播放时显示） -->
-<!-- ============================================================ -->
+
+
+
 {#if mounted && songs.length && (isMusicPage || backgroundPlay)}
 {#if isMusicPage}
-<!-- ===== 完整底栏（音乐页） ===== -->
+
 <div class="fixed bottom-0 left-0 right-0 z-[90] bg-white dark:bg-slate-900">
-  <!-- 进度条（独立一行，占满宽度） -->
+  
   <div class="w-full cursor-pointer select-none" on:click={seek} aria-label="播放进度">
     <div class="h-[5px] w-full bg-slate-200 dark:bg-slate-700 relative">
       <div class="absolute left-0 top-0 h-full bg-[#0284c7]" style="width: {progressPct}%" />
     </div>
   </div>
 
-  <!-- 底栏内容区（桌面端限宽居中） -->
+  
   <div class="px-3 sm:px-4 py-2 flex items-center gap-2 sm:gap-3 max-w-6xl mx-auto w-full">
-    <!-- 封面 + 歌名/歌手 -->
+    
     <div class="flex items-center gap-2.5 flex-1 min-w-0 lg:w-64 lg:shrink-0">
       <button
         type="button"
@@ -605,7 +605,7 @@
       </div>
     </div>
 
-    <!-- 播放控制 -->
+    
     <div class="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
       <button on:click={prev} aria-label="上一首"
         class="w-9 h-9 flex items-center justify-center bg-[#fde68a] border-2 border-[#0284c7] rounded-sm text-[#0284c7] shadow-[2px_2px_0px_0px_#0284c7] active:shadow-none active:translate-y-0.5 transition-all hover:-translate-y-0.5">
@@ -625,7 +625,7 @@
       </button>
     </div>
 
-    <!-- 右侧：时间/模式/音量（模式手机也显示，时间≥sm，音量≥lg） -->
+    
     <div class="flex items-center gap-2 sm:gap-3 shrink-0 ml-auto">
       <span class="text-xs font-black tabular-nums whitespace-nowrap text-slate-500 dark:text-slate-400 hidden sm:inline">
         {fmt(currentTime)} / {fmt(duration)}
@@ -634,20 +634,20 @@
         class="w-9 h-9 flex-shrink-0 flex items-center justify-center border-2 border-[#0284c7] text-[#0284c7] bg-[#fde68a] rounded-sm shadow-[2px_2px_0px_0px_#0284c7] active:shadow-none active:translate-y-0.5 transition-all hover:-translate-y-0.5"
         title="当前模式：{mode === 'list' ? '列表循环' : mode === 'single' ? '单曲循环' : '随机播放'}">
         {#if mode === 'list'}
-          <!-- 列表循环 -->
+          
           <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 1 4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="m7 23-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
         {:else if mode === 'single'}
-          <!-- 单曲循环 -->
+          
           <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 1 4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="m7 23-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/><path d="M11 10h1v4"/></svg>
         {:else}
-          <!-- 随机播放 -->
+          
           <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 14 4 4-4 4"/><path d="m18 2 4 4-4 4"/><path d="M2 18h1.973a4 4 0 0 0 3.3-1.7l5.454-8.6a4 4 0 0 1 3.3-1.7H22"/><path d="M2 6h1.972a4 4 0 0 1 3.6 2.2"/><path d="M22 18h-6.041a4 4 0 0 1-3.3-1.8l-.359-.45"/></svg>
         {/if}
       </button>
       <button on:click={toggleBackgroundPlay} aria-label="后台播放"
         class={`w-9 h-9 flex-shrink-0 flex items-center justify-center border-2 rounded-sm shadow-[2px_2px_0px_0px_#0284c7] active:shadow-none active:translate-y-0.5 transition-all hover:-translate-y-0.5 ${backgroundPlay ? 'bg-[#0284c7] text-white' : 'bg-[#fde68a] text-[#0284c7] border-[#0284c7]'}`}
         title={backgroundPlay ? '后台播放已开启：离开本页将继续播放' : '开启后台播放：离开音乐页也能继续听'}>
-        <!-- 画中画式图标 -->
+        
         <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="14" rx="2"/><rect x="12" y="11" width="8" height="6" rx="1" fill="currentColor" stroke="none"/></svg>
       </button>
       <div class="hidden lg:flex items-center gap-2 w-20">
@@ -660,7 +660,7 @@
   </div>
 </div>
 {:else}
-<!-- ===== 迷你胶囊（其他页面 + 已开启后台播放） ===== -->
+
 <div class="fixed bottom-4 right-4 z-[90] max-w-[calc(100vw-2rem)] bg-white dark:bg-slate-900 border-3 border-[#0284c7] rounded-full shadow-[4px_4px_0px_0px_#0284c7] pl-1.5 pr-2 py-1.5 flex items-center gap-2">
   <button on:click={toggle} aria-label={playing ? '暂停' : '播放'}
     class="shrink-0 w-10 h-10 rounded-full overflow-hidden border-2 border-[#0284c7] bg-slate-100 dark:bg-slate-800 relative group">
@@ -669,7 +669,7 @@
     {:else}
       <span class="w-full h-full flex items-center justify-center text-[#0284c7] font-black">♪</span>
     {/if}
-    <!-- 播放/暂停覆盖图标 -->
+    
     <span class="absolute inset-0 bg-slate-900/40 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity">
       {#if playing}
         <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/></svg>
@@ -697,13 +697,13 @@
 {/if}
 {/if}
 
-<!-- ============================================================ -->
-<!-- 歌词面板：网易云风格，从底部弹出（实色，不透明） -->
-<!-- ============================================================ -->
+
+
+
 {#if currentSong && isMusicPage}
 <div class="fixed inset-0 z-[100] pointer-events-none" aria-hidden={!lyricsOpen}>
 
-  <!-- 遮罩：点击空白处关闭（底部让出播放器高度，不遮住播放器） -->
+  
   <div
     class="absolute inset-0 bottom-[70px] md:bottom-[76px] bg-slate-900/50 transition-opacity duration-300"
     class:opacity-100={lyricsOpen}
@@ -712,12 +712,12 @@
     on:click={closeLyrics}
   ></div>
 
-  <!-- 面板：从底部上滑，实色背景，顶部大圆角；高度可拖拽调整，底部让出播放器，桌面端收窄居中 -->
+  
   <aside
     style={`height:${sheetHeight}vh`}
     class={`absolute left-0 right-0 mx-auto bottom-[70px] md:bottom-[76px] w-full max-w-2xl flex flex-col bg-white dark:bg-slate-900 rounded-t-[24px] border-t-4 border-[#0284c7] shadow-[0_-16px_50px_rgba(2,132,199,0.25)] ${draggingSheet ? '' : 'transition-transform duration-400 ease-out'} ${lyricsOpen ? 'translate-y-0 pointer-events-auto' : 'translate-y-[calc(100%+90px)] pointer-events-none'}`}
   >
-    <!-- 顶部拖拽抓手 + 头部：歌名 / 歌手 + 关闭按钮 -->
+    
     <div class="shrink-0 px-4 pt-2.5 pb-2 border-b-2 border-[#0284c7] bg-[#fde68a] rounded-t-[28px]">
       <div
         class="w-16 h-2 rounded-full bg-[#0284c7]/30 mx-auto mb-2 cursor-grab active:cursor-grabbing touch-none select-none"
@@ -738,7 +738,7 @@
       </div>
     </div>
 
-    <!-- 歌词主体：当前句高亮并自动跟随居中，点击任意一句可跳转 -->
+    
     <div class="flex-1 min-h-0 overflow-y-auto px-5 py-8 pb-[calc(2rem+env(safe-area-inset-bottom))] select-none touch-pan-y overscroll-contain" bind:this={lyricScrollEl}
       on:wheel={onLyricUserScroll}
       on:touchstart={onLyricUserScroll}
@@ -746,7 +746,7 @@
       {#if !lyrics.length}
         <p class="mt-24 text-center text-sm font-bold text-slate-400 dark:text-slate-500">暂无歌词</p>
       {:else}
-        <!-- 上下留白，让当前句能真正滚到正中（网易云效果） -->
+        
         <div class="h-[28%]"></div>
         <ul class="space-y-6">
           {#each lyrics as line, i (i)}

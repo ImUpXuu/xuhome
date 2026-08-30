@@ -1,7 +1,4 @@
-/**
- * GitHub-style alerts: > [!NOTE] / > [!WARNING] ...
- * Container style: :::note ... :::
- */
+
 import { visit } from './visit.mjs';
 
 const TYPE_MAP = {
@@ -17,7 +14,7 @@ const TYPE_MAP = {
   error: 'danger',
   success: 'success',
   check: 'success',
-  // Chinese aliases
+  
   提示: 'tip',
   注意: 'warning',
   警告: 'warning',
@@ -78,7 +75,7 @@ function extractAlertMeta(node) {
   const type = normalizeType(m[1]);
   const rest = m[2] || '';
   const title = rest.trim() || TITLE_MAP[type] || type;
-  // strip marker from first paragraph
+  
   if (rest.trim()) {
     t.value = rest;
   } else if (first.children.length === 1) {
@@ -91,7 +88,7 @@ function extractAlertMeta(node) {
 
 export function remarkAdmonitions() {
   return (tree) => {
-    // 1) GitHub-style blockquote alerts
+    
     visit(tree, 'blockquote', (node, index, parent) => {
       if (!parent || index == null) return;
       const meta = extractAlertMeta(node);
@@ -99,8 +96,8 @@ export function remarkAdmonitions() {
       parent.children[index] = makeAdmonition(meta.type, meta.title, node.children);
     });
 
-    // 2) :::type ... ::: containers as raw paragraphs sequence
-    // Handles paragraphs starting with :::type and ending with :::
+    
+    
     const children = tree.children || [];
     const out = [];
     let i = 0;

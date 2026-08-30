@@ -21,7 +21,7 @@ const { categories, activeCategory, postsDataUrl = '' } = Astro.props;
         dialog.style.transform = 'scale(1)';
       });
       
-      // Close when clicking backdrop
+      
       dialog.addEventListener('click', (e) => {
         const rect = dialog.getBoundingClientRect();
         if (
@@ -93,7 +93,7 @@ const { categories, activeCategory, postsDataUrl = '' } = Astro.props;
       </div>
     </div>
 
-    <!-- Mobile Calendar Dialog -->
+    
     <dialog 
       id="mobile-calendar-dialog" 
       class="backdrop:bg-[#1e293b]/60 backdrop:backdrop-blur-sm p-0 m-auto mt-[15vh] border-0 outline-none overflow-visible shadow-none bg-transparent w-full max-w-[340px] px-4 transition-all duration-300 opacity-0 scale-95"

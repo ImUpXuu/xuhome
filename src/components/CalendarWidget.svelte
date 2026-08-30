@@ -37,12 +37,12 @@
   $: currentYear = currentDate.getFullYear();
   $: currentMonth = currentDate.getMonth();
 
-  // Get days in current month
+  
   $: daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-  // Get starting day of week
+  
   $: startDayOfWeek = new Date(currentYear, currentMonth, 1).getDay();
 
-  // Generate days array
+  
   $: days = Array.from({ length: daysInMonth }, (_, i) => new Date(currentYear, currentMonth, i + 1));
 
   $: postsByDay = posts.reduce((acc, p) => {

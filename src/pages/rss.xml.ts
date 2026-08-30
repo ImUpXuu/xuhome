@@ -25,8 +25,8 @@ function beijingRfc2822(value: unknown): string {
   if (!value) return new Date().toUTCString();
   const d = value instanceof Date ? value : new Date(value as string | number);
   if (isNaN(d.getTime())) return new Date().toUTCString();
-  // Frontmatter dates are Beijing Time (UTC+8) but parsed by js-yaml as UTC.
-  // Subtract 8h to get correct UTC moment, then format as GMT.
+  
+  
   const utc = new Date(d.getTime() - 8 * 60 * 60 * 1000);
   const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];

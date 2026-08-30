@@ -1,7 +1,4 @@
-/**
- * Transform ::github{repo="owner/repo"} into a GitHub card.
- * Also supports: ::github{repo="owner/repo" branch="main"}
- */
+
 import { visit } from './visit.mjs';
 
 const Q = `["'\u201C\u201D\u2018\u2019]`;

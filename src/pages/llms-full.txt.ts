@@ -3,14 +3,7 @@ import { getCollection } from 'astro:content';
 import { siteConfig } from '../config/site';
 import { beijingWallDate } from '../utils/dateFormat';
 
-/**
- * llms-full.txt —— 全站内容全文（https://llmstxt.org/ 标准）
- * 静态构建时自动从内容集合生成，包含全部文章/说说的完整 Markdown 正文。
- * 访问路径：/llms-full.txt
- *
- * 说明：主要页面（关于/友链等）是 Astro 组件而非 Markdown，
- * 其内容请通过 llms.txt 中的链接获取。
- */
+
 
 function slugOf(entry: any): string {
   return (entry.data.slug || entry.slug || entry.id || '').trim();
@@ -38,7 +31,7 @@ export async function GET(context: APIContext) {
 
   const beijingDate = (value: unknown): string => beijingWallDate(value);
 
-  // ---- 文章 ----
+  
   lines.push('');
   lines.push(`## 文章（${posts.length} 篇）`);
   lines.push('');
@@ -65,7 +58,7 @@ export async function GET(context: APIContext) {
     lines.push('');
   }
 
-  // ---- 说说 ----
+  
   lines.push('');
   lines.push(`## 说说（${talks.length} 条）`);
   lines.push('');

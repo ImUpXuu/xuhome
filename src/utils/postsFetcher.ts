@@ -74,24 +74,24 @@ export async function getProcessedPosts(): Promise<PostItem[]> {
       customSlug = data.slug.trim();
     }
     
-    // Normalize pre-encoded slugs from frontmatter (e.g. from imported Wordpress data)
+    
     if (customSlug.includes('%')) {
       try {
         customSlug = decodeURIComponent(customSlug);
       } catch (e) {
-        // Fallback to original if not a valid encoding
+        
       }
     }
 
-    // 1) frontmatter 里显式声明的封面图
-    // 2) 正文里第一张 Markdown/HTML 图片（![](...)、<img src=...>）
-    // 3) 默认兜底（通常是站长头像）
+    
+    
+    
     const firstBodyImg = (() => {
       const body = post.body || '';
-      // 优先匹配 Markdown 图片 ![alt](url) —— 取括号里的 URL
+      
       const md = body.match(/!\[[^\]]*\]\(([^)\s]+)(?:\s+"[^"]*")?\)/);
       if (md) return md[1];
-      // 其次匹配 HTML <img src="..."> / <img src=...>
+      
       const html = body.match(/<img\b[^>]*\bsrc=["']?([^"'\s>]+)/i);
       if (html) return html[1];
       return '';
@@ -122,7 +122,7 @@ export async function getProcessedPosts(): Promise<PostItem[]> {
     };
   });
 
-  // Sort descending by date
+  
   return processed.sort((a, b) => {
     if (a.date === '未知时间') return 1;
     if (b.date === '未知时间') return -1;
@@ -161,12 +161,12 @@ export async function getProcessedTalks(): Promise<TalkItem[]> {
       customSlug = data.slug.trim();
     }
 
-    // Normalize pre-encoded slugs from frontmatter
+    
     if (customSlug.includes('%')) {
       try {
         customSlug = decodeURIComponent(customSlug);
       } catch (e) {
-        // Fallback
+        
       }
     }
 
@@ -184,7 +184,7 @@ export async function getProcessedTalks(): Promise<TalkItem[]> {
     };
   });
 
-  // Sort descending by date
+  
   return processed.sort((a, b) => {
     if (a.date === '未知时间') return 1;
     if (b.date === '未知时间') return -1;

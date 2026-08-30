@@ -5,7 +5,7 @@ import { i18nConfig } from '../config/site';
 
 const allPosts = await getProcessedPosts();
 
-// Group posts by Year-Month
+
 const archiveMap: Record<string, typeof allPosts> = {};
 allPosts.forEach(post => {
   const dateStr = post.date || '';
@@ -19,10 +19,10 @@ allPosts.forEach(post => {
   archiveMap[key].push(post);
 });
 
-// Sort keys descending (e.g. 2026年06月 > 2026年05月)
+
 const archiveKeys = Object.keys(archiveMap).sort((a, b) => b.localeCompare(a));
 
-// Group keys by Year for the right sidebar
+
 const yearsMap: Record<string, string[]> = {};
 archiveKeys.forEach(key => {
   if (key === '未知') {
@@ -44,7 +44,7 @@ const years = Object.keys(yearsMap).sort((a, b) => b.localeCompare(a));
 >
   <div class="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start justify-center max-w-[1000px] mx-auto w-full relative">
     
-    {/* Main Timeline Column */}
+    
     <div class="flex-1 w-full min-w-0 flex flex-col gap-8 order-2 lg:order-1 animate-card-entrance opacity-0" style="animation-delay: 0.06s">
       <div class="bg-white border-4 border-[#0284c7] p-6 sm:p-8 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm relative overflow-hidden">
         <h1 class="text-2xl font-black text-[#0284c7] mb-8 flex items-center gap-3">
@@ -67,7 +67,7 @@ const years = Object.keys(yearsMap).sort((a, b) => b.localeCompare(a));
         <div class="relative border-l-4 border-dashed border-[#0284c7]/30 ml-4 pl-6 space-y-12">
           {archiveKeys.map((key) => (
             <div class="relative" id={`archive-${key}`}>
-              {/* Timeline dot */}
+              
               <div class="absolute -left-[30px] top-1.5 w-4 h-4 bg-[#fde68a] border-4 border-[#0284c7] rounded-full shadow-[2px_2px_0px_0px_#f59e0b]"></div>
 
               <h2 class="text-xl font-black text-[#0284c7] mb-4 bg-[#e0f2fe] inline-block px-3 py-1 rounded-sm border-2 border-[#0284c7] shadow-[2px_2px_0px_0px_#0284c7] tracking-wider">
@@ -93,7 +93,7 @@ const years = Object.keys(yearsMap).sort((a, b) => b.localeCompare(a));
       </div>
     </div>
     
-    {/* Right Sidebar: Year-Month Axis (desktop only) */}
+    
     <div class="hidden lg:flex w-[260px] shrink-0 flex-col gap-6 sticky top-[100px] order-1 lg:order-2 animate-card-entrance opacity-0" style="animation-delay: 0.1s">
       <div class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] p-5 shadow-[6px_6px_0px_0px_#f59e0b] rounded-sm max-h-[80vh] flex flex-col overflow-hidden">
         <h3 class="font-black text-[#0284c7] dark:text-[#0ea5e9] text-lg mb-4 flex items-center gap-2 shrink-0 border-b-2 border-dashed border-[#0284c7]/20 pb-2">
@@ -123,7 +123,7 @@ const years = Object.keys(yearsMap).sort((a, b) => b.localeCompare(a));
       </div>
     </div>
 
-    {/* Mobile timeline drawer */}
+    
     <div id="mobile-timeline-drawer" class="fixed inset-0 z-50 pointer-events-none lg:!hidden" style="opacity: 0; transition: opacity 0.3s ease;">
       <div class="absolute inset-0 bg-black/30" id="mobile-timeline-overlay" style="opacity: 0; transition: opacity 0.3s ease;"></div>
       <div id="mobile-timeline-panel" class="absolute bottom-0 left-0 right-0 bg-white dark:bg-slate-800 border-t-[10px] border-[#0284c7] rounded-t-3xl shadow-[0_-20px_60px_-10px_rgba(0,0,0,0.3)] max-h-[70vh] flex flex-col overflow-hidden pointer-events-auto" style="transform: translateY(100%); transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);">
@@ -157,7 +157,7 @@ const years = Object.keys(yearsMap).sort((a, b) => b.localeCompare(a));
       </div>
     </div>
 
-    {/* Floating toggle button (mobile only) */}
+    
     <button id="mobile-timeline-btn" class="fixed bottom-6 left-6 z-40 lg:!hidden w-14 h-14 bg-[#fde68a] border-4 border-[#0284c7] shadow-[4px_4px_0px_0px_#0284c7] rounded-full flex items-center justify-center cursor-pointer hover:shadow-[2px_2px_0px_0px_#0284c7] hover:translate-x-0.5 hover:translate-y-0.5 active:translate-y-1 active:shadow-none transition-all duration-150">
       <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-[#0284c7]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
         <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />

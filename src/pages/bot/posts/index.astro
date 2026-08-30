@@ -4,7 +4,7 @@ import { siteConfig, seoConfig, i18nConfig } from '../../../config/site';
 
 const allPosts = await getProcessedPosts();
 
-// Group posts by Year-Month
+
 const archiveMap: Record<string, typeof allPosts> = {};
 allPosts.forEach(post => {
   const dateStr = post.date || '';

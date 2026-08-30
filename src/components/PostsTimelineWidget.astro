@@ -7,7 +7,7 @@ interface Props {
 
 const { posts } = Astro.props;
 
-// Group posts by Year+Month
+
 const groupedPosts: Record<string, PostItem[]> = {};
 posts.forEach(p => {
   if (!p.date || p.date === '未知时间') return;
@@ -76,7 +76,7 @@ const months = Object.keys(groupedPosts);
       const postsList = group.querySelector('.archive-posts');
       const chevron = group.querySelector('.chevron-icon');
 
-      // Adjust initial chevron rotate state
+      
       if (idx > 0) {
         if (chevron) chevron.style.transform = 'rotate(-90deg)';
       }

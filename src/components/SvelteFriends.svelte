@@ -33,7 +33,7 @@
     copyText(text, "全部");
   }
 
-  // Fallback unique avatars gradient builder based on name hashes
+  
   const presets = [
     "from-rose-400 to-amber-300",
     "from-sky-400 to-emerald-300",
@@ -51,12 +51,12 @@
 
   function handleImgError(name: string) {
     imgErrors.add(name);
-    imgErrors = imgErrors; // trigger Svelte reactivity update
+    imgErrors = imgErrors; 
   }
 </script>
 
 <div class="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start w-full">
-  <!-- Left Column Profile Sidebar Card -->
+  
   <div class="hidden lg:flex w-[260px] shrink-0 flex-col gap-6 sticky top-[100px] select-none">
      <div class="bg-white border-4 border-[#0284c7] p-5 shadow-[6px_6px_0px_0px_#f59e0b] rounded-sm transform -rotate-1">
         <div class="flex items-center justify-center mb-4">
@@ -73,10 +73,10 @@
      </div>
   </div>
 
-  <!-- Main content pane -->
+  
   <div class="flex-1 min-w-0 w-full space-y-6 sm:space-y-8">
     <div class="bg-white border-4 border-[#0284c7] p-4 sm:p-6 md:p-8 shadow-[8px_8px_0px_0px_#0284c7] rounded-sm">
-      <!-- Title bar header -->
+      
       <div class="border-b-4 border-[#0284c7] pb-6 mb-6 md:mb-8 text-center md:text-left flex flex-col md:flex-row justify-between items-center gap-4">
         <div>
           <h1 class="text-xl sm:text-2xl md:text-3xl font-black text-[#0284c7] mb-3 leading-tight uppercase font-sans">Friends 友情链接</h1>
@@ -91,7 +91,7 @@
           </div>
         </div>
 
-        <!-- Dynamic Client-side Search and Filter Bar -->
+        
         <div class="relative max-w-full md:max-w-xs w-full shrink-0">
           <input
             type="text"
@@ -107,7 +107,7 @@
         </div>
       </div>
 
-      <!-- Friends Card grid -->
+      
       <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5">
         {#each filteredFriends as friend (friend.url)}
           <a
@@ -178,7 +178,7 @@
       </div>
     </div>
 
-    <!-- Application segment -->
+    
     <div class="bg-white border-4 border-[#0284c7] p-5 sm:p-6 shadow-[8px_8px_0px_0px_#0284c7] rounded-sm relative">
       <div class="flex items-center gap-2 mb-4 select-none">
         <div class="p-1 px-2.5 bg-[#fde68a] border-2 border-[#0284c7] text-[#0284c7] text-xs font-black rounded-sm transform -rotate-2 shadow-[1.5px_1.5px_0px_0px_#0284c7]">
@@ -190,7 +190,7 @@
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start font-mono text-xs sm:text-sm">
-        <!-- Rules -->
+        
         <div class="space-y-3 font-semibold text-slate-700 leading-relaxed">
           <p>
             欢迎同人、技术、设计、ACG、自媒体等各类健康有特色的独立博客相互串链。
@@ -219,7 +219,7 @@
           </a>
         </div>
 
-        <!-- Form elements to copy -->
+        
         <div class="bg-[rgba(250,248,245,0.55)] border-3 border-dashed border-[#0284c7] p-4 rounded-sm relative">
           <span class="absolute -top-3 right-4 bg-white border-2 border-[#0284c7] px-2 py-0.5 text-[9px] text-[#0284c7] font-bold shadow-[1px_1px_0px_0px_#0284c7] select-none">
             本站信息 INFO
@@ -258,7 +258,7 @@
       </div>
     </div>
 
-    <!-- Waline comments placeholder (handled in Astro page) -->
+    
     <div id="waline-placeholder"></div>
   </div>
 </div>

@@ -1,7 +1,7 @@
 import { getProcessedPosts, getProcessedTalks } from '../../utils/postsFetcher';
 import { siteConfig } from '../../config/site';
 
-/** 将 Markdown 正文转为纯文本，去掉图片、链接、标题符号等，便于 AI 读取 */
+
 function toPlainText(raw: string): string {
   return (raw || '')
     .replace(/!\[.*?\]\(.*?\)/g, '')
@@ -13,13 +13,13 @@ function toPlainText(raw: string): string {
     .trim();
 }
 
-/** 截取前 N 个字符 */
+
 function excerpt(raw: string, max = 100): string {
   const plain = toPlainText(raw);
   return plain.length <= max ? plain : plain.slice(0, max);
 }
 
-/** 把 date 转成 ISO 时间字符串（解析失败则返回空串） */
+
 function toISO(date: string): string {
   if (!date || date === '未知时间') return '';
   const d = new Date(date);

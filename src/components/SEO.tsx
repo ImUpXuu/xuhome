@@ -26,7 +26,7 @@ export function SEO({
   const pageDescription = description || seoConfig.defaultDescription;
   const pageKeywords = keywords?.length ? keywords : seoConfig.keywords;
   
-  // Custom canonical URL basing on configuration
+  
   const canonicalUrl = siteConfig.url 
     ? `${siteConfig.url}${typeof window !== 'undefined' ? window.location.pathname : ''}` 
     : url;
@@ -40,7 +40,7 @@ export function SEO({
       <meta name="robots" content={seoConfig.robots} />
       {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
 
-      {/* Open Graph */}
+      
       <meta property="og:title" content={pageTitle} />
       <meta property="og:description" content={pageDescription} />
       <meta property="og:type" content={isArticle ? "article" : type} />
@@ -49,7 +49,7 @@ export function SEO({
       <meta property="og:locale" content="zh-CN" />
       {canonicalUrl && <meta property="og:url" content={canonicalUrl} />}
 
-      {/* Twitter Card */}
+      
       <meta name="twitter:card" content={seoConfig.twitter.card} />
       <meta name="twitter:site" content={seoConfig.twitter.site} />
       <meta name="twitter:creator" content={seoConfig.twitter.creator} />
@@ -57,7 +57,7 @@ export function SEO({
       <meta name="twitter:description" content={pageDescription} />
       <meta name="twitter:image" content={image} />
 
-      {/* Dynamic Prefetch & Preconnect */}
+      
       {seoConfig.dnsPrefetch.map(domain => (
         <link key={domain} rel="dns-prefetch" href={domain} />
       ))}

@@ -23,9 +23,9 @@
 
   function formatMarkdown(text: string): string {
     if (!text) return "";
-    // Replace markdown bold tags
+    
     let html = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-    // Replace markdown link tags
+    
     html = html.replace(/\[(.*?)\]\((.*?)\)/g, '<a class="text-[#0ea5e9] font-bold hover:underline" href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
     return html.split('\n\n').map(p => `<p class="mb-3.5 leading-relaxed break-words">${p.replace(/\n/g, '<br/>')}</p>`).join('');
   }
@@ -51,19 +51,19 @@
 </script>
 
 <div class="max-w-[800px] mx-auto w-full space-y-6">
-  <!-- Back button -->
+  
   <div class="mb-6 flex justify-start select-none animate-card-entrance opacity-0">
      <a href="/talks" class="px-3 py-1.5 border-3 border-[#0284c7] bg-white dark:bg-slate-700 text-[#0284c7] dark:text-slate-200 flex items-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm shadow-[4px_4px_0px_0px_#0284c7] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all font-black uppercase text-xs">
         <span>&lsaquo; BACK TO TALKS</span>
      </a>
   </div>
 
-  <!-- Main Talk Card -->
+  
   <div 
     class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] p-5 md:p-6 shadow-[10px_10px_0px_0px_#f59e0b] rounded-sm relative animate-card-entrance opacity-0"
     style="animation-delay: 0.06s"
   >
-    <!-- Avatar & Meta Header -->
+    
     <div class="flex gap-4 items-center mb-4 select-none">
       <div class="rounded-sm bg-[#0ea5e9] border-3 border-[#0284c7] shadow-[4px_4px_0px_0px_#0284c7] flex-shrink-0 flex items-center justify-center transform -rotate-3 overflow-hidden w-12 h-12">
          <img src="https://upxuu.com/images/me.jpg" alt="UpXuu" class="w-full h-full object-cover" />
@@ -85,7 +85,7 @@
       </div>
     </div>
 
-    <!-- Content area -->
+    
     <div class="talk-content mt-2 pl-0 sm:pl-[64px] text-base text-slate-700 dark:text-slate-300">
       {#if talk.title && talk.title !== '日常动态'}
         <div class="flex items-center gap-2 mb-2 select-none">
@@ -100,7 +100,7 @@
         </div>
       {/if}
 
-      <!-- Nine-grid Image Gallery -->
+      
       {#if images.length > 0}
         <div class="mt-4 grid gap-2 {images.length === 1 ? 'grid-cols-1 max-w-sm' : images.length === 2 || images.length === 4 ? 'grid-cols-2 max-w-xs' : 'grid-cols-3 max-w-md'}">
           {#each images as src, idx}
@@ -115,7 +115,7 @@
         </div>
       {/if}
 
-      <!-- Bottom Metadata: Location, Weather, Device -->
+      
       {#if talk.location || talk.weather || talk.device}
         <div class="mt-4 flex flex-wrap gap-3 items-center text-xs font-bold text-slate-500 dark:text-slate-400 select-none border-t border-dashed border-slate-100 dark:border-slate-700 pt-3">
           {#if talk.location}
@@ -131,7 +131,7 @@
       {/if}
     </div>
 
-    <!-- Share footer -->
+    
     <div class="mt-8 border-t-2 border-dashed border-[#0284c7]/20 pt-4 flex justify-between items-center pl-0 sm:pl-[64px]">
        <div class="flex gap-3">
          <button class="flex items-center gap-1.5 px-3 py-1.5 border-2 border-[#0284c7] bg-white dark:bg-slate-700 text-[#0284c7] text-xs font-black shadow-[2px_2px_0px_0px_#0284c7] hover:bg-[#0284c7] hover:text-white transition-colors cursor-pointer rounded-sm transform active:translate-y-0.5 active:shadow-[0px_0px_0px_0px_#0284c7]">
@@ -144,7 +144,7 @@
     </div>
   </div>
 
-  <!-- Waline comments placeholder -->
+  
   <div id="waline-placeholder"></div>
 
   <div class="mt-8 text-center flex justify-center pb-12 select-none">
@@ -154,7 +154,7 @@
   </div>
 </div>
 
-<!-- Floating share trigger (bottom-right) -->
+
 <button
   on:click={openShare}
   class="fixed bottom-[5.5rem] right-6 z-[2000] w-12 h-12 rounded-sm border-3 sm:border-4 border-[#0284c7] bg-[#fde68a] dark:bg-amber-700/50 text-[#0284c7] flex items-center justify-center cursor-pointer shadow-[4px_4px_0px_0px_#0284c7] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#0284c7] active:translate-y-0 active:shadow-none transition-all duration-150"

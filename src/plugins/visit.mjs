@@ -1,4 +1,4 @@
-/** Minimal tree walk (no unist-util-visit dep) */
+
 export function visit(tree, type, visitor) {
   function walk(node, index, parent) {
     if (!node || typeof node !== 'object') return;

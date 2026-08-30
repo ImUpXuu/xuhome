@@ -45,9 +45,9 @@ def _safe_cwd_path(p, label):
     return path
 
 
-# ----------------------------------------------------------------------------
-# 工具函数
-# ----------------------------------------------------------------------------
+
+
+
 
 def percentile(data, p):
     """线性插值法计算百分位。"""
@@ -123,9 +123,9 @@ def codes_str(codes):
     return " ".join(f"{c}:{n}" for c, n in sorted(codes.items()))
 
 
-# ----------------------------------------------------------------------------
-# 双通道日志：console + 文件，线程安全
-# ----------------------------------------------------------------------------
+
+
+
 
 class TeeLogger:
     def __init__(self, logfile):
@@ -142,9 +142,9 @@ class TeeLogger:
         self.f.close()
 
 
-# ----------------------------------------------------------------------------
-# 请求执行器
-# ----------------------------------------------------------------------------
+
+
+
 
 class RequestWorker:
     """对单个 URL 发起一次请求，线程安全可复用。"""
@@ -156,7 +156,7 @@ class RequestWorker:
         self.headers = headers
         self.timeout = timeout
         self.insecure = insecure
-        # SSL context 只创建一次、全部请求共享（握手阶段线程安全）。
+        
         self.ssl_ctx = None
         if parsed.scheme == "https":
             self.ssl_ctx = ssl.create_default_context()
@@ -180,7 +180,7 @@ class RequestWorker:
                     self.parsed.hostname, port, timeout=self.timeout)
             conn.request(self.method, self.path, headers=self.headers)
             resp = conn.getresponse()
-            body = resp.read()  # 读取完整响应体并计量
+            body = resp.read()  
             elapsed = time.perf_counter() - start
             nbytes = len(f"HTTP/1.1 {resp.status} {resp.reason}\r\n".encode())
             nbytes += sum(len(k.encode()) + len(v.encode()) + 4
@@ -202,9 +202,9 @@ class RequestWorker:
                 pass
 
 
-# ----------------------------------------------------------------------------
-# 压测主流程
-# ----------------------------------------------------------------------------
+
+
+
 
 class LoadTest:
     def __init__(self, parsed, path, rpm, duration, method, headers,
@@ -390,9 +390,9 @@ class LoadTest:
                 self.log.log(f"  {et} : {cnt}")
 
 
-# ----------------------------------------------------------------------------
-# CLI
-# ----------------------------------------------------------------------------
+
+
+
 
 def parse_headers(header_list):
     headers = {}

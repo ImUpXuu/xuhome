@@ -54,7 +54,7 @@ export function AiSummary({ url, toc = [] }: { url: string, toc?: { id: string; 
     let startTime = Date.now();
 
     try {
-      // Try models
+      
       for (let i = targetIdx; i < SUMMARY_MODELS.length; i++) {
         resp = await fetch(SUMMARY_MODELS[i].url, {
           method: 'POST',
@@ -134,7 +134,7 @@ export function AiSummary({ url, toc = [] }: { url: string, toc?: { id: string; 
         }
       }
 
-      // Try parsing JSON format if it applies
+      
       parseResult(fullContent);
 
       const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);

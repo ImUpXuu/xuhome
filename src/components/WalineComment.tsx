@@ -14,19 +14,19 @@ export function WalineComment() {
   const lastPathRef = useRef<string>('');
   const [hint, setHint] = useState<StatusHint>({ kind: '', text: '' });
 
-  // Waline 服务端地址（与评论同域走代理时用 serverURL；否则用面板域名）
+  
   const panelOrigin = 'https://safecom.upxuu.com';
 
-  // 计算评论绑定的路由 path
+  
   const resolvedPath = () => {
     let p = window.location.pathname.replace(/\/+/g, '/');
     if (!p.endsWith('/')) p += '/';
     return p;
   };
 
-  // 轮询评论审核状态：等待→通过/被拒，通过后自动刷新评论列表
+  
   const pollCommentStatus = (commentId: number) => {
-    const maxAttempts = 14; // 约 14 × 6s = 84s
+    const maxAttempts = 14; 
     let attempt = 0;
     const tick = async () => {
       try {
@@ -43,23 +43,23 @@ export function WalineComment() {
           setHint({ kind: 'rejected', text: '✗ 评论未通过审核（可能包含广告/违规内容）' });
           return;
         }
-        // waiting：继续等
+        
         setHint({ kind: 'waiting', text: '⏳ 评论正在审核中，通过后自动显示…' });
       } catch (_) {
-        // 网络失败不打断轮询
+        
       }
       attempt += 1;
       if (attempt < maxAttempts) setTimeout(tick, 6000);
       else setHint({ kind: 'waiting', text: '⏳ 仍在审核中，稍后刷新即可查看' });
     };
-    setTimeout(tick, 4000); // 首次 4s 后查
+    setTimeout(tick, 4000); 
   };
 
   const initWaline = () => {
     if (!containerRef.current) return;
     const p = resolvedPath();
     lastPathRef.current = p;
-    // 先销毁旧实例，再按新路径重新初始化（View Transitions 切换文章/页面时）
+    
     walineInstanceConfig.current?.destroy();
     walineInstanceConfig.current = init({
       el: containerRef.current,
@@ -82,7 +82,7 @@ export function WalineComment() {
 
     initWaline();
 
-    // 拦截 Waline 提交评论的 POST 响应，拿到新评论 ID 后开始轮询审核状态
+    
     const origFetch = window.fetch;
     const commentEndpoint = (siteConfig.waline.serverURL || '').replace(/\/+$/, '');
     (window as any).fetch = (...args: any[]) => {
@@ -94,7 +94,7 @@ export function WalineComment() {
         url.includes('/comment');
       return origFetch.apply(window, args as any).then((resp: Response) => {
         if (isCommentPost) {
-          // 克隆响应，读取 body 里的 objectId（不影响 waline 自身消费）
+          
           resp.clone().json().then((data: any) => {
             const oid = data?.data && (data.data.objectId ?? data.data.id);
             if (oid) pollCommentStatus(Number(oid));
@@ -104,7 +104,7 @@ export function WalineComment() {
       });
     };
 
-    // View Transitions 每次导航完成后重新对齐评论路由
+    
     const onPageLoad = () => {
       if (resolvedPath() !== lastPathRef.current) {
         initWaline();

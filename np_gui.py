@@ -61,7 +61,7 @@ class MainWindow(QWidget):
 
         filename = sanitize_filename(filename) + '.md'
         filepath = os.path.abspath(os.path.join(POSTS_DIR, filename))
-        # 防止路径穿越：目标文件必须落在 POSTS_DIR 内
+        
         if not filepath.startswith(os.path.abspath(POSTS_DIR) + os.sep):
             QMessageBox.warning(self, "错误", "文件名非法")
             return

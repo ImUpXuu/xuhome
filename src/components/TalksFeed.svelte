@@ -13,7 +13,7 @@
   let shareTalk: TalkItem | null = null;
   let showShareModal = false;
 
-  // Lightbox state
+  
   let isLightboxOpen = false;
   let lightboxImages: string[] = [];
   let lightboxInitialIndex = 0;
@@ -36,7 +36,7 @@
     visibleCount = Math.min(visibleCount + talksPerPage, filteredTalks.length);
   }
 
-  // Parse markdown helper
+  
   function formatMarkdown(text: string): string {
     if (!text) return "";
     let html = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
@@ -44,7 +44,7 @@
     return html.split('\n\n').map(p => `<p class="mb-3.5 leading-relaxed break-words">${p.replace(/\n/g, '<br/>')}</p>`).join('');
   }
 
-  // Get image list inside post
+  
   function extractImages(content: string): {src: string; alt: string}[] {
     const imageRegex = /!\[(.*?)\]\((.*?)\)/g;
     const matches = Array.from(content.matchAll(imageRegex)).map((m) => ({
@@ -77,7 +77,7 @@
     isLightboxOpen = true;
   }
 
-  // Fold long talk content
+  
   function setupTalkFold() {
     document.querySelectorAll('.talk-content').forEach(el => {
       const wrap = el.querySelector('.talk-fold-wrap');
@@ -132,7 +132,7 @@
     await tick();
     setupTalkFold();
 
-    // Scroll and highlight deep links
+    
     const hash = window.location.hash;
     if (hash) {
       const elementId = hash.substring(1);
@@ -194,7 +194,7 @@
         style="animation-delay: {0.2 + (i % 12) * 0.05}s"
         on:click={() => window.location.href = `/talk/${talk.slug}`}
       >
-        <!-- Share Button -->
+        
         <button
           on:click={(e) => openShare(talk, e)}
           class="absolute top-4 right-4 p-1.5 sm:p-2 border-2 border-[#0284c7] text-xs font-black rounded-sm transition-all cursor-pointer z-10 flex items-center justify-center gap-1 shadow-[2px_2px_0px_0px_#0284c7] h-8 sm:h-9 bg-[rgba(250,248,245,0.55)] dark:bg-slate-700 text-[#0284c7] hover:bg-[#fde68a] hover:-translate-y-0.5 active:translate-y-0 active:shadow-none"
@@ -206,7 +206,7 @@
           <span class="text-[10px] hidden sm:inline font-bold">分享</span>
         </button>
 
-        <!-- Avatar & Meta Header -->
+        
         <div class="flex gap-4 items-center mb-4 select-none">
           <div class="rounded-sm bg-[#0ea5e9] border-3 border-[#0284c7] shadow-[4px_4px_0px_0px_#0284c7] flex-shrink-0 flex items-center justify-center transform -rotate-3 overflow-hidden w-10 h-10">
              <img src="https://upxuu.com/images/me.jpg" alt="UpXuu" class="w-full h-full object-cover" />
@@ -225,7 +225,7 @@
           </div>
         </div>
 
-        <!-- Content area -->
+        
         <div class="talk-content mt-2 pl-1 sm:pl-[56px] text-sm text-slate-700 dark:text-slate-300">
           {#if talk.title && talk.title !== '日常动态'}
             <div class="flex items-center gap-2 mb-2 select-none">
@@ -242,7 +242,7 @@
             </div>
           {/if}
 
-          <!-- Nine-grid Image Gallery -->
+          
           {#if images.length > 0}
             <div class="mt-4 grid gap-2 {images.length === 1 ? 'grid-cols-1 max-w-sm' : images.length === 2 || images.length === 4 ? 'grid-cols-2 max-w-xs' : 'grid-cols-3 max-w-md'}">
               {#each images as src, idx}
@@ -257,7 +257,7 @@
             </div>
           {/if}
 
-          <!-- Bottom Metadata: Location, Weather, Device -->
+          
           {#if talk.location || talk.weather || talk.device}
             <div class="mt-4 flex flex-wrap gap-3 items-center text-[10px] sm:text-xs font-bold text-slate-500 dark:text-slate-400 select-none border-t border-dashed border-slate-100 dark:border-slate-700 pt-2.5">
               {#if talk.location}

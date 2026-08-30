@@ -47,13 +47,13 @@ const { Content } = articleEntry ? await render(articleEntry) : { Content: () =>
     <link rel="icon" href={siteConfig.avatar} />
     <link rel="apple-touch-icon" href={siteConfig.avatar} />
 
-    <!-- Geo Tags -->
+    
     <meta name="geo.region" content="CN-HE" />
     <meta name="geo.placename" content="Shijiazhuang" />
     <meta name="geo.position" content="38.0428;114.5149" />
     <meta name="ICBM" content="38.0428, 114.5149" />
 
-    <!-- Open Graph -->
+    
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={pageDescription} />
     <meta property="og:url" content={canonicalURL} />
@@ -66,7 +66,7 @@ const { Content } = articleEntry ? await render(articleEntry) : { Content: () =>
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
 
-    <!-- Twitter -->
+    
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@ImUpXuu" />
     <meta name="twitter:creator" content="@ImUpXuu" />
@@ -74,7 +74,7 @@ const { Content } = articleEntry ? await render(articleEntry) : { Content: () =>
     <meta name="twitter:description" content={pageDescription} />
     <meta name="twitter:image" content={pageImage} />
 
-    <!-- Article Schema -->
+    
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
       "@type": "Article",

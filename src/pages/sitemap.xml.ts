@@ -19,7 +19,7 @@ export async function GET(context: any) {
   const rawPosts = await getCollection('posts');
   const rawTalks = await getCollection('talks');
   
-  // Normalize domain of the site (remove trailing slash)
+  
   const siteUrl = context.site ? context.site.toString() : 'https://upxuu.com';
   const domain = siteUrl.replace(/\/$/, '');
 

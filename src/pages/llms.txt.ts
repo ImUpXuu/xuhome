@@ -2,11 +2,7 @@ import type { APIContext } from 'astro';
 import { siteConfig } from '../config/site';
 import { getProcessedPosts, getProcessedTalks } from '../utils/postsFetcher';
 
-/**
- * llms.txt —— LLM 友好的站点内容索引（https://llmstxt.org/ 标准）
- * 静态构建时自动从内容集合生成，随每次部署自动更新。
- * 访问路径：/llms.txt
- */
+
 
 function stripMarkdown(md: string): string {
   return md
@@ -33,14 +29,14 @@ export async function GET(context: APIContext) {
 
   const lines: string[] = [];
 
-  // H1：站点名
+  
   lines.push(`# ${siteConfig.title}`);
 
-  // 一句话简介（blockquote）
+  
   lines.push('');
   lines.push(`> ${siteConfig.description || siteConfig.subtitle || ''}`);
 
-  // 站点说明
+  
   lines.push('');
   lines.push(
     `${siteConfig.title} 是 ${siteConfig.author} 的个人博客，记录技术折腾、生活随记与学习经历。` +
@@ -48,7 +44,7 @@ export async function GET(context: APIContext) {
       '阅读完整内容请访问对应链接。'
   );
 
-  // 主要页面
+  
   lines.push('');
   lines.push('## 主要页面');
   lines.push('');
@@ -66,7 +62,7 @@ export async function GET(context: APIContext) {
     lines.push(`- [${title}](${siteUrl}${path}): ${desc}`);
   }
 
-  // 文章列表（按时间倒序）
+  
   const sortedPosts = [...posts].sort((a, b) => (b.dateISO || '').localeCompare(a.dateISO || ''));
   lines.push('');
   lines.push(`## 文章（共 ${sortedPosts.length} 篇）`);
@@ -80,7 +76,7 @@ export async function GET(context: APIContext) {
     lines.push(`- [${post.title}](${siteUrl}/posts/${slug}): ${date} · ${desc}`);
   }
 
-  // 说说（最近 100 条）
+  
   const recentTalks = talks.slice(0, 100);
   lines.push('');
   lines.push(`## 说说（最近 ${recentTalks.length} 条）`);

@@ -24,8 +24,8 @@ NEW_HOST = "img.upxuu.lcrworld.xyz"
 XYZ_PREFIX = "https://img.476543.xyz/img/"
 NEW_IMAGES_PREFIX = "https://" + NEW_HOST + "/images/"
 
-# Legacy images that only exist as .webp on the new host.
-# Set 1: img.upxuu.com jpg/png NOT under /2026/8/
+
+
 WEBP_SET = set()
 
 
@@ -69,17 +69,17 @@ def main():
     urls = collect_upxuu_urls()
     for u in sorted(urls):
         if u.endswith(".jpg") or u.endswith(".png"):
-            # newer uploads (kept original extension) live under /2026/8/
+            
             if "/2026/8/" in u:
                 continue
             WEBP_SET.add(u)
 
-    # Set 2: the single img.476543.xyz legacy png that exists only as webp
+    
     WEBP_SET.add("https://img.476543.xyz/img/2026/7/22/20260722122924_577.png")
 
     print("Images to convert to .webp:", len(WEBP_SET))
 
-    # Build old-URL -> new-URL mapping for the webp-only images
+    
     mapping = {}
     for u in sorted(WEBP_SET):
         if u.startswith(XYZ_PREFIX):
@@ -110,12 +110,12 @@ def main():
         orig = text
         for old, new in mapping.items():
             text = text.replace(old, new)
-        # generic host swap for everything else
+        
         text = text.replace("https://" + OLD_HOST + "/images/",
                             "https://" + NEW_HOST + "/images/")
         text = text.replace(XYZ_PREFIX, NEW_IMAGES_PREFIX)
         if text != orig:
-            # 只允许改写内容目录或固定布局文件，防止意外覆盖其它路径
+            
             if not (_inside(CONTENT, p) or os.path.abspath(p) == os.path.abspath(LAYOUT)):
                 print("SKIP (outside content):", os.path.relpath(p, ROOT))
                 continue

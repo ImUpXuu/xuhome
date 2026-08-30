@@ -5,14 +5,14 @@ import { seoConfig } from '../config/seo';
 import { ClientRouter } from 'astro:transitions';
 import NavBar from '../components/NavBar.astro';
 import PrefetchLinks from '../components/PrefetchLinks.svelte';
-// 暂时禁用：import WelcomeToast from '../components/WelcomeToast.astro';
+
 import { PageBanner } from '../components/PageBanner';
 import MusicPlayer from '../components/MusicPlayer.svelte';
 import { execSync } from 'child_process';
 import { getCollection } from 'astro:content';
 import '../index.css';
 
-// 页脚字数统计：文章 + 说说的正文字符数合计（去掉图片语法与空白）
+
 const footerPosts = await getCollection('posts');
 const footerTalks = await getCollection('talks');
 const stripMarkdown = (s: string) => s
@@ -92,18 +92,18 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="msvalidate.01" content="8814B55DAA53801F47B998FE06421544" />
 
-    <!-- Geo Tags -->
+    
     <meta name="geo.region" content="CN-HE" />
     <meta name="geo.placename" content="Shijiazhuang" />
     <meta name="geo.position" content="38.0428;114.5149" />
     <meta name="ICBM" content="38.0428, 114.5149" />
-    {/* Favicon - use avatar image */}
+    
     <link rel="icon" href={siteConfig.avatar} />
     <link rel="apple-touch-icon" href={siteConfig.avatar} />
-    {/* WebMCP 工具注册 */}
+    
     <script is:inline src="/webmcp-register.js"></script>
 
-    {/* Open Graph Tags */}
+    
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={pageDescription} />
     <meta property="og:type" content={post ? "article" : "website"} />
@@ -116,7 +116,7 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
     <meta property="og:url" content={canonicalURL} />
     {post && <meta property="article:published_time" content={post.dateISO || post.date} />}
     
-    {/* Twitter Card Tags */}
+    
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content={seoConfig.twitter.site} />
     <meta name="twitter:creator" content={seoConfig.twitter.creator} />
@@ -124,7 +124,7 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
     <meta name="twitter:description" content={pageDescription} />
     <meta name="twitter:image" content={resolvedImage} />
 
-    {/* JSON-LD Structured Data */}
+    
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
       "@graph": [
@@ -172,14 +172,14 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
       ]
     })} />
 
-    {/* Dynamic Prefetch & Preconnect */}
+    
     {seoConfig.dnsPrefetch.map(domain => (
       <link rel="dns-prefetch" href={domain} />
     ))}
     {seoConfig.preconnect.map(conn => (
       <link rel="preconnect" href={conn.url} crossorigin={conn.crossOrigin === "anonymous" ? "anonymous" : undefined} />
     ))}
-    {/* 自托管字体（CDN: img.upxuu.lcrworld.xyz），不再请求 Google Fonts */}
+    
     <link rel="preconnect" href="https://img.upxuu.lcrworld.xyz" crossorigin />
     <link rel="stylesheet" href="https://img.upxuu.lcrworld.xyz/font/fonts.css" />
     {!isArticle && <link rel="preload" as="image" href={DEFAULT_BG_URL} fetchpriority="high" />}
@@ -188,7 +188,7 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
       <script defer src={u.src} data-website-id={u.id}></script>
     ))}
     <script type="text/javascript">
-      /* Clarity：页面 load 后再加载，不阻塞首屏 */
+      
       window.addEventListener('load', function() {
         (function(c,l,a,r,i,t,y){
           c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
@@ -288,7 +288,7 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
     }
 
   </style>
-  {/* Dark mode init: read persisted theme before first paint */}
+  
   <script is:inline>
     (function() {
       try {
@@ -299,14 +299,14 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
           document.documentElement.classList.remove('dark');
         }
       } catch (e) {
-        // localStorage may be unavailable in some contexts
+        
       }
     })();
   </script>
   <ClientRouter />
 </head>
   <body data-bg-url={!isArticle ? DEFAULT_BG_URL : ''} data-is-article={isArticle ? "true" : "false"} class="dark:bg-slate-900 text-slate-900 dark:text-slate-100 selection:bg-[#fde68a] selection:text-[#0284c7]">
-    {/* Persistent full-page bg layer (survives View Transitions) */}
+    
     <div
       id="site-bg"
       transition:persist="site-bg"
@@ -323,23 +323,23 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
       <div class="bg-mini-bar"><i id="site-bg-loader-bar"></i></div>
       <span class="bg-loader-meta" id="site-bg-loader-meta" hidden>0 / 0 · 0%</span>
     </div>
-    <!-- Tiny top bar + count only while real resources are loading -->
+    
     <div id="resource-progress" transition:persist="resource-progress" aria-hidden="true">
       <i></i>
       <span id="resource-progress-meta" hidden>0 / 0 · 0%</span>
     </div>
-    <!-- Skip to content for keyboard users -->
+    
     <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[200] focus:bg-[#0284c7] focus:text-white focus:px-4 focus:py-2 focus:rounded-sm focus:font-black focus:text-sm focus:shadow-[4px_4px_0px_0px_#fde68a] focus:no-underline focus:outline-none">
       跳转到主要内容
     </a>
-    {/* Global reading progress bar */}
+    
     <div class="fixed top-0 left-0 w-full h-[5px] bg-transparent z-[110] pointer-events-none">
       <div 
         id="scroll-bar-indicator"
         class="h-full bg-gradient-to-r from-[#0284c7] via-[#0ea5e9] to-[#f59e0b] origin-left w-0 transition-all duration-75"
       ></div>
     </div>
-    {/* 缓存系统：面板 + HIT/MISS 弹出提示（persist 保持跨页面） */}
+    
     <div id="cache-panel" class="cache-panel" transition:persist="cache-panel" style="display:none">
       <div class="cache-panel-header">⚡ Cache</div>
       <div id="cache-panel-stats" class="cache-panel-stats">—</div>
@@ -347,13 +347,13 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
     <div id="cache-toast" class="cache-toast" transition:persist="cache-toast" style="display:none"></div>
     <script is:inline>
     (function () {
-      // 不开 debug 就什么都不运行
+      
       if (sessionStorage.getItem('cacheDebug') !== '1') {
-        // 只在 /cachelog 路径开启
+        
         if (window.location.pathname === '/cachelog' || window.location.pathname === '/cachelog/') {
           try { sessionStorage.setItem('cacheDebug', '1'); } catch {}
         } else {
-          return; // 不是 debug 模式，直接退出
+          return; 
         }
       }
 
@@ -362,7 +362,7 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
       var toast = document.getElementById('cache-toast');
       if (!panel || !statsEl || !toast) return;
 
-      // 更新面板内容
+      
       function updatePanel() {
         panel.style.display = '';
         var s = window.__cacheStats || {};
@@ -384,7 +384,7 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
       document.addEventListener('astro:page-load', updatePanel);
       document.addEventListener('astro:after-swap', updatePanel);
 
-      // HIT/MISS 弹出提示
+      
       var toastTimer = null;
       function showToast(hit, x, y) {
         toast.textContent = hit ? '✓ HIT' : '✗ MISS';
@@ -402,7 +402,7 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
         }, 1200);
       }
 
-      // 只在 debug 模式下监听点击（不阻塞导航）
+      
       document.addEventListener('click', function (e) {
         var link = e.target.closest('a[href^="/posts/"]');
         if (!link) return;
@@ -413,7 +413,7 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
         var slug = url.split('/').filter(Boolean).pop() || '';
         var absUrl = url.startsWith('http') ? url : location.origin + url;
 
-        // 异步查缓存，不阻塞导航
+        
         caches.open('xuhome-article-cache-v1').then(function (cache) {
           return cache.match(new Request(absUrl));
         }).then(function (res) {
@@ -429,7 +429,7 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
       }, true);
     })();
     </script>
-    {/* 暂时禁用：<WelcomeToast /> */}
+    
     <div class={isMusicPage ? 'flex flex-col h-[100dvh] overflow-hidden' : 'flex flex-col min-h-screen'}>
       <NavBar />
       
@@ -481,7 +481,7 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
       {!hideFooter && (
       <footer class="w-full select-none">
         <div class="max-w-5xl mx-auto px-4 py-6 text-center text-xs font-mono text-black dark:text-slate-300 leading-relaxed space-y-3">
-          {/* 导航链接：积木粗野主义按钮组 */}
+          
           <div class="flex flex-wrap justify-center gap-2">
             {infoConfig.footer.links.map((link) => (
               <a href={link.path} target={link.external ? "_blank" : undefined} rel={link.external ? "noopener noreferrer" : undefined}
@@ -490,7 +490,7 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
               </a>
             ))}
           </div>
-          {/* 版权 + 备案 */}
+          
           <div class="font-bold">
             <span>{infoConfig.footer.copyrightText}</span>
             {infoConfig.footer.icp.text && <>
@@ -498,7 +498,7 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
               <a href={infoConfig.footer.icp.link} target="_blank" rel="noopener noreferrer" class="text-[#0284c7] hover:underline">{infoConfig.footer.icp.text}</a>
             </>}
           </div>
-          {/* QQ 交流群 */}
+          
           <div>
             <a href="https://qm.qq.com/q/mlH3QB1hC2" target="_blank" rel="noopener noreferrer" class="text-[#0284c7] hover:underline font-bold">欢迎点击加入upxuu的交流Q群 1103232422</a>
           </div>
@@ -588,8 +588,8 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
         return;
       }
 
-      // Keep the current CSS background in place and only re-paint it with
-      // the same image instead of swapping to an empty dot grid first.
+      
+      
       el.dataset.bgUrl = url;
       paintBg();
 
@@ -664,7 +664,7 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
       var topMeta = document.getElementById('resource-progress-meta');
       var entryBar = document.getElementById('site-bg-loader-bar');
       var entryMeta = document.getElementById('site-bg-loader-meta');
-      // never show empty 0/0
+      
       if (!total || total <= 0) {
         if (top) top.classList.remove('is-on');
         if (topBar) topBar.style.width = '0%';
@@ -683,7 +683,7 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
         if (done < total) {
           top.classList.add('is-on');
         } else {
-          // snap to 100% then hide
+          
           if (topBar) topBar.style.width = '100%';
           if (entryBar) entryBar.style.width = '100%';
           if (topMeta) topMeta.textContent = total + ' / ' + total + ' · 100%';
@@ -754,7 +754,7 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
   })();
 </script>
 
-    {/* Floating Back To Top button */}
+    
     <button
       id="back-to-top-btn"
       class="fixed bottom-24 right-6 z-[95] w-12 h-12 rounded-sm border-3 sm:border-4 border-[#0284c7] bg-[#fde68a] dark:bg-[#1e293b] text-[#0284c7] flex items-center justify-center cursor-pointer shadow-[4px_4px_0px_0px_#0284c7] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#0284c7] active:translate-y-0 active:shadow-none transition-all duration-150 opacity-0 pointer-events-none"
@@ -765,7 +765,7 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
       </svg>
     </button>
 
-    {/* 只有音乐页才加载播放器，其它页面不请求任何音乐播放器代码 */}
+    
     <PrefetchLinks client:load />
     {isMusicPage && (
       <MusicPlayer client:load transition:persist="music-player" />
@@ -775,7 +775,7 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
 
   <script is:inline data-astro-rerun>
 {
-  // 滚动阅读进度条（原脚本顶层 return 属 SyntaxError，整段从未执行过）
+  
   if (!window.__scrollBarSetup) {
     window.__scrollBarSetup = true;
     window.addEventListener('scroll', () => {
@@ -792,7 +792,7 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
     const backToTopBtn = document.getElementById('back-to-top-btn');
     if (!backToTopBtn) return;
 
-    // Scroll listener: only once (window persists across view transitions)
+    
     if (!window.__backToTopScrollSetup) {
       window.__backToTopScrollSetup = true;
       window.addEventListener('scroll', () => {
@@ -808,13 +808,13 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
       }, { passive: true });
     }
 
-      // Click listener：按钮在 View Transition 后会重建，故每次脚本运行都重新绑定
+      
       backToTopBtn.addEventListener('click', () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
       });
     }
 
-  // 回顶按钮（View Transition 后按钮节点会重建，点击监听每次脚本运行重新绑定即可）
+  
   setupBackToTop();
 }
 </script>

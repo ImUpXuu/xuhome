@@ -11,7 +11,7 @@ import { remarkGithubCard } from './src/plugins/remark-github-card.mjs';
 import { rehypeShiftHeadings } from './src/plugins/rehype-shift-headings.mjs';
 import { rehypeExternalLinks } from './src/plugins/rehype-external-links.mjs';
 
-// https://astro.build/config
+
 export default defineConfig({
   output: 'static',
   outDir: 'dist',

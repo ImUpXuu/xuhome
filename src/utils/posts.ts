@@ -18,7 +18,7 @@ export function getAllPosts(): PostEntry[] {
     : [];
 
   if (posts.length === 0) {
-    // Return dummy data if no posts found or during SSR
+    
     posts = Array.from({ length: 5 }).map((_, i) => ({
       id: `dummy-post-${i}`,
       slug: `dummy-post-${i}`,

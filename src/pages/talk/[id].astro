@@ -20,7 +20,7 @@ export async function getStaticPaths() {
 const { id } = Astro.params;
 const { talk } = Astro.props;
 
-/** SEO description: plain text, first 150 chars only */
+
 function talkSeoDescription(raw: string, max = 150): string {
   const plain = (raw || '')
     .replace(/!\[.*?\]\(.*?\)/g, '')

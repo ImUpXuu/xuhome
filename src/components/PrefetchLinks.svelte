@@ -38,7 +38,7 @@
       } as RequestInit);
       if (response.ok) await response.arrayBuffer();
     } catch {
-      // Prefetch failures are silent; the real click still works normally.
+      
     } finally {
       inflightUrls.delete(url);
       drainPrefetchQueue();
@@ -93,4 +93,4 @@
   });
 </script>
 
-<!-- no visible UI; only prefetches marked links -->
+

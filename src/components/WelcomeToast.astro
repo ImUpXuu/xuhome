@@ -113,7 +113,7 @@ import { welcomeConfig, siteConfig } from '../config/site';
     showWelcomeToast();
   }
 
-  // Defer init to avoid blocking initial page load
+  
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', function() { setTimeout(init, 1000); });
   } else {

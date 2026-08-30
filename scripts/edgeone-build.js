@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// EdgeOne Pages 专用：先删 Vercel 专属 middleware.js（防止被当边缘函数执行报错），再跑标准构建
+
 import { rmSync, existsSync } from 'fs';
 import { spawnSync } from 'child_process';
 

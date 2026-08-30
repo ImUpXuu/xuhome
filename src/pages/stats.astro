@@ -10,7 +10,7 @@ import { siteConfig } from '../config/site';
 >
   <div class="w-full max-w-6xl mx-auto px-2 sm:px-4 pb-24">
 
-    <!-- 标题区 -->
+    
     <div class="mb-5 flex items-center justify-between gap-3 animate-stat-in" style="--d:0s">
       <div>
         <h1 class="text-xl sm:text-2xl font-black text-[#0284c7]">📊 网站统计</h1>
@@ -19,7 +19,7 @@ import { siteConfig } from '../config/site';
       <span id="update-time" class="text-xs font-black text-slate-400 bg-white dark:bg-slate-800 border-2 border-[#0284c7] px-3 py-1.5 rounded-md shadow-[2px_2px_0px_0px_#0284c7]">--:--</span>
     </div>
 
-    <!-- 总览卡 -->
+    
     <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
       <div class="stat-card" style="--d:0.05s">
         <div class="text-[11px] font-black text-slate-400 uppercase tracking-wider">今日 PV</div>
@@ -39,7 +39,7 @@ import { siteConfig } from '../config/site';
       </div>
     </div>
 
-    <!-- 趋势图 -->
+    
     <div class="chart-card mb-5" style="--d:0.25s">
       <div class="flex items-center justify-between gap-3 mb-2 flex-wrap">
         <h2 class="text-sm font-black text-[#0284c7] flex items-center gap-2">
@@ -54,12 +54,12 @@ import { siteConfig } from '../config/site';
       </div>
       <div class="relative">
         <canvas id="trend-chart" height="300" class="w-full block cursor-crosshair"></canvas>
-        <!-- 悬停浮窗 -->
+        
         <div id="trend-tip" class="absolute hidden pointer-events-none z-10 rounded-lg bg-slate-900/90 text-white text-xs px-3 py-2 shadow-xl backdrop-blur-sm"></div>
       </div>
     </div>
 
-    <!-- 页面排行 -->
+    
     <div class="chart-card" style="--d:0.35s">
       <div class="flex items-center justify-between gap-3 mb-3">
         <h2 class="text-sm font-black text-[#0284c7] flex items-center gap-2">
@@ -129,7 +129,7 @@ import { siteConfig } from '../config/site';
   let trendSeries = [];
   let trendTimer = null;
 
-  // 关闭的线
+  
   const lineOff = new Set();
 
   function esc(s) {
@@ -142,8 +142,8 @@ import { siteConfig } from '../config/site';
     return r.json();
   }
 
-  // ===== 平滑曲线绘制 =====
-  // Catmull-Rom → 贝塞尔平滑
+  
+  
   function smoothPath(ctx, pts) {
     if (!pts.length) return;
     ctx.moveTo(pts[0].x, pts[0].y);
@@ -177,21 +177,21 @@ import { siteConfig } from '../config/site';
     const plotW = w - padL - padR;
     const plotH = h - padT - padB;
 
-    // 计算各线最大值：只统计打开的线
+    
     const activeKeys = ['pv', 'uv', 'visits'].filter(k => !lineOff.has(k));
     let maxVal = 1;
     series.forEach(s => activeKeys.forEach(k => { maxVal = Math.max(maxVal, s[k] || 0); }));
-    // Y 轴向上取整到 50 的倍数，好看
+    
     maxVal = Math.ceil(maxVal / 50) * 50 || 50;
     const n = series.length;
 
     const xAt = i => padL + (n === 1 ? plotW / 2 : (i / (n - 1)) * plotW);
     const yAt = v => padT + plotH - ((v / maxVal) * plotH);
 
-    // 背景
+    
     ctx.clearRect(0, 0, w, h);
 
-    // 网格 + Y 轴刻度
+    
     ctx.strokeStyle = 'rgba(148,163,184,0.16)';
     ctx.lineWidth = 1;
     ctx.font = '10px monospace';
@@ -203,7 +203,7 @@ import { siteConfig } from '../config/site';
       ctx.fillText(String(Math.round((maxVal * (5 - g)) / 5)), padL - 7, gy + 3);
     }
 
-    // X 轴时间标签
+    
     ctx.textAlign = 'center';
     const step = Math.max(1, Math.ceil(n / 8));
     for (let i = 0; i < n; i += step) {
@@ -212,7 +212,7 @@ import { siteConfig } from '../config/site';
       ctx.fillText(label, xAt(i), h - 8);
     }
 
-    // hover 竖线
+    
     if (hoverIdx >= 0 && hoverIdx < n) {
       ctx.strokeStyle = 'rgba(100,116,139,0.35)';
       ctx.lineWidth = 1;
@@ -233,7 +233,7 @@ import { siteConfig } from '../config/site';
 
     activeKeys.forEach(key => {
       const pts = series.map((s, i) => ({ x: xAt(i), y: yAt(s[key] || 0) }));
-      // 面积渐变填充
+      
       const grad = ctx.createLinearGradient(0, padT, 0, padT + plotH);
       grad.addColorStop(0, fills[key]);
       grad.addColorStop(1, 'rgba(255,255,255,0)');
@@ -245,7 +245,7 @@ import { siteConfig } from '../config/site';
       ctx.fillStyle = grad;
       ctx.fill();
 
-      // 曲线
+      
       ctx.strokeStyle = colors[key];
       ctx.lineWidth = 2.2;
       ctx.lineJoin = 'round';
@@ -254,7 +254,7 @@ import { siteConfig } from '../config/site';
       smoothPath(ctx, pts);
       ctx.stroke();
 
-      // 数据点
+      
       pts.forEach((p, i) => {
         ctx.beginPath();
         ctx.arc(p.x, p.y, hoverIdx === i ? 4 : 2.2, 0, Math.PI * 2);
@@ -267,7 +267,7 @@ import { siteConfig } from '../config/site';
     });
   }
 
-  // ===== hover tooltip =====
+  
   function bindHover(seriesRef) {
     const canvas = $id('trend-chart');
     const tip = $id('trend-tip');
@@ -292,7 +292,7 @@ import { siteConfig } from '../config/site';
         `<div style="display:flex;align-items:center;gap:5px;margin-bottom:2px"><span style="width:8px;height:8px;border-radius:50%;background:#f59e0b;display:inline-block"></span>UV: ${point.uv}</div>` +
         `<div style="display:flex;align-items:center;gap:5px"><span style="width:8px;height:8px;border-radius:50%;background:#10b981;display:inline-block"></span>Visits: ${point.visits}</div>`;
       tip.classList.remove('hidden');
-      // 定位：跟随鼠标上方
+      
       const tipX = Math.min(Math.max(x + 14, 4), rect.width - 150);
       const cardRect = canvas.parentElement.getBoundingClientRect();
       tip.style.left = tipX + 'px';
@@ -305,7 +305,7 @@ import { siteConfig } from '../config/site';
     });
   }
 
-  // ===== 页面排行（带入场动画）=====
+  
   function renderPages(pages) {
     const list = $id('page-list');
     if (!pages || !pages.length) {
@@ -331,7 +331,7 @@ import { siteConfig } from '../config/site';
     }).join('');
   }
 
-  // ===== 加载 =====
+  
   async function loadTrend() {
     try {
       const d = await getJSON(`${API}/api/trend?hours=24`);
@@ -362,7 +362,7 @@ import { siteConfig } from '../config/site';
     } catch (_) {}
   }
 
-  // ===== 初始化 =====
+  
   function initStatsPage() {
     const rangeEl = $id('page-range');
     if (!rangeEl) return;
@@ -377,13 +377,13 @@ import { siteConfig } from '../config/site';
 
     rangeEl.addEventListener('change', () => {
       const v = Number(rangeEl.value);
-      pageHours = Number.isNaN(v) ? 24 : v; // 0 = 全部时段，不能 || 24
+      pageHours = Number.isNaN(v) ? 24 : v; 
       loadPages(pageHours);
     });
 
     window.addEventListener('resize', () => drawTrend(trendSeries));
 
-    // 线条开关：点击图例隐藏/显示该线
+    
     document.querySelectorAll('[data-line-toggle]').forEach(el => {
       el.addEventListener('click', () => {
         const key = el.dataset.lineToggle;

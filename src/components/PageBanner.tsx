@@ -18,7 +18,7 @@ export function PageBanner({
   postsCount: propPostsCount,
   post: propPost
 }: PageBannerProps) {
-  // Use props if provided, otherwise fallback to window.location (client-side only)
+  
   const pathname = propPathname || (typeof window !== 'undefined' ? window.location.pathname : '');
   const isHome = pathname === '/' || pathname === '/index.html';
 
@@ -32,7 +32,7 @@ export function PageBanner({
     return !!(categoryName || tagName || post || pathname === "/talk" || pathname.startsWith("/talk/") || pathname.startsWith("/talks/"));
   }, [categoryName, tagName, post, pathname]);
 
-  // Determine what type of content to render on the right side
+  
   const rightSideContent = useMemo(() => {
     if (categoryName) {
       return (
@@ -138,7 +138,7 @@ export function PageBanner({
       transition={{ type: "spring", stiffness: 220, damping: 26 }}
       className="bg-white border-4 border-[#0284c7] p-3.5 sm:p-6 md:p-10 shadow-[6px_6px_0px_0px_#0284c7] sm:shadow-[8px_8px_0px_0px_#0284c7] rounded-sm text-center relative overflow-hidden flex flex-col justify-center min-h-[110px] sm:min-h-[180px] md:min-h-[220px]"
     >
-      {/* Handpainted/Retro grid styling */}
+      
       <div 
         className="absolute top-0 left-0 w-full h-full pointer-events-none" 
         style={{ 
@@ -157,7 +157,7 @@ export function PageBanner({
             : "flex-col items-center justify-center text-center"
         }`}
       >
-        {/* Left Hand: Site Identity (Persistent / Morphing) */}
+        
         <motion.div 
           layout="position"
           transition={{ type: "spring", stiffness: 220, damping: 26 }}
@@ -191,7 +191,7 @@ export function PageBanner({
           </div>
         </motion.div>
 
-        {/* Right Hand: Context Specific Cards (Transitioning smoothly) */}
+        
         {hasRightContent && (
           <div className="flex items-center justify-center md:justify-end shrink-0 min-w-0 max-w-full">
             <AnimatePresence mode="popLayout">
