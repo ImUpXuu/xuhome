@@ -1,6 +1,5 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { siteConfig } from '../config/site';
 import { buildSummary } from '../utils/commitStats';
 
 // 首屏只内联聚合摘要（几 KB）；逐提交明细走 /data/commits/N.json 按需拉取
@@ -13,7 +12,7 @@ const busiest = summary.daily.reduce(
 ---
 
 <Layout
-  title={`博客统计${siteConfig.titleTemplate}`}
+  title="博客统计"
   description="UpXuu 博客建设统计：提交热力图、字数增长、更新内容构成与每次提交明细"
   keywords={['UpXuu', '博客统计', '提交热力图', '字数统计', 'changelog']}
   hideBanner={true}
@@ -21,7 +20,7 @@ const busiest = summary.daily.reduce(
   <div class="w-full max-w-5xl mx-auto pb-20 space-y-4 sm:space-y-5">
 
     {/* 标题砖 */}
-    <div class="brick flex flex-wrap items-center justify-between gap-3">
+    <div class="brick flex flex-wrap items-center justify-between gap-3" style="--d:0s">
       <div class="flex items-center gap-3">
         <span class="head-icon">🧱</span>
         <div>
@@ -36,29 +35,29 @@ const busiest = summary.daily.reduce(
 
     {/* 概览数字 */}
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-      <div class="brick num-brick" data-accent="sky">
+      <div class="brick num-brick" data-accent="sky" style="--d:.05s">
         <div class="num-label">提交总数</div>
         <div class="num-value">{summary.totals.commits.toLocaleString('en-US')}</div>
         <div class="num-sub">{summary.totals.activeDays} 天有更新</div>
       </div>
-      <div class="brick num-brick" data-accent="amber">
+      <div class="brick num-brick" data-accent="amber" style="--d:.1s">
         <div class="num-label">正文总字数</div>
         <div class="num-value">{(summary.totals.words / 1000).toFixed(1)}k</div>
         <div class="num-sub">{summary.totals.posts} 篇文章 · {summary.totals.talks} 条说说</div>
       </div>
-      <div class="brick num-brick" data-accent="green">
+      <div class="brick num-brick" data-accent="green" style="--d:.15s">
         <div class="num-label">新增行数</div>
         <div class="num-value">+{(summary.totals.added / 1000).toFixed(1)}k</div>
         <div class="num-sub">删除 {(summary.totals.removed / 1000).toFixed(1)}k 行</div>
       </div>
-      <div class="brick num-brick" data-accent="slate">
+      <div class="brick num-brick" data-accent="slate" style="--d:.2s">
         <div class="num-label">最勤奋的一天</div>
         <div class="num-value">{busiest.commits}</div>
         <div class="num-sub">{busiest.date} 的提交数</div>
       </div>
     </div>
     {/* 热力图 */}
-    <div class="brick heat-brick">
+    <div class="brick heat-brick" style="--d:.25s">
       <div class="brick-head">
         <h2 class="brick-title">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3M3 11h18M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
@@ -88,7 +87,7 @@ const busiest = summary.daily.reduce(
     </div>
 
     {/* 字数增长 */}
-    <div class="brick">
+    <div class="brick" style="--d:.3s">
       <div class="brick-head">
         <h2 class="brick-title">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
@@ -113,7 +112,7 @@ const busiest = summary.daily.reduce(
     </div>
 
     {/* 更新内容构成 */}
-    <div class="brick">
+    <div class="brick" style="--d:.35s">
       <div class="brick-head">
         <h2 class="brick-title">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M11 3.055A9 9 0 1020.945 13H11V3.055z"/><path stroke-linecap="round" stroke-linejoin="round" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/></svg>
@@ -134,7 +133,7 @@ const busiest = summary.daily.reduce(
     </div>
 
     {/* 提交明细 */}
-    <div class="brick">
+    <div class="brick" style="--d:.4s">
       <div class="brick-head">
         <h2 class="brick-title">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h7"/></svg>
@@ -173,8 +172,18 @@ const busiest = summary.daily.reduce(
     border-radius: 4px;
     box-shadow: 6px 6px 0 0 #0284c7;
     padding: 16px 18px;
+    animation: brick-in .55s cubic-bezier(.34, 1.56, .64, 1) both;
+    animation-delay: var(--d, 0s);
   }
   :global(.dark) .brick { background: #1e293b; box-shadow: 6px 6px 0 0 #0369a1; }
+
+  @keyframes brick-in {
+    from { opacity: 0; transform: translateY(18px); }
+    to { opacity: 1; transform: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .brick { animation: none; }
+  }
 
   /* 热力图砖块要做悬浮标签的定位参照，否则 .tip 会去找更外层的祖先，位置全偏 */
   .heat-brick { position: relative; }

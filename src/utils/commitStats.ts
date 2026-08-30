@@ -38,6 +38,15 @@ export interface ContentFileEntry {
   updatedTs: number;
 }
 
+export interface FileHistoryEntry {
+  sha: string;
+  ts: number;
+  subject: string;
+  author: string;
+  added: number;
+  removed: number;
+}
+
 export interface CommitIndex {
   schema: number;
   repo: string;
@@ -53,6 +62,8 @@ export interface CommitIndex {
   };
   daily: DailyEntry[];
   contentFiles: ContentFileEntry[];
+  /** 文件基名（不含目录与扩展名）→ 该文件的提交历史，时间倒序 */
+  fileHistory: Record<string, FileHistoryEntry[]>;
   commits: CommitEntry[];
 }
 
@@ -85,6 +96,54 @@ export function dayShardMap(): Record<string, number> {
     if (map[key] === undefined || page < map[key]) map[key] = page;
   });
   return map;
+}
+
+/* ------------------------------------------------------------------ *
+ * 文章历史：多篇文章共享一个分片，点展开时才拉取
+ * ------------------------------------------------------------------ */
+
+/** 每个分片装多少篇文章的历史 */
+export const HISTORY_PER_SHARD = 10;
+
+/** 有历史记录的文件基名，排序固定以保证分片划分稳定 */
+function historyKeys(): string[] {
+  return Object.keys(commitIndex.fileHistory || {}).sort();
+}
+
+export function historyShardCount(): number {
+  return Math.max(1, Math.ceil(historyKeys().length / HISTORY_PER_SHARD));
+}
+
+/** 基名 → 所在分片编号（1 起） */
+export function historyShardOf(key: string): number | null {
+  const i = historyKeys().indexOf(key);
+  return i === -1 ? null : Math.floor(i / HISTORY_PER_SHARD) + 1;
+}
+
+/** 某分片包含的所有文件历史 */
+export function historyShard(page: number): Record<string, FileHistoryEntry[]> {
+  const keys = historyKeys().slice((page - 1) * HISTORY_PER_SHARD, page * HISTORY_PER_SHARD);
+  const out: Record<string, FileHistoryEntry[]> = {};
+  for (const k of keys) out[k] = commitIndex.fileHistory[k];
+  return out;
+}
+
+/**
+ * 文章页首屏用的摘要：只要次数与最后更改时间，明细走分片按需拉取。
+ * key 是 collection entry id（等于源文件基名）。
+ */
+export function historySummaryOf(key: string) {
+  const list = commitIndex.fileHistory?.[key];
+  if (!list || !list.length) return null;
+  return {
+    key,
+    shard: historyShardOf(key),
+    count: list.length,
+    lastTs: list[0].ts,
+    firstTs: list[list.length - 1].ts,
+    added: list.reduce((s, e) => s + e.added, 0),
+    removed: list.reduce((s, e) => s + e.removed, 0),
+  };
 }
 
 /**

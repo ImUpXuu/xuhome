@@ -20,7 +20,7 @@ import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 
 const OUT_PATH = join('src', 'data', 'commit-index.json');
-const SCHEMA = 2;
+const SCHEMA = 3;
 const DEFAULT_REPO = 'ImUpXuu/xuhome';
 const FULL = process.argv.includes('--full');
 
@@ -325,6 +325,36 @@ async function buildContentWordCounts(entries) {
   return out;
 }
 
+/**
+ * 每篇文章/说说的提交历史。
+ *
+ * 用文件基名（去掉目录和扩展名）做 key：文章页拿得到的是 collection entry id，
+ * 正好等于基名，且已验证 124 篇文章基名互不重复。用完整路径反而对不上，
+ * 因为页面侧不知道源文件在 posts 还是 talks 目录。
+ */
+function buildFileHistory(entries) {
+  const map = new Map();
+
+  // entries 已按时间倒序，这里保持同序写入，页面直接用不必再排
+  for (const c of entries) {
+    for (const [path, added, removed] of c.files) {
+      const m = path.match(/^src\/content\/(posts|talks)\/(.+)\.mdx?$/);
+      if (!m) continue;
+      const key = m[2];
+      if (!map.has(key)) map.set(key, []);
+      map.get(key).push({
+        sha: c.sha,
+        ts: c.ts,
+        subject: c.subject,
+        author: c.author,
+        added,
+        removed,
+      });
+    }
+  }
+  return map;
+}
+
 /* ------------------------------------------------------------------ *
  * 索引组装
  * ------------------------------------------------------------------ */
@@ -439,6 +469,7 @@ async function main() {
   entries.sort((a, b) => b.ts - a.ts);
   const daily = buildDaily(entries);
   const contentFiles = await buildContentWordCounts(entries);
+  const fileHistory = buildFileHistory(entries);
 
   const payload = {
     schema: SCHEMA,
@@ -455,6 +486,8 @@ async function main() {
     },
     daily,
     contentFiles,
+    // 文章页要按需拉取，所以按文件基名存成对象
+    fileHistory: Object.fromEntries(fileHistory),
     commits: entries,
   };
 
@@ -462,7 +495,8 @@ async function main() {
   writeFileSync(OUT_PATH, JSON.stringify(payload), 'utf8');
   log(
     `wrote ${OUT_PATH} — ${entries.length} commits, ${daily.length} active days,`,
-    `${contentFiles.length} content files, ${payload.totals.words} words (source: ${source})`,
+    `${contentFiles.length} content files, ${payload.totals.words} words,`,
+    `${fileHistory.size} files with history (source: ${source})`,
   );
 }
 

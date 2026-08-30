@@ -10,6 +10,7 @@ import { WalineComment } from '../../components/WalineComment';
 import ShareButton from '../../components/ShareButton.svelte';
 import PageViews from '../../components/PageViews.svelte';
 import LeftSidebar from '../../components/LeftSidebar.astro';
+import { commitIndex, historySummaryOf } from '../../utils/commitStats';
 import '@fancyapps/ui/dist/fancybox/fancybox.css';
 
 export async function getStaticPaths() {
@@ -34,6 +35,15 @@ if (!articleEntry) {
 }
 const { Content, headings } = await render(articleEntry);
 const readTime = calculateReadingTime(articleEntry.body || "");
+
+// 文章历史：commit 索引里按源文件基名存，collection entry id 正好等于基名
+const history = historySummaryOf(articleEntry.id.replace(/\.mdx?$/, ''));
+
+function fmtHistoryTime(ts: number): string {
+  const d = new Date(ts);
+  const p = (v: number) => String(v).padStart(2, '0');
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;
+}
 
 // Calculate adjacent posts
 const allPosts = await getProcessedPosts();
@@ -179,6 +189,43 @@ const relatedPosts = (() => {
             </div>
           </div>
         </div>
+
+        {/* Article history block —— 首屏只有次数与最后更改时间，明细点开才拉分片 */}
+        {history && (
+          <div
+            class="bg-[#efe1bf] dark:bg-slate-800 border-4 border-[#0284c7] p-4 md:p-5 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm animate-card-entrance opacity-0"
+            style="animation-delay: 0.12s"
+          >
+            <div
+              id="post-history"
+              class="hist"
+              data-key={history.key}
+              data-shard={history.shard}
+              data-count={history.count}
+              data-repo={commitIndex.repo}
+              aria-expanded="false"
+            >
+              <button type="button" class="hist-head">
+                <span class="hist-icon">🧾</span>
+                <span class="hist-title">
+                  <span class="hist-label">文章历史</span>
+                  <span class="hist-sub">
+                    修改 {history.count} 次 · 最后更改于 {fmtHistoryTime(history.lastTs)}
+                  </span>
+                </span>
+                <span class="hist-caret">▶</span>
+              </button>
+              <div class="hist-body">
+                <div class="hist-stats">
+                  <span class="hist-add">+{history.added}</span>
+                  <span class="hist-del">-{history.removed}</span>
+                  <span class="hist-since">首次提交 {fmtHistoryTime(history.firstTs)}</span>
+                </div>
+                <div id="post-history-list" class="hist-list"></div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Related Posts */}
         {relatedPosts.length > 0 && (
@@ -615,6 +662,74 @@ const relatedPosts = (() => {
     document.addEventListener('astro:page-load', () => requestAnimationFrame(setupPostDetail));
     window._postDetailListenersInited = true;
   }
+
+  /* ================= 文章历史（点开才拉分片） ================= */
+  function setupPostHistory() {
+    const box = document.getElementById('post-history');
+    if (!box || box.dataset.bound === '1') return;
+    box.dataset.bound = '1';
+
+    const head = box.querySelector('.hist-head');
+    const list = document.getElementById('post-history-list');
+    if (!head || !list) return;
+
+    const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) =>
+      ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+    const p2 = (v) => String(v).padStart(2, '0');
+    const fmt = (ts) => {
+      const d = new Date(ts);
+      return `${d.getFullYear()}-${p2(d.getMonth() + 1)}-${p2(d.getDate())} ${p2(d.getHours())}:${p2(d.getMinutes())}`;
+    };
+
+    let loaded = false;
+    let loading = false;
+
+    async function load() {
+      if (loaded || loading) return;
+      loading = true;
+      list.innerHTML = '<p class="hist-msg">加载中…</p>';
+      try {
+        const r = await fetch(`/data/history/${box.dataset.shard}.json`, {
+          headers: { Accept: 'application/json' },
+          signal: AbortSignal.timeout(12000),
+        });
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        const data = await r.json();
+        const rows = (data.files || {})[box.dataset.key] || [];
+        const repo = box.dataset.repo || '';
+
+        list.innerHTML = rows.length ? rows.map((e) => `<div class="hist-row">
+  <span class="hist-dot"></span>
+  <div class="hist-main">
+    <div class="hist-subject" title="${esc(e.subject)}">${esc(e.subject)}</div>
+    <div class="hist-meta">
+      <span>${fmt(e.ts)}</span>
+      <a class="hist-sha" href="https://github.com/${repo}/commit/${esc(e.sha)}" target="_blank" rel="noopener">${esc(e.sha.slice(0, 7))}</a>
+      <span class="hist-add">+${e.added}</span>
+      <span class="hist-del">-${e.removed}</span>
+    </div>
+  </div>
+</div>`).join('') : '<p class="hist-msg">没有找到这篇文章的提交记录</p>';
+        loaded = true;
+      } catch (err) {
+        list.innerHTML = '<p class="hist-msg">历史加载失败，请稍后重试</p>';
+      } finally {
+        loading = false;
+      }
+    }
+
+    head.addEventListener('click', () => {
+      const open = box.getAttribute('aria-expanded') === 'true';
+      box.setAttribute('aria-expanded', open ? 'false' : 'true');
+      if (!open) load();
+    });
+  }
+
+  requestAnimationFrame(setupPostHistory);
+  if (!window._postHistoryInited) {
+    document.addEventListener('astro:page-load', () => requestAnimationFrame(setupPostHistory));
+    window._postHistoryInited = true;
+  }
 </script>
 
 <style is:global>
@@ -630,5 +745,92 @@ const relatedPosts = (() => {
   }
   .prose h1:target, .prose h2:target, .prose h3:target, .prose h4:target {
     background-color: rgb(254 249 195 / 0.5);
+  }
+
+  /* ---------- 文章历史卡 ---------- */
+  .hist-head {
+    display: flex; align-items: center; gap: 10px;
+    width: 100%; padding: 0; border: 0; background: none;
+    font: inherit; color: inherit; text-align: left; cursor: pointer;
+  }
+  .hist-icon {
+    flex-shrink: 0;
+    display: grid; place-items: center;
+    width: 34px; height: 34px; font-size: 16px;
+    background: #fde68a;
+    border: 3px solid #0284c7; border-radius: 4px;
+    box-shadow: 2px 2px 0 0 #0284c7;
+  }
+  .hist-title { flex: 1; min-width: 0; }
+  .hist-label {
+    display: block;
+    font-size: 14px; font-weight: 900; color: #0284c7;
+  }
+  .hist-sub {
+    display: block; margin-top: 1px;
+    font-size: 11px; font-weight: 700; color: #78716c;
+  }
+  .dark .hist-sub { color: #94a3b8; }
+  .hist-caret {
+    flex-shrink: 0;
+    font-size: 11px; font-weight: 900; color: #0284c7;
+    transition: transform .18s ease;
+  }
+  .hist[aria-expanded="true"] .hist-caret { transform: rotate(90deg); }
+
+  .hist-body { display: none; }
+  .hist[aria-expanded="true"] .hist-body { display: block; }
+
+  .hist-stats {
+    display: flex; flex-wrap: wrap; gap: 10px; align-items: baseline;
+    margin-top: 12px; padding-top: 10px;
+    border-top: 2px dashed rgba(2, 132, 199, .25);
+    font-family: var(--font-mono, ui-monospace, monospace);
+    font-size: 11px; font-weight: 900;
+  }
+  .hist-add { color: #059669; }
+  .hist-del { color: #dc2626; }
+  .hist-since { font-weight: 700; color: #94a3b8; }
+
+  .hist-list {
+    margin-top: 10px;
+    display: flex; flex-direction: column; gap: 7px;
+  }
+
+  .hist-row {
+    display: flex; align-items: flex-start; gap: 9px;
+    padding: 7px 9px;
+    background: rgba(255, 255, 255, .5);
+    border: 2px solid rgba(2, 132, 199, .2);
+    border-radius: 4px;
+  }
+  .dark .hist-row { background: rgba(56, 189, 248, .06); border-color: rgba(56, 189, 248, .2); }
+
+  .hist-dot {
+    flex-shrink: 0; margin-top: 4px;
+    width: 9px; height: 9px; border-radius: 2px;
+    background: #0284c7; border: 2px solid #0369a1;
+  }
+  .hist-row:first-child .hist-dot { background: #f59e0b; border-color: #d97706; }
+
+  .hist-main { flex: 1; min-width: 0; }
+  .hist-subject {
+    font-size: 12px; font-weight: 800; color: #44403c;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .dark .hist-subject { color: #e2e8f0; }
+  .hist-meta {
+    display: flex; flex-wrap: wrap; gap: 7px; margin-top: 2px;
+    font-family: var(--font-mono, ui-monospace, monospace);
+    font-size: 10px; font-weight: 800; color: #a8a29e;
+  }
+  .hist-sha {
+    color: #0284c7; text-decoration: none;
+    border-bottom: 2px solid rgba(2, 132, 199, .3);
+  }
+  .hist-sha:hover { color: #0ea5e9; }
+  .hist-msg {
+    padding: 14px 0; text-align: center;
+    font-size: 12px; font-weight: 800; color: #a8a29e;
   }
 </style>
