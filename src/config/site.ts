@@ -114,7 +114,11 @@ export const navConfig: {
     { name: "AI", href: "/ai" },
     { name: "音乐", href: "/music" },
   ],
-  /** 移动端汉堡菜单中的额外项 */
+  /**
+   * 移动端汉堡菜单中的额外项
+   * 注意：NavBar.astro 用 mob[N] 硬编码下标取值，新增项只能追加到末尾，
+   * 插在中间会让后面所有菜单项错位。
+   */
   mobileMore: [
     { name: "友链", href: "/friends" },
     { name: "关于", href: "/about" },
@@ -123,6 +127,7 @@ export const navConfig: {
     { name: "标签", href: "/tags" },
     { name: "AI", href: "/ai" },
     { name: "音乐", href: "/music" },
+    { name: "建站统计", href: "/blogstats" },
   ],
   /** 外部链接项（桌面端"更多"下拉 + 移动端汉堡菜单底部） */
   external: [

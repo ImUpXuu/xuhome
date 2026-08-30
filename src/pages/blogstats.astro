@@ -1,0 +1,1245 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { siteConfig } from '../config/site';
+import { buildSummary } from '../utils/commitStats';
+
+// 首屏只内联聚合摘要（几 KB）；逐提交明细走 /data/commits/N.json 按需拉取
+const summary = buildSummary();
+const years = [...new Set(summary.daily.map((d) => d.date.slice(0, 4)))].sort().reverse();
+const busiest = summary.daily.reduce(
+  (best, d) => (d.commits > best.commits ? d : best),
+  { date: '—', commits: 0 },
+);
+---
+
+<Layout
+  title={`博客统计${siteConfig.titleTemplate}`}
+  description="UpXuu 博客建设统计：提交热力图、字数增长、更新内容构成与每次提交明细"
+  keywords={['UpXuu', '博客统计', '提交热力图', '字数统计', 'changelog']}
+  hideBanner={true}
+>
+  <div class="w-full max-w-5xl mx-auto pb-20 space-y-4 sm:space-y-5">
+
+    {/* 标题砖 */}
+    <div class="brick flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <span class="head-icon">🧱</span>
+        <div>
+          <h1 class="text-xl sm:text-2xl font-black text-[#0284c7] tracking-wide">博客统计</h1>
+          <p class="text-[11px] sm:text-xs font-bold text-slate-500 dark:text-slate-400 mt-0.5">
+            {summary.repo} · 共 {summary.totals.commits} 次提交
+          </p>
+        </div>
+      </div>
+      <a href="/stats" class="chip-link">访问统计 →</a>
+    </div>
+
+    {/* 概览数字 */}
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+      <div class="brick num-brick" data-accent="sky">
+        <div class="num-label">提交总数</div>
+        <div class="num-value">{summary.totals.commits.toLocaleString('en-US')}</div>
+        <div class="num-sub">{summary.totals.activeDays} 天有更新</div>
+      </div>
+      <div class="brick num-brick" data-accent="amber">
+        <div class="num-label">正文总字数</div>
+        <div class="num-value">{(summary.totals.words / 1000).toFixed(1)}k</div>
+        <div class="num-sub">{summary.totals.posts} 篇文章 · {summary.totals.talks} 条说说</div>
+      </div>
+      <div class="brick num-brick" data-accent="green">
+        <div class="num-label">新增行数</div>
+        <div class="num-value">+{(summary.totals.added / 1000).toFixed(1)}k</div>
+        <div class="num-sub">删除 {(summary.totals.removed / 1000).toFixed(1)}k 行</div>
+      </div>
+      <div class="brick num-brick" data-accent="slate">
+        <div class="num-label">最勤奋的一天</div>
+        <div class="num-value">{busiest.commits}</div>
+        <div class="num-sub">{busiest.date} 的提交数</div>
+      </div>
+    </div>
+    {/* 热力图 */}
+    <div class="brick heat-brick">
+      <div class="brick-head">
+        <h2 class="brick-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3M3 11h18M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+          提交热力图
+        </h2>
+        <div class="seg" role="group" aria-label="年份">
+          {years.map((y, i) => (
+            <button type="button" class={`seg-btn${i === 0 ? ' is-on' : ''}`} data-year={y}>{y}</button>
+          ))}
+        </div>
+      </div>
+      <div class="heat-scroll">
+        <div class="heat-inner">
+          <div id="heat-months" class="heat-months"></div>
+          <div id="heatmap" class="heat"></div>
+        </div>
+      </div>
+      <div class="heat-foot">
+        <span id="heat-summary" class="heat-note">-</span>
+        <span class="heat-legend">
+          少
+          <i data-lv="0"></i><i data-lv="1"></i><i data-lv="2"></i><i data-lv="3"></i><i data-lv="4"></i>
+          多
+        </span>
+      </div>
+      <div id="heat-tip" class="tip" hidden></div>
+    </div>
+
+    {/* 字数增长 */}
+    <div class="brick">
+      <div class="brick-head">
+        <h2 class="brick-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+          字数增长
+        </h2>
+        <div class="seg" role="group" aria-label="时间范围">
+          <button type="button" class="seg-btn" data-span="30">30 天</button>
+          <button type="button" class="seg-btn" data-span="90">90 天</button>
+          <button type="button" class="seg-btn" data-span="365">一年</button>
+          <button type="button" class="seg-btn is-on" data-span="0">全部</button>
+        </div>
+      </div>
+      <div class="legend">
+        <span class="lg-static"><i style="background:#0284c7"></i>累计字数</span>
+        <span class="lg-static"><i style="background:#f59e0b"></i>每日新增行</span>
+      </div>
+      <div class="chart-wrap">
+        <canvas id="words-chart" aria-label="字数增长趋势图"></canvas>
+        <div id="words-tip" class="tip" hidden></div>
+        <div id="words-empty" class="empty" hidden>该区间暂无数据</div>
+      </div>
+    </div>
+
+    {/* 更新内容构成 */}
+    <div class="brick">
+      <div class="brick-head">
+        <h2 class="brick-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M11 3.055A9 9 0 1020.945 13H11V3.055z"/><path stroke-linecap="round" stroke-linejoin="round" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/></svg>
+          更新内容构成
+        </h2>
+        <span class="chip-soft" id="ratio-note">跟随上方时间范围</span>
+      </div>
+      <div class="ratio-wrap">
+        <div class="ratio-donut">
+          <canvas id="ratio-chart" aria-label="更新内容构成环形图"></canvas>
+          <div class="donut-center">
+            <span id="ratio-total">-</span>
+            <small>次提交</small>
+          </div>
+        </div>
+        <div id="ratio-list" class="ratio-list"></div>
+      </div>
+    </div>
+
+    {/* 提交明细 */}
+    <div class="brick">
+      <div class="brick-head">
+        <h2 class="brick-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h7"/></svg>
+          提交明细
+        </h2>
+        <span class="chip-soft">每页 {summary.perShard} 条 · 按需加载</span>
+      </div>
+      <div id="commit-list" class="commit-list"><p class="list-msg">加载中…</p></div>
+      <div class="pager">
+        <button type="button" id="page-prev" class="pg-btn">← 上一页</button>
+        <span id="page-info" class="pg-info">- / -</span>
+        <button type="button" id="page-next" class="pg-btn">下一页 →</button>
+      </div>
+    </div>
+
+    <p class="foot-note">
+      数据在构建时由 <code>scripts/build-commit-index.mjs</code> 从 Git 历史生成，
+      索引随仓库提交，构建产物 {summary.shards} 个明细分片按需拉取。
+      最后生成于 {new Date(summary.generatedAt).toLocaleString('zh-CN')}。
+    </p>
+  </div>
+
+  <script
+    is:inline
+    type="application/json"
+    id="stats-summary"
+    set:html={JSON.stringify(summary).replace(/</g, '\\u003c')}
+  ></script>
+</Layout>
+
+<style>
+  /* ---------- 积木砖块基底（与 /stats 保持同一套设计语言） ---------- */
+  .brick {
+    background: #fff;
+    border: 4px solid #0284c7;
+    border-radius: 4px;
+    box-shadow: 6px 6px 0 0 #0284c7;
+    padding: 16px 18px;
+  }
+  :global(.dark) .brick { background: #1e293b; box-shadow: 6px 6px 0 0 #0369a1; }
+
+  /* 热力图砖块要做悬浮标签的定位参照，否则 .tip 会去找更外层的祖先，位置全偏 */
+  .heat-brick { position: relative; }
+
+  .head-icon {
+    display: grid; place-items: center;
+    width: 42px; height: 42px;
+    font-size: 20px;
+    background: #fde68a;
+    border: 3px solid #0284c7;
+    border-radius: 4px;
+    box-shadow: 3px 3px 0 0 #0284c7;
+    flex-shrink: 0;
+  }
+
+  .chip-link {
+    font-size: 12px; font-weight: 900;
+    color: #0284c7; background: #fff;
+    border: 3px solid #0284c7; border-radius: 4px;
+    box-shadow: 3px 3px 0 0 #f59e0b;
+    padding: 5px 10px; text-decoration: none; white-space: nowrap;
+    transition: transform .15s, box-shadow .15s;
+  }
+  .chip-link:hover { transform: translate(1px, 1px); box-shadow: 2px 2px 0 0 #f59e0b; }
+  :global(.dark) .chip-link { background: #0f172a; }
+
+  .chip-soft {
+    font-size: 11px; font-weight: 800; color: #64748b;
+    background: rgba(2, 132, 199, .08);
+    border: 2px solid rgba(2, 132, 199, .25);
+    border-radius: 4px; padding: 3px 8px; white-space: nowrap;
+  }
+
+  .num-brick { padding: 14px 16px; position: relative; overflow: hidden; }
+  .num-brick::after {
+    content: ''; position: absolute; inset: auto -6px -6px auto;
+    width: 46px; height: 46px; background: var(--accent, #0284c7);
+    opacity: .12; border-radius: 4px; transform: rotate(18deg);
+  }
+  .num-brick[data-accent="sky"] { --accent: #0284c7; }
+  .num-brick[data-accent="amber"] { --accent: #f59e0b; }
+  .num-brick[data-accent="green"] { --accent: #10b981; }
+  .num-brick[data-accent="slate"] { --accent: #64748b; }
+
+  .num-label { font-size: 11px; font-weight: 900; color: #64748b; letter-spacing: .04em; }
+  .num-value {
+    font-family: var(--font-mono, ui-monospace, monospace);
+    font-variant-numeric: tabular-nums;
+    font-weight: 900; font-size: clamp(1.4rem, 6vw, 2rem);
+    line-height: 1.15; color: var(--accent, #0284c7);
+    margin-top: 2px; word-break: break-all;
+  }
+  .num-sub { font-size: 10px; font-weight: 700; color: #94a3b8; margin-top: 2px; }
+  :global(.dark) .num-label { color: #94a3b8; }
+  :global(.dark) .num-sub { color: #64748b; }
+  /* ---------- 砖块标题行 / 分段按钮 ---------- */
+  .brick-head {
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 10px;
+    padding-bottom: 10px; margin-bottom: 12px;
+    border-bottom: 2px dashed rgba(2, 132, 199, .25);
+  }
+  .brick-title {
+    display: flex; align-items: center; gap: 7px;
+    font-size: 15px; font-weight: 900; color: #0284c7;
+  }
+  .brick-title svg { width: 18px; height: 18px; flex-shrink: 0; }
+  :global(.dark) .brick-head { border-bottom-color: rgba(56, 189, 248, .3); }
+
+  .seg {
+    display: inline-flex;
+    border: 3px solid #0284c7; border-radius: 4px;
+    overflow: hidden; box-shadow: 3px 3px 0 0 #0284c7;
+  }
+  .seg-btn {
+    font-size: 11px; font-weight: 900; color: #0284c7;
+    background: #fff; padding: 5px 10px;
+    border: 0; border-left: 2px solid rgba(2, 132, 199, .3);
+    cursor: pointer; transition: background .15s, color .15s;
+  }
+  .seg-btn:first-child { border-left: 0; }
+  .seg-btn:hover { background: #fde68a; }
+  .seg-btn.is-on { background: #0284c7; color: #fff; }
+  :global(.dark) .seg-btn { background: #0f172a; }
+  :global(.dark) .seg-btn.is-on { background: #0284c7; color: #fff; }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+  .lg-static {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 11px; font-weight: 800; color: #475569;
+    background: rgba(2, 132, 199, .06);
+    border: 2px solid rgba(2, 132, 199, .22);
+    border-radius: 4px; padding: 3px 8px;
+  }
+  .lg-static i { width: 9px; height: 9px; border-radius: 2px; display: inline-block; }
+  :global(.dark) .lg-static { color: #cbd5e1; }
+
+  /* ---------- 热力图 ---------- */
+  .heat-scroll { overflow-x: auto; overflow-y: hidden; padding-bottom: 4px; }
+  .heat-inner { min-width: max-content; }
+
+  /* 月份标签与格子列共用同一套列宽，保证标签对得上对应的周 */
+  .heat-months {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 13px;
+    gap: 3px;
+    height: 14px;
+    margin-bottom: 3px;
+  }
+  .heat-mon {
+    font-size: 10px;
+    font-weight: 900;
+    color: #94a3b8;
+    white-space: nowrap;
+    overflow: visible;
+  }
+
+  .heat {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 13px;
+    grid-template-rows: repeat(7, 13px);
+    gap: 3px;
+  }
+  .heat-cell {
+    width: 13px; height: 13px;
+    border-radius: 2px;
+    border: 1px solid rgba(2, 132, 199, .18);
+    background: rgba(2, 132, 199, .06);
+    cursor: default;
+  }
+  .heat-cell[data-lv="1"] { background: #bae6fd; border-color: #7dd3fc; }
+  .heat-cell[data-lv="2"] { background: #7dd3fc; border-color: #38bdf8; }
+  .heat-cell[data-lv="3"] { background: #38bdf8; border-color: #0ea5e9; }
+  .heat-cell[data-lv="4"] { background: #0284c7; border-color: #0369a1; }
+  .heat-cell.is-void { visibility: hidden; }
+
+  .heat-foot {
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 8px; margin-top: 10px;
+  }
+  .heat-note { font-size: 11px; font-weight: 800; color: #64748b; }
+  .heat-legend {
+    display: inline-flex; align-items: center; gap: 3px;
+    font-size: 10px; font-weight: 800; color: #94a3b8;
+  }
+  .heat-legend i {
+    width: 11px; height: 11px; border-radius: 2px; display: inline-block;
+    border: 1px solid rgba(2, 132, 199, .18); background: rgba(2, 132, 199, .06);
+  }
+  .heat-legend i[data-lv="1"] { background: #bae6fd; }
+  .heat-legend i[data-lv="2"] { background: #7dd3fc; }
+  .heat-legend i[data-lv="3"] { background: #38bdf8; }
+  .heat-legend i[data-lv="4"] { background: #0284c7; }
+  /* ---------- 图表容器：高度由 CSS 锁定，canvas 只跟随 ---------- */
+  .chart-wrap { position: relative; width: 100%; height: 280px; touch-action: pan-y; }
+  @media (max-width: 640px) { .chart-wrap { height: 200px; } }
+  #words-chart { display: block; width: 100%; height: 100%; }
+
+  .tip {
+    position: absolute; z-index: 5; pointer-events: none;
+    background: #0f172a; color: #fff;
+    border: 2px solid #0284c7; border-radius: 4px;
+    box-shadow: 3px 3px 0 0 rgba(2, 132, 199, .5);
+    padding: 7px 9px; font-size: 11px; font-weight: 700;
+    line-height: 1.5; white-space: nowrap;
+  }
+  .tip[hidden] { display: none; }
+  .empty {
+    position: absolute; inset: 0;
+    display: grid; place-items: center;
+    font-size: 13px; font-weight: 800; color: #94a3b8;
+  }
+  .empty[hidden] { display: none; }
+
+  /* ---------- 环形占比 ---------- */
+  .ratio-wrap {
+    display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
+  }
+  .ratio-donut { position: relative; width: 160px; height: 160px; flex-shrink: 0; }
+  #ratio-chart { display: block; width: 100%; height: 100%; }
+  .donut-center {
+    position: absolute; inset: 0;
+    display: grid; place-content: center; text-align: center;
+    pointer-events: none;
+  }
+  .donut-center span {
+    display: block;
+    font-family: var(--font-mono, ui-monospace, monospace);
+    font-variant-numeric: tabular-nums;
+    font-size: 22px; font-weight: 900; color: #0284c7;
+  }
+  .donut-center small { font-size: 10px; font-weight: 800; color: #94a3b8; }
+
+  .ratio-list { flex: 1; min-width: 200px; display: flex; flex-direction: column; gap: 8px; }
+  @media (max-width: 480px) {
+    .ratio-wrap { gap: 12px; }
+    .ratio-donut { width: 128px; height: 128px; margin: 0 auto; }
+    .ratio-list { min-width: 100%; }
+  }
+  /* ---------- 提交明细 / 分页 ---------- */
+  .commit-list { display: flex; flex-direction: column; gap: 8px; min-height: 120px; }
+
+  .pager {
+    display: flex; align-items: center; justify-content: center;
+    gap: 10px; margin-top: 14px;
+  }
+  .pg-btn {
+    font-size: 11px; font-weight: 900; color: #0284c7;
+    background: #fff; padding: 6px 12px;
+    border: 3px solid #0284c7; border-radius: 4px;
+    box-shadow: 3px 3px 0 0 #0284c7;
+    cursor: pointer; transition: transform .15s, box-shadow .15s, opacity .15s;
+  }
+  .pg-btn:hover:not(:disabled) { transform: translate(1px, 1px); box-shadow: 2px 2px 0 0 #0284c7; }
+  .pg-btn:disabled {
+    opacity: .38; cursor: not-allowed;
+    box-shadow: 2px 2px 0 0 #94a3b8; border-color: #94a3b8; color: #94a3b8;
+  }
+  :global(.dark) .pg-btn { background: #0f172a; }
+  .pg-info {
+    font-family: var(--font-mono, ui-monospace, monospace);
+    font-variant-numeric: tabular-nums;
+    font-size: 12px; font-weight: 900; color: #64748b;
+  }
+
+  .foot-note {
+    font-size: 11px; font-weight: 700; line-height: 1.7;
+    color: #94a3b8; text-align: center; padding: 0 8px;
+  }
+  .foot-note code {
+    font-family: var(--font-mono, ui-monospace, monospace);
+    background: rgba(2, 132, 199, .1); padding: 1px 5px; border-radius: 3px;
+  }
+
+  /* ---------- 窄屏收紧 ---------- */
+  @media (max-width: 640px) {
+    .brick { padding: 12px 13px; border-width: 3px; box-shadow: 4px 4px 0 0 #0284c7; }
+    :global(.dark) .brick { box-shadow: 4px 4px 0 0 #0369a1; }
+    .head-icon { width: 36px; height: 36px; font-size: 17px; }
+    .num-brick { padding: 11px 12px; }
+  }
+</style>
+
+<!-- 明细行与占比行是运行时 innerHTML 注入的，拿不到 Astro 作用域属性，必须走全局选择器 -->
+<style is:global>
+  #commit-list .cm-row {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 8px 10px;
+    background: rgba(2, 132, 199, .04);
+    border: 2px solid rgba(2, 132, 199, .18);
+    border-radius: 4px;
+  }
+  .dark #commit-list .cm-row { background: rgba(56, 189, 248, .06); border-color: rgba(56, 189, 248, .2); }
+
+  #commit-list .cm-kind {
+    flex-shrink: 0;
+    display: grid; place-items: center;
+    width: 26px; height: 26px; font-size: 13px;
+    background: #e2e8f0;
+    border: 2px solid #0284c7; border-radius: 4px;
+  }
+  #commit-list .cm-row[data-kind="post"] .cm-kind { background: #bae6fd; }
+  #commit-list .cm-row[data-kind="talk"] .cm-kind { background: #bbf7d0; }
+  #commit-list .cm-row[data-kind="friend"] .cm-kind { background: #fde68a; }
+
+  #commit-list .cm-body { flex: 1; min-width: 0; }
+  #commit-list .cm-line1 {
+    display: flex; align-items: baseline; justify-content: space-between; gap: 8px;
+  }
+  #commit-list .cm-subject {
+    font-size: 13px; font-weight: 800; color: #334155;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .dark #commit-list .cm-subject { color: #e2e8f0; }
+
+  #commit-list .cm-sha {
+    flex-shrink: 0;
+    font-family: var(--font-mono, ui-monospace, monospace);
+    font-size: 11px; font-weight: 900; color: #0284c7;
+    text-decoration: none;
+    border-bottom: 2px solid rgba(2, 132, 199, .35);
+  }
+  #commit-list .cm-sha:hover { color: #0ea5e9; }
+
+  #commit-list .cm-meta {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin-top: 3px;
+    font-size: 10px; font-weight: 800; color: #94a3b8;
+  }
+  #commit-list .cm-add { color: #10b981; }
+  #commit-list .cm-del { color: #ef4444; }
+
+  #commit-list .cm-files {
+    margin-top: 5px; padding-top: 5px;
+    border-top: 1px dashed rgba(2, 132, 199, .22);
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  #commit-list .cm-file {
+    font-family: var(--font-mono, ui-monospace, monospace);
+    font-size: 10px; font-weight: 700; color: #64748b;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  #commit-list .cm-more { font-size: 10px; font-weight: 800; color: #94a3b8; }
+
+  #commit-list .list-msg,
+  #ratio-list .list-msg {
+    text-align: center; padding: 22px 0;
+    font-size: 13px; font-weight: 800; color: #94a3b8;
+  }
+
+  #ratio-list .rt-row { display: flex; align-items: center; gap: 9px; }
+  #ratio-list .rt-dot {
+    width: 11px; height: 11px; border-radius: 3px;
+    flex-shrink: 0; border: 2px solid rgba(0, 0, 0, .12);
+  }
+  #ratio-list .rt-body { flex: 1; min-width: 0; }
+  #ratio-list .rt-line { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+  #ratio-list .rt-name { font-size: 12px; font-weight: 900; color: #334155; }
+  .dark #ratio-list .rt-name { color: #e2e8f0; }
+  #ratio-list .rt-num {
+    font-family: var(--font-mono, ui-monospace, monospace);
+    font-variant-numeric: tabular-nums;
+    font-size: 11px; font-weight: 900; color: #0284c7;
+  }
+  #ratio-list .rt-bar {
+    margin-top: 3px; height: 7px;
+    background: rgba(2, 132, 199, .1);
+    border: 2px solid rgba(2, 132, 199, .22);
+    border-radius: 3px; overflow: hidden;
+  }
+  #ratio-list .rt-fill { height: 100%; transition: width .5s cubic-bezier(.22, 1, .36, 1); }
+</style>
+
+<script>
+  /* ================= 常量与工具 ================= */
+  const KIND_META = {
+    post: { name: '文章', color: '#0284c7', icon: '📝' },
+    talk: { name: '说说', color: '#10b981', icon: '💬' },
+    friend: { name: '友链', color: '#f59e0b', icon: '🔗' },
+    other: { name: '其他', color: '#94a3b8', icon: '⚙️' },
+  };
+  const KIND_ORDER = ['post', 'talk', 'friend', 'other'];
+  const DAY = 86400000;
+
+  const $ = (id) => document.getElementById(id);
+
+  function esc(s) {
+    return String(s ?? '').replace(/[&<>"']/g, (c) =>
+      ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+  }
+
+  function nfmt(n) {
+    const v = Number(n) || 0;
+    if (v >= 100000) return (v / 10000).toFixed(1) + '万';
+    return v.toLocaleString('en-US');
+  }
+
+  /** 坐标轴专用：同一条轴上不能一半"万"一半千分位，统一用 k/万 短标 */
+  function axisFmt(n) {
+    const v = Number(n) || 0;
+    if (v >= 10000) return (v / 10000).toFixed(v % 10000 === 0 ? 0 : 1) + '万';
+    if (v >= 1000) return (v / 1000).toFixed(v % 1000 === 0 ? 0 : 1) + 'k';
+    return String(v);
+  }
+
+  function p2(v) { return String(v).padStart(2, '0'); }
+
+  function ymd(d) {
+    return `${d.getFullYear()}-${p2(d.getMonth() + 1)}-${p2(d.getDate())}`;
+  }
+
+  /** 取当天 00:00 的本地时间戳，避免把提交算到隔天 */
+  function dayStart(ts) {
+    const d = new Date(ts);
+    d.setHours(0, 0, 0, 0);
+    return d.getTime();
+  }
+
+  function readSummary() {
+    const el = $('stats-summary');
+    if (!el) return null;
+    try {
+      return JSON.parse(el.textContent || '{}');
+    } catch {
+      return null;
+    }
+  }
+  /* ================= 热力图 ================= */
+  // GitHub 风格：一列一周，周日在最上。按年渲染，格子数固定，
+  // 所以不会出现容器被内容反向撑高的问题。
+  function renderHeatmap(state, year) {
+    const box = $('heatmap');
+    if (!box) return;
+
+    const byDate = new Map(state.summary.daily.map((d) => [d.date, d]));
+    const first = new Date(Number(year), 0, 1);
+    const last = new Date(Number(year), 11, 31);
+    const today = dayStart(Date.now());
+
+    // 从当年 1/1 所在周的周日开始铺，保证每列都是完整一周
+    const start = new Date(first);
+    start.setDate(start.getDate() - start.getDay());
+
+    let max = 0;
+    for (const d of state.summary.daily) {
+      if (d.date.slice(0, 4) === String(year)) max = Math.max(max, d.commits);
+    }
+
+    const cells = [];
+    const monthLabels = [];
+    let total = 0;
+    let activeDays = 0;
+    let lastMonth = -1;
+
+    for (let t = start.getTime(); t <= last.getTime(); t += DAY) {
+      const d = new Date(t);
+      const key = ymd(d);
+      const inYear = d.getFullYear() === Number(year);
+      const future = t > today;
+
+      // 每列开头（周日）判断是否进入新月份，给月份标签占位
+      if (d.getDay() === 0) {
+        if (d.getMonth() !== lastMonth && inYear) {
+          lastMonth = d.getMonth();
+          monthLabels.push(`<span class="heat-mon">${d.getMonth() + 1}月</span>`);
+        } else {
+          monthLabels.push('<span class="heat-mon"></span>');
+        }
+      }
+
+      if (!inYear || future) {
+        cells.push('<div class="heat-cell is-void"></div>');
+        continue;
+      }
+
+      const rec = byDate.get(key);
+      const n = rec ? rec.commits : 0;
+      if (n > 0) { total += n; activeDays++; }
+
+      // 4 档：按当年峰值分段，避免个别爆发日把其余全压成最浅色
+      let lv = 0;
+      if (n > 0) {
+        const ratio = max > 0 ? n / max : 0;
+        lv = ratio > 0.6 ? 4 : ratio > 0.35 ? 3 : ratio > 0.15 ? 2 : 1;
+      }
+
+      const parts = [];
+      if (rec) {
+        for (const k of KIND_ORDER) {
+          if (rec.kinds[k]) parts.push(`${KIND_META[k].name}${rec.kinds[k]}`);
+        }
+      }
+      const title = n ? `${key} · ${n} 次提交${parts.length ? ' · ' + parts.join(' ') : ''}` : `${key} · 无提交`;
+      cells.push(`<div class="heat-cell" data-lv="${lv}" data-tip="${esc(title)}"></div>`);
+    }
+
+    box.innerHTML = cells.join('');
+    const months = $('heat-months');
+    if (months) months.innerHTML = monthLabels.join('');
+    $('heat-summary').textContent =
+      `${year} 年共 ${total} 次提交，${activeDays} 天有更新${max ? `，单日最多 ${max} 次` : ''}`;
+
+    // 窄屏放不下一整年，默认滚到最近有提交的位置，否则一打开只看到年初的空白
+    const scroller = box.closest('.heat-scroll');
+    if (scroller) {
+      // 注意不能用 :last-of-type —— 它按标签名判断，这里全是 div 会失配
+      const active = box.querySelectorAll('.heat-cell[data-lv]:not([data-lv="0"])');
+      const lastActive = active.length ? active[active.length - 1] : null;
+      if (lastActive) {
+        const target = lastActive.offsetLeft - scroller.clientWidth + lastActive.offsetWidth + 20;
+        scroller.scrollLeft = Math.max(0, target);
+      } else {
+        scroller.scrollLeft = scroller.scrollWidth;
+      }
+    }
+  }
+
+  function bindHeatTip(state, signal) {
+    const box = $('heatmap');
+    const tip = $('heat-tip');
+    if (!box || !tip) return;
+
+    const show = (cell) => {
+      const text = cell.dataset.tip;
+      if (!text) return;
+      tip.textContent = text;
+      tip.hidden = false;
+
+      // 相对定位参照是 .heat-brick。注意绝对定位的 left/top 是相对它的
+      // padding box，而 getBoundingClientRect() 给的是 border box，
+      // 差一圈边框宽度（clientLeft/clientTop），不减掉标签会整体偏移。
+      const card = cell.closest('.heat-brick');
+      if (!card) return;
+      const cr = card.getBoundingClientRect();
+      const originX = cr.left + card.clientLeft;
+      const originY = cr.top + card.clientTop;
+
+      // 用 rect 相减而不是 offsetLeft：格子在横向滚动容器里，
+      // offsetLeft 相对未滚动的内容起点，滚动后会整体偏出去
+      const br = cell.getBoundingClientRect();
+
+      const maxLeft = Math.max(4, card.clientWidth - tip.offsetWidth - 4);
+      let left = br.left - originX + br.width / 2 - tip.offsetWidth / 2;
+      left = Math.min(Math.max(left, 4), maxLeft);
+
+      // 上方空间不够时翻到格子下方
+      let top = br.top - originY - tip.offsetHeight - 6;
+      if (top < 2) top = br.bottom - originY + 6;
+
+      tip.style.left = left + 'px';
+      tip.style.top = top + 'px';
+    };
+
+    box.addEventListener('mouseover', (e) => {
+      const cell = e.target.closest('.heat-cell');
+      if (cell) show(cell);
+    }, { signal });
+    box.addEventListener('mouseleave', () => { tip.hidden = true; }, { signal });
+    // 手机端点击也能看
+    box.addEventListener('click', (e) => {
+      const cell = e.target.closest('.heat-cell');
+      if (cell) show(cell); else tip.hidden = true;
+    }, { signal });
+
+    // 横向滚动后标签会脱离原格子，直接收起
+    const scroller = box.closest('.heat-scroll');
+    if (scroller) {
+      scroller.addEventListener('scroll', () => { tip.hidden = true; }, { signal, passive: true });
+    }
+  }
+  /* ================= 字数增长图 ================= */
+  let wordsGeo = { padL: 44, padR: 14, padT: 12, padB: 24, n: 0 };
+  let wordsSeries = [];
+  let wordsHover = -1;
+
+  function niceMax(raw) {
+    if (raw <= 5) return 5;
+    const mag = Math.pow(10, Math.floor(Math.log10(raw)));
+    const norm = raw / mag;
+    const step = norm <= 1 ? 1 : norm <= 2 ? 2 : norm <= 5 ? 5 : 10;
+    return step * mag;
+  }
+
+  function smoothPath(ctx, pts) {
+    if (!pts.length) return;
+    ctx.moveTo(pts[0].x, pts[0].y);
+    if (pts.length < 3) {
+      for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i].x, pts[i].y);
+      return;
+    }
+    for (let i = 0; i < pts.length - 1; i++) {
+      const p0 = pts[Math.max(0, i - 1)];
+      const p1 = pts[i];
+      const p2 = pts[i + 1];
+      const p3 = pts[Math.min(pts.length - 1, i + 2)];
+      ctx.bezierCurveTo(
+        p1.x + (p2.x - p0.x) / 6, p1.y + (p2.y - p0.y) / 6,
+        p2.x - (p3.x - p1.x) / 6, p2.y - (p3.y - p1.y) / 6,
+        p2.x, p2.y,
+      );
+    }
+  }
+
+  /**
+   * 把「每篇内容的首次提交时间 + 当前字数」变成逐日累计曲线。
+   * spanDays=0 表示全部；否则只画最近 N 天，但起点累计值要包含更早的存量，
+   * 否则曲线会从 0 开始，看起来像字数被清零了。
+   */
+  function buildWordsSeries(summary, spanDays) {
+    const pts = summary.wordPoints || [];
+    const daily = summary.daily || [];
+    if (!pts.length && !daily.length) return [];
+
+    const lastTs = Math.max(
+      pts.length ? pts[pts.length - 1].ts : 0,
+      daily.length ? new Date(daily[daily.length - 1].date + 'T00:00:00').getTime() : 0,
+      Date.now(),
+    );
+    const endDay = dayStart(lastTs);
+    const firstTs = Math.min(
+      pts.length ? pts[0].ts : Infinity,
+      daily.length ? new Date(daily[0].date + 'T00:00:00').getTime() : Infinity,
+    );
+    const startDay = spanDays > 0
+      ? Math.max(dayStart(firstTs), endDay - (spanDays - 1) * DAY)
+      : dayStart(firstTs);
+
+    // 区间起点之前的存量字数
+    let base = 0;
+    for (const p of pts) {
+      if (dayStart(p.ts) < startDay) base += p.words;
+    }
+
+    const addByDay = new Map();
+    for (const p of pts) {
+      const k = dayStart(p.ts);
+      if (k < startDay) continue;
+      addByDay.set(k, (addByDay.get(k) || 0) + p.words);
+    }
+    const lineByDay = new Map();
+    for (const d of daily) {
+      const k = dayStart(new Date(d.date + 'T00:00:00').getTime());
+      if (k < startDay) continue;
+      lineByDay.set(k, d.added);
+    }
+
+    // 逐日铺满，天数上限 400 点：更长区间按周采样，避免几千个点挤在一起
+    const totalDays = Math.round((endDay - startDay) / DAY) + 1;
+    const stride = totalDays > 400 ? Math.ceil(totalDays / 400) : 1;
+
+    const series = [];
+    let cum = base;
+    let bucketAdded = 0;
+    let bucketLines = 0;
+    for (let i = 0; i < totalDays; i++) {
+      const k = startDay + i * DAY;
+      cum += addByDay.get(k) || 0;
+      bucketAdded += addByDay.get(k) || 0;
+      bucketLines += lineByDay.get(k) || 0;
+      if (i % stride === stride - 1 || i === totalDays - 1) {
+        series.push({ ts: k, words: cum, added: bucketAdded, lines: bucketLines });
+        bucketAdded = 0;
+        bucketLines = 0;
+      }
+    }
+    return series;
+  }
+  function drawWords() {
+    const canvas = $('words-chart');
+    if (!canvas) return;
+
+    // 尺寸由 CSS 锁定（.chart-wrap 固定高度），canvas 只读 client 尺寸跟随，
+    // 不写 height 属性，避免内在比例变化把容器越撑越高
+    const cssW = canvas.clientWidth;
+    const cssH = canvas.clientHeight;
+    if (!cssW || !cssH) return;
+
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const bw = Math.round(cssW * dpr);
+    const bh = Math.round(cssH * dpr);
+    if (canvas.width !== bw) canvas.width = bw;
+    if (canvas.height !== bh) canvas.height = bh;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, cssW, cssH);
+
+    const n = wordsSeries.length;
+    const emptyEl = $('words-empty');
+    if (emptyEl) emptyEl.hidden = n > 0;
+    if (!n) return;
+
+    const narrow = cssW < 480;
+    const padL = narrow ? 34 : 46;
+    const padR = narrow ? 30 : 42;
+    const padT = 12;
+    const padB = 24;
+    const plotW = cssW - padL - padR;
+    const plotH = cssH - padT - padB;
+    wordsGeo = { padL, padR, padT, padB, n };
+    if (plotW <= 0 || plotH <= 0) return;
+
+    const maxWords = niceMax(Math.max(...wordsSeries.map((s) => s.words), 1));
+    const maxLines = niceMax(Math.max(...wordsSeries.map((s) => s.lines), 1));
+
+    const xAt = (i) => padL + (n === 1 ? plotW / 2 : (i / (n - 1)) * plotW);
+    const yWords = (v) => padT + plotH - (v / maxWords) * plotH;
+    const yLines = (v) => padT + plotH - (v / maxLines) * plotH;
+
+    const dark = document.documentElement.classList.contains('dark');
+    const grid = dark ? 'rgba(148,163,184,.18)' : 'rgba(2,132,199,.14)';
+    const steps = narrow ? 3 : 5;
+
+    ctx.lineWidth = 1;
+    ctx.font = '900 10px ui-monospace, monospace';
+    ctx.textBaseline = 'middle';
+    for (let g = 0; g <= steps; g++) {
+      const gy = Math.round(padT + (g / steps) * plotH) + 0.5;
+      ctx.strokeStyle = grid;
+      ctx.beginPath();
+      ctx.moveTo(padL, gy);
+      ctx.lineTo(cssW - padR, gy);
+      ctx.stroke();
+      const frac = (steps - g) / steps;
+      ctx.fillStyle = '#94a3b8';
+      ctx.textAlign = 'right';
+      ctx.fillText(axisFmt(Math.round(maxWords * frac)), padL - 6, gy);
+      ctx.fillStyle = '#d97706';
+      ctx.textAlign = 'left';
+      ctx.fillText(axisFmt(Math.round(maxLines * frac)), cssW - padR + 6, gy);
+    }
+
+    // X 轴日期
+    ctx.fillStyle = '#94a3b8';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'alphabetic';
+    const ticks = narrow ? 3 : 6;
+    const step = Math.max(1, Math.ceil(n / ticks));
+    for (let i = 0; i < n; i += step) {
+      const d = new Date(wordsSeries[i].ts);
+      ctx.fillText(`${p2(d.getMonth() + 1)}/${p2(d.getDate())}`, xAt(i), cssH - 7);
+    }
+
+    // 每日新增行：柱状（右轴）
+    const barW = Math.max(1, Math.min(10, plotW / n - 1));
+    ctx.fillStyle = 'rgba(245,158,11,.55)';
+    for (let i = 0; i < n; i++) {
+      const v = wordsSeries[i].lines;
+      if (!v) continue;
+      const y = yLines(v);
+      ctx.fillRect(xAt(i) - barW / 2, y, barW, padT + plotH - y);
+    }
+
+    if (wordsHover >= 0 && wordsHover < n) {
+      ctx.strokeStyle = 'rgba(2,132,199,.45)';
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([4, 3]);
+      ctx.beginPath();
+      ctx.moveTo(xAt(wordsHover), padT);
+      ctx.lineTo(xAt(wordsHover), padT + plotH);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+
+    // 累计字数：面积 + 平滑曲线（左轴）
+    const pts = wordsSeries.map((s, i) => ({ x: xAt(i), y: yWords(s.words) }));
+    const grad = ctx.createLinearGradient(0, padT, 0, padT + plotH);
+    grad.addColorStop(0, 'rgba(2,132,199,.34)');
+    grad.addColorStop(1, 'rgba(2,132,199,0)');
+    ctx.beginPath();
+    smoothPath(ctx, pts);
+    ctx.lineTo(pts[pts.length - 1].x, padT + plotH);
+    ctx.lineTo(pts[0].x, padT + plotH);
+    ctx.closePath();
+    ctx.fillStyle = grad;
+    ctx.fill();
+
+    ctx.strokeStyle = '#0284c7';
+    ctx.lineWidth = 2.5;
+    ctx.lineJoin = 'round';
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    smoothPath(ctx, pts);
+    ctx.stroke();
+
+    if (wordsHover >= 0 && wordsHover < n) {
+      const p = pts[wordsHover];
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 4.5, 0, Math.PI * 2);
+      ctx.fillStyle = '#0284c7';
+      ctx.fill();
+      ctx.strokeStyle = dark ? '#1e293b' : '#fff';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    }
+  }
+
+  function showWordsTip(clientX) {
+    const canvas = $('words-chart');
+    const tip = $('words-tip');
+    if (!canvas || !tip || !wordsSeries.length) return;
+
+    const rect = canvas.getBoundingClientRect();
+    const plotW = rect.width - wordsGeo.padL - wordsGeo.padR;
+    if (plotW <= 0) return;
+    const raw = Math.round(((clientX - rect.left - wordsGeo.padL) / plotW) * (wordsGeo.n - 1));
+    const idx = Math.min(Math.max(raw, 0), wordsGeo.n - 1);
+    wordsHover = idx;
+    drawWords();
+
+    const s = wordsSeries[idx];
+    const d = new Date(s.ts);
+    tip.innerHTML =
+      `<div style="font-weight:900;margin-bottom:3px">${d.getFullYear()}-${p2(d.getMonth() + 1)}-${p2(d.getDate())}</div>` +
+      `<div><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#0284c7;margin-right:5px"></span>累计 ${nfmt(s.words)} 字</div>` +
+      (s.added ? `<div style="color:#7dd3fc">本区间新增 ${nfmt(s.added)} 字</div>` : '') +
+      `<div><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#f59e0b;margin-right:5px"></span>改动 ${nfmt(s.lines)} 行</div>`;
+    tip.hidden = false;
+
+    const px = wordsGeo.padL + (wordsGeo.n === 1 ? plotW / 2 : (idx / (wordsGeo.n - 1)) * plotW);
+    let left = px + 12;
+    if (left + tip.offsetWidth > rect.width - 2) left = px - tip.offsetWidth - 12;
+    tip.style.left = Math.max(2, left) + 'px';
+    tip.style.top = '8px';
+  }
+
+  function hideWordsTip() {
+    const tip = $('words-tip');
+    if (tip) tip.hidden = true;
+    wordsHover = -1;
+    drawWords();
+  }
+  /* ================= 更新内容构成（环形图） ================= */
+  function drawRatio(counts) {
+    const canvas = $('ratio-chart');
+    if (!canvas) return;
+    const cssW = canvas.clientWidth;
+    const cssH = canvas.clientHeight;
+    if (!cssW || !cssH) return;
+
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    if (canvas.width !== Math.round(cssW * dpr)) canvas.width = Math.round(cssW * dpr);
+    if (canvas.height !== Math.round(cssH * dpr)) canvas.height = Math.round(cssH * dpr);
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, cssW, cssH);
+
+    const total = KIND_ORDER.reduce((s, k) => s + (counts[k] || 0), 0);
+    const cx = cssW / 2;
+    const cy = cssH / 2;
+    const r = Math.min(cx, cy) - 6;
+    const thick = Math.max(14, r * 0.42);
+
+    // 底环
+    ctx.beginPath();
+    ctx.arc(cx, cy, r - thick / 2, 0, Math.PI * 2);
+    ctx.strokeStyle = 'rgba(2,132,199,.12)';
+    ctx.lineWidth = thick;
+    ctx.stroke();
+
+    if (!total) return;
+
+    let angle = -Math.PI / 2;
+    for (const k of KIND_ORDER) {
+      const v = counts[k] || 0;
+      if (!v) continue;
+      const sweep = (v / total) * Math.PI * 2;
+      ctx.beginPath();
+      ctx.arc(cx, cy, r - thick / 2, angle, angle + sweep);
+      ctx.strokeStyle = KIND_META[k].color;
+      ctx.lineWidth = thick;
+      ctx.lineCap = 'butt';
+      ctx.stroke();
+      angle += sweep;
+    }
+  }
+
+  function renderRatio(counts) {
+    const total = KIND_ORDER.reduce((s, k) => s + (counts[k] || 0), 0);
+    $('ratio-total').textContent = nfmt(total);
+    drawRatio(counts);
+
+    const list = $('ratio-list');
+    if (!list) return;
+    if (!total) {
+      list.innerHTML = '<p class="list-msg">该区间没有提交</p>';
+      return;
+    }
+    list.innerHTML = KIND_ORDER.map((k) => {
+      const v = counts[k] || 0;
+      const pct = total ? (v / total) * 100 : 0;
+      const m = KIND_META[k];
+      return `<div class="rt-row">
+  <span class="rt-dot" style="background:${m.color}"></span>
+  <div class="rt-body">
+    <div class="rt-line">
+      <span class="rt-name">${m.icon} ${m.name}</span>
+      <span class="rt-num">${v} 次 · ${pct.toFixed(1)}%</span>
+    </div>
+    <div class="rt-bar"><div class="rt-fill" style="width:${Math.max(pct, v ? 1.5 : 0)}%;background:${m.color}"></div></div>
+  </div>
+</div>`;
+    }).join('');
+  }
+
+  /** 按当前时间范围统计各类提交数 */
+  function countKinds(summary, spanDays) {
+    const counts = { post: 0, talk: 0, friend: 0, other: 0 };
+    const daily = summary.daily || [];
+    if (!daily.length) return counts;
+
+    let cutoff = 0;
+    if (spanDays > 0) {
+      const lastDay = dayStart(new Date(daily[daily.length - 1].date + 'T00:00:00').getTime());
+      cutoff = Math.max(lastDay, dayStart(Date.now())) - (spanDays - 1) * DAY;
+    }
+    for (const d of daily) {
+      const t = dayStart(new Date(d.date + 'T00:00:00').getTime());
+      if (t < cutoff) continue;
+      for (const k of KIND_ORDER) counts[k] += d.kinds[k] || 0;
+    }
+    return counts;
+  }
+  /* ================= 提交明细（按需分页） ================= */
+  const shardCache = new Map();
+  let curPage = 1;
+  let pageSeq = 0;
+
+  async function loadShard(page) {
+    if (shardCache.has(page)) return shardCache.get(page);
+    const r = await fetch(`/data/commits/${page}.json`, {
+      headers: { Accept: 'application/json' },
+      signal: AbortSignal.timeout(12000),
+    });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const j = await r.json();
+    shardCache.set(page, j);
+    return j;
+  }
+
+  function commitRow(c, repo) {
+    const m = KIND_META[c.kind] || KIND_META.other;
+    const d = new Date(c.ts);
+    const when = `${d.getFullYear()}-${p2(d.getMonth() + 1)}-${p2(d.getDate())} ${p2(d.getHours())}:${p2(d.getMinutes())}`;
+    const shown = c.files.slice(0, 3);
+    const rest = c.files.length - shown.length;
+
+    const files = shown.map(([path, add, del]) =>
+      `<div class="cm-file">${esc(path)} <span class="cm-add">+${add}</span> <span class="cm-del">-${del}</span></div>`
+    ).join('') + (rest > 0 ? `<div class="cm-more">…还有 ${rest} 个文件</div>` : '');
+
+    return `<div class="cm-row" data-kind="${c.kind}">
+  <span class="cm-kind" title="${m.name}">${m.icon}</span>
+  <div class="cm-body">
+    <div class="cm-line1">
+      <span class="cm-subject" title="${esc(c.subject)}">${esc(c.subject)}</span>
+      <a class="cm-sha" href="https://github.com/${repo}/commit/${esc(c.sha)}" target="_blank" rel="noopener">${esc(c.sha.slice(0, 7))}</a>
+    </div>
+    <div class="cm-meta">
+      <span>${when}</span>
+      <span>${esc(c.author)}</span>
+      <span class="cm-add">+${c.added}</span>
+      <span class="cm-del">-${c.removed}</span>
+      <span>${c.fileCount} 个文件</span>
+    </div>
+    ${c.files.length ? `<div class="cm-files">${files}</div>` : ''}
+  </div>
+</div>`;
+  }
+
+  async function renderPage(state, page) {
+    const list = $('commit-list');
+    if (!list) return;
+    const seq = ++pageSeq;
+    list.innerHTML = '<p class="list-msg">加载中…</p>';
+
+    let data;
+    try {
+      data = await loadShard(page);
+    } catch (e) {
+      if (seq !== pageSeq) return;
+      list.innerHTML = '<p class="list-msg">明细加载失败，请稍后重试</p>';
+      return;
+    }
+    if (seq !== pageSeq) return; // 快速连点时丢弃过期响应
+
+    curPage = page;
+    const repo = state.summary.repo || '';
+    list.innerHTML = data.commits.length
+      ? data.commits.map((c) => commitRow(c, repo)).join('')
+      : '<p class="list-msg">没有提交记录</p>';
+
+    const total = data.total || state.summary.shards || 1;
+    $('page-info').textContent = `${page} / ${total}`;
+    $('page-prev').disabled = page <= 1;
+    $('page-next').disabled = page >= total;
+
+    // 预取下一页，翻页时几乎无等待
+    if (page < total && !shardCache.has(page + 1)) {
+      loadShard(page + 1).catch(() => {});
+    }
+  }
+  /* ================= 初始化 / 清理 ================= */
+  // 监听器与观察器统一挂在 AbortController 上，view transition 换页时一次性注销
+  let ac = null;
+  let ro = null;
+
+  function teardown() {
+    if (ac) { ac.abort(); ac = null; }
+    if (ro) { ro.disconnect(); ro = null; }
+  }
+
+  function setup() {
+    const root = $('heatmap');
+    teardown();
+    if (!root) return;
+
+    const summary = readSummary();
+    if (!summary) return;
+    const state = { summary };
+
+    shardCache.clear();
+    wordsSeries = [];
+    wordsHover = -1;
+    curPage = 1;
+
+    ac = new AbortController();
+    const signal = ac.signal;
+
+    // 热力图：默认最近一年
+    const years = [...document.querySelectorAll('[data-year]')];
+    const initialYear = years.length ? years[0].dataset.year : String(new Date().getFullYear());
+    renderHeatmap(state, initialYear);
+    bindHeatTip(state, signal);
+    for (const btn of years) {
+      btn.addEventListener('click', () => {
+        years.forEach((b) => b.classList.toggle('is-on', b === btn));
+        $('heat-tip').hidden = true;
+        renderHeatmap(state, btn.dataset.year);
+      }, { signal });
+    }
+
+    // 字数图 + 占比图共用同一时间范围
+    let span = 0;
+    const applySpan = () => {
+      wordsSeries = buildWordsSeries(summary, span);
+      wordsHover = -1;
+      drawWords();
+      renderRatio(countKinds(summary, span));
+      const label = span === 0 ? '全部时间' : `最近 ${span} 天`;
+      $('ratio-note').textContent = label;
+    };
+    applySpan();
+
+    for (const btn of document.querySelectorAll('[data-span]')) {
+      btn.addEventListener('click', () => {
+        const v = Number(btn.dataset.span);
+        if (v === span) return;
+        span = v;
+        document.querySelectorAll('[data-span]').forEach((b) => b.classList.toggle('is-on', b === btn));
+        hideWordsTip();
+        applySpan();
+      }, { signal });
+    }
+
+    const canvas = $('words-chart');
+    canvas.addEventListener('mousemove', (e) => showWordsTip(e.clientX), { signal });
+    canvas.addEventListener('mouseleave', hideWordsTip, { signal });
+    canvas.addEventListener('touchstart', (e) => { if (e.touches[0]) showWordsTip(e.touches[0].clientX); }, { signal, passive: true });
+    canvas.addEventListener('touchmove', (e) => { if (e.touches[0]) showWordsTip(e.touches[0].clientX); }, { signal, passive: true });
+    canvas.addEventListener('touchend', hideWordsTip, { signal });
+
+    // 明细分页
+    $('page-prev').addEventListener('click', () => {
+      if (curPage > 1) renderPage(state, curPage - 1);
+    }, { signal });
+    $('page-next').addEventListener('click', () => {
+      renderPage(state, curPage + 1);
+    }, { signal });
+    renderPage(state, 1);
+
+    // 容器高度由 CSS 固定，这里只重算位图密度与坐标
+    if ('ResizeObserver' in window) {
+      ro = new ResizeObserver(() => {
+        drawWords();
+        renderRatio(countKinds(summary, span));
+      });
+      ro.observe(canvas.parentElement);
+    } else {
+      window.addEventListener('resize', () => drawWords(), { signal });
+    }
+  }
+
+  setup();
+  document.addEventListener('astro:page-load', setup);
+  document.addEventListener('astro:before-swap', teardown);
+
+
+
+
+
+
+</script>

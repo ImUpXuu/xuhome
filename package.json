@@ -4,14 +4,20 @@
   "version": "0.0.0",
   "type": "module",
   "pnpm": {
-    "onlyBuiltDependencies": ["esbuild", "sharp", "protobufjs", "@google/genai"]
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "sharp",
+      "protobufjs",
+      "@google/genai"
+    ]
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "node scripts/indexnow-key.js && astro build",
+    "build": "node scripts/indexnow-key.js && node scripts/build-commit-index.mjs && astro build",
     "preview": "astro preview",
     "clean": "rm -rf dist server.js",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "commit-index": "node scripts/build-commit-index.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "^6.0.2",

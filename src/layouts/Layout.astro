@@ -10,17 +10,15 @@ import { PageBanner } from '../components/PageBanner';
 import MusicPlayer from '../components/MusicPlayer.svelte';
 import { execSync } from 'child_process';
 import { getCollection } from 'astro:content';
+import { countBodyChars } from '../utils/wordCount.mjs';
 import '../index.css';
 
-// 页脚字数统计：文章 + 说说的正文字符数合计（去掉图片语法与空白）
+// 页脚字数统计：与建站统计页共用同一口径（src/utils/wordCount.mjs），
+// 否则同一个站会显示两个不同的"总字数"
 const footerPosts = await getCollection('posts');
 const footerTalks = await getCollection('talks');
-const stripMarkdown = (s: string) => s
-  .replace(/!\[[^\]]*\]\([^)]*\)/g, '')
-  .replace(/<img[^>]*>/gi, '')
-  .replace(/\s+/g, '');
-const footerChars = footerPosts.reduce((sum, p) => sum + stripMarkdown(p.body || '').length, 0)
-  + footerTalks.reduce((sum, t) => sum + stripMarkdown(t.body || '').length, 0);
+const footerChars = footerPosts.reduce((sum, p) => sum + countBodyChars(p.body || ''), 0)
+  + footerTalks.reduce((sum, t) => sum + countBodyChars(t.body || ''), 0);
 const wordCountK = (footerChars / 1000).toFixed(1);
 
 const DEFAULT_BG_URL = 'https://img.upxuu.lcrworld.xyz/images/2026/7/1.webp';
