@@ -273,6 +273,8 @@ const busiest = summary.daily.reduce(
   :global(.dark) .lg-static { color: #cbd5e1; }
 
   /* ---------- 热力图 ---------- */
+  /* 注意：格子与月份标签是运行时注入的，样式必须放在下面的 is:global 块里，
+     写在这个作用域块里会因为缺少 data-astro-cid-* 而完全不生效 */
   .heat-scroll { overflow-x: auto; overflow-y: hidden; padding-bottom: 4px; }
   .heat-inner { min-width: max-content; }
 
@@ -285,13 +287,6 @@ const busiest = summary.daily.reduce(
     height: 14px;
     margin-bottom: 3px;
   }
-  .heat-mon {
-    font-size: 10px;
-    font-weight: 900;
-    color: #94a3b8;
-    white-space: nowrap;
-    overflow: visible;
-  }
 
   .heat {
     display: grid;
@@ -300,19 +295,6 @@ const busiest = summary.daily.reduce(
     grid-template-rows: repeat(7, 13px);
     gap: 3px;
   }
-  .heat-cell {
-    width: 13px; height: 13px;
-    border-radius: 2px;
-    border: 1px solid rgba(2, 132, 199, .18);
-    background: rgba(2, 132, 199, .06);
-    cursor: default;
-  }
-  .heat-cell[data-lv="1"] { background: #bae6fd; border-color: #7dd3fc; }
-  .heat-cell[data-lv="2"] { background: #7dd3fc; border-color: #38bdf8; }
-  .heat-cell[data-lv="3"] { background: #38bdf8; border-color: #0ea5e9; }
-  .heat-cell[data-lv="4"] { background: #0284c7; border-color: #0369a1; }
-  .heat-cell.is-void { visibility: hidden; }
-
   .heat-foot {
     display: flex; align-items: center; justify-content: space-between;
     flex-wrap: wrap; gap: 8px; margin-top: 10px;
@@ -420,8 +402,32 @@ const busiest = summary.daily.reduce(
   }
 </style>
 
-<!-- 明细行与占比行是运行时 innerHTML 注入的，拿不到 Astro 作用域属性，必须走全局选择器 -->
+<!-- 明细行、占比行、热力图格子都是运行时 innerHTML 注入的，拿不到 Astro 的
+     data-astro-cid-* 作用域属性，样式必须写成全局选择器 -->
 <style is:global>
+  /* ---------- 热力图格子 ---------- */
+  #heatmap .heat-cell {
+    width: 13px; height: 13px;
+    border-radius: 2px;
+    border: 1px solid rgba(2, 132, 199, .18);
+    background: rgba(2, 132, 199, .06);
+    cursor: default;
+  }
+  #heatmap .heat-cell[data-lv="1"] { background: #bae6fd; border-color: #7dd3fc; }
+  #heatmap .heat-cell[data-lv="2"] { background: #7dd3fc; border-color: #38bdf8; }
+  #heatmap .heat-cell[data-lv="3"] { background: #38bdf8; border-color: #0ea5e9; }
+  #heatmap .heat-cell[data-lv="4"] { background: #0284c7; border-color: #0369a1; }
+  #heatmap .heat-cell.is-void { visibility: hidden; }
+
+  #heat-months .heat-mon {
+    font-size: 10px;
+    font-weight: 900;
+    color: #94a3b8;
+    white-space: nowrap;
+    overflow: visible;
+  }
+
+  /* ---------- 提交明细 ---------- */
   #commit-list .cm-row {
     display: flex; align-items: flex-start; gap: 10px;
     padding: 8px 10px;
