@@ -776,5 +776,11 @@
     "avatar": "https://jyblog.com/favicon.svg",
     "description": "生命不息，折腾不止。",
     "rss": "https://jyblog.com/feed"
+  },
+  {
+    "name": "mccsjs",
+    "url": "https://mccsjs.cn/",
+    "avatar": "https://www.google.com/s2/favicons?domain=mccsjs.cn&sz=128",
+    "description": "点一盏灯，等待一个迷路的夜🍁"
   }
 ]
