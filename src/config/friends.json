@@ -769,5 +769,12 @@
     "avatar": "https://wangxinyang.top/avatar.png",
     "description": "个人博客 / 学习交流 / 生活日常",
     "rss": "https://wangxinyang.top/rss.xml"
+  },
+  {
+    "name": "倦意博客",
+    "url": "https://jyblog.com",
+    "avatar": "https://jyblog.com/favicon.svg",
+    "description": "生命不息，折腾不止。",
+    "rss": "https://jyblog.com/feed"
   }
 ]
