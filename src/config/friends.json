@@ -800,5 +800,12 @@
     "url": "https://www.9ll.uk/",
     "avatar": "https://www.google.com/s2/favicons?domain=www.9ll.uk&sz=128",
     "description": "一个摆烂的站和一个摆烂的博主，记录一些生活，爱好技术和相关的东西。"
+  },
+  {
+    "name": "Qzone",
+    "url": "https://www.liyaqi.com",
+    "avatar": "https://www.liyaqi.com/logo.png",
+    "description": "一个记录生活的小空间",
+    "rss": "https://www.liyaqi.com/rss.xml"
   }
 ]
