@@ -427,10 +427,22 @@
     "rss": "https://lcrworld.xyz/api/rss/articles"
   },
   {
-    "name": "笔尖代码",
-    "url": "https://123456l.com",
-    "avatar": "https://www.google.com/s2/favicons?domain=123456l.com&sz=128",
-    "description": "笔尖代码 — 技术博客，分享编程、运维、AI、DIY 装机等实用技术教程"
+    "name": "万象存笺",
+    "url": "https://3z.ink",
+    "avatar": "https://3z.ink/assets/images/logo-v2.png",
+    "description": "万象存笺 - 一个汇聚了前端、后端、数据库、运维、系统知识等内容的网络日志"
+  },
+  {
+    "name": "Lin Blog",
+    "url": "https://linlog.top",
+    "avatar": "https://linlog.top/api/uploads/2026/09/1788411216332767920-dca59196a965c5e8.jpg",
+    "description": "记录技术、互联网与日常观察"
+  },
+  {
+    "name": "枝语风笺",
+    "url": "https://blog.chario.cn/",
+    "avatar": "https://blog.chario.cn/favicon.ico",
+    "description": "记录生活点滴、技术成长与程序开发的个人博客"
   },
   {
     "name": "启明曙光科技",
