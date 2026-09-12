@@ -808,5 +808,11 @@
     "avatar": "https://www.liyaqi.com/logo.png",
     "description": "一个记录生活的小空间",
     "rss": "https://www.liyaqi.com/rss.xml"
+  },
+  {
+    "name": "Olinl Blog",
+    "url": "https://blog.olinl.com",
+    "avatar": "https://www.google.com/s2/favicons?domain=blog.olinl.com&sz=128",
+    "description": "分享、实践、学习"
   }
 ]
