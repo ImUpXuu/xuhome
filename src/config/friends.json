@@ -814,5 +814,11 @@
     "url": "https://blog.olinl.com",
     "avatar": "https://www.google.com/s2/favicons?domain=blog.olinl.com&sz=128",
     "description": "分享、实践、学习"
+  },
+  {
+    "name": "拾音集",
+    "url": "https://blog.tibtob.cn/",
+    "avatar": "https://www.google.com/s2/favicons?domain=blog.tibtob.cn&sz=128",
+    "description": "收集生活里的声与光"
   }
 ]
