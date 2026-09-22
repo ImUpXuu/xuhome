@@ -813,5 +813,11 @@
     "url": "https://blog.tibtob.cn/",
     "avatar": "https://www.google.com/s2/favicons?domain=blog.tibtob.cn&sz=128",
     "description": "收集生活里的声与光"
+  },
+  {
+    "name": "Somoe Home",
+    "url": "https://somoe.xyz",
+    "avatar": "https://www.google.com/s2/favicons?domain=somoe.xyz&sz=128",
+    "description": "在文字的深海里，拾贝而行"
   }
 ]
