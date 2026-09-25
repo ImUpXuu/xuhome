@@ -14,8 +14,11 @@
   let currentDate = new Date();
   let selectedDate: Date | null = null;
   let isPickerOpen = false;
+  let mounted = false;
 
   onMount(() => {
+    currentDate = new Date();
+    mounted = true;
     if (posts.length > 0) return;
     if (!dataUrl) return;
 
@@ -83,6 +86,7 @@
   const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
 </script>
 
+{#if mounted}
 <div class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] p-3.5 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm w-full relative animate-card-entrance opacity-0" data-nosnippet aria-hidden="true" style="animation-delay: 0.08s">
   <div class="text-center font-mono text-[11px] font-black text-slate-450 mb-1.5 uppercase tracking-widest block select-none">
     #upxuu的创作日历
@@ -186,3 +190,4 @@
     </div>
   {/if}
 </div>
+{/if}

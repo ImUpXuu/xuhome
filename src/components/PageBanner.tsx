@@ -29,7 +29,7 @@ export function PageBanner({
   const postsCount = propPostsCount || 0;
 
   const hasRightContent = useMemo(() => {
-    return !!(categoryName || tagName || post || pathname === "/talk" || pathname.startsWith("/talk/") || pathname.startsWith("/talks/"));
+    return !!(categoryName || tagName || post || pathname === "/talk" || pathname === "/talks" || pathname.startsWith("/talk/") || pathname.startsWith("/talks/"));
   }, [categoryName, tagName, post, pathname]);
 
   // Determine what type of content to render on the right side
@@ -103,7 +103,7 @@ export function PageBanner({
       );
     }
 
-    if (pathname === "/talk" || pathname.startsWith("/talk/") || pathname.startsWith("/talks/")) {
+    if (pathname === "/talk" || pathname === "/talks" || pathname.startsWith("/talk/") || pathname.startsWith("/talks/")) {
       return (
         <motion.div
           key="talk-list-detail"

@@ -26,10 +26,12 @@ export function SEO({
   const pageDescription = description || seoConfig.defaultDescription;
   const pageKeywords = keywords?.length ? keywords : seoConfig.keywords;
   
-  // Custom canonical URL basing on configuration
-  const canonicalUrl = siteConfig.url 
-    ? `${siteConfig.url}${typeof window !== 'undefined' ? window.location.pathname : ''}` 
-    : url;
+  // 优先使用调用方传入的精确 url，其次站点配置 + 路径，最后客户端兜底
+  const canonicalUrl = url
+    || (siteConfig.url
+      ? `${siteConfig.url}${typeof window !== 'undefined' ? window.location.pathname : ''}`
+      : '')
+    || (typeof window !== 'undefined' ? window.location.href : '');
 
   return (
     <>

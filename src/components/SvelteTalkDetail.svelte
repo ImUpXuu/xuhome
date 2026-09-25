@@ -48,6 +48,26 @@
 
   $: images = extractImages(talk.content);
   $: textOnly = getContentWithoutImages(talk.content);
+
+  // 点赞状态（localStorage 持久化，按说说 id 隔离）
+  let liked = false;
+  let likeCount = 0;
+  $: likeKey = `talk-like-${talk.id}`;
+  $: {
+    try {
+      const saved = localStorage.getItem(likeKey);
+      if (saved) {
+        const obj = JSON.parse(saved);
+        liked = !!obj.liked;
+        likeCount = obj.count || 0;
+      }
+    } catch { /* 读取失败则忽略 */ }
+  }
+  function toggleLike() {
+    liked = !liked;
+    likeCount = Math.max(0, likeCount + (liked ? 1 : -1));
+    try { localStorage.setItem(likeKey, JSON.stringify({ liked, count: likeCount })); } catch {}
+  }
 </script>
 
 <div class="max-w-[800px] mx-auto w-full space-y-6">
@@ -134,8 +154,8 @@
     <!-- Share footer -->
     <div class="mt-8 border-t-2 border-dashed border-[#0284c7]/20 pt-4 flex justify-between items-center pl-0 sm:pl-[64px]">
        <div class="flex gap-3">
-         <button class="flex items-center gap-1.5 px-3 py-1.5 border-2 border-[#0284c7] bg-white dark:bg-slate-700 text-[#0284c7] text-xs font-black shadow-[2px_2px_0px_0px_#0284c7] hover:bg-[#0284c7] hover:text-white transition-colors cursor-pointer rounded-sm transform active:translate-y-0.5 active:shadow-[0px_0px_0px_0px_#0284c7]">
-           🤍 LIKE
+         <button on:click|stopPropagation={toggleLike} class="flex items-center gap-1.5 px-3 py-1.5 border-2 border-[#0284c7] bg-white dark:bg-slate-700 text-[#0284c7] text-xs font-black shadow-[2px_2px_0px_0px_#0284c7] hover:bg-[#0284c7] hover:text-white transition-colors cursor-pointer rounded-sm transform active:translate-y-0.5 active:shadow-[0px_0px_0px_0px_#0284c7]">
+           <span>{liked ? '❤️' : '🤍'}</span> LIKE{#if likeCount > 0}<span class="opacity-70">({likeCount})</span>{/if}
          </button>
        </div>
        <div class="text-[10px] uppercase font-mono font-bold text-slate-400 dark:text-slate-500 select-none">

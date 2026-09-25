@@ -30,13 +30,27 @@
   }
 
   function copyLink() {
-    navigator.clipboard.writeText(talkUrl).then(() => {
-      const btn = document.querySelector('.copy-link-btn');
-      if (btn) {
-        btn.textContent = '已复制 ✓';
-        setTimeout(() => { btn.textContent = '复制链接'; }, 2000);
-      }
-    });
+    const btn = document.querySelector('.copy-link-btn');
+    const restore = () => { if (btn) btn.textContent = '复制链接'; };
+    const done = () => {
+      if (btn) btn.textContent = '已复制 ✓';
+      setTimeout(restore, 2000);
+    };
+    if (!navigator.clipboard || !window.isSecureContext) {
+      try {
+        const ta = document.createElement("textarea");
+        ta.value = talkUrl;
+        ta.style.position = "fixed";
+        ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+        done();
+      } catch { restore(); }
+      return;
+    }
+    navigator.clipboard.writeText(talkUrl).then(done).catch(restore);
   }
 
   function shareToQQ() {
@@ -52,9 +66,23 @@
 
   function shareToWeChat() {
     const text = `${title}\n${description}\n${talkUrl}`;
+    const fallback = () => {
+      try {
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        ta.style.position = "fixed";
+        ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+        alert('分享内容已复制到剪贴板，请打开微信粘贴给好友');
+      } catch { /* 复制失败，静默处理 */ }
+    };
+    if (!navigator.clipboard || !window.isSecureContext) { fallback(); return; }
     navigator.clipboard.writeText(text).then(() => {
       alert('分享内容已复制到剪贴板，请打开微信粘贴给好友');
-    });
+    }).catch(fallback);
   }
 
   async function loadImage(src: string): Promise<HTMLImageElement> {
