@@ -9,7 +9,8 @@
     "name": "流欺の个人博客",
     "url": "https://blog.lqay.cn/",
     "avatar": "https://tc.lqay.cn/LightPicture/2026/03/5f64e0f0f361e19c.png",
-    "description": "嗯对就是个博客."
+    "description": "嗯对就是个博客.",
+    "rss": "https://blog.lqay.cn/index.php/feed/"
   },
   {
     "name": "zplb の博客",
@@ -36,7 +37,8 @@
     "name": "zeroanon",
     "url": "https://zeroanon.com",
     "avatar": "https://avatars.githubusercontent.com/u/119206123?v=4",
-    "description": "不做圣经里腐朽的诗集，要做禁书里最惊世骇俗的篇章"
+    "description": "不做圣经里腐朽的诗集，要做禁书里最惊世骇俗的篇章",
+    "rss": "https://zeroanon.com/rss.xml"
   },
   {
     "name": "NGC7293的星域",
@@ -423,7 +425,8 @@
     "name": "万象存笺",
     "url": "https://3z.ink",
     "avatar": "https://3z.ink/assets/images/logo-v2.png",
-    "description": "万象存笺 - 一个汇聚了前端、后端、数据库、运维、系统知识等内容的网络日志"
+    "description": "万象存笺 - 一个汇聚了前端、后端、数据库、运维、系统知识等内容的网络日志",
+    "rss": "https://www.3z.ink/rss.xml"
   },
   {
     "name": "Lin Blog",
@@ -435,7 +438,8 @@
     "name": "枝语风笺",
     "url": "https://blog.chario.cn/",
     "avatar": "https://blog.chario.cn/favicon.ico",
-    "description": "记录生活点滴、技术成长与程序开发的个人博客"
+    "description": "记录生活点滴、技术成长与程序开发的个人博客",
+    "rss": "https://blog.chario.cn/feed/"
   },
   {
     "name": "启明曙光科技",
@@ -539,13 +543,15 @@
     "name": "雾语",
     "url": "https://foglog.cn/",
     "avatar": "https://www.google.com/s2/favicons?domain=foglog.cn&sz=128",
-    "description": "迷雾轻语，雅意深藏"
+    "description": "迷雾轻语，雅意深藏",
+    "rss": "https://foglog.cn/feed/"
   },
   {
     "name": "ISVCSEC",
     "url": "https://www.nixegus.com/",
     "avatar": "https://www.google.com/s2/favicons?domain=www.nixegus.com&sz=128",
-    "description": "专注攻防实战与技术研究的网络安全博客"
+    "description": "专注攻防实战与技术研究的网络安全博客",
+    "rss": "https://www.nixegus.com/rss.xml"
   },
   {
     "name": "且听书吟",
@@ -557,7 +563,8 @@
     "name": "51chifun's blog",
     "url": "https://51chifun.cc.cd/",
     "avatar": "https://s41.ax1x.com/2026/05/17/pexppTS.png",
-    "description": "什么有趣就折腾什么"
+    "description": "什么有趣就折腾什么",
+    "rss": "https://51chifun.cc.cd/feed/"
   },
   {
     "name": "RAGNote",
@@ -570,7 +577,8 @@
     "name": "Aimerting",
     "url": "https://blog.xuioo.com/",
     "avatar": "https://www.google.com/s2/favicons?domain=blog.xuioo.com&sz=128",
-    "description": "「纯粹祈愿皆成真」"
+    "description": "「纯粹祈愿皆成真」",
+    "rss": "https://blog.xuioo.com/rss.xml"
   },
   {
     "name": "leorain",
@@ -583,19 +591,22 @@
     "name": "合荒小站",
     "url": "https://hehuang.site",
     "avatar": "https://www.google.com/s2/favicons?domain=hehuang.site&sz=128",
-    "description": "万物和鸣·独守一荒"
+    "description": "万物和鸣·独守一荒",
+    "rss": "https://hehuang.site/index.xml"
   },
   {
     "name": "J",
     "url": "https://jinzhenyi.dpdns.org",
     "avatar": "https://www.google.com/s2/favicons?domain=jinzhenyi.dpdns.org&sz=128",
-    "description": "jinzhenyi的博客"
+    "description": "jinzhenyi的博客",
+    "rss": "https://jinzhenyi.dpdns.org/feed.xml"
   },
   {
     "name": "Serendipity",
     "url": "https://blog.liuhangyv.top",
     "avatar": "https://www.google.com/s2/favicons?domain=blog.liuhangyv.top&sz=128",
-    "description": "AI技术分享 × 行业动态 × 创新实践"
+    "description": "AI技术分享 × 行业动态 × 创新实践",
+    "rss": "https://blog.liuhangyv.top/rss.xml"
   },
   {
     "name": "风·墨",
@@ -608,25 +619,29 @@
     "name": "UpXuu's blog",
     "url": "https://upxuu.com",
     "description": "逐光而上",
-    "avatar": "https://upxuu.com/images/me.jpg"
+    "avatar": "https://upxuu.com/images/me.jpg",
+    "rss": "https://upxuu.com/rss.xml"
   },
   {
     "name": "Brandon's Blog",
     "url": "https://blog.oopss.top",
     "avatar": "https://www.google.com/s2/favicons?domain=blog.oopss.top&sz=128",
-    "description": "分享个人技术经验与生活日常"
+    "description": "分享个人技术经验与生活日常",
+    "rss": "https://blog.oopss.top/blog/rss.xml"
   },
   {
     "name": "小曦的园子",
     "url": "https://xiaoxi.ac.cn",
     "description": "打理好自己的小园子",
-    "avatar": "https://img.xiaoxi.ac.cn/logo.png"
+    "avatar": "https://img.xiaoxi.ac.cn/logo.png",
+    "rss": "https://xiaoxi.ac.cn/rss.xml"
   },
   {
     "name": "Yuer6327 Blog",
     "url": "https://blog.yuer6327.top/",
     "avatar": "https://www.google.com/s2/favicons?domain=blog.yuer6327.top&sz=128",
-    "description": "Yuer6327 | 个人博客-项目开发与设计笔记"
+    "description": "Yuer6327 | 个人博客-项目开发与设计笔记",
+    "rss": "https://blog.yuer6327.top/rss.xml"
   },
   {
     "name": "xiaomo的小破站",
@@ -638,61 +653,71 @@
     "name": "索玛",
     "url": "https://suo.ma",
     "avatar": "https://www.suo.ma/img/favicon.ico",
-    "description": "索玛的网站"
+    "description": "索玛的网站",
+    "rss": "https://www.suo.ma/feed.xml"
   },
   {
     "name": "对白",
     "url": "https://denjuy.com",
     "description": "一名地球 Online 玩家的随想集",
-    "avatar": "https://denjuy.com/img/deepwhitelogo.png"
+    "avatar": "https://denjuy.com/img/deepwhitelogo.png",
+    "rss": "https://denjuy.com/feed.xml"
   },
   {
     "name": "新锐博客",
     "url": "https://blog.xrbk.cn",
     "description": "记录学习与分享资源",
-    "avatar": "https://www.google.com/s2/favicons?domain=blog.xrbk.cn&sz=128"
+    "avatar": "https://www.google.com/s2/favicons?domain=blog.xrbk.cn&sz=128",
+    "rss": "https://blog.xrbk.cn/atom.xml"
   },
   {
     "name": "星宇安全实验室",
     "url": "https://bk.zhaozhiqiang.pw/",
     "avatar": "https://www.google.com/s2/favicons?domain=bk.zhaozhiqiang.pw&sz=128",
-    "description": "星宇安全实验室，专注网络安全技术分享，记录团队实战经历、安全研究与编程成长笔记，致力于分享网安学习干货。"
+    "description": "星宇安全实验室，专注网络安全技术分享，记录团队实战经历、安全研究与编程成长笔记，致力于分享网安学习干货。",
+    "rss": "https://bk.zhaozhiqiang.pw/feed"
   },
   {
     "name": "sssr7844的博客",
     "url": "https://sssr7844.cc.cd/",
     "avatar": "https://sssr7844.cc.cd/wp-content/uploads/2026/07/1785027509-%E9%9C%9E%E5%A1%94_original-scaled-e1785157015117.jpg",
-    "description": "sssr7844的个人博客，记录学习与生活"
+    "description": "sssr7844的个人博客，记录学习与生活",
+    "rss": "https://sssr7844.cc.cd/feed/"
   },
   {
     "name": "日和",
     "url": "https://codevfun.work",
     "avatar": "https://i0.hdslb.com/bfs/face/a09cb25595f69324ed7da361391de337dbe47601.jpg",
-    "description": "想把一些代码笔记、阅读碎片和日常里的小幸福慢慢留下来，以及分享一些有趣的东西"
+    "description": "想把一些代码笔记、阅读碎片和日常里的小幸福慢慢留下来，以及分享一些有趣的东西",
+    "rss": "https://codevfun.work/feed.xml"
   },
   {
     "name": "拥抱日出的小屋",
     "url": "https://blog.byside.top",
     "avatar": "https://www.google.com/s2/favicons?domain=blog.byside.top&sz=128",
-    "description": "拥抱日出，也拥抱生活"
+    "description": "拥抱日出，也拥抱生活",
+    "rss": "https://blog.byside.top/rss.xml"
   },
   {
     "name": "Odd.G | 奇怪先生",
     "url": "https://www.3181314.xyz",
     "avatar": "https://www.google.com/s2/favicons?domain=www.3181314.xyz&sz=128",
-    "description": "Odd Gentleman的个人博客，记录思考、技术与生活碎片。"
+    "description": "Odd Gentleman的个人博客，记录思考、技术与生活碎片。",
+    "rss": "https://www.3181314.xyz/rss.xml"
   },
   {
     "name": "羊角快车Blog",
     "url": "https://jiaoblog.dpdns.org",
     "avatar": "https://yangjiao.dpdns.org/images/avatar2.png",
-    "description": "把有用的东西，合成你需要的模样"
+    "description": "把有用的东西，合成你需要的模样",
+    "rss": "https://jiaoblog.dpdns.org/rss.xml"
   },
   {
     "name": "临渊羡鱼",
     "url": "https://x1anyu.cn/",
     "avatar": "https://www.google.com/s2/favicons?domain=x1anyu.cn&sz=128",
-    "description": "久有羡鱼意，不甘空望川. 躬身耕岁月，步步赴清澜"
+    "description": "久有羡鱼意，不甘空望川. 躬身耕岁月，步步赴清澜",
+    "rss": "https://x1anyu.cn/rss.xml"
   },
   {
     "name": "朝朝听雨",
@@ -706,13 +731,15 @@
     "name": "路明笔记",
     "url": "https://www.luming.cool",
     "avatar": "https://www.google.com/s2/favicons?domain=www.luming.cool&sz=128",
-    "description": "一名高中生的技术与生活博客"
+    "description": "一名高中生的技术与生活博客",
+    "rss": "https://www.luming.cool/rss.xml"
   },
   {
     "name": "ElysiumStack",
     "url": "https://blog.elysium-stack.cn",
     "avatar": "https://weavatar.com/avatar/4B224B7FC28787D78FB6374E17E2F15C?s=640",
-    "description": "不会摄影的设计师不是优秀的旅行家"
+    "description": "不会摄影的设计师不是优秀的旅行家",
+    "rss": "https://blog.elysium-stack.cn/rss.xml"
   },
   {
     "name": "万物皆可写",
@@ -724,43 +751,50 @@
     "name": "YuJing的记忆终端",
     "url": "https://www.yujingblog.top",
     "avatar": "https://www.google.com/s2/favicons?domain=www.yujingblog.top&sz=128",
-    "description": "不怪天气不好，是我心事太多。"
+    "description": "不怪天气不好，是我心事太多。",
+    "rss": "https://yujingblog.top/rss.xml"
   },
   {
     "name": "蜓留",
     "url": "https://odonata.top",
     "avatar": "https://odonata.top/img/avatar.png",
-    "description": "飞行于世，栖息于此"
+    "description": "飞行于世，栖息于此",
+    "rss": "https://odonata.top/rss.xml"
   },
   {
     "name": "Ethan的小破站",
     "url": "https://blog.mczyk.cn/",
     "avatar": "https://img-cdn.lusyoe.com/images/mcrj/2025/12/02/ozs55gne07.jpg",
-    "description": "花有重开日人无再少年"
+    "description": "花有重开日人无再少年",
+    "rss": "https://blog.mczyk.cn/index.php/feed/"
   },
   {
     "name": "QiuMonster's Ocean Book",
     "url": "https://blog.somoe.xyz/",
     "avatar": "https://www.google.com/s2/favicons?domain=blog.somoe.xyz&sz=128",
-    "description": "在文字的深海里，拾贝而行"
+    "description": "在文字的深海里，拾贝而行",
+    "rss": "https://somoe.xyz/rss.xml"
   },
   {
     "name": "HJ",
     "url": "https://blog.hjz0713.cn/",
     "avatar": "https://www.google.com/s2/favicons?domain=blog.hjz0713.cn&sz=128",
-    "description": "Never stop discovering!"
+    "description": "Never stop discovering!",
+    "rss": "https://blog.hjz0713.cn/feed/"
   },
   {
     "name": "睿朗的小窝",
     "url": "https://iamcrl.cn",
     "avatar": "https://www.google.com/s2/favicons?domain=iamcrl.cn&sz=128",
-    "description": "永远相信美好的事情即将发生"
+    "description": "永远相信美好的事情即将发生",
+    "rss": "https://iamcrl.cn/rss/"
   },
   {
     "name": "ks blog",
     "url": "https://www.cuizi.top/",
     "avatar": "https://www.google.com/s2/favicons?domain=www.cuizi.top&sz=128",
-    "description": "保持好奇，保持诚实。"
+    "description": "保持好奇，保持诚实。",
+    "rss": "https://www.cuizi.top/rss.xml"
   },
   {
     "name": "懋和道人",
@@ -787,13 +821,15 @@
     "name": "mccsjs",
     "url": "https://mccsjs.cn/",
     "avatar": "https://www.google.com/s2/favicons?domain=mccsjs.cn&sz=128",
-    "description": "点一盏灯，等待一个迷路的夜🍁"
+    "description": "点一盏灯，等待一个迷路的夜🍁",
+    "rss": "https://mccsjs.cn/rss.xml"
   },
   {
     "name": "折腾进行中",
     "url": "https://www.9ll.uk/",
     "avatar": "https://www.google.com/s2/favicons?domain=www.9ll.uk&sz=128",
-    "description": "一个摆烂的站和一个摆烂的博主，记录一些生活，爱好技术和相关的东西。"
+    "description": "一个摆烂的站和一个摆烂的博主，记录一些生活，爱好技术和相关的东西。",
+    "rss": "https://www.9ll.uk/rss.xml"
   },
   {
     "name": "Qzone",
@@ -806,42 +842,49 @@
     "name": "Olinl Blog",
     "url": "https://blog.olinl.com",
     "avatar": "https://www.google.com/s2/favicons?domain=blog.olinl.com&sz=128",
-    "description": "分享、实践、学习"
+    "description": "分享、实践、学习",
+    "rss": "https://blog.olinl.com/rss.xml"
   },
   {
     "name": "拾音集",
     "url": "https://blog.tibtob.cn/",
     "avatar": "https://s1.tibtob.cn/blog/logo.png",
-    "description": "收集生活里的声与光"
+    "description": "收集生活里的声与光",
+    "rss": "https://blog.tibtob.cn/feed/"
   },
   {
     "name": "Somoe Home",
     "url": "https://somoe.xyz",
     "avatar": "https://www.google.com/s2/favicons?domain=somoe.xyz&sz=128",
-    "description": "在文字的深海里，拾贝而行"
+    "description": "在文字的深海里，拾贝而行",
+    "rss": "https://somoe.xyz/rss.xml"
   },
   {
     "name": "Fuhao574",
     "url": "https://www.fuhao574.cyou/",
     "avatar": "https://www.google.com/s2/favicons?domain=www.fuhao574.cyou&sz=128",
-    "description": "这个世界不缺大人"
+    "description": "这个世界不缺大人",
+    "rss": "https://www.fuhao574.cyou/rss.xml"
   },
   {
     "name": "fufuの小窝",
     "url": "https://blog.fufu520.cn/",
     "avatar": "https://blog.fufu520.cn/upload/logo-IjBa.webp",
-    "description": "世界很大，我想去看看"
+    "description": "世界很大，我想去看看",
+    "rss": "https://blog.fufu520.cn/rss.xml"
   },
   {
     "name": "零ちゃんの委任手帳",
     "url": "https://kokorotsuki.com",
     "avatar": "https://kokorotsuki.com/assets/materials/library/09a5d1fd2e1741479006b20602f301ff.png",
-    "description": "零正努力维护着她的手帐"
+    "description": "零正努力维护着她的手帐",
+    "rss": "https://kokorotsuki.com/rss.xml"
   },
   {
     "name": "出门去野钓",
     "url": "https://chumendiao.com/",
     "avatar": "https://chumendiao.com/wp-content/uploads/2026/09/favicon-512.png",
-    "description": "野钓常见问题、新手钓鱼、应季钓鱼和装备选择。一个问题，一篇说清。"
+    "description": "野钓常见问题、新手钓鱼、应季钓鱼和装备选择。一个问题，一篇说清。",
+    "rss": "https://chumendiao.com/feed/"
   }
 ]
