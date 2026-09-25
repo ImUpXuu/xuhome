@@ -811,7 +811,7 @@
   {
     "name": "拾音集",
     "url": "https://blog.tibtob.cn/",
-    "avatar": "https://www.google.com/s2/favicons?domain=blog.tibtob.cn&sz=128",
+    "avatar": "https://s1.tibtob.cn/blog/logo.png",
     "description": "收集生活里的声与光"
   },
   {
@@ -829,7 +829,19 @@
   {
     "name": "fufuの小窝",
     "url": "https://blog.fufu520.cn/",
-    "avatar": "https://www.google.com/s2/favicons?domain=blog.fufu520.cn&sz=128",
+    "avatar": "https://blog.fufu520.cn/upload/logo-IjBa.webp",
     "description": "世界很大，我想去看看"
+  },
+  {
+    "name": "零ちゃんの委任手帳",
+    "url": "https://kokorotsuki.com",
+    "avatar": "https://kokorotsuki.com/assets/materials/library/09a5d1fd2e1741479006b20602f301ff.png",
+    "description": "零正努力维护着她的手帐"
+  },
+  {
+    "name": "出门去野钓",
+    "url": "https://chumendiao.com/",
+    "avatar": "https://chumendiao.com/wp-content/uploads/2026/09/favicon-512.png",
+    "description": "野钓常见问题、新手钓鱼、应季钓鱼和装备选择。一个问题，一篇说清。"
   }
 ]
