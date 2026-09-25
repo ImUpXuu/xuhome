@@ -167,6 +167,7 @@
     searching = true;
     searchDone = false;
     searchResults = [];
+    loadError = "";
     try {
       const res = await fetch(apiUrl(['type', 'search'], ['id', q]));
       if (!res.ok) throw new Error(`HTTP ${res.status}`);

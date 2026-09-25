@@ -5,7 +5,7 @@
 
   let searchTerm = "";
   let copied = false;
-  let shuffled: Friend[] = [];
+  let shuffled: Friend[] = [...friendsConfig];
 
   onMount(() => {
     shuffled = [...friendsConfig].sort(() => Math.random() - 0.5);
@@ -22,10 +22,28 @@
   let copiedLabel = "";
 
   function copyText(text: string, label: string) {
-    navigator.clipboard.writeText(text);
-    copied = true;
-    copiedLabel = label;
-    setTimeout(() => { copied = false; copiedLabel = ""; }, 2000);
+    const finish = () => {
+      copied = true;
+      copiedLabel = label;
+      setTimeout(() => { copied = false; copiedLabel = ""; }, 2000);
+    };
+    if (!navigator.clipboard) {
+      try {
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        ta.style.position = "fixed";
+        ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+        finish();
+      } catch {
+        copied = false;
+      }
+      return;
+    }
+    navigator.clipboard.writeText(text).then(finish).catch(() => { copied = false; });
   }
 
   function copyTemplate() {
