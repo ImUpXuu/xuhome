@@ -258,10 +258,10 @@
   },
   {
     "name": "年华",
-    "url": "https://blog.520781.xyz",
+    "url": "https://blog.amamo.top",
     "avatar": "",
     "description": "分享生活和技术。",
-    "rss": "https://blog.520781.xyz/rss.xml"
+    "rss": "https://blog.amamo.top/rss.xml"
   },
   {
     "name": "喵洛阁",
@@ -298,10 +298,10 @@
   },
   {
     "name": "xf_blog",
-    "url": "https://xfcnl.github.io",
+    "url": "https://xfchannel.top",
     "avatar": "",
     "description": "立志用 cloudflare workers，GitHub pages 和 vercel 做出整个互联网的up（虽然不会成功",
-    "rss": "https://xfcnl.github.io/feed.xml"
+    "rss": "https://xfchannel.top/feed.xml"
   },
   {
     "name": "imba久期 BLOG",
@@ -473,11 +473,11 @@
   },
   {
     "name": "龙星划空",
-    "url": "https://blog.furryawa.com/",
-    "avatar": "https://blog.245179.xyz/images/atiq.png",
+    "url": "https://furrity.pages.dev/",
+    "avatar": "https://furrity.pages.dev/images/atiq.png",
     "description": "人生近看是悲剧，远看是喜剧",
-    "siteshot": "https://blog.245179.xyz/images/web.png",
-    "rss": "https://blog.245179.xyz/rss.xml"
+    "siteshot": "https://furrity.pages.dev/images/web.png",
+    "rss": "https://furrity.pages.dev/rss.xml"
   },
   {
     "name": "姓王者的博客",
