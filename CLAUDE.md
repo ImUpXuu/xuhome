@@ -33,8 +33,19 @@ Uses Astro Content Collections v2 with glob loaders (`src/content.config.ts`):
 
 Schemas use `z.any()` — no strict frontmatter validation at build time.
 
+### Content File Naming Convention (MANDATORY)
+
+**新文章/新说说的 `.md` 文件名禁止使用中文**（如 `ZCode静默上传事件技术复盘.md` ❌）。文件名即 slug 兜底——无显式 `slug` 时中文文件名会产生 percent-encoded 中文 URL。
+
+- 文件名用 ASCII 小写连字符 slug：`src/content/posts/zcode-silent-git-upload-forensics.md`
+- 标题中文写在 frontmatter `title` 字段，正文标题与文件名无关
+- **存量中文命名文件不要重命名**：其中 5 篇无显式 slug，文件名直接构成线上 URL，改名 = 断链。其余 28 篇虽有 slug，也保持原样，不做清理性改名
+- frontmatter 必填：`title` / `published` / `slug`（ASCII）/ `tags` / `categories` / `description` / `keywords`
+
+### Content System Helpers
+
 Helper utilities in `src/utils/`:
-- `postsFetcher.ts` — Pagination, filtering by category/tag, sorting, search
+- `postsFetcher.ts` — Pagination, filtering by category/tag, sorting, search; slug 解析规则（frontmatter `slug` 优先，否则文件名基名）
 - `posts.ts` — Post data access layer
 - `talks.ts` — Talks data access
 - `readingTime.ts` — Reading time calculation for posts
