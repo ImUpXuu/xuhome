@@ -153,7 +153,7 @@
                   class="rounded-full border-3 border-[#0284c7] object-cover bg-white shadow-[2px_2px_0px_0px_#0284c7]"
                   style="width:40px;height:40px;object-fit:cover"
                 />
-                <div class="absolute inset-0 rounded-full border border-black/10 pointer-events-none" />
+                <div class="absolute inset-0 rounded-full border border-black/10 pointer-events-none"></div>
               </div>
             {/if}
 

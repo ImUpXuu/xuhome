@@ -26,12 +26,13 @@ export function SEO({
   const pageDescription = description || seoConfig.defaultDescription;
   const pageKeywords = keywords?.length ? keywords : seoConfig.keywords;
   
-  // 优先使用调用方传入的精确 url，其次站点配置 + 路径，最后客户端兜底
+  // 优先使用调用方传入的精确 url；否则必须能取到真实路径才生成。
+  // 原实现把 window 判断写在路径拼接里，静态构建（无 window）时会拼出
+  // 光秃秃的 siteConfig.url，等于把所有页面的 canonical 都指向首页。
+  const hasWindow = typeof window !== 'undefined';
   const canonicalUrl = url
-    || (siteConfig.url
-      ? `${siteConfig.url}${typeof window !== 'undefined' ? window.location.pathname : ''}`
-      : '')
-    || (typeof window !== 'undefined' ? window.location.href : '');
+    || (hasWindow && siteConfig.url ? `${siteConfig.url}${window.location.pathname}` : '')
+    || (hasWindow ? window.location.href : '');
 
   return (
     <>

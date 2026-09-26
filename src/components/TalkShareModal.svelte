@@ -31,9 +31,12 @@
 
   function copyLink() {
     const btn = document.querySelector('.copy-link-btn');
-    const restore = () => { if (btn) btn.textContent = '复制链接'; };
+    // 只改文字节点。原实现用 btn.textContent 直接覆盖按钮内容，
+    // 会永久抹掉按钮里的图标和副标题（restore 也补不回来）。
+    const label = btn ? btn.querySelector('.copy-link-label') : null;
+    const restore = () => { if (label) label.textContent = '复制链接'; };
     const done = () => {
-      if (btn) btn.textContent = '已复制 ✓';
+      if (label) label.textContent = '已复制 ✓';
       setTimeout(restore, 2000);
     };
     if (!navigator.clipboard || !window.isSecureContext) {
@@ -391,7 +394,7 @@
             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-[#0284c7]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>
           </div>
           <div class="text-left">
-            <div class="font-black text-[#0284c7] text-sm">复制链接</div>
+            <div class="font-black text-[#0284c7] text-sm"><span class="copy-link-label">复制链接</span></div>
             <div class="text-xs text-slate-500 font-bold">复制文章链接到剪贴板</div>
           </div>
         </button>

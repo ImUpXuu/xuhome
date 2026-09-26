@@ -3,6 +3,7 @@
   import SvelteLightbox from './SvelteLightbox.svelte';
   import TalkShareModal from './TalkShareModal.svelte';
   import PageViews from './PageViews.svelte';
+  import { onDestroy } from 'svelte';
 
   export let talk: TalkItem;
 
@@ -20,6 +21,11 @@
     showShare = false;
     document.body.style.overflow = '';
   }
+
+  // 组件销毁时（如 SPA 切页）必须解锁滚动，否则离开后整页滚不动
+  onDestroy(() => {
+    document.body.style.overflow = '';
+  });
 
   function formatMarkdown(text: string): string {
     if (!text) return "";

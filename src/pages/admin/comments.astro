@@ -1,0 +1,465 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+// Waline AI 评论审核面板
+// 数据走 /api/waline-panel/*，由 Caddy 反代到本机 3549（waline_panel.py）。
+// 这页只在 owner 自用，不暴露给搜索引擎。
+const pageTitle = 'Waline AI Review';
+const pageDescription = '博客评论 AI 多维度加权投票审核面板';
+const panelBase = '/api/waline-panel';
+---
+
+<Layout
+  title={pageTitle}
+  description={pageDescription}
+  keywords={['UpXuu', '评论审核', 'Waline', 'AI', 'moderation']}
+  hideBanner={true}
+>
+  <Fragment slot="head">
+    <meta name="robots" content="noindex, nofollow, noarchive" />
+</Fragment>
+
+  <div class="max-w-[1440px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10">
+    <header class="bg-[#0284c7] border-4 border-slate-900 shadow-[6px_6px_0px_0px_#fde68a] rounded-sm px-5 sm:px-7 py-5 mb-6 flex flex-wrap items-center justify-between gap-3">
+      <div>
+        <h1 class="text-white text-xl sm:text-2xl font-black tracking-wider uppercase m-0">
+          Waline AI Review · 审核面板
+      </h1>
+        <p class="text-white/85 text-xs sm:text-sm font-semibold mt-1">
+          多维度加权投票 · 5 个独立模型并行裁决 · 仅 owner 可读
+      </p>
+    </div>
+      <div class="text-white/85 text-xs font-mono font-semibold">
+        <span id="wp-meta">只读 · {panelBase} · 窗口</span>
+    </div>
+  </header>
+
+    <main id="wp-root" class="space-y-6">
+      <section class="bg-white border-4 border-slate-900 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm p-5 sm:p-6">
+        <h2 class="m-0 mb-4 text-xs font-black tracking-[0.18em] text-slate-700 uppercase">概览</h2>
+        <div id="wp-stats" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+          <div class="col-span-full text-center text-slate-500 font-semibold py-4">加载中…</div>
+      </div>
+    </section>
+
+      <section class="bg-white border-4 border-slate-900 shadow-[6px_6px_0px_0px_#fde68a] rounded-sm p-5 sm:p-6">
+        <h2 class="m-0 mb-4 text-xs font-black tracking-[0.18em] text-slate-700 uppercase">筛选</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3">
+          <div class="lg:col-span-1">
+            <label class="block text-[11px] font-bold tracking-wider text-slate-700 uppercase mb-1.5" for="wp-since">开始日期</label>
+            <input id="wp-since" type="date" class="w-full px-3 py-2 border-2 border-slate-900 bg-white text-sm font-medium outline-none focus:border-[#0284c7] focus:shadow-[3px_3px_0px_0px_#0284c7] rounded-sm" />
+        </div>
+          <div class="lg:col-span-1">
+            <label class="block text-[11px] font-bold tracking-wider text-slate-700 uppercase mb-1.5" for="wp-until">结束日期</label>
+            <input id="wp-until" type="date" class="w-full px-3 py-2 border-2 border-slate-900 bg-white text-sm font-medium outline-none focus:border-[#0284c7] focus:shadow-[3px_3px_0px_0px_#0284c7] rounded-sm" />
+        </div>
+          <div class="lg:col-span-1">
+            <label class="block text-[11px] font-bold tracking-wider text-slate-700 uppercase mb-1.5" for="wp-status">状态</label>
+            <select id="wp-status" class="w-full px-3 py-2 border-2 border-slate-900 bg-white text-sm font-medium outline-none focus:border-[#0284c7] focus:shadow-[3px_3px_0px_0px_#0284c7] rounded-sm">
+              <option value="">全部</option>
+              <option value="approved">approved</option>
+              <option value="spam">spam</option>
+              <option value="waiting">waiting</option>
+          </select>
+        </div>
+          <div class="lg:col-span-2">
+            <label class="block text-[11px] font-bold tracking-wider text-slate-700 uppercase mb-1.5" for="wp-search">搜索（昵称 / 评论 / 邮箱）</label>
+            <input id="wp-search" type="text" maxlength="80" placeholder="关键词" class="w-full px-3 py-2 border-2 border-slate-900 bg-white text-sm font-medium outline-none focus:border-[#0284c7] focus:shadow-[3px_3px_0px_0px_#0284c7] rounded-sm" />
+        </div>
+          <div class="lg:col-span-1">
+            <label class="block text-[11px] font-bold tracking-wider text-slate-700 uppercase mb-1.5" for="wp-page-size">每页</label>
+            <select id="wp-page-size" class="w-full px-3 py-2 border-2 border-slate-900 bg-white text-sm font-medium outline-none focus:border-[#0284c7] focus:shadow-[3px_3px_0px_0px_#0284c7] rounded-sm">
+              <option value="25">25</option>
+              <option value="50" selected>50</option>
+              <option value="100">100</option>
+              <option value="200">200</option>
+          </select>
+        </div>
+      </div>
+        <div class="mt-4 flex flex-wrap gap-3">
+          <button id="wp-apply" class="wp-btn wp-btn-primary" type="button">应用</button>
+          <button id="wp-reset" class="wp-btn wp-btn-ghost" type="button">重置</button>
+          <span id="wp-status-msg" class="ml-auto text-xs sm:text-sm text-slate-600 font-semibold self-center">就绪</span>
+      </div>
+    </section>
+
+      <section class="bg-white border-4 border-slate-900 shadow-[6px_6px_0px_0px_#10b981] rounded-sm p-5 sm:p-6">
+        <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+          <div id="wp-count" class="text-sm font-bold text-slate-700">共 0 条</div>
+      </div>
+        <div id="wp-table-wrap">
+          <div class="text-center text-slate-500 font-semibold py-10 border-2 border-dashed border-slate-900 bg-[#faf8f5]">加载中…</div>
+      </div>
+    </section>
+  </main>
+</div>
+</Layout>
+
+<style is:global>
+  /* Waline Review panel — 自包含样式，避免污染博客全局 */
+  #wp-root .wp-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 9px 16px;
+    border: 2px solid #0f172a;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 3px 3px 0 0 #0f172a;
+    transition: transform 0.08s, box-shadow 0.08s;
+    border-radius: 4px;
+    user-select: none;
+  }
+  #wp-root .wp-btn:hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 0 #0f172a; }
+  #wp-root .wp-btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 0 #0f172a; }
+  #wp-root .wp-btn-primary { background: #0284c7; color: #fff; }
+  #wp-root .wp-btn-ghost   { background: #fff;    color: #0f172a; }
+  #wp-root .wp-btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; box-shadow: 3px 3px 0 0 #0f172a; }
+
+  #wp-root .wp-stat {
+    border: 2px solid #0f172a;
+    padding: 12px 14px;
+    background: #faf8f5;
+    border-radius: 4px;
+  }
+  #wp-root .wp-stat .label {
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #44403c;
+  }
+  #wp-root .wp-stat .value {
+    font-size: 26px;
+    font-weight: 800;
+    margin-top: 4px;
+    font-variant-numeric: tabular-nums;
+    color: #0f172a;
+  }
+  #wp-root .wp-stat.approved .value { color: #16a34a; }
+  #wp-root .wp-stat.spam .value     { color: #dc2626; }
+  #wp-root .wp-stat.waiting .value  { color: #ca8a04; }
+  #wp-root .wp-stat.trusted .value  { color: #0284c7; }
+
+  #wp-root .wp-chip {
+    display: inline-block;
+    padding: 2px 8px;
+    border: 2px solid #0f172a;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background: #fff;
+    border-radius: 4px;
+    line-height: 1.4;
+  }
+  #wp-root .wp-chip.approved { background: #16a34a; color: #fff; border-color: #0f172a; }
+  #wp-root .wp-chip.spam     { background: #dc2626; color: #fff; border-color: #0f172a; }
+  #wp-root .wp-chip.waiting  { background: #ca8a04; color: #fff; border-color: #0f172a; }
+  #wp-root .wp-chip.trusted  { background: #0284c7; color: #fff; border-color: #0f172a; }
+  #wp-root .wp-chip.dim      { background: #57534e; color: #fff; border-color: #0f172a; }
+
+  #wp-root table.wp-reviews {
+    width: 100%;
+    border-collapse: collapse;
+    border: 2px solid #0f172a;
+    background: #fff;
+    font-size: 13px;
+  }
+  #wp-root table.wp-reviews th,
+  #wp-root table.wp-reviews td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #e7e5e4;
+    text-align: left;
+    vertical-align: top;
+  }
+  #wp-root table.wp-reviews th {
+    background: #0f172a;
+    color: #fff;
+    font-weight: 800;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  #wp-root table.wp-reviews tr.wp-row-toggle { cursor: pointer; }
+  #wp-root table.wp-reviews tr.wp-row-toggle:hover td { background: #f5f5f4; }
+  #wp-root td.wp-idx { font-variant-numeric: tabular-nums; color: #44403c; font-size: 12px; white-space: nowrap; }
+  #wp-root td.wp-comment-text { max-width: 460px; white-space: pre-wrap; word-break: break-word; font-size: 13px; }
+  #wp-root td.wp-nick { font-weight: 700; }
+  #wp-root td.wp-nick .mail { display: block; font-size: 11px; color: #44403c; font-weight: 500; word-break: break-all; }
+
+  #wp-root tr.wp-detail-row td {
+    background: #faf8f5;
+    border-bottom: 2px solid #0f172a;
+    padding: 16px 20px;
+  }
+  #wp-root .wp-dim-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+  }
+  #wp-root .wp-dim-card {
+    border: 2px solid #0f172a;
+    background: #fff;
+    padding: 12px;
+    border-radius: 4px;
+  }
+  #wp-root .wp-dim-card.spam     { border-left: 6px solid #dc2626; }
+  #wp-root .wp-dim-card.approved { border-left: 6px solid #16a34a; }
+  #wp-root .wp-dim-card .name {
+    font-size: 11px;
+    text-transform: uppercase;
+    font-weight: 800;
+    letter-spacing: 1px;
+    color: #44403c;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+  }
+  #wp-root .wp-dim-card .reason { margin-top: 8px; font-size: 13px; white-space: pre-wrap; word-break: break-word; }
+  #wp-root .wp-dim-card .weight { margin-top: 8px; font-size: 11px; color: #44403c; font-weight: 700; }
+
+  #wp-root .wp-error-box {
+    border: 2px dashed #dc2626;
+    padding: 10px 12px;
+    margin-top: 12px;
+    background: #fef2f2;
+    color: #7f1d1d;
+    font-size: 13px;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  #wp-root .wp-meta-line {
+    margin-top: 12px;
+    font-size: 12px;
+    color: #44403c;
+    word-break: break-all;
+  }
+  #wp-root .wp-meta-line a {
+    color: #0284c7;
+    text-decoration: underline;
+  }
+
+  #wp-root .wp-pager {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-top: 16px;
+    flex-wrap: wrap;
+  }
+  #wp-root .wp-pager .info {
+    font-size: 13px;
+    color: #44403c;
+    font-weight: 700;
+    margin-right: auto;
+  }
+
+  #wp-root .wp-empty {
+    padding: 36px;
+    text-align: center;
+    color: #44403c;
+    font-size: 14px;
+    border: 2px dashed #0f172a;
+    background: #faf8f5;
+    border-radius: 4px;
+  }
+
+  @media (max-width: 720px) {
+    #wp-root td.wp-comment-text { max-width: 240px; }
+    #wp-root table.wp-reviews th:nth-child(4),
+    #wp-root table.wp-reviews td:nth-child(4) { display: none; }
+  }
+</style>
+
+<script is:inline define:vars={{ panelBase }}>
+  (function () {
+    const BASE = panelBase;
+    const $ = (id) => document.getElementById(id);
+
+    function esc(s) {
+      if (s == null) return '';
+      // 必须输出 HTML 实体，不能是字符本身。实体名拆开拼接，
+      // 避免整份文件被再次 HTML 解码时又被还原成字符（历史上已发生过一次）。
+      var ENT = { '&': 'amp', '<': 'lt', '>': 'gt', '"': 'quot', "'": '#39' };
+      return String(s).replace(/[&<>"']/g, function (c) { return '&' + ENT[c] + ';'; });
+    }
+    function fmtTime(t) { return t ? String(t).replace('T', ' ').replace('Z', '') : ''; }
+    function chip(status, label) {
+      if (!status) return '';
+      return '<span class="wp-chip ' + esc(status) + '">' + esc(label || status) + '</span>';
+    }
+
+    async function fetchJSON(url) {
+      const r = await fetch(url, { headers: { 'Accept': 'application/json' } });
+      if (!r.ok) {
+        let msg = 'HTTP ' + r.status;
+        try { const j = await r.json(); msg = (j && j.error) || msg; } catch (_) {}
+        throw new Error(msg);
+      }
+      return r.json();
+    }
+
+    const state = { since: '', until: '', status: '', search: '', page: 1, page_size: 50 };
+
+    function buildQuery() {
+      const p = new URLSearchParams();
+      if (state.since)  p.set('since',  state.since);
+      if (state.until)  p.set('until',  state.until);
+      if (state.status) p.set('status', state.status);
+      if (state.search) p.set('search', state.search);
+      p.set('page', state.page);
+      p.set('page_size', state.page_size);
+      return p.toString();
+    }
+
+    function renderStats(s) {
+      const by = s.by_status || {};
+      const items = [
+        ['总审核次数',    s.total || 0,      ''],
+        ['approved',      by.approved || 0, 'approved'],
+        ['spam',          by.spam || 0,     'spam'],
+        ['waiting / 失败', by.waiting || 0, 'waiting'],
+        ['trusted 跳过',  s.trusted || 0,   'trusted'],
+        ['错误日志',      s.errors || 0,    ''],
+      ];
+      let html = '';
+      for (const [label, value, cls] of items) {
+        html += '<div class="wp-stat ' + cls + '"><div class="label">' + esc(label) + '</div>' +
+                '<div class="value">' + esc(value) + '</div></div>';
+      }
+      $('wp-stats').innerHTML = html;
+      $('wp-meta').textContent = '只读 · ' + BASE + ' · 窗口 ' + (s.since || '∞') + ' → ' + (s.until || '∞');
+    }
+
+    function renderReviews(data) {
+      const wrap = $('wp-table-wrap');
+      $('wp-count').textContent = '共 ' + data.total + ' 条';
+      if (!data.items || data.items.length === 0) {
+        wrap.innerHTML = '<div class="wp-empty">没有匹配的审核记录</div>';
+        return;
+      }
+      let html = '<div class="overflow-x-auto custom-scrollbar -mx-5 sm:mx-0 px-5 sm:px-0">' +
+                 '<table class="wp-reviews"><thead><tr>' +
+                 '<th>#</th><th>时间</th><th>评论</th><th>昵称</th><th>结果</th><th>分数</th><th>耗时</th><th>模式</th>' +
+               '</tr></thead><tbody>';
+      for (const it of data.items) {
+        const finalStatus = it.final_status || '—';
+        const detailId = 'wp-det-' + it.id;
+        const modeChip = it.trusted
+          ? chip('trusted', 'trusted')
+          : chip('dim', 'AI');
+        const score = (it.final_score == null ? 0 : it.final_score).toFixed(1);
+        const thr   = (it.threshold    == null ? 0 : it.threshold).toFixed(1);
+        html += '<tr class="wp-row-toggle" data-target="' + detailId + '">' +
+                  '<td class="wp-idx">#' + it.id + '<br><span style="font-size:11px;color:#44403c">cid ' + it.comment_id + '</span></td>' +
+                  '<td class="wp-idx">' + esc(fmtTime(it.reviewed_at)) + '</td>' +
+                  '<td class="wp-comment-text">' + esc(it.comment_text || '(空)') + '</td>' +
+                  '<td class="wp-nick">' + esc(it.nick || '匿名') +
+                    '<span class="mail">' + esc(it.mail || '') + '</span></td>' +
+                  '<td>' + chip(finalStatus) + '</td>' +
+                  '<td class="wp-idx">' + score + ' / ' + thr + '</td>' +
+                  '<td class="wp-idx">' + (it.processing_ms || 0) + ' ms</td>' +
+                  '<td>' + modeChip + '</td>' +
+              '</tr>';
+        html += '<tr class="wp-detail-row" id="' + detailId + '" hidden><td colspan="8"><div class="wp-dim-grid">';
+        const vs = it.verdicts || [];
+        if (vs.length === 0) {
+          html += '<div class="wp-dim-card">' +
+                    '<div class="name">trusted / 无维度调用</div>' +
+                    '<div class="reason">' + esc(it.error || 'trusted mail, skip AI') + '</div>' +
+                '</div>';
+        } else {
+          for (const v of vs) {
+            html += '<div class="wp-dim-card ' + esc(v.action) + '">' +
+                      '<div class="name"><span>' + esc(v.name) + '</span>' +
+                        chip(v.action) + '</div>' +
+                      '<div class="reason">' + esc(v.reason || '') + '</div>' +
+                      '<div class="weight">weight × ' + esc(v.weight) + '</div>' +
+                  '</div>';
+          }
+        }
+        html += '</div>';
+        if (it.error) {
+          html += '<div class="wp-error-box">ERROR: ' + esc(it.error) + '</div>';
+        }
+        if (it.page) {
+          html += '<div class="wp-meta-line">页面: <a href="' + esc(it.page) + '" target="_blank" rel="noopener noreferrer">' + esc(it.page) + '</a></div>';
+        }
+        html += '</td></tr>';
+      }
+      html += '</tbody></table></div>';
+      html += '<div class="wp-pager">' +
+                '<div class="info">第 ' + data.page + ' / ' + (data.total_pages || 1) + ' 页 · 每页 ' + data.page_size + '</div>' +
+                '<button class="wp-btn wp-btn-ghost" id="wp-prev"' + (data.page <= 1 ? ' disabled' : '') + '>上一页</button>' +
+                '<button class="wp-btn wp-btn-primary" id="wp-next"' + (data.page >= (data.total_pages || 1) ? ' disabled' : '') + '>下一页</button>' +
+            '</div>';
+      wrap.innerHTML = html;
+
+      wrap.querySelectorAll('tr.wp-row-toggle').forEach(function (r) {
+        r.addEventListener('click', function () {
+          const t = document.getElementById(r.dataset.target);
+          if (t) t.hidden = !t.hidden;
+        });
+      });
+      const prev = $('wp-prev');
+      const next = $('wp-next');
+      if (prev) prev.addEventListener('click', function () { state.page = Math.max(1, state.page - 1); refresh(); });
+      if (next) next.addEventListener('click', function () { state.page = state.page + 1; refresh(); });
+    }
+
+    async function refresh() {
+      $('wp-status-msg').textContent = '加载中…';
+      try {
+        const statsQS = new URLSearchParams({ since: state.since, until: state.until }).toString();
+        const [stats, reviews] = await Promise.all([
+          fetchJSON(BASE + '/stats?' + statsQS),
+          fetchJSON(BASE + '/reviews?' + buildQuery()),
+        ]);
+        renderStats(stats);
+        renderReviews(reviews);
+        $('wp-status-msg').textContent = '刷新于 ' + new Date().toLocaleTimeString();
+      } catch (e) {
+        $('wp-status-msg').textContent = '加载失败: ' + e.message;
+        const wrap = $('wp-table-wrap');
+        wrap.innerHTML = '<div class="wp-error-box">接口 ' + esc(BASE) + ' 无法访问：' + esc(e.message) + '<br>' +
+          '请确认服务器上 Caddy 已将 ' + esc(BASE) + '/* 反代到 waline_panel.py（127.0.0.1:3549）。</div>';
+      }
+    }
+
+    function bindFilters() {
+      $('wp-apply').addEventListener('click', function () {
+        state.since     = $('wp-since').value;
+        state.until     = $('wp-until').value;
+        state.status    = $('wp-status').value;
+        state.search    = $('wp-search').value.trim();
+        state.page_size = parseInt($('wp-page-size').value, 10) || 50;
+        state.page      = 1;
+        refresh();
+      });
+      $('wp-reset').addEventListener('click', function () {
+        $('wp-since').value = '';
+        $('wp-until').value = '';
+        $('wp-status').value = '';
+        $('wp-search').value = '';
+        $('wp-page-size').value = '50';
+        state.since = state.until = state.status = state.search = '';
+        state.page_size = 50;
+        state.page = 1;
+        refresh();
+      });
+      $('wp-search').addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') $('wp-apply').click();
+      });
+    }
+
+    bindFilters();
+    refresh();
+    setInterval(function () { if (!document.hidden) refresh(); }, 30000);
+  })();
+</script>

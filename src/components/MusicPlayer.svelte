@@ -389,7 +389,7 @@
     tooldescription="搜索网易云音乐，支持按歌曲名或歌手名搜索"
     toolautosubmit
   >
-    <div class="flex items-center gap-2 bg-white dark:bg-slate-800 border-4 border-[#0284c7] shadow-[4px_4px_0px_0px#0284c7] rounded-sm p-2">
+    <div class="flex items-center gap-2 bg-white dark:bg-slate-800 border-4 border-[#0284c7] shadow-[4px_4px_0px_0px_#0284c7] rounded-sm p-2">
       <svg class="w-5 h-5 shrink-0 text-[#0284c7] ml-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
       <input
         type="search"
@@ -569,7 +569,7 @@
   <!-- 进度条（独立一行，占满宽度） -->
   <div class="w-full cursor-pointer select-none" on:click={seek} aria-label="播放进度">
     <div class="h-[5px] w-full bg-slate-200 dark:bg-slate-700 relative">
-      <div class="absolute left-0 top-0 h-full bg-[#0284c7]" style="width: {progressPct}%" />
+      <div class="absolute left-0 top-0 h-full bg-[#0284c7]" style="width: {progressPct}%"></div>
     </div>
   </div>
 
