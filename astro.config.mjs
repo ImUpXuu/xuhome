@@ -10,6 +10,7 @@ import { remarkAdmonitions } from './src/plugins/remark-admonitions.mjs';
 import { remarkGithubCard } from './src/plugins/remark-github-card.mjs';
 import { rehypeShiftHeadings } from './src/plugins/rehype-shift-headings.mjs';
 import { rehypeExternalLinks } from './src/plugins/rehype-external-links.mjs';
+import { legacyCssCompat } from './scripts/legacy-css-compat.mjs';
 
 // https://astro.build/config
 export default defineConfig({
@@ -32,6 +33,23 @@ export default defineConfig({
     rehypePlugins: [rehypeKatex, rehypeShiftHeadings, rehypeExternalLinks],
   },
   vite: {
+    css: {
+      transformer: 'lightningcss',
+      lightningcss: {
+        targets: {
+          chrome: 49,
+          android: 49,
+          ios_saf: 10,
+          safari: 10,
+          firefox: 68,
+          edge: 79,
+        },
+      },
+    },
+    build: {
+      cssMinify: 'lightningcss',
+      cssTarget: ['chrome49', 'android49', 'ios10', 'safari10', 'firefox68', 'edge79'],
+    },
     plugins: [tailwindcss({
       lightningcss: {
         targets: {
@@ -43,7 +61,7 @@ export default defineConfig({
           edge: 79,
         },
       },
-    })],
+    }), legacyCssCompat()],
     ssr: {
       noExternal: ['@fancyapps/ui', '@google/generative-ai']
     }
