@@ -27,11 +27,13 @@ jobs:
             const body = context.payload.issue.body;
 
             function extract(key) {
-              const pattern = new RegExp('### ' + key + '\\s*\\n\\s*(.*?)(?=\\n###|\\Z)', 's');
+              // 注意：JS 正则不支持 Python 的 \Z；结尾用 $ 断言，跨行用 [\s\S]
+              const pattern = new RegExp('### ' + key + '\\s*\\n\\s*([\\s\\S]*?)(?=\\n###|$)');
               const m = body.match(pattern);
               if (m) {
                 let val = m[1].trim();
-                if (val === 'No response') return '';
+                // GitHub 表单未填的可选字段渲染为 _No response_（斜体）
+                if (val === 'No response' || val === '_No response_') return '';
                 return val.replace(/^`|`$/g, '').trim();
               }
               return '';
@@ -106,7 +108,7 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `## ✅ 友链申请已通过！\n\n感谢申请！友链已成功添加到列表中。\n\n📋 **友链信息**\n- 名称：${name}\n- 链接：${url}\n\n⚡ Vercel 将自动重新部署，几分钟内更新生效。\n\n感谢支持！🎉`
+              body: `## ✅ 友链申请已通过！\n\n感谢申请！友链已成功添加到列表中。\n\n📋 **友链信息**\n- 名称：${name}\n- 链接：${url}\n- 头像：${avatar || '未填写，已使用站点图标'}\n\n⚡ Vercel 将自动重新部署，几分钟内更新生效。\n\n感谢支持！🎉`
             });
             await github.rest.issues.update({
               issue_number: context.issue.number,
