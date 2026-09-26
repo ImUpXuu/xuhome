@@ -886,5 +886,11 @@
     "avatar": "https://chumendiao.com/wp-content/uploads/2026/09/favicon-512.png",
     "description": "野钓常见问题、新手钓鱼、应季钓鱼和装备选择。一个问题，一篇说清。",
     "rss": "https://chumendiao.com/feed/"
+  },
+  {
+    "name": "WenBlog",
+    "url": "https://wenlei.top",
+    "avatar": "https://www.google.com/s2/favicons?domain=wenlei.top&sz=128",
+    "description": "Debug The World."
   }
 ]
