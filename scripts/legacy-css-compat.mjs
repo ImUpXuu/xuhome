@@ -74,11 +74,9 @@ function stripModernAtRules(css) {
   let output = css.replace(/@layer\b[^;{]*;/gi, '');
   output = unwrapAtRuleBlocks(output, /@layer\b[^;{]*\{/i);
   output = removeAtRuleBlocks(output, /@property\b[^{}]*\{/i);
-  // Only remove feature queries that old Android WebViews cannot parse;
-  // keep unrelated @supports blocks because they may contain useful fallbacks.
   output = removeAtRuleBlocks(
     output,
-    /@supports\s*\([^{}]*(?:color\s*:\s*color-mix|rgb\s*\(from|margin-trim\s*:|contain-intrinsic-size\s*:|-webkit-appearance\s*:\s*-apple-pay-button)[^{}]*\{/i,
+    /@supports\s*\([^{}]*(?:color\s*:\s*color-mix|color\s*:\s*lab|rgb\s*\(from|margin-trim\s*:|contain-intrinsic-size\s*:|-webkit-appearance\s*:\s*-apple-pay-button)[^{}]*\{/i,
   );
   return output;
 }
