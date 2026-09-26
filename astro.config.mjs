@@ -48,7 +48,7 @@ export default defineConfig({
     },
     build: {
       cssMinify: 'lightningcss',
-      cssTarget: ['chrome49', 'ios10', 'safari10', 'firefox68', 'edge79'],
+      cssTarget: ['chrome49', 'android49', 'ios10', 'safari10', 'firefox68', 'edge79'],
     },
     plugins: [tailwindcss({
       lightningcss: {
