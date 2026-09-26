@@ -23,8 +23,10 @@
   }
 
   // 组件销毁时（如 SPA 切页）必须解锁滚动，否则离开后整页滚不动
+  // 注意：Svelte 的 onDestroy 在服务端渲染时也会执行（只有 onMount 是浏览器独有），
+  // 因此必须加 typeof 守卫，否则 SSR 阶段访问 document 会直接让构建失败。
   onDestroy(() => {
-    document.body.style.overflow = '';
+    if (typeof document !== 'undefined') document.body.style.overflow = '';
   });
 
   function formatMarkdown(text: string): string {
