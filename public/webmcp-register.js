@@ -54,7 +54,7 @@
         if (isNaN(p) || p < 1) return { content: [{ type: 'text', text: '无效页码' }] };
         var url = p === 1 ? '/' : '/page/' + p + '/';
         window.location.href = url;
-        return { content: [{ type: 'text', text: '跳转到第 ' p + ' 页' }] };
+        return { content: [{ type: 'text', text: '跳转到第 ' + p + ' 页' }] };
       }
     });
 

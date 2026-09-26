@@ -124,8 +124,9 @@ export async function getProcessedPosts(): Promise<PostItem[]> {
 
   // Sort descending by date
   return processed.sort((a, b) => {
-    if (a.date === '未知时间') return 1;
-    if (b.date === '未知时间') return -1;
+    const aUnknown = a.date === '未知时间';
+    const bUnknown = b.date === '未知时间';
+    if (aUnknown || bUnknown) return aUnknown && bUnknown ? 0 : (aUnknown ? 1 : -1);
     return b.date.localeCompare(a.date);
   });
 }
@@ -186,8 +187,9 @@ export async function getProcessedTalks(): Promise<TalkItem[]> {
 
   // Sort descending by date
   return processed.sort((a, b) => {
-    if (a.date === '未知时间') return 1;
-    if (b.date === '未知时间') return -1;
+    const aUnknown = a.date === '未知时间';
+    const bUnknown = b.date === '未知时间';
+    if (aUnknown || bUnknown) return aUnknown && bUnknown ? 0 : (aUnknown ? 1 : -1);
     return b.date.localeCompare(a.date);
   });
 }

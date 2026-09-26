@@ -116,12 +116,16 @@
         ? 'linear-gradient(to top, #1e293b, transparent)'
         : 'linear-gradient(to top, white, transparent)';
       const btn = document.createElement('button');
-      btn.className = 'pointer-events-auto bg-[#0284c7] border-2 border-[#0284c7] text-white font-black px-5 py-1.5 flex items-center gap-2 shadow-[4px_4px_0px_0px#fde68a] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all text-xs rounded-sm uppercase tracking-wider cursor-pointer';
+      btn.className = 'pointer-events-auto bg-[#0284c7] border-2 border-[#0284c7] text-white font-black px-5 py-1.5 flex items-center gap-2 shadow-[4px_4px_0px_0px_#fde68a] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all text-xs rounded-sm uppercase tracking-wider cursor-pointer';
       btn.innerHTML = '展开阅读全文 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>';
       overlay.appendChild(btn);
       el.appendChild(overlay);
 
       btn.addEventListener('click', function expand() {
+        // 已展开时忽略重复点击。
+        // 原实现用 { once: true }，导致「展开 → 收起 → 再点展开」完全没反应
+        // （收起时按钮重新可见，但监听器早已被移除）。
+        if (el.dataset.foldExpanded === 'true') return;
         el.dataset.foldExpanded = 'true';
         el.style.maxHeight = `${contentHeight + 50}px`;
         overlay.classList.add('opacity-0');
@@ -130,7 +134,7 @@
           collapseWrap.className = 'talk-collapse-wrap flex justify-center pt-3 pb-1';
           const collapseBtn = document.createElement('button');
           collapseBtn.className = 'bg-white dark:bg-slate-700 border-2 border-[#0284c7] text-[#0284c7] dark:text-white font-black px-3 py-1 flex items-center gap-2 shadow-[3px_3px_0px_0px_#0284c7] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all text-[10px] rounded-sm uppercase tracking-wider cursor-pointer';
-          collapseBtn.innerHTML = '收起 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6-6"/></svg>';
+          collapseBtn.innerHTML = '收起 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>';
           collapseWrap.appendChild(collapseBtn);
           el.after(collapseWrap);
           collapseBtn.addEventListener('click', () => {
@@ -142,7 +146,7 @@
           });
         }, 700);
         foldTimers.push(t);
-      }, { once: true });
+      });
     });
   }
 
@@ -175,6 +179,8 @@
   onDestroy(() => {
     foldTimers.forEach(t => clearTimeout(t));
     foldTimers = [];
+    // 组件销毁时（如 SPA 切页）必须解锁滚动，否则离开后整页滚不动
+    document.body.style.overflow = '';
   });
 </script>
 
