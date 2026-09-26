@@ -33,8 +33,22 @@ export default defineConfig({
     rehypePlugins: [rehypeKatex, rehypeShiftHeadings, rehypeExternalLinks],
   },
   vite: {
+    css: {
+      transformer: 'lightningcss',
+      lightningcss: {
+        targets: {
+          chrome: 49,
+          android: 49,
+          ios_saf: 10,
+          safari: 10,
+          firefox: 68,
+          edge: 79,
+        },
+      },
+    },
     build: {
-      cssMinify: 'esbuild',
+      cssMinify: 'lightningcss',
+      cssTarget: ['chrome49', 'ios10', 'safari10', 'firefox68', 'edge79'],
     },
     plugins: [tailwindcss({
       lightningcss: {
