@@ -4,6 +4,11 @@
       "source": "/images/20260214145619.jpg", 
       "destination": "/images/me.jpg", 
       "permanent": true 
+    },
+    {
+      "source": "/posts/wechat-dat-image-decrypt",
+      "destination": "/posts/wechat-dat-image-decrypt-info",
+      "permanent": true
     }
   ],
   "headers": [
