@@ -29,10 +29,20 @@
     if (typeof document !== 'undefined') document.body.style.overflow = '';
   });
 
+  // 先转义 HTML 防止存储型 XSS
+  function escapeHtml(text: string): string {
+    return text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
   function formatMarkdown(text: string): string {
     if (!text) return "";
+    let html = escapeHtml(text);
     // Replace markdown bold tags
-    let html = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
     // Replace markdown link tags
     html = html.replace(/\[(.*?)\]\((.*?)\)/g, '<a class="text-[#0ea5e9] font-bold hover:underline" href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
     return html.split('\n\n').map(p => `<p class="mb-3.5 leading-relaxed break-words">${p.replace(/\n/g, '<br/>')}</p>`).join('');
