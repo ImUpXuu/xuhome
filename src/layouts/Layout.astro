@@ -183,7 +183,7 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
     {!isArticle && <link rel="preload" as="image" href={DEFAULT_BG_URL} fetchpriority="high" />}
 
     {siteConfig.analytics.umami.map(u => (
-      <script defer src={u.src} data-website-id={u.id}></script>
+      <script async src={u.src} data-website-id={u.id}></script>
     ))}
     <script type="text/javascript">
       /* Clarity：页面 load 后再加载，不阻塞首屏 */
