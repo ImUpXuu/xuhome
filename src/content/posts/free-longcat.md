@@ -17,3 +17,13 @@ category: "技术"
 | model name | LongCat-2.0                                         |
 
 因为缓存不计入用量 估计还有好几十亿token吧 快去用1！！！
+
+---
+
+也欢迎大家用我的邀请链接注册 LongCat AI 开放平台，体验 LongCat 最新模型，编程、推理、Agent 工具调用能力持续进化！
+
+通过我的链接完成实名认证，你我各得 **1000 万 Tokens**（叠加平台新人礼包最高可得 2000 万）；首购下单即可返实付金额 5%！
+
+立即体验：[https://longcat.chat/platform/product?inviteCode=2KIIPX93](https://longcat.chat/platform/product?inviteCode=2KIIPX93)
+
+邀请码：`2KIIPX93`。注册，各得 1000w token ~
