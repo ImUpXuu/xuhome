@@ -515,8 +515,22 @@ const relatedPosts = (() => {
       });
     }
 
+    // 给正文表格套一层滚动容器：桌面保持积木样式，移动端可横向滚动
+    function setupTableWrappers() {
+      const content = document.querySelector('.prose');
+      if (!content) return;
+      content.querySelectorAll('table').forEach(table => {
+        if (table.parentElement && table.parentElement.classList.contains('table-scroll')) return;
+        const wrap = document.createElement('div');
+        wrap.className = 'table-scroll not-prose';
+        table.parentNode.insertBefore(wrap, table);
+        wrap.appendChild(table);
+      });
+    }
+
     setupImageCaptions();
     setupFancybox();
+    setupTableWrappers();
     enhanceCodeBlocks();
     // Desktop TOC highlight via IntersectionObserver
     const tocNavLinks = Array.from(document.querySelectorAll('.toc-nav-link'));
