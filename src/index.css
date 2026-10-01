@@ -412,31 +412,104 @@ html {
 }
 
 /* Tables */
-.prose table {
-  display: block;
-  overflow-x: auto;
+/* 滚动容器：由 JS 包裹，负责横向滚动 + 圆角裁切 + 积木阴影 */
+.prose .table-scroll {
   max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   border: 2px solid #0284c7;
-  border-radius: 4px;
-  box-shadow: 3px 3px 0 0 #0284c7;
+  border-radius: 8px;
+  box-shadow: 4px 4px 0 0 rgba(2, 132, 199, 0.9);
+  margin: 1.6em 0;
+}
+
+.prose table {
+  display: table;
+  width: 100%;
+  min-width: 100%;
   border-collapse: separate;
   border-spacing: 0;
+  font-size: 0.92em;
+  line-height: 1.55;
+  margin: 0;
 }
+
+/* 未包裹时的兜底（如无 JS）：表格自身承担边框与阴影 */
+.prose table:not(.table-scroll table) {
+  border: 2px solid #0284c7;
+  border-radius: 8px;
+  box-shadow: 4px 4px 0 0 rgba(2, 132, 199, 0.9);
+}
+
 .prose thead th {
   background: rgba(14, 165, 233, 0.18);
-  color: #0284c7;
+  color: #014361;
   font-weight: 900;
+  text-align: left;
+  padding: 0.7em 0.95em;
   border-bottom: 2px solid #0284c7;
+  white-space: nowrap;
 }
+
 .prose tbody td {
-  border-bottom: 1px solid rgba(2, 132, 199, 0.25);
+  padding: 0.62em 0.95em;
+  border-bottom: 1px solid rgba(2, 132, 199, 0.22);
+  vertical-align: top;
 }
+
+/* 斑马纹：长表格更易横向对齐阅读 */
+.prose tbody tr:nth-child(even) {
+  background: rgba(14, 165, 233, 0.05);
+}
+
+/* 悬停高亮整行 */
+.prose tbody tr:hover {
+  background: rgba(14, 165, 233, 0.12);
+}
+
 .prose tbody tr:last-child td {
   border-bottom: none;
 }
+
+/* 单元格内的粗体保持清爽 */
+.prose table strong,
+.prose table b {
+  color: #0c4a6e;
+  text-shadow: none;
+}
+
+/* 深色模式 */
+.dark .prose .table-scroll {
+  border-color: #38bdf8;
+  box-shadow: 4px 4px 0 0 rgba(56, 189, 248, 0.7);
+}
+
+.dark .prose > table:not(.table-scroll table) {
+  border-color: #38bdf8;
+  box-shadow: 4px 4px 0 0 rgba(56, 189, 248, 0.7);
+}
+
 .dark .prose thead th {
-  background: rgba(14, 165, 233, 0.15);
-  color: #38bdf8;
+  background: rgba(14, 165, 233, 0.2);
+  color: #7dd3fc;
+  border-bottom-color: #38bdf8;
+}
+
+.dark .prose tbody td {
+  border-bottom-color: rgba(56, 189, 248, 0.22);
+}
+
+.dark .prose tbody tr:nth-child(even) {
+  background: rgba(56, 189, 248, 0.07);
+}
+
+.dark .prose tbody tr:hover {
+  background: rgba(56, 189, 248, 0.14);
+}
+
+.dark .prose table strong,
+.dark .prose table b {
+  color: #e0f2fe;
 }
 
 /* Mark / highlight */
