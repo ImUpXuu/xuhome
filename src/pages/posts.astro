@@ -89,33 +89,48 @@ const years = Object.keys(yearsMap).sort((a, b) => b.localeCompare(a));
       )}
     </div>
 
-    {/* Left Sidebar: Year-Month Axis (desktop only) */}
-    <div class="hidden lg:flex w-[260px] shrink-0 flex-col gap-6 sticky top-[100px] order-2 lg:order-1">
-      <div class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] p-5 shadow-[6px_6px_0px_0px_#f59e0b] rounded-sm max-h-[80vh] flex flex-col overflow-hidden" data-reveal-card>
-        <h3 class="font-black text-[#0284c7] dark:text-[#0ea5e9] text-lg mb-4 flex items-center gap-2 shrink-0 border-b-2 border-dashed border-[#0284c7]/20 pb-2">
-          {i18nConfig.archive.timelineTitle}
-        </h3>
-        <div class="overflow-y-auto custom-scrollbar pr-2 flex-1 relative" id="archive-nav-desktop">
-          <div class="border-l-2 border-[#0284c7]/20 ml-2 space-y-4 py-2">
-            {years.map(year => (
-              <div class="relative pl-4 group">
-                <div class="absolute -left-[5px] top-2 w-2 h-2 bg-[#0284c7] rounded-full"></div>
-                <div class="font-black text-base text-[#0284c7] mb-2">{year}</div>
-                <div class="space-y-1">
+    {/* Left Sidebar: Year-Month Axis (desktop only, 无盒裸导航：默认只到年份，点击丝滑滑出月份) */}
+    <div class="hidden lg:flex w-[240px] shrink-0 flex-col sticky top-[100px] order-2 lg:order-1" data-reveal-card>
+      <div class="flex items-center gap-2 mb-4 px-1">
+        <div class="p-1 px-2.5 bg-[#fde68a] border-2 border-[#0284c7] text-[#0284c7] text-[10px] font-black rounded-sm transform -skew-x-6 shadow-[1.5px_1.5px_0px_0px_#0284c7]">
+          TIMELINE
+        </div>
+        <span class="text-[10px] font-mono font-bold text-slate-400">{allPosts.length} 篇</span>
+      </div>
+      <div class="border-l-2 border-dashed border-[#0284c7]/25 ml-2 pl-4" id="archive-nav-desktop">
+        {years.map(year => (
+          <div class="relative archive-year-group" data-year={year}>
+            <div class="absolute -left-[21px] top-3 w-2 h-2 bg-[#0284c7] rounded-full"></div>
+            <button
+              type="button"
+              class="archive-year-toggle w-full flex items-center gap-2 py-2 font-black text-base text-[#0284c7] dark:text-[#38bdf8] hover:text-[#0ea5e9] transition-colors cursor-pointer select-none"
+              aria-expanded="false"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 stroke-[3] transition-transform duration-300 chevron-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+              </svg>
+              <span>{year}</span>
+              <span class="text-[10px] font-mono font-bold text-slate-400 ml-auto">
+                {yearsMap[year].reduce((n, k) => n + archiveMap[k].length, 0)}
+              </span>
+            </button>
+            <div class="archive-months-wrap grid grid-rows-[0fr] transition-[grid-template-rows] duration-300 ease-out">
+              <div class="overflow-hidden">
+                <div class="space-y-0.5 py-1">
                   {yearsMap[year].map(key => (
-                    <a 
-                      href={`#archive-${key}`} 
-                      class="block font-bold text-xs text-slate-500 dark:text-slate-400 hover:text-[#0ea5e9] hover:translate-x-1 transition-all py-1 archive-nav-link"
+                    <a
+                      href={`#archive-${key}`}
+                      class="archive-nav-link block font-bold text-xs text-slate-500 dark:text-slate-400 hover:text-[#0ea5e9] hover:translate-x-1 transition-all py-1.5 pl-3 rounded-sm"
                       data-target={`archive-${key}`}
                     >
-                      {key.includes('年') ? key.substring(5) : key} ({archiveMap[key].length})
+                      {key.includes('年') ? key.substring(5) : key} <span class="font-mono text-[10px] text-slate-400">({archiveMap[key].length})</span>
                     </a>
                   ))}
                 </div>
               </div>
-            ))}
+            </div>
           </div>
-        </div>
+        ))}
       </div>
     </div>
 
@@ -177,21 +192,51 @@ const years = Object.keys(yearsMap).sort((a, b) => b.localeCompare(a));
 </style>
 
 <script>
+  // 年份折叠：默认只显示年份，点击丝滑滑出月份（grid-rows 0fr→1fr 过渡）
+  function setYearOpen(group, open) {
+    const wrap = group.querySelector('.archive-months-wrap');
+    const chevron = group.querySelector('.chevron-icon');
+    const btn = group.querySelector('.archive-year-toggle');
+    if (!wrap) return;
+    wrap.classList.toggle('grid-rows-[1fr]', open);
+    wrap.classList.toggle('grid-rows-[0fr]', !open);
+    if (chevron) chevron.style.transform = open ? 'rotate(0deg)' : 'rotate(-90deg)';
+    if (btn) btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+
+  function yearGroupOf(link) {
+    return link.closest('.archive-year-group');
+  }
+
+  function setupYearToggles() {
+    const groups = document.querySelectorAll('.archive-year-group');
+    groups.forEach(group => {
+      const btn = group.querySelector('.archive-year-toggle');
+      if (!btn || btn.dataset.toggleBound) return;
+      btn.dataset.toggleBound = '1';
+      btn.addEventListener('click', () => {
+        const isOpen = group.querySelector('.archive-months-wrap')?.classList.contains('grid-rows-[1fr]');
+        setYearOpen(group, !isOpen);
+      });
+    });
+    // 默认展开当前激活月份所在的年份，其余收起（"默认只到那年"）
+    const firstLink = document.querySelector('.archive-nav-link');
+    groups.forEach(group => setYearOpen(group, false));
+    if (firstLink) {
+      const g = yearGroupOf(firstLink);
+      if (g) setYearOpen(g, true);
+    }
+  }
+
   function setupArchiveNav() {
     const navLinks = Array.from(document.querySelectorAll('.archive-nav-link'));
     const sections = navLinks.map(link => document.getElementById(link.getAttribute('data-target') || ''));
     let activeId = '';
 
-    function scrollContainerFor(link) {
-      const desktop = document.getElementById('archive-nav-desktop');
-      if (desktop && desktop.contains(link)) return desktop;
-      return document.getElementById('archive-nav-mobile');
-    }
-
     function updateHighlight() {
       const scrollPos = window.scrollY + 150;
       let current = '';
-      
+
       for (const section of sections) {
         if (section && section.offsetTop <= scrollPos) {
           current = section.id;
@@ -199,25 +244,19 @@ const years = Object.keys(yearsMap).sort((a, b) => b.localeCompare(a));
           break;
         }
       }
-      
+
       if (!current && sections.length > 0) current = sections[0].id;
-      
+
       if (current && current !== activeId) {
         activeId = current;
         navLinks.forEach(link => {
           if (link.getAttribute('data-target') === current) {
             link.classList.add('text-[#0ea5e9]', 'font-black', 'scale-105');
             link.classList.remove('text-slate-500', 'font-bold');
-            const container = scrollContainerFor(link);
-            if (container) {
-              const rect = link.getBoundingClientRect();
-              const containerRect = container.getBoundingClientRect();
-              if (rect.top < containerRect.top || rect.bottom > containerRect.bottom) {
-                container.scrollTo({
-                  top: (link as HTMLElement).offsetTop - container.clientHeight / 2,
-                  behavior: 'smooth'
-                });
-              }
+            // 滚动到哪个月，就自动展开对应年份（丝滑跟随）
+            const g = yearGroupOf(link);
+            if (g && !g.querySelector('.archive-months-wrap')?.classList.contains('grid-rows-[1fr]')) {
+              setYearOpen(g, true);
             }
           } else {
             link.classList.remove('text-[#0ea5e9]', 'font-black', 'scale-105');
@@ -230,7 +269,7 @@ const years = Object.keys(yearsMap).sort((a, b) => b.localeCompare(a));
     if (sections.length > 0) {
       window.addEventListener('scroll', updateHighlight, { passive: true });
       setTimeout(updateHighlight, 100);
-      
+
       navLinks.forEach(link => {
         link.addEventListener('click', (e) => {
           e.preventDefault();
@@ -269,10 +308,12 @@ const years = Object.keys(yearsMap).sort((a, b) => b.localeCompare(a));
   }
 
   setupArchiveNav();
+  setupYearToggles();
   setupMobileTimeline();
   document.addEventListener('astro:page-load', () => {
     closeMobileTimeline();
     setupArchiveNav();
+    setupYearToggles();
     setupMobileTimeline();
   });
 </script>

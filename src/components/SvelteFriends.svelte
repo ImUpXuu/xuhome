@@ -74,36 +74,31 @@
 </script>
 
 <div class="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start w-full">
-  <!-- Left Column Profile Sidebar Card -->
-  <div class="hidden lg:flex w-[260px] shrink-0 flex-col gap-6 sticky top-[100px] select-none">
-     <div class="bg-white border-4 border-[#0284c7] p-5 shadow-[6px_6px_0px_0px_#f59e0b] rounded-sm transform -rotate-1">
-        <div class="flex items-center justify-center mb-4">
-            <div class="w-16 h-16 rounded-sm bg-[#0ea5e9] border-3 border-[#0284c7] shadow-[3px_3px_0px_0px_#0284c7] overflow-hidden flex items-center justify-center" style="width:64px;height:64px">
-              <img src={siteConfig.avatar} alt={siteConfig.author} class="w-full h-full object-cover" style="width:100%;height:100%;object-fit:cover" />
-            </div>
-         </div>
-         <h1 class="text-base font-black text-[#0284c7] text-center tracking-wider mb-1">{siteConfig.author}</h1>
-         <div class="h-0 border-b-2 border-dashed border-[#0284c7]/30 my-2 w-4/5 mx-auto"></div>
-         
-         <div class="text-xs font-bold text-slate-600 text-center mb-3 leading-relaxed">
-            {siteConfig.description}
-         </div>
-     </div>
+  <!-- Left Column Profile Sidebar（无盒裸排版） -->
+  <div class="hidden lg:flex w-[260px] shrink-0 flex-col items-center gap-3 sticky top-[100px] select-none text-center" data-reveal-card>
+    <div class="w-16 h-16 rounded-sm bg-[#0ea5e9] border-3 border-[#0284c7] shadow-[3px_3px_0px_0px_#0284c7] overflow-hidden flex items-center justify-center transform -rotate-3" style="width:64px;height:64px">
+      <img src={siteConfig.avatar} alt={siteConfig.author} class="w-full h-full object-cover" style="width:100%;height:100%;object-fit:cover" />
+    </div>
+    <h1 class="text-base font-black text-[#0284c7] tracking-wider">{siteConfig.author}</h1>
+    <div class="h-0 border-b-2 border-dashed border-[#0284c7]/30 my-1 w-4/5"></div>
+    <div class="text-xs font-bold text-slate-600 dark:text-slate-300 leading-relaxed">
+      {siteConfig.description}
+    </div>
   </div>
 
   <!-- Main content pane -->
   <div class="flex-1 min-w-0 w-full space-y-6 sm:space-y-8">
-    <div class="bg-white border-4 border-[#0284c7] p-4 sm:p-6 md:p-8 shadow-[8px_8px_0px_0px_#0284c7] rounded-sm">
+    <div>
       <!-- Title bar header -->
-      <div class="border-b-4 border-[#0284c7] pb-6 mb-6 md:mb-8 text-center md:text-left flex flex-col md:flex-row justify-between items-center gap-4">
+      <div class="border-b-4 border-[#0284c7] pb-6 mb-6 md:mb-8 text-center md:text-left flex flex-col md:flex-row justify-between items-center gap-4" data-reveal>
         <div>
-          <h1 class="text-xl sm:text-2xl md:text-3xl font-black text-[#0284c7] mb-3 leading-tight uppercase font-sans">Friends 友情链接</h1>
+          <h1 class="text-xl sm:text-2xl md:text-3xl font-black text-[#0284c7] dark:text-[#38bdf8] mb-3 leading-tight uppercase font-sans">Friends 友情链接</h1>
           <div class="flex flex-wrap items-center gap-2.5 sm:gap-4 justify-center md:justify-start">
-            <span class="text-slate-500 font-bold font-mono text-xs bg-slate-100 px-20 py-0.5 border border-slate-200 rounded-sm">那些人，那些事</span>
-            <span class="text-[10px] sm:text-xs font-mono font-bold text-[#f59e0b] bg-amber-50 px-2 py-0.5 border border-[#f59e0b] rounded-sm">
+            <span class="text-slate-500 dark:text-slate-400 font-bold font-mono text-xs bg-slate-100 dark:bg-slate-800 px-20 py-0.5 border border-slate-200 dark:border-slate-700 rounded-sm">那些人，那些事</span>
+            <span class="text-[10px] sm:text-xs font-mono font-bold text-[#f59e0b] bg-amber-50 dark:bg-amber-900/30 px-2 py-0.5 border border-[#f59e0b] rounded-sm">
               共计 {friendsConfig.length} 位好友
             </span>
-            <span class="text-[10px] sm:text-xs font-mono font-bold text-green-600 bg-green-50 px-2 py-0.5 border border-green-400 rounded-sm">
+            <span class="text-[10px] sm:text-xs font-mono font-bold text-green-600 bg-green-50 dark:bg-emerald-900/30 px-2 py-0.5 border border-green-400 dark:border-emerald-700 rounded-sm">
               随机排序 (:
             </span>
           </div>
@@ -117,7 +112,7 @@
             placeholder="搜索好友、博客名称..."
             bind:value={searchTerm}
             toolparamdescription="搜索关键词，支持按好友昵称或博客名称进行模糊匹配"
-            class="w-full pl-9 pr-4 py-2 text-xs sm:text-sm font-bold bg-[rgba(250,248,245,0.55)] text-slate-700 border-3 border-[#0284c7] rounded-sm focus:outline-none focus:bg-white focus:shadow-[2px_2px_0px_0px_#0284c7] transition-all placeholder-slate-400"
+            class="w-full pl-9 pr-4 py-2 text-xs sm:text-sm font-bold bg-[rgba(250,248,245,0.55)] dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-3 border-[#0284c7] rounded-sm focus:outline-none focus:bg-white dark:focus:bg-slate-700 focus:shadow-[2px_2px_0px_0px_#0284c7] transition-all placeholder-slate-400"
           />
           <svg xmlns="http://www.w3.org/2000/svg" class="absolute left-3 top-2.5 w-4 h-4 text-slate-400 stroke-[3]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -128,11 +123,12 @@
       <!-- Friends Card grid -->
       <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5">
         {#each filteredFriends as friend (friend.url)}
+          <div data-reveal-card>
           <a
             href={friend.url}
             target="_blank"
             rel="noopener noreferrer"
-            class="group bg-white border-4 border-[#0284c7] p-3 sm:p-4 shadow-[5px_5px_0px_0px_#0284c7] hover:shadow-[8px_8px_0px_0px_#f59e0b] hover:border-[#f59e0b] hover:-translate-x-1 hover:-translate-y-1 rounded-sm flex items-start gap-3 transition-all duration-300 select-none cursor-pointer"
+            class="group bg-white dark:bg-slate-800 border-4 border-[#0284c7] p-3 sm:p-4 shadow-[5px_5px_0px_0px_#0284c7] hover:shadow-[8px_8px_0px_0px_#f59e0b] hover:border-[#f59e0b] hover:-translate-x-1 hover:-translate-y-1 rounded-sm flex items-start gap-3 transition-all duration-300 select-none cursor-pointer h-full"
             id={`friend-${friend.name.replace(/\s+/g, '-').toLowerCase()}`}
           >
             {#if imgErrors.has(friend.name) || !friend.avatar}
@@ -159,7 +155,7 @@
 
             <div class="flex-1 min-w-0 flex flex-col justify-between h-full pt-0.5">
               <div>
-                <h3 class="font-extrabold text-sm sm:text-base text-slate-800 tracking-wide group-hover:text-[#0ea5e9] transition-colors truncate">
+                <h3 class="font-extrabold text-sm sm:text-base text-slate-800 dark:text-slate-100 tracking-wide group-hover:text-[#0ea5e9] transition-colors truncate">
                   {friend.name}
                 </h3>
                 <p class="text-[10px] sm:text-xs text-slate-400 font-bold font-mono tracking-wider truncate mt-0.5 flex items-center gap-1">
@@ -168,7 +164,7 @@
                   </svg>
                   <span>{friend.url.replace(/^https?:\/\/(www\.)?/, "")}</span>
                 </p>
-                <p class="text-xs text-slate-500 font-medium line-clamp-2 mt-2 leading-relaxed h-[36px]">
+                <p class="text-xs text-slate-500 dark:text-slate-400 font-medium line-clamp-2 mt-2 leading-relaxed h-[36px]">
                   {friend.description || "这位好友很神秘，暂时没有简介~"}
                 </p>
               </div>
@@ -180,10 +176,11 @@
               {/if}
             </div>
           </a>
+          </div>
         {/each}
 
         {#if filteredFriends.length === 0}
-          <div class="col-span-full bg-white border-4 border-[#0284c7] p-10 text-center shadow-[4px_4px_0px_0px_#0284c7]">
+          <div class="col-span-full bg-white dark:bg-slate-800 border-4 border-[#0284c7] p-10 text-center shadow-[4px_4px_0px_0px_#0284c7]" data-reveal>
             <p class="font-black text-[#0284c7] uppercase">没有筛选到任何符合条件的好友哦</p>
             <button
               on:click={() => searchTerm = ""}
@@ -197,19 +194,19 @@
     </div>
 
     <!-- Application segment -->
-    <div class="bg-white border-4 border-[#0284c7] p-5 sm:p-6 shadow-[8px_8px_0px_0px_#0284c7] rounded-sm relative">
+    <div class="relative" data-reveal>
       <div class="flex items-center gap-2 mb-4 select-none">
         <div class="p-1 px-2.5 bg-[#fde68a] border-2 border-[#0284c7] text-[#0284c7] text-xs font-black rounded-sm transform -rotate-2 shadow-[1.5px_1.5px_0px_0px_#0284c7]">
           APPLICATION
         </div>
-        <h3 class="text-base sm:text-lg font-black text-[#0284c7] tracking-wider">
+        <h3 class="text-base sm:text-lg font-black text-[#0284c7] dark:text-[#38bdf8] tracking-wider">
           交换友情链接
         </h3>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start font-mono text-xs sm:text-sm">
         <!-- Rules -->
-        <div class="space-y-3 font-semibold text-slate-700 leading-relaxed">
+        <div class="space-y-3 font-semibold text-slate-700 dark:text-slate-300 leading-relaxed">
           <p>
             欢迎同人、技术、设计、ACG、自媒体等各类健康有特色的独立博客相互串链。
           </p>

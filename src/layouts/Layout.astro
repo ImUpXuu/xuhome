@@ -237,6 +237,13 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
       }
     }
 
+    /* ===== 换页过渡：禁用整页淡入，让各页自己的元素入场动画当主角（对齐 i.upxuu.com 的 SPA 观感） ===== */
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+      animation: none;
+      mix-blend-mode: normal;
+    }
+
     /* ===== 滚动进入动画（复刻 i.upxuu.com 的 framer-motion whileInView 效果） =====
        data-reveal     小号文字块：上移12px + blur(3px) 消散（对应 Ee 组件）
        data-reveal-card 卡片：上移25px + scale(.96) 弹入（对应网格卡片，spring 220/18）
@@ -538,16 +545,7 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
             <main
               id="main-content"
               class="flex-1"
-              transition:animate={{
-                forwards: {
-                  old: [{ name: 'content-out', duration: '0.2s', easing: 'ease-in' }],
-                  new: [{ name: 'content-in', duration: '0.35s', easing: 'ease-out' }]
-                },
-                backwards: {
-                  old: [{ name: 'content-out', duration: '0.2s', easing: 'ease-in' }],
-                  new: [{ name: 'content-in', duration: '0.35s', easing: 'ease-out' }]
-                }
-              }}
+              transition:animate="none"
             >
               <slot />
             </main>
@@ -970,6 +968,11 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
 
       start();
       document.addEventListener('astro:after-swap', start);
+      // VT 彻底结束后再兜一次扫描（幂等：已入场的元素会被 :not(.rv-in) 过滤掉）
+      document.addEventListener('astro:page-load', function () {
+        if (document.body.dataset.isArticle === 'true') return;
+        watchLater(document.querySelectorAll('[data-reveal]:not(.rv-in),[data-reveal-card]:not(.rv-in)'));
+      });
 
       // 兜底：若 5 秒内 IO 一个都没投递（异常环境），强制全部显示保内容
       setTimeout(function () {
