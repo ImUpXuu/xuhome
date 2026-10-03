@@ -1,13 +1,13 @@
 ---
 title: "一行gh cli 我的一百个star没了！"
 published: 2026-10-03 08:34:06
-description: ""
+description: "我在写这篇文章时已经要崩溃了，glm一行命令，我的一个就差一个star就100的仓库被设为了私有"
 tags: []
 category: "技术"
 ---
 
-0我在写这篇文章时已经要崩溃了，glm一行命令，我的一个就差一个star就100的仓库被设为了私有
-
+我在写这篇文章时已经要崩溃了，glm一行命令，我的一个就差一个star就100的仓库被设为了私有
+https://github.com/ImUpXuu/SIWX 如果可以的话，请给我点一个star吧呜呜呜，孩子要崩溃了
 昨天晚上，我们的https://github.com/ImUpXuu/SIWX 的其中一位贡献者偶然泄露了自己的微信号，在pr和一份报告中，我让glm解决他直接给我仓库设私有了。我真的没见过这么逆天的操作，这真的是号称安全模型的glm干的出来的？？？？？？？
 
 ![image-20261003083716188](https://img.upxuu.lcrworld.xyz/images/2026/10/3/1790987837459_342.png)
