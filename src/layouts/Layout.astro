@@ -908,6 +908,7 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
 
     function boot() {
       if (!document.documentElement.classList.contains('rv-ready')) return;
+      // rootMargin 0px：只要露出任意 1px 就触发（对齐 framer-motion amount:"some" 语义）
       var io = new IntersectionObserver(function (entries) {
         var batch = 0;
         for (var i = 0; i < entries.length; i++) {
@@ -920,11 +921,23 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
           batch++;
           el.classList.add('rv-in');
         }
-      }, { rootMargin: '-24px 0px -24px 0px', threshold: 0 });
+      }, { rootMargin: '0px', threshold: 0 });
 
       function scan(root) {
         var els = (root || document).querySelectorAll('[data-reveal]:not(.rv-in),[data-reveal-card]:not(.rv-in)');
         for (var i = 0; i < els.length; i++) io.observe(els[i]);
+      }
+
+      // 等两帧再纳入观察：让新节点先以隐藏态绘制至少一帧，
+      // 否则分页/换页插入的卡片在首帧就被加 .rv-in，入场转场会被整个跳过
+      function watchLater(els) {
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () {
+            for (var t = 0; t < els.length; t++) {
+              if (els[t].isConnected) io.observe(els[t]);
+            }
+          });
+        });
       }
 
       // Svelte 翻页/搜索重渲染出的新卡片自动纳入观察
@@ -934,8 +947,13 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
           for (var j = 0; j < added.length; j++) {
             var n = added[j];
             if (n.nodeType !== 1) continue;
-            if (n.hasAttribute('data-reveal') || n.hasAttribute('data-reveal-card')) io.observe(n);
-            if (n.querySelectorAll) scan(n);
+            var els = [];
+            if (n.hasAttribute('data-reveal') || n.hasAttribute('data-reveal-card')) els.push(n);
+            if (n.querySelectorAll) {
+              var subs = n.querySelectorAll('[data-reveal]:not(.rv-in),[data-reveal-card]:not(.rv-in)');
+              for (var k = 0; k < subs.length; k++) els.push(subs[k]);
+            }
+            if (els.length) watchLater(els);
           }
         }
       });
@@ -947,7 +965,7 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
         // 文章页不做滚动进入动画（保持原有载入动画）
         if (document.body.dataset.isArticle === 'true') return;
         mo.observe(document.body, { childList: true, subtree: true });
-        scan(document);
+        watchLater(document.querySelectorAll('[data-reveal]:not(.rv-in),[data-reveal-card]:not(.rv-in)'));
       }
 
       start();

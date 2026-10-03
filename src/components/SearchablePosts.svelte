@@ -2,7 +2,6 @@
   import PageViews from './PageViews.svelte';
   import { afterUpdate, onMount } from 'svelte';
   import { flip } from 'svelte/animate';
-  import { fade } from 'svelte/transition';
   import { siteConfig, i18nConfig } from '../config/site';
 
   interface SearchablePost {
@@ -363,7 +362,8 @@
 
   function scrollToTop() {
     if (typeof window !== 'undefined') {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      // 瞬时回顶：让新页卡片的入场波次从页首完整播放（平滑滚动会在半路把动画走完）
+      window.scrollTo({ top: 0, behavior: 'auto' });
     }
   }
 
@@ -459,7 +459,6 @@
         style="animation-delay: {0.2 + (i % 12) * 0.05}s"
         data-reveal-card
         animate:flip={{ duration: 400 }}
-        transition:fade={{ duration: 250 }}
       >
         {#if prefetchProgress.has(`/posts/${encodeURIComponent(post.slug)}/`)}
           <div class="prefetch-bar-container">
