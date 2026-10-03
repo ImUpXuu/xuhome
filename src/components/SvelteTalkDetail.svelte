@@ -1,33 +1,13 @@
 <script lang="ts">
   import type { TalkItem } from '../utils/postsFetcher';
   import SvelteLightbox from './SvelteLightbox.svelte';
-  import TalkShareModal from './TalkShareModal.svelte';
   import PageViews from './PageViews.svelte';
-  import { onDestroy } from 'svelte';
 
   export let talk: TalkItem;
 
   let isLightboxOpen = false;
   let lightboxImages: string[] = [];
   let lightboxInitialIndex = 0;
-  let showShare = false;
-
-  function openShare() {
-    showShare = true;
-    document.body.style.overflow = 'hidden';
-  }
-
-  function closeShare() {
-    showShare = false;
-    document.body.style.overflow = '';
-  }
-
-  // 组件销毁时（如 SPA 切页）必须解锁滚动，否则离开后整页滚不动
-  // 注意：Svelte 的 onDestroy 在服务端渲染时也会执行（只有 onMount 是浏览器独有），
-  // 因此必须加 typeof 守卫，否则 SSR 阶段访问 document 会直接让构建失败。
-  onDestroy(() => {
-    if (typeof document !== 'undefined') document.body.style.overflow = '';
-  });
 
   // 先转义 HTML 防止存储型 XSS
   function escapeHtml(text: string): string {
@@ -191,30 +171,6 @@
       </a>
   </div>
 </div>
-
-<!-- Floating share trigger (bottom-right) -->
-<button
-  on:click={openShare}
-  class="fixed bottom-[5.5rem] right-6 z-[2000] w-12 h-12 rounded-sm border-3 sm:border-4 border-[#0284c7] bg-[#fde68a] dark:bg-amber-700/50 text-[#0284c7] flex items-center justify-center cursor-pointer shadow-[4px_4px_0px_0px_#0284c7] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#0284c7] active:translate-y-0 active:shadow-none transition-all duration-150"
-  aria-label="分享"
->
-  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 sm:w-6 sm:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-    <path stroke-linecap="round" stroke-linejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
-  </svg>
-</button>
-
-{#if showShare}
-  {@const images = extractImages(talk.content)}
-  {@const textOnly = getContentWithoutImages(talk.content)}
-  <TalkShareModal
-    talkTitle={talk.title || '日常动态'}
-    talkContent={textOnly}
-    talkUrl={`${window.location.origin}/talk/${talk.slug}`}
-    talkImage={images[0] || ''}
-    show={true}
-    on:close={closeShare}
-  />
-{/if}
 
 {#if isLightboxOpen}
   <SvelteLightbox images={lightboxImages} initialIndex={lightboxInitialIndex} onClose={() => isLightboxOpen = false} />
