@@ -472,15 +472,15 @@
         <div class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] rounded-sm p-0 flex flex-row overflow-hidden shadow-[6px_6px_0px_0px_#0284c7] hover:shadow-[10px_10px_0px_0px_#10b981] hover:-translate-y-1 transition-all duration-300">
           <div class="flex-1 p-3.5 sm:p-5 md:p-6 flex flex-col justify-between min-w-0">
             <a href={`/posts/${encodeURIComponent(post.slug)}/`} class="block group">
-              <h2 class="text-sm sm:text-base md:text-xl font-black text-[#0284c7] mb-1 md:mb-2 group-hover:text-[#0ea5e9] transition-colors leading-snug">
+              <h2 class="rv-txt text-sm sm:text-base md:text-xl font-black text-[#0284c7] mb-1 md:mb-2 group-hover:text-[#0ea5e9] transition-colors leading-snug">
                 {post.title}
               </h2>
-              <p class="text-[11px] sm:text-xs md:text-sm text-slate-700 dark:text-slate-300 font-medium line-clamp-2 leading-relaxed">
+              <p class="rv-txt text-[11px] sm:text-xs md:text-sm text-slate-700 dark:text-slate-300 font-medium line-clamp-2 leading-relaxed">
                 {post.description}
               </p>
             </a>
-            
-            <div class="mt-2 md:mt-3.5 flex flex-wrap items-center gap-2 shrink-0">
+
+            <div class="rv-txt mt-2 md:mt-3.5 flex flex-wrap items-center gap-2 shrink-0">
               <span class="text-xs md:text-sm font-extrabold text-slate-500 dark:text-slate-400 shrink-0">{post.date}</span>
               <PageViews path={post.slug} />
               {#if post.category}
