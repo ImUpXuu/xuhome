@@ -973,6 +973,15 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
         }
       });
 
+      // 本会话是否已播过该页面的入场动画（按路径记录）：回访直接呈现，不重播
+      function seenPage() {
+        try { return sessionStorage.getItem('rv-seen:' + location.pathname) === '1'; }
+        catch (e) { return false; }
+      }
+      function markSeen() {
+        try { sessionStorage.setItem('rv-seen:' + location.pathname, '1'); } catch (e) {}
+      }
+
       function start() {
         // 先释放旧页面节点的观察（IO 对 target 持强引用，防 View Transitions 换页后泄漏）
         io.disconnect();
@@ -980,7 +989,14 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
         // 文章页不做滚动进入动画（保持原有载入动画）
         if (document.body.dataset.isArticle === 'true') return;
         mo.observe(document.body, { childList: true, subtree: true });
-        watchLater(document.querySelectorAll('[data-reveal]:not(.rv-in),[data-reveal-card]:not(.rv-in)'));
+        var els = document.querySelectorAll('[data-reveal]:not(.rv-in),[data-reveal-card]:not(.rv-in)');
+        if (seenPage()) {
+          // 已播过：所有元素直接就位（首帧即最终态），仅本页新出现的内容仍走动画
+          for (var i = 0; i < els.length; i++) els[i].classList.add('rv-in');
+          return;
+        }
+        markSeen();
+        watchLater(els);
       }
 
       start();
