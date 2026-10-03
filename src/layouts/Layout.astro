@@ -255,7 +255,10 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
     /* ===== 滚动进入动画（复刻 i.upxuu.com 的 framer-motion whileInView 效果） =====
        data-reveal     小号文字块：上移12px + blur(3px) 消散（对应 Ee 组件）
        data-reveal-card 卡片：上移25px + scale(.96) 弹入（对应网格卡片，spring 220/18）
-       只有 html.rv-ready（JS 可用且未开启减弱动态）才隐藏待入场元素 */
+       只有 html.rv-ready（JS 可用且未开启减弱动态）才隐藏待入场元素。
+       实际播放由引擎用 Web Animations API 驱动（el.animate）——CSS transition 在
+       换页场景下会因缺少 before-change 样式被浏览器整个跳过（线上实测踩坑），
+       WAAPI 不依赖样式历史，任何时序下必然播放。 */
     html.rv-ready [data-reveal]:not(.rv-in),
     html.rv-ready [data-reveal-card]:not(.rv-in) {
       opacity: 0;
@@ -268,32 +271,17 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
     html.rv-ready [data-reveal-card]:not(.rv-in) {
       transform: translateY(25px) scale(0.96);
     }
-    html.rv-ready [data-reveal],
-    html.rv-ready [data-reveal-card] {
-      transition:
-        opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
-        transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
-        filter 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-      transition-delay: var(--rv-delay, 0s);
-    }
     html.rv-ready [data-reveal].rv-in,
     html.rv-ready [data-reveal-card].rv-in {
       opacity: 1;
       transform: none;
       filter: blur(0px);
     }
-    /* 卡片内文字：随卡片入场逐个从模糊中凝焦（i.upxuu.com 的 Ee 小号 Reveal，
-       y12 + blur3 与卡片同步起播——--rv-delay 自定义属性沿 DOM 继承实现精确同步） */
+    /* 卡片内文字：随卡片入场逐个从模糊中凝焦（i.upxuu.com 的 Ee 小号 Reveal） */
     html.rv-ready [data-reveal-card] .rv-txt {
       opacity: 0;
       transform: translateY(12px);
       filter: blur(3px);
-      transition:
-        opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-        transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1),
-        filter 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-        color 0.3s ease;
-      transition-delay: var(--rv-delay, 0s), var(--rv-delay, 0s), var(--rv-delay, 0s), 0s;
     }
     html.rv-ready [data-reveal-card].rv-in .rv-txt {
       opacity: 1;
@@ -306,10 +294,6 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
       animation: none;
     }
     @media (prefers-reduced-motion: reduce) {
-      html.rv-ready [data-reveal],
-      html.rv-ready [data-reveal-card] {
-        transition: none;
-      }
       html.rv-ready [data-reveal]:not(.rv-in),
       html.rv-ready [data-reveal-card]:not(.rv-in) {
         opacity: 1;
@@ -320,7 +304,6 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
         opacity: 1;
         transform: none;
         filter: none;
-        transition: none;
       }
     }
 
@@ -917,21 +900,43 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
       // rootMargin 0px：只要露出任意 1px 就触发（对齐 framer-motion amount:"some" 语义）
       var io = new IntersectionObserver(function (entries) {
         var batch = 0;
-        // 关键：先强制一次样式提交，让元素当前的计算样式（隐藏态）真正存在。
-        // 换页后元素可能在首次绘制前就被加 .rv-in，缺少 before-change 样式时
-        // 浏览器会整个跳过转场直接画终态（线上实测 transitionrun=0）。
-        if (entries.length) void document.body.offsetWidth;
         for (var i = 0; i < entries.length; i++) {
           var en = entries[i];
           if (!en.isIntersecting) continue;
           var el = en.target;
           io.unobserve(el);
           // 同一批进入视口的元素按 60ms 交错入场（复刻 staggerChildren: .06），上限 300ms
-          el.style.setProperty('--rv-delay', Math.min(batch * 60, 300) + 'ms');
+          revealNow(el, Math.min(batch * 60, 300));
           batch++;
-          el.classList.add('rv-in');
         }
       }, { rootMargin: '0px', threshold: 0 });
+
+      // 入场播放：WAAPI（el.animate）驱动。不依赖 before-change 样式，
+      // 换页/首绘前触发都必然播放（CSS transition 在这些时序会被浏览器跳过）。
+      function revealNow(el, delayMs) {
+        el.style.setProperty('--rv-delay', delayMs + 'ms');
+        el.classList.add('rv-in');
+        if (!el.animate) return; // 极老浏览器：直接显示
+        var isCard = el.hasAttribute('data-reveal-card');
+        var spring = 'cubic-bezier(0.34, 1.56, 0.64, 1)';
+        el.animate(
+          isCard
+            ? [{ opacity: 0, transform: 'translateY(25px) scale(0.96)' },
+               { opacity: 1, transform: 'none' }]
+            : [{ opacity: 0, transform: 'translateY(12px)', filter: 'blur(3px)' },
+               { opacity: 1, transform: 'none', filter: 'blur(0px)' }],
+          { duration: 450, delay: delayMs, easing: spring, fill: 'backwards' }
+        );
+        // 卡片内文字逐个凝焦（比卡片晚 60ms 起步）
+        var txts = el.querySelectorAll('.rv-txt');
+        for (var t = 0; t < txts.length; t++) {
+          txts[t].animate(
+            [{ opacity: 0, transform: 'translateY(12px)', filter: 'blur(3px)' },
+             { opacity: 1, transform: 'none', filter: 'blur(0px)' }],
+            { duration: 450, delay: delayMs + 60 + t * 50, easing: spring, fill: 'backwards' }
+          );
+        }
+      }
 
       function scan(root) {
         var els = (root || document).querySelectorAll('[data-reveal]:not(.rv-in),[data-reveal-card]:not(.rv-in)');
