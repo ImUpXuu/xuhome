@@ -44,58 +44,54 @@ const years = Object.keys(yearsMap).sort((a, b) => b.localeCompare(a));
 >
   <div class="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start justify-center max-w-[1000px] mx-auto w-full relative">
     
-    {/* Main Timeline Column */}
-    <div class="flex-1 w-full min-w-0 flex flex-col gap-8 order-2 lg:order-1 animate-card-entrance opacity-0" style="animation-delay: 0.06s">
-      <div class="bg-white border-4 border-[#0284c7] p-6 sm:p-8 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm relative overflow-hidden">
-        <h1 class="text-2xl font-black text-[#0284c7] mb-8 flex items-center gap-3">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 stroke-[3]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
-          </svg>
-          {i18nConfig.archive.title}
-        </h1>
-        
-        <div class="absolute right-4 top-4 text-[100px] font-black text-[#0284c7]/5 select-none pointer-events-none transform -rotate-12 translate-x-4 -translate-y-4">
-          A
+    {/* Main Timeline Column（无底盒，时间轴直接铺在页面底纹上） */}
+    <div class="flex-1 w-full min-w-0 flex flex-col gap-8 order-1 lg:order-2 px-1 sm:px-2">
+      <h1 class="text-2xl font-black text-[#0284c7] dark:text-[#38bdf8] flex items-center gap-3" data-reveal>
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 stroke-[3]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+        </svg>
+        {i18nConfig.archive.title}
+      </h1>
+
+      {archiveKeys.length === 0 ? (
+        <div class="text-center py-16" data-reveal>
+          <p class="text-[#0284c7] font-black tracking-widest uppercase text-lg">{i18nConfig.archive.emptyText}</p>
+          <p class="text-slate-500 text-sm mt-2 font-mono">{i18nConfig.archive.emptySubtext}</p>
         </div>
+      ) : (
+      <div class="relative border-l-4 border-dashed border-[#0284c7]/30 ml-4 pl-6 space-y-12">
+        {archiveKeys.map((key) => (
+          <div class="relative" id={`archive-${key}`}>
+            {/* Timeline dot */}
+            <div class="absolute -left-[30px] top-1.5 w-4 h-4 bg-[#fde68a] border-4 border-[#0284c7] rounded-full shadow-[2px_2px_0px_0px_#f59e0b]" data-reveal></div>
 
-        {archiveKeys.length === 0 ? (
-          <div class="text-center py-16">
-            <p class="text-[#0284c7] font-black tracking-widest uppercase text-lg">{i18nConfig.archive.emptyText}</p>
-            <p class="text-slate-500 text-sm mt-2 font-mono">{i18nConfig.archive.emptySubtext}</p>
-          </div>
-        ) : (
-        <div class="relative border-l-4 border-dashed border-[#0284c7]/30 ml-4 pl-6 space-y-12">
-          {archiveKeys.map((key) => (
-            <div class="relative" id={`archive-${key}`}>
-              {/* Timeline dot */}
-              <div class="absolute -left-[30px] top-1.5 w-4 h-4 bg-[#fde68a] border-4 border-[#0284c7] rounded-full shadow-[2px_2px_0px_0px_#f59e0b]"></div>
+            <h2 class="text-xl font-black text-[#0284c7] dark:text-[#38bdf8] mb-4 bg-[#e0f2fe] dark:bg-slate-800 inline-block px-3 py-1 rounded-sm border-2 border-[#0284c7] shadow-[2px_2px_0px_0px_#0284c7] tracking-wider" data-reveal>
+              {key}
+            </h2>
 
-              <h2 class="text-xl font-black text-[#0284c7] mb-4 bg-[#e0f2fe] inline-block px-3 py-1 rounded-sm border-2 border-[#0284c7] shadow-[2px_2px_0px_0px_#0284c7] tracking-wider">
-                {key}
-              </h2>
-
-              <div class="flex flex-col gap-4">
-                {archiveMap[key].map(post => (
-                  <a href={`/posts/${encodeURIComponent(post.slug)}`} data-astro-prefetch class="relative z-10 group flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 p-3 bg-white border-2 border-[#0284c7]/30 hover:border-[#0284c7] rounded-sm transition-all hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#0284c7]">
+            <div class="flex flex-col gap-4">
+              {archiveMap[key].map(post => (
+                <div data-reveal-card>
+                  <a href={`/posts/${encodeURIComponent(post.slug)}`} data-astro-prefetch class="relative z-10 group flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 p-3 bg-white dark:bg-slate-800 border-2 border-[#0284c7]/30 hover:border-[#0284c7] rounded-sm transition-all hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#0284c7]">
                     <span class="font-mono text-xs font-black text-slate-400 shrink-0">
                       {post.date.substring(5, 10)}
                     </span>
-                    <h3 class="font-bold text-slate-700 group-hover:text-[#0ea5e9] transition-colors line-clamp-1 flex-1">
+                    <h3 class="font-bold text-slate-700 dark:text-slate-200 group-hover:text-[#0ea5e9] transition-colors line-clamp-1 flex-1">
                       {post.title}
                     </h3>
                   </a>
-                ))}
-              </div>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-        )}
+          </div>
+        ))}
       </div>
+      )}
     </div>
-    
-    {/* Right Sidebar: Year-Month Axis (desktop only) */}
-    <div class="hidden lg:flex w-[260px] shrink-0 flex-col gap-6 sticky top-[100px] order-1 lg:order-2 animate-card-entrance opacity-0" style="animation-delay: 0.1s">
-      <div class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] p-5 shadow-[6px_6px_0px_0px_#f59e0b] rounded-sm max-h-[80vh] flex flex-col overflow-hidden">
+
+    {/* Left Sidebar: Year-Month Axis (desktop only) */}
+    <div class="hidden lg:flex w-[260px] shrink-0 flex-col gap-6 sticky top-[100px] order-2 lg:order-1">
+      <div class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] p-5 shadow-[6px_6px_0px_0px_#f59e0b] rounded-sm max-h-[80vh] flex flex-col overflow-hidden" data-reveal-card>
         <h3 class="font-black text-[#0284c7] dark:text-[#0ea5e9] text-lg mb-4 flex items-center gap-2 shrink-0 border-b-2 border-dashed border-[#0284c7]/20 pb-2">
           {i18nConfig.archive.timelineTitle}
         </h3>
