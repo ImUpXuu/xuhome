@@ -237,11 +237,19 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
       }
     }
 
-    /* ===== 换页过渡：禁用整页淡入，让各页自己的元素入场动画当主角（对齐 i.upxuu.com 的 SPA 观感） ===== */
+    /* ===== 换页过渡：跳过整页快照动画，让各页自己的元素入场动画当主角（对齐 i.upxuu.com 的 SPA 观感） =====
+       注意必须连 group(root) 一起杀：新旧页面高度不同时 UA 会给 group 播尺寸形变动画，
+       把整个 VT 续命几百毫秒，旧快照全程叠在新页面上（实测踩坑） */
     ::view-transition-old(root),
-    ::view-transition-new(root) {
-      animation: none;
-      mix-blend-mode: normal;
+    ::view-transition-new(root),
+    ::view-transition-group(root),
+    ::view-transition-image-pair(root) {
+      animation: none !important;
+      mix-blend-mode: normal !important;
+    }
+    /* 旧页快照立即消失，不留残影 */
+    ::view-transition-old(root) {
+      opacity: 0 !important;
     }
 
     /* ===== 滚动进入动画（复刻 i.upxuu.com 的 framer-motion whileInView 效果） =====
