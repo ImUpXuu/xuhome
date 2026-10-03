@@ -416,7 +416,7 @@
 
 <div class="w-full flex flex-col gap-4 sm:gap-6">
   <!-- Interactive Search input inside Desktop view -->
-  <div class="relative w-full hidden sm:block">
+  <div class="relative w-full hidden sm:block" data-reveal>
     <input
       type="text"
       name="q"
@@ -443,20 +443,21 @@
 
   <div bind:this={feedEl} class="flex flex-col gap-4 sm:gap-6 md:gap-8 mt-2 sm:mt-1">
     {#if isLoadingPosts}
-      <div class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] p-12 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm text-center">
+      <div class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] p-12 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm text-center" data-reveal>
         <p class="text-[#0284c7] font-black tracking-widest uppercase">文章加载中...</p>
       </div>
     {:else if displayedPosts.length === 0}
-      <div class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] p-12 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm text-center">
+      <div class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] p-12 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm text-center" data-reveal>
         <p class="text-[#0284c7] font-black tracking-widest uppercase">{loadFailed ? '文章数据加载失败' : i18nConfig.search.noResults}</p>
       </div>
     {/if}
 
     {#each displayedPosts as post, i (post.slug)}
-      <article 
-        id={`post-${post.id}`} 
+      <article
+        id={`post-${post.id}`}
         class="block relative group animate-card-entrance opacity-0"
         style="animation-delay: {0.2 + (i % 12) * 0.05}s"
+        data-reveal-card
         animate:flip={{ duration: 400 }}
         transition:fade={{ duration: 250 }}
       >
