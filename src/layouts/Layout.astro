@@ -917,6 +917,10 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
       // rootMargin 0px：只要露出任意 1px 就触发（对齐 framer-motion amount:"some" 语义）
       var io = new IntersectionObserver(function (entries) {
         var batch = 0;
+        // 关键：先强制一次样式提交，让元素当前的计算样式（隐藏态）真正存在。
+        // 换页后元素可能在首次绘制前就被加 .rv-in，缺少 before-change 样式时
+        // 浏览器会整个跳过转场直接画终态（线上实测 transitionrun=0）。
+        if (entries.length) void document.body.offsetWidth;
         for (var i = 0; i < entries.length; i++) {
           var en = entries[i];
           if (!en.isIntersecting) continue;
