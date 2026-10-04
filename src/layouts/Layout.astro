@@ -914,7 +914,6 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
       // 入场播放：WAAPI（el.animate）驱动。不依赖 before-change 样式，
       // 换页/首绘前触发都必然播放（CSS transition 在这些时序会被浏览器跳过）。
       function revealNow(el, delayMs) {
-        if (el.classList.contains('rv-in')) return; // 防重播：Svelte 移动节点会再次触发 MO
         el.style.setProperty('--rv-delay', delayMs + 'ms');
         el.classList.add('rv-in');
         if (!el.animate) return; // 极老浏览器：直接显示
@@ -964,7 +963,7 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
             var n = added[j];
             if (n.nodeType !== 1) continue;
             var els = [];
-            if ((n.hasAttribute('data-reveal') || n.hasAttribute('data-reveal-card')) && !n.classList.contains('rv-in')) els.push(n);
+            if (n.hasAttribute('data-reveal') || n.hasAttribute('data-reveal-card')) els.push(n);
             if (n.querySelectorAll) {
               var subs = n.querySelectorAll('[data-reveal]:not(.rv-in),[data-reveal-card]:not(.rv-in)');
               for (var k = 0; k < subs.length; k++) els.push(subs[k]);
@@ -1004,14 +1003,7 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
           return;
         }
         markSeen();
-        // 只让初始视口内的元素播入场波次；折叠线以下的直接就位——
-        // 内容本来就随页面一起加载了，滚动时不做任何触发动画（用户实测反感）
-        var inView = [];
-        for (var j = 0; j < els.length; j++) {
-          if (els[j].getBoundingClientRect().top < window.innerHeight) inView.push(els[j]);
-          else els[j].classList.add('rv-in');
-        }
-        watchLater(inView);
+        watchLater(els);
       }
 
       start();
