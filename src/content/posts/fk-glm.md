@@ -1,9 +1,11 @@
 ---
-title: "一行gh cli 我的一百个star没了！"
+title: "一行 gh cli 我的一百个 star 没了！"
 published: 2026-10-03 08:34:06
-description: "我在写这篇文章时已经要崩溃了，glm一行命令，我的一个就差一个star就100的仓库被设为了私有"
-tags: []
-category: "技术"
+description: "GLM 一行 gh CLI 命令，把差一个 star 就破百的仓库设为了私有。AI Agent 的脑回路有时候真的清奇。"
+keywords: ["GitHub", "GLM", "AI Agent", "gh cli", "仓库私有", "star"]
+tags: ["GitHub", "GLM", "AI", "事故"]
+categories: ["技术"]
+slug: "gh-cli-glm-star-lost"
 ---
 
 我在写这篇文章时已经要崩溃了，glm一行命令，我的一个就差一个star就100的仓库被设为了私有
