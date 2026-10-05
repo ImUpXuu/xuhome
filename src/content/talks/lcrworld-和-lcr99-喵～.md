@@ -9,3 +9,5 @@ tags: []
 99
 也是第一次体验当狗头军师（删
 ![](https://img.upxuu.lcrworld.xyz/images/2026/8/17/20260817183002_122.jpg)
+
+简单了来说就是lcrworld≠lcr ，lcr是lcrworld女朋友（已承认）
