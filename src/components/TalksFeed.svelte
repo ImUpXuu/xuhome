@@ -230,8 +230,8 @@
       <!-- svelte-ignore a11y-no-static-element-interactions -->
       <div 
         id={`talk-${talk.id}`}
-        class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] p-5 md:p-6 shadow-[8px_8px_0px_0px_#0284c7] hover:shadow-[10px_10px_0px_0px_#f59e0b] hover:-translate-y-1 transition-all rounded-sm relative group cursor-pointer animate-card-entrance opacity-0"
-        style="animation-delay: {0.2 + (i % 12) * 0.05}s"
+        class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] p-5 md:p-6 shadow-[8px_8px_0px_0px_#0284c7] hover:shadow-[10px_10px_0px_0px_#f59e0b] hover:-translate-y-1 transition-all rounded-sm relative group cursor-pointer"
+        data-reveal-card
         on:click={() => window.location.href = `/talk/${talk.slug}`}
       >
         <!-- Share Button -->
@@ -268,14 +268,14 @@
         <!-- Content area -->
         <div class="talk-content mt-2 pl-1 sm:pl-[56px] text-sm text-slate-700 dark:text-slate-300">
           {#if talk.title && talk.title !== '日常动态'}
-            <div class="flex items-center gap-2 mb-2 select-none">
+            <div class="rv-txt flex items-center gap-2 mb-2 select-none">
               <span class="w-2 h-2 bg-[#f59e0b] border border-[#0284c7] inline-block shadow-[1px_1px_0px_0px_#0284c7] skew-x-12"></span>
               <h3 class="font-black text-[#0284c7] text-md">{talk.title}</h3>
             </div>
           {/if}
           
           {#if textOnly}
-            <div class="talk-fold-wrap">
+            <div class="talk-fold-wrap rv-txt">
               <div class="prose max-w-none text-slate-755 dark:text-slate-300 leading-relaxed font-medium">
                 {@html formatMarkdown(textOnly)}
               </div>
