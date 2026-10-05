@@ -296,6 +296,10 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
       transform: translateY(12px);
       filter: blur(3px);
     }
+    html.rv-ready [data-rv-soft]:not(.rv-in) {
+      transform: translateY(8px);
+      filter: blur(2px);
+    }
     html.rv-ready [data-reveal-card]:not(.rv-in) {
       transform: translateY(25px) scale(0.96);
     }
@@ -959,15 +963,25 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
         el.classList.add('rv-in');
         if (!el.animate) return; // 极老浏览器：直接显示
         var isCard = el.hasAttribute('data-reveal-card');
+        var soft = el.hasAttribute('data-rv-soft');
         var spring = 'cubic-bezier(0.34, 1.56, 0.64, 1)';
-        el.animate(
-          isCard
-            ? [{ opacity: 0, transform: 'translateY(25px) scale(0.96)' },
-               { opacity: 1, transform: 'none' }]
-            : [{ opacity: 0, transform: 'translateY(12px)', filter: 'blur(3px)' },
-               { opacity: 1, transform: 'none', filter: 'blur(0px)' }],
-          { duration: 450, delay: delayMs, easing: spring, fill: 'backwards' }
-        );
+        if (soft) {
+          // 正文阅读态：缓入（650ms ease-out，轻位移轻模糊，无过冲），滚动阅读不闹
+          el.animate(
+            [{ opacity: 0, transform: 'translateY(8px)', filter: 'blur(2px)' },
+             { opacity: 1, transform: 'none', filter: 'blur(0px)' }],
+            { duration: 650, delay: delayMs, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', fill: 'backwards' }
+          );
+        } else {
+          el.animate(
+            isCard
+              ? [{ opacity: 0, transform: 'translateY(25px) scale(0.96)' },
+                 { opacity: 1, transform: 'none' }]
+              : [{ opacity: 0, transform: 'translateY(12px)', filter: 'blur(3px)' },
+                 { opacity: 1, transform: 'none', filter: 'blur(0px)' }],
+            { duration: 450, delay: delayMs, easing: spring, fill: 'backwards' }
+          );
+        }
         // 卡片内文字逐个凝焦（比卡片晚 60ms 起步）
         var txts = el.querySelectorAll('.rv-txt');
         for (var t = 0; t < txts.length; t++) {
@@ -1023,7 +1037,10 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
         if (header && !header.hasAttribute('data-reveal')) header.setAttribute('data-reveal', '');
         var blocks = paper.querySelectorAll('.prose > *');
         for (var i = 0; i < blocks.length; i++) {
-          if (!blocks[i].hasAttribute('data-reveal')) blocks[i].setAttribute('data-reveal', '');
+          if (!blocks[i].hasAttribute('data-reveal')) {
+            blocks[i].setAttribute('data-reveal', '');
+            blocks[i].setAttribute('data-rv-soft', ''); // 阅读态：缓入无过冲
+          }
         }
       }
 
