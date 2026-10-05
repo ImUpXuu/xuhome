@@ -897,7 +897,9 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
 
     function boot() {
       if (!document.documentElement.classList.contains('rv-ready')) return;
-      // rootMargin 0px：只要露出任意 1px 就触发（对齐 framer-motion amount:"some" 语义）
+      // rootMargin 0px：只要露出任意 1px 就触发（对齐 framer-motion amount:"some" 语义）。
+      // 交错延迟只用于首屏波次；滚动触发的入场零延迟——底边刚露头的卡片必须立刻显现
+      var waveDone = false;
       var io = new IntersectionObserver(function (entries) {
         var batch = 0;
         for (var i = 0; i < entries.length; i++) {
@@ -905,10 +907,10 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
           if (!en.isIntersecting) continue;
           var el = en.target;
           io.unobserve(el);
-          // 同一批进入视口的元素按 60ms 交错入场（复刻 staggerChildren: .06），上限 300ms
-          revealNow(el, Math.min(batch * 60, 300));
+          revealNow(el, waveDone ? 0 : Math.min(batch * 60, 300));
           batch++;
         }
+        waveDone = true;
       }, { rootMargin: '0px', threshold: 0 });
 
       // 入场播放：WAAPI（el.animate）驱动。不依赖 before-change 样式，
@@ -1013,6 +1015,15 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
       document.addEventListener('astro:page-load', function () {
         if (document.body.dataset.isArticle === 'true') return;
         watchLater(document.querySelectorAll('[data-reveal]:not(.rv-in),[data-reveal-card]:not(.rv-in)'));
+      });
+
+      // 定时兜底重扫：client:idle 组件（如创作日历）的水合插入时机不定，
+      // MO 可能错过（实测日历卡因此永久隐藏），按时间点补扫，重复 observe 会去重
+      [400, 1200, 3000].forEach(function (t) {
+        setTimeout(function () {
+          if (document.body.dataset.isArticle === 'true') return;
+          scan(document);
+        }, t);
       });
 
       // 兜底：若 5 秒内 IO 一个都没投递（异常环境），强制全部显示保内容
