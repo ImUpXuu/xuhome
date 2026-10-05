@@ -111,7 +111,7 @@ export const navConfig: {
     { name: "归档", href: "/posts" },
     { name: "统计", href: "/stats" },
     { name: "标签", href: "/tags" },
-    { name: "AI", href: "/ai" },
+    { name: "AI", href: "https://ai.upxuu.com/", external: true },
     { name: "音乐", href: "/music" },
   ],
   /**
@@ -125,7 +125,7 @@ export const navConfig: {
     { name: "归档页面", href: "/posts" },
     { name: "网站统计", href: "/stats" },
     { name: "标签", href: "/tags" },
-    { name: "AI", href: "/ai" },
+    { name: "AI", href: "https://ai.upxuu.com/", external: true },
     { name: "音乐", href: "/music" },
     { name: "建站统计", href: "/blogstats" },
   ],
