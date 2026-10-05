@@ -1014,12 +1014,25 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
         }
       });
 
+      // 文章页：markdown 内容无法在构建期逐个标注，运行时自动给标题区
+      // 和正文每个块打 data-reveal（小号凝焦），接入同一套滚动进入系统
+      function tagArticle() {
+        var paper = document.querySelector('article.article-paper');
+        if (!paper) return;
+        var header = paper.querySelector(':scope > div.border-b-4');
+        if (header && !header.hasAttribute('data-reveal')) header.setAttribute('data-reveal', '');
+        var blocks = paper.querySelectorAll('.prose > *');
+        for (var i = 0; i < blocks.length; i++) {
+          if (!blocks[i].hasAttribute('data-reveal')) blocks[i].setAttribute('data-reveal', '');
+        }
+      }
+
       function start() {
         // 先释放旧页面节点的观察（IO 对 target 持强引用，防 View Transitions 换页后泄漏）
         io.disconnect();
         mo.disconnect();
-        // 文章页不做滚动进入动画（保持原有载入动画）
-        if (document.body.dataset.isArticle === 'true') return;
+        // 文章页：标题/正文块自动标注后走同一套系统（仅首屏波次 + 滚动凝焦，无卡片弹入）
+        if (document.body.dataset.isArticle === 'true') tagArticle();
         mo.observe(document.body, { childList: true, subtree: true });
         waveDone = false; // 每个页面重新武装首屏波次的交错节奏
         watchLater(document.querySelectorAll('[data-reveal]:not(.rv-in),[data-reveal-card]:not(.rv-in)'));
@@ -1029,7 +1042,7 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
       document.addEventListener('astro:after-swap', start);
       // VT 彻底结束后再兜一次扫描（幂等：已入场的元素会被 :not(.rv-in) 过滤掉）
       document.addEventListener('astro:page-load', function () {
-        if (document.body.dataset.isArticle === 'true') return;
+        if (document.body.dataset.isArticle === 'true') tagArticle();
         watchLater(document.querySelectorAll('[data-reveal]:not(.rv-in),[data-reveal-card]:not(.rv-in)'));
       });
 
