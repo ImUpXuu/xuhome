@@ -954,6 +954,19 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
         }
         waveDone = true;
       }, { rootMargin: '0px', threshold: 0 });
+      // 正文阅读态观察器：底部收窄 120px——块爬进视口足够深才开始入场，
+      // 不再"刚露 1px 就过动画"（用户反馈太快太急）
+      var ioSoft = new IntersectionObserver(function (entries) {
+        for (var i = 0; i < entries.length; i++) {
+          var en = entries[i];
+          if (!en.isIntersecting) continue;
+          ioSoft.unobserve(en.target);
+          revealNow(en.target, waveDone ? 0 : 0);
+        }
+      }, { rootMargin: '0px 0px -120px 0px', threshold: 0 });
+      function pickObserver(el) {
+        return el.hasAttribute('data-rv-soft') ? ioSoft : io;
+      }
 
       // 入场播放：WAAPI（el.animate）驱动。不依赖 before-change 样式，
       // 换页/首绘前触发都必然播放（CSS transition 在这些时序会被浏览器跳过）。
@@ -995,7 +1008,7 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
 
       function scan(root) {
         var els = (root || document).querySelectorAll('[data-reveal]:not(.rv-in),[data-reveal-card]:not(.rv-in)');
-        for (var i = 0; i < els.length; i++) io.observe(els[i]);
+        for (var i = 0; i < els.length; i++) pickObserver(els[i]).observe(els[i]);
       }
 
       // 等两帧再纳入观察：让新节点先以隐藏态绘制至少一帧，
@@ -1004,7 +1017,7 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
         requestAnimationFrame(function () {
           requestAnimationFrame(function () {
             for (var t = 0; t < els.length; t++) {
-              if (els[t].isConnected) io.observe(els[t]);
+              if (els[t].isConnected) pickObserver(els[t]).observe(els[t]);
             }
           });
         });
@@ -1047,6 +1060,7 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
       function start() {
         // 先释放旧页面节点的观察（IO 对 target 持强引用，防 View Transitions 换页后泄漏）
         io.disconnect();
+        ioSoft.disconnect();
         mo.disconnect();
         // 文章页：标题/正文块自动标注后走同一套系统（仅首屏波次 + 滚动凝焦，无卡片弹入）
         if (document.body.dataset.isArticle === 'true') tagArticle();
