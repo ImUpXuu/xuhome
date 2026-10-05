@@ -296,10 +296,6 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
       transform: translateY(12px);
       filter: blur(3px);
     }
-    html.rv-ready [data-rv-soft]:not(.rv-in) {
-      transform: translateY(8px);
-      filter: blur(2px);
-    }
     html.rv-ready [data-reveal-card]:not(.rv-in) {
       transform: translateY(25px) scale(0.96);
     }
@@ -954,19 +950,6 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
         }
         waveDone = true;
       }, { rootMargin: '0px', threshold: 0 });
-      // 正文阅读态观察器：底部收窄 120px——块爬进视口足够深才开始入场，
-      // 不再"刚露 1px 就过动画"（用户反馈太快太急）
-      var ioSoft = new IntersectionObserver(function (entries) {
-        for (var i = 0; i < entries.length; i++) {
-          var en = entries[i];
-          if (!en.isIntersecting) continue;
-          ioSoft.unobserve(en.target);
-          revealNow(en.target, waveDone ? 0 : 0);
-        }
-      }, { rootMargin: '0px 0px -35% 0px', threshold: 0 }); // 块升到视口 65% 高度（阅读区）才入场，动画发生在眼前而非屏幕底边默默播完
-      function pickObserver(el) {
-        return el.hasAttribute('data-rv-soft') ? ioSoft : io;
-      }
 
       // 入场播放：WAAPI（el.animate）驱动。不依赖 before-change 样式，
       // 换页/首绘前触发都必然播放（CSS transition 在这些时序会被浏览器跳过）。
@@ -976,25 +959,15 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
         el.classList.add('rv-in');
         if (!el.animate) return; // 极老浏览器：直接显示
         var isCard = el.hasAttribute('data-reveal-card');
-        var soft = el.hasAttribute('data-rv-soft');
         var spring = 'cubic-bezier(0.34, 1.56, 0.64, 1)';
-        if (soft) {
-          // 正文阅读态：缓入（650ms ease-out，轻位移轻模糊，无过冲），滚动阅读不闹
-          el.animate(
-            [{ opacity: 0, transform: 'translateY(8px)', filter: 'blur(2px)' },
-             { opacity: 1, transform: 'none', filter: 'blur(0px)' }],
-            { duration: 650, delay: delayMs, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', fill: 'backwards' }
-          );
-        } else {
-          el.animate(
-            isCard
-              ? [{ opacity: 0, transform: 'translateY(25px) scale(0.96)' },
-                 { opacity: 1, transform: 'none' }]
-              : [{ opacity: 0, transform: 'translateY(12px)', filter: 'blur(3px)' },
-                 { opacity: 1, transform: 'none', filter: 'blur(0px)' }],
-            { duration: 450, delay: delayMs, easing: spring, fill: 'backwards' }
-          );
-        }
+        el.animate(
+          isCard
+            ? [{ opacity: 0, transform: 'translateY(25px) scale(0.96)' },
+               { opacity: 1, transform: 'none' }]
+            : [{ opacity: 0, transform: 'translateY(12px)', filter: 'blur(3px)' },
+               { opacity: 1, transform: 'none', filter: 'blur(0px)' }],
+          { duration: 450, delay: delayMs, easing: spring, fill: 'backwards' }
+        );
         // 卡片内文字逐个凝焦（比卡片晚 60ms 起步）
         var txts = el.querySelectorAll('.rv-txt');
         for (var t = 0; t < txts.length; t++) {
@@ -1008,7 +981,7 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
 
       function scan(root) {
         var els = (root || document).querySelectorAll('[data-reveal]:not(.rv-in),[data-reveal-card]:not(.rv-in)');
-        for (var i = 0; i < els.length; i++) pickObserver(els[i]).observe(els[i]);
+        for (var i = 0; i < els.length; i++) io.observe(els[i]);
       }
 
       // 等两帧再纳入观察：让新节点先以隐藏态绘制至少一帧，
@@ -1016,16 +989,8 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
       function watchLater(els) {
         requestAnimationFrame(function () {
           requestAnimationFrame(function () {
-            // 两帧后布局已稳定：此刻在视口内(含底边)的正文块走宽松观察器立即入场
-            // （start() 时量的位置可能还没稳定，首屏块被误判到折叠线以下=进页面空白）
             for (var t = 0; t < els.length; t++) {
-              if (!els[t].isConnected) continue;
-              if (els[t].hasAttribute('data-rv-soft') &&
-                  els[t].getBoundingClientRect().top >= window.innerHeight) {
-                ioSoft.observe(els[t]);
-              } else {
-                io.observe(els[t]);
-              }
+              if (els[t].isConnected) io.observe(els[t]);
             }
           });
         });
@@ -1049,29 +1014,12 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
         }
       });
 
-      // 文章页：markdown 内容无法在构建期逐个标注，运行时自动给标题区
-      // 和正文每个块打 data-reveal（小号凝焦），接入同一套滚动进入系统
-      function tagArticle() {
-        var paper = document.querySelector('article.article-paper');
-        if (!paper) return;
-        var header = paper.querySelector(':scope > div.border-b-4');
-        if (header && !header.hasAttribute('data-reveal')) header.setAttribute('data-reveal', '');
-        var blocks = paper.querySelectorAll('.prose > *');
-        for (var i = 0; i < blocks.length; i++) {
-          if (!blocks[i].hasAttribute('data-reveal')) {
-            blocks[i].setAttribute('data-reveal', '');
-            blocks[i].setAttribute('data-rv-soft', ''); // 阅读态：缓入无过冲
-          }
-        }
-      }
-
       function start() {
         // 先释放旧页面节点的观察（IO 对 target 持强引用，防 View Transitions 换页后泄漏）
         io.disconnect();
-        ioSoft.disconnect();
         mo.disconnect();
-        // 文章页：标题/正文块自动标注后走同一套系统（仅首屏波次 + 滚动凝焦，无卡片弹入）
-        if (document.body.dataset.isArticle === 'true') tagArticle();
+        // 文章页不做滚动进入动画（保持原有载入动画）
+        if (document.body.dataset.isArticle === 'true') return;
         mo.observe(document.body, { childList: true, subtree: true });
         waveDone = false; // 每个页面重新武装首屏波次的交错节奏
         watchLater(document.querySelectorAll('[data-reveal]:not(.rv-in),[data-reveal-card]:not(.rv-in)'));
@@ -1081,7 +1029,7 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
       document.addEventListener('astro:after-swap', start);
       // VT 彻底结束后再兜一次扫描（幂等：已入场的元素会被 :not(.rv-in) 过滤掉）
       document.addEventListener('astro:page-load', function () {
-        if (document.body.dataset.isArticle === 'true') tagArticle();
+        if (document.body.dataset.isArticle === 'true') return;
         watchLater(document.querySelectorAll('[data-reveal]:not(.rv-in),[data-reveal-card]:not(.rv-in)'));
       });
 
