@@ -963,7 +963,7 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
           ioSoft.unobserve(en.target);
           revealNow(en.target, waveDone ? 0 : 0);
         }
-      }, { rootMargin: '0px 0px -120px 0px', threshold: 0 });
+      }, { rootMargin: '0px 0px -35% 0px', threshold: 0 }); // 块升到视口 65% 高度（阅读区）才入场，动画发生在眼前而非屏幕底边默默播完
       function pickObserver(el) {
         return el.hasAttribute('data-rv-soft') ? ioSoft : io;
       }
