@@ -1016,8 +1016,16 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
       function watchLater(els) {
         requestAnimationFrame(function () {
           requestAnimationFrame(function () {
+            // 两帧后布局已稳定：此刻在视口内(含底边)的正文块走宽松观察器立即入场
+            // （start() 时量的位置可能还没稳定，首屏块被误判到折叠线以下=进页面空白）
             for (var t = 0; t < els.length; t++) {
-              if (els[t].isConnected) pickObserver(els[t]).observe(els[t]);
+              if (!els[t].isConnected) continue;
+              if (els[t].hasAttribute('data-rv-soft') &&
+                  els[t].getBoundingClientRect().top >= window.innerHeight) {
+                ioSoft.observe(els[t]);
+              } else {
+                io.observe(els[t]);
+              }
             }
           });
         });
@@ -1066,20 +1074,7 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
         if (document.body.dataset.isArticle === 'true') tagArticle();
         mo.observe(document.body, { childList: true, subtree: true });
         waveDone = false; // 每个页面重新武装首屏波次的交错节奏
-        // 首屏（视口内直到底边）直接全部入场——阅读区触发线只管之后滚动上来的块，
-        // 否则首屏下半区的段落全部静默待命，进页面就是一篇空白
-        var els = document.querySelectorAll('[data-reveal]:not(.rv-in),[data-reveal-card]:not(.rv-in)');
-        var below = [];
-        var batch = 0;
-        for (var i = 0; i < els.length; i++) {
-          if (els[i].getBoundingClientRect().top < window.innerHeight) {
-            revealNow(els[i], Math.min(batch * 60, 300));
-            batch++;
-          } else {
-            below.push(els[i]);
-          }
-        }
-        watchLater(below);
+        watchLater(document.querySelectorAll('[data-reveal]:not(.rv-in),[data-reveal-card]:not(.rv-in)'));
       }
 
       start();
