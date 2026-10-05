@@ -21,7 +21,16 @@ const footerChars = footerPosts.reduce((sum, p) => sum + countBodyChars(p.body |
   + footerTalks.reduce((sum, t) => sum + countBodyChars(t.body || ''), 0);
 const wordCountK = (footerChars / 1000).toFixed(1);
 
-const DEFAULT_BG_URL = 'https://img.upxuu.lcrworld.xyz/images/2026/7/1.webp';
+const DESKTOP_BG_URLS = [
+  'https://img.upxuu.lcrworld.xyz/images/2026/7/1.webp',
+  'https://img.upxuu.lcrworld.xyz/images/2026/7/2.webp',
+  'https://img.upxuu.lcrworld.xyz/images/2026/7/3.webp',
+];
+const MOBILE_BG_URLS = [
+  'https://img.upxuu.lcrworld.xyz/images/2026/7/4.webp',
+  'https://img.upxuu.lcrworld.xyz/images/2026/7/5.webp',
+  'https://img.upxuu.lcrworld.xyz/images/2026/7/6.webp',
+];
 
 interface Props {
   title?: string;
@@ -180,7 +189,26 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
     {/* 自托管字体（CDN: img.upxuu.lcrworld.xyz），不再请求 Google Fonts */}
     <link rel="preconnect" href="https://img.upxuu.lcrworld.xyz" crossorigin />
     <link rel="stylesheet" href="https://img.upxuu.lcrworld.xyz/font/fonts.css" />
-    {!isArticle && <link rel="preload" as="image" href={DEFAULT_BG_URL} fetchpriority="high" />}
+    {!isArticle && (
+      <script is:inline define:vars={{ desktopBgUrls: DESKTOP_BG_URLS, mobileBgUrls: MOBILE_BG_URLS }}>
+        /* 首屏渲染前随机定下一张背景图（桌面 1-3 / 移动 4-6）并提前 preload，
+           整轮会话保持同一张，避免 View Transition 换页时反复白屏等图 */
+        (function () {
+          try {
+            var mobile = window.matchMedia && window.matchMedia('(max-width: 1023px)').matches;
+            var pool = mobile ? mobileBgUrls : desktopBgUrls;
+            var url = pool[Math.floor(Math.random() * pool.length)];
+            window.__xuhomeBgUrl = url;
+            var l = document.createElement('link');
+            l.rel = 'preload';
+            l.as = 'image';
+            l.href = url;
+            l.fetchPriority = 'high';
+            document.head.appendChild(l);
+          } catch (e) {}
+        })();
+      </script>
+    )}
 
     {siteConfig.analytics.umami.map(u => (
       <script async src={u.src} data-website-id={u.id}></script>
@@ -384,7 +412,7 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
   </script>
   <ClientRouter />
 </head>
-  <body data-bg-url={!isArticle ? DEFAULT_BG_URL : ''} data-is-article={isArticle ? "true" : "false"} class="dark:bg-slate-900 text-slate-900 dark:text-slate-100 selection:bg-[#fde68a] selection:text-[#0284c7]">
+  <body data-bg-desktop={DESKTOP_BG_URLS.join(',')} data-bg-mobile={MOBILE_BG_URLS.join(',')} data-is-article={isArticle ? "true" : "false"} class="dark:bg-slate-900 text-slate-900 dark:text-slate-100 selection:bg-[#fde68a] selection:text-[#0284c7]">
     {/* Persistent full-page bg layer (survives View Transitions) */}
     <div
       id="site-bg"
@@ -640,7 +668,17 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
         if (loader) loader.classList.remove('is-on');
         return;
       }
-      var url = document.body && document.body.getAttribute('data-bg-url');
+      var url = window.__xuhomeBgUrl || '';
+      if (!url) {
+        /* 首屏脚本没跑（如从文章页 VT 返回）：按当前视口从 body 上的图池随机补选 */
+        var isMobileViewport = window.matchMedia && window.matchMedia('(max-width: 1023px)').matches;
+        var poolAttr = document.body && document.body.getAttribute(isMobileViewport ? 'data-bg-mobile' : 'data-bg-desktop');
+        var pool = (poolAttr || '').split(',').filter(Boolean);
+        if (pool.length) {
+          url = pool[Math.floor(Math.random() * pool.length)];
+          window.__xuhomeBgUrl = url;
+        }
+      }
       if (!url) {
         el.style.backgroundImage =
           'radial-gradient(circle, rgba(253,246,227,0.35) 1px, transparent 1px)';
