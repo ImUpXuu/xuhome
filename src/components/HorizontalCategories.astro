@@ -42,7 +42,7 @@ const { categories, activeCategory, postsDataUrl = '' } = Astro.props;
 {categories.length > 0 && (
   <>
     <div 
-      class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] p-3 shadow-[4px_4px_0px_0px_#0284c7] rounded-sm mb-6 flex items-center gap-3 overflow-x-auto hide-scrollbar custom-scrollbar pb-2 animate-card-entrance opacity-0"
+      class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] p-3 shadow-[4px_4px_0px_0px_#0284c7] rounded-sm mb-3 sm:mb-4 flex items-center gap-3 overflow-x-auto hide-scrollbar custom-scrollbar pb-2 animate-card-entrance opacity-0"
       transition:name="horizontal-categories"
     >
       <div class="flex items-center gap-1 font-black text-[#0284c7] shrink-0 text-sm">

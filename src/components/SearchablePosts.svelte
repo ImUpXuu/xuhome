@@ -441,7 +441,7 @@
     </div>
   </div>
 
-  <div bind:this={feedEl} class="flex flex-col gap-4 sm:gap-6 md:gap-8 mt-2 sm:mt-1">
+  <div bind:this={feedEl} class="flex flex-col gap-4 sm:gap-5 divide-y-2 divide-dashed divide-[#0284c7]/25 mt-2 sm:mt-1">
     {#if isLoadingPosts}
       <div class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] p-12 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm text-center" data-reveal>
         <p class="text-[#0284c7] font-black tracking-widest uppercase">文章加载中...</p>

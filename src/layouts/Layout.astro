@@ -517,11 +517,11 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
           class={`dark:bg-slate-900 px-2 font-sans transition-all duration-300 ${
             isMusicPage
               ? 'h-full overflow-hidden'
-              : 'min-h-screen py-2 sm:py-6 sm:px-6 md:py-8 md:px-8'
+              : 'min-h-screen pt-1 sm:pt-2 md:pt-3 pb-2 sm:pb-6 md:pb-8 sm:px-6 md:px-8'
           } ${isArticle ? "article-paper-shell" : ""}`}
           style={!isArticle ? { backgroundImage: "radial-gradient(#0284c70d 2px, transparent 2px)", backgroundSize: "24px 24px" } : undefined}
         >
-          <div class="max-w-[1440px] w-full mx-auto flex flex-col gap-3 sm:gap-6">
+          <div class="max-w-[1440px] w-full mx-auto flex flex-col gap-2 sm:gap-3">
             {!hideBanner && (
             <PageBanner 
               client:load
