@@ -2,14 +2,29 @@
   import { onMount } from 'svelte';
 
   export let path = '';
+  // 批量预取模式：父组件传 { '/posts/xxx/': n } 对象则直读（不发起请求）；
+  // 传 null 表示批量请求在途（等待）；不传（undefined）则自己单页请求（文章页/说说页）
+  export let viewsMap: Record<string, number> | null | undefined = undefined;
+
+  function norm(p: string): string {
+    let x = p.startsWith('/') ? p : '/posts/' + p;
+    if (!x.endsWith('/')) x += '/';
+    return x;
+  }
+
   let views = 0;
   let loading = true;
 
+  $: key = norm(path);
+  $: if (viewsMap !== undefined && viewsMap !== null && Object.prototype.hasOwnProperty.call(viewsMap, key)) {
+    views = viewsMap[key];
+    loading = false;
+  }
+
   onMount(async () => {
+    if (viewsMap !== undefined) return; // 批量模式：等父组件的数据，不发请求
     try {
-      var p = path.startsWith('/') ? path : '/posts/' + path;
-      if (!p.endsWith('/')) p += '/';
-      const res = await fetch('https://blog.api.upxuu.com/api/views?path=' + encodeURIComponent(p), { signal: AbortSignal.timeout(5000) });
+      const res = await fetch('https://blog.api.upxuu.com/api/views?path=' + encodeURIComponent(key), { signal: AbortSignal.timeout(5000) });
       const data = await res.json();
       if (data && typeof data.views === 'number') {
         views = data.views;

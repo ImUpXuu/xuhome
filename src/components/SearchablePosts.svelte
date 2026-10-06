@@ -39,6 +39,24 @@
   // 预加载进度状态：link.href → 0~100（Svelte 响应式，用于卡片进度条）
   let prefetchProgress = new Map<string, number>();
 
+  // 浏览量批量预取：整个列表一次请求（null=在途，对象=就绪）
+  let viewsMap: Record<string, number> | null = null;
+  let viewsFetchTimer: ReturnType<typeof setTimeout>;
+
+  function fetchViewsBatch(list: { slug: string }[]) {
+    if (typeof window === 'undefined' || !list.length) return;
+    var paths = list.map(function (p) { return '/posts/' + p.slug + '/'; });
+    window.clearTimeout(viewsFetchTimer);
+    viewsFetchTimer = setTimeout(function () {
+      fetch('https://blog.api.upxuu.com/api/views-batch?paths=' + encodeURIComponent(paths.join(',')), { signal: AbortSignal.timeout(8000) })
+        .then(res => res.ok ? res.json() : Promise.reject(new Error('views-batch failed')))
+        .then((d: any) => { if (d && d.views) viewsMap = d.views; })
+        .catch(() => {});
+    }, 250);
+  }
+
+  $: if (feedEl) fetchViewsBatch(displayedPosts);
+
   // ===== 缓存模块 =====
 
   function getCache(): Promise<Cache | null> {
@@ -481,7 +499,7 @@
 
             <div class="rv-txt mt-2 md:mt-3.5 flex flex-wrap items-center gap-2 shrink-0">
               <span class="text-xs md:text-sm font-extrabold text-slate-500 dark:text-slate-400 shrink-0">{post.date}</span>
-              <PageViews path={post.slug} />
+              <PageViews path={post.slug} viewsMap={viewsMap} />
               {#if post.category}
                 <a 
                   href={`/category/${post.category}`}
