@@ -234,13 +234,14 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
     <script type="text/javascript">
       /* Clarity：页面 load 后再加载，不阻塞首屏 */
       window.addEventListener('load', function() {
-        setTimeout(function() {
+        var idle = window.requestIdleCallback || function(f){ setTimeout(f, 200); };
+        idle(function() {
         (function(c,l,a,r,i,t,y){
           c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
           t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
           y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
         })(window, document, "clarity", "script", "uziyyjxiky");
-        }, 5000);
+        });
       });
     </script>
   <style is:global>
@@ -312,8 +313,8 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
       to   { opacity: 1; transform: none; }
     }
     @keyframes rv-soft-in {
-      from { opacity: 0; transform: translateY(12px); }
-      to   { opacity: 1; transform: none; }
+      from { opacity: 0; transform: translateY(12px); filter: blur(3px); }
+      to   { opacity: 1; transform: none; filter: blur(0px); }
     }
     [data-reveal-card] {
       animation: rv-card-in 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
