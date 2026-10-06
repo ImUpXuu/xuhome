@@ -67,6 +67,8 @@
   }
 
   function scanPrefetchScopes() {
+    // 移动端不做页面预取：预取流量会和首屏图片抢带宽，拖垮 LCP
+    if (window.innerWidth < 768) return;
     document.querySelectorAll<HTMLElement>('[data-prefetch]').forEach(scope => {
       scope.querySelectorAll<HTMLAnchorElement>('a[href]').forEach(link => {
         queuePrefetch(link.href);

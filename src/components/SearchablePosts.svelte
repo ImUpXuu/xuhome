@@ -245,6 +245,8 @@
 
   function setupPrefetcher() {
     if (!feedEl || prefetchObserver) return;
+    // 移动端不做文章预取：预取全文会和首屏图片抢带宽，拖垮 LCP（Lighthouse 实测 10.6s）
+    if (window.innerWidth < 768) return;
 
     prefetchAbortController = new AbortController();
     prefetchObserver = new IntersectionObserver(handlePrefetchEntries, {
