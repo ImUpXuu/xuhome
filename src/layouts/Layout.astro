@@ -301,33 +301,55 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
       opacity: 0 !important;
     }
 
-    /* ===== 进入动画：纯 CSS 关键帧，页面加载即播一次（无 JS、无 IO、无水合依赖） =====
-       data-reveal     小号文字块：上移12px + blur(3px) 消散
-       data-reveal-card 卡片：上移25px + scale(.96) 弹入
-       fill:both——延迟期（--rv-delay 交错）保持起点不可见，播放后保持终点可见
-       （部分元素带 Tailwind opacity-0 基态，必须显式 to{opacity:1} + forwards 兜住）。
-       折叠线以下的元素在加载时静默播完，滚动时内容已就位：不重播、不闪跳。
-       View Transitions 换页后 DOM 全新，动画自动重播 = 每次导航都有入场。 */
-    @keyframes rv-card-in {
-      from { opacity: 0; transform: translateY(25px) scale(0.96); }
-      to   { opacity: 1; transform: none; }
+    /* ===== 滚动进入动画（复刻 i.upxuu.com 的 framer-motion whileInView 效果） =====
+       data-reveal     小号文字块：上移12px + blur(3px) 消散（对应 Ee 组件）
+       data-reveal-card 卡片：上移25px + scale(.96) 弹入（对应网格卡片，spring 220/18）
+       只有 html.rv-ready（JS 可用且未开启减弱动态）才隐藏待入场元素。
+       实际播放由引擎用 Web Animations API 驱动（el.animate）——CSS transition 在
+       换页场景下会因缺少 before-change 样式被浏览器整个跳过（线上实测踩坑），
+       WAAPI 不依赖样式历史，任何时序下必然播放。 */
+    html.rv-ready [data-reveal]:not(.rv-in),
+    html.rv-ready [data-reveal-card]:not(.rv-in) {
+      opacity: 0;
+      will-change: opacity, transform, filter;
     }
-    @keyframes rv-soft-in {
-      from { opacity: 0; transform: translateY(12px); filter: blur(3px); }
-      to   { opacity: 1; transform: none; filter: blur(0px); }
+    html.rv-ready [data-reveal]:not(.rv-in) {
+      transform: translateY(12px);
+      filter: blur(3px);
     }
-    [data-reveal-card] {
-      animation: rv-card-in 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
-      animation-delay: var(--rv-delay, 0ms);
+    html.rv-ready [data-reveal-card]:not(.rv-in) {
+      transform: translateY(25px) scale(0.96);
     }
-    [data-reveal] {
-      animation: rv-soft-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
-      animation-delay: var(--rv-delay, 0ms);
+    html.rv-ready [data-reveal].rv-in,
+    html.rv-ready [data-reveal-card].rv-in {
+      opacity: 1;
+      transform: none;
+      filter: blur(0px);
+    }
+    /* 卡片内文字：随卡片入场逐个从模糊中凝焦（i.upxuu.com 的 Ee 小号 Reveal） */
+    html.rv-ready [data-reveal-card] .rv-txt {
+      opacity: 0;
+      transform: translateY(12px);
+      filter: blur(3px);
+    }
+    html.rv-ready [data-reveal-card].rv-in .rv-txt {
+      opacity: 1;
+      transform: none;
+      filter: blur(0px);
+    }
+    /* 非文章页：带 reveal 标记的元素改由滚动触发，旧的载入动画让位
+       （选择器同时要求 [data-reveal-card]，HorizontalCategories 等无标记元素不受影响） */
+    html.rv-ready body:not([data-is-article="true"]) .animate-card-entrance[data-reveal-card] {
+      animation: none;
     }
     @media (prefers-reduced-motion: reduce) {
-      [data-reveal-card],
-      [data-reveal] {
-        animation: none;
+      html.rv-ready [data-reveal]:not(.rv-in),
+      html.rv-ready [data-reveal-card]:not(.rv-in) {
+        opacity: 1;
+        transform: none;
+        filter: none;
+      }
+      html.rv-ready [data-reveal-card] .rv-txt {
         opacity: 1;
         transform: none;
         filter: none;
@@ -396,6 +418,17 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
       } catch (e) {
         // localStorage may be unavailable in some contexts
       }
+    })();
+  </script>
+  {/* 滚动进入动画门控：只有支持 IO 且未开启减弱动态时才隐藏待入场元素（必须在首帧前决定，防闪烁） */}
+  <script is:inline>
+    (function() {
+      try {
+        var m = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)');
+        if (m && m.matches) return;
+        if (!('IntersectionObserver' in window)) return;
+        document.documentElement.classList.add('rv-ready');
+      } catch (e) {}
     })();
   </script>
   <ClientRouter />
@@ -914,5 +947,135 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
 }
 </script>
 
+{/* 滚动进入动画引擎：单例 IO，元素进入视口时加 .rv-in（参数见上方全局样式注释） */}
+<script is:inline>
+  (function () {
+    if (window.__xuhomeRevealBooted) return;
+    window.__xuhomeRevealBooted = true;
+
+    function boot() {
+      if (!document.documentElement.classList.contains('rv-ready')) return;
+      // rootMargin 0px：只要露出任意 1px 就触发（对齐 framer-motion amount:"some" 语义）。
+      // 交错延迟只用于首屏波次；滚动触发的入场零延迟——底边刚露头的卡片必须立刻显现
+      var waveDone = false;
+      var io = new IntersectionObserver(function (entries) {
+        var batch = 0;
+        for (var i = 0; i < entries.length; i++) {
+          var en = entries[i];
+          if (!en.isIntersecting) continue;
+          var el = en.target;
+          io.unobserve(el);
+          revealNow(el, waveDone ? 0 : Math.min(batch * 60, 300));
+          batch++;
+        }
+        waveDone = true;
+      }, { rootMargin: '0px', threshold: 0 });
+
+      // 入场播放：WAAPI（el.animate）驱动。不依赖 before-change 样式，
+      // 换页/首绘前触发都必然播放（CSS transition 在这些时序会被浏览器跳过）。
+      function revealNow(el, delayMs) {
+        if (el.classList.contains('rv-in')) return; // 防重播：Svelte 移动节点会再次触发 MO
+        el.style.setProperty('--rv-delay', delayMs + 'ms');
+        el.classList.add('rv-in');
+        if (!el.animate) return; // 极老浏览器：直接显示
+        var isCard = el.hasAttribute('data-reveal-card');
+        var spring = 'cubic-bezier(0.34, 1.56, 0.64, 1)';
+        el.animate(
+          isCard
+            ? [{ opacity: 0, transform: 'translateY(25px) scale(0.96)' },
+               { opacity: 1, transform: 'none' }]
+            : [{ opacity: 0, transform: 'translateY(12px)', filter: 'blur(3px)' },
+               { opacity: 1, transform: 'none', filter: 'blur(0px)' }],
+          { duration: 450, delay: delayMs, easing: spring, fill: 'backwards' }
+        );
+        // 卡片内文字逐个凝焦（比卡片晚 60ms 起步）
+        var txts = el.querySelectorAll('.rv-txt');
+        for (var t = 0; t < txts.length; t++) {
+          txts[t].animate(
+            [{ opacity: 0, transform: 'translateY(12px)', filter: 'blur(3px)' },
+             { opacity: 1, transform: 'none', filter: 'blur(0px)' }],
+            { duration: 450, delay: delayMs + 60 + t * 50, easing: spring, fill: 'backwards' }
+          );
+        }
+      }
+
+      function scan(root) {
+        var els = (root || document).querySelectorAll('[data-reveal]:not(.rv-in),[data-reveal-card]:not(.rv-in)');
+        for (var i = 0; i < els.length; i++) io.observe(els[i]);
+      }
+
+      // 等两帧再纳入观察：让新节点先以隐藏态绘制至少一帧，
+      // 否则分页/换页插入的卡片在首帧就被加 .rv-in，入场转场会被整个跳过
+      function watchLater(els) {
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () {
+            for (var t = 0; t < els.length; t++) {
+              if (els[t].isConnected) io.observe(els[t]);
+            }
+          });
+        });
+      }
+
+      // Svelte 翻页/搜索重渲染出的新卡片自动纳入观察
+      var mo = new MutationObserver(function (muts) {
+        for (var i = 0; i < muts.length; i++) {
+          var added = muts[i].addedNodes;
+          for (var j = 0; j < added.length; j++) {
+            var n = added[j];
+            if (n.nodeType !== 1) continue;
+            var els = [];
+            if ((n.hasAttribute('data-reveal') || n.hasAttribute('data-reveal-card')) && !n.classList.contains('rv-in')) els.push(n);
+            if (n.querySelectorAll) {
+              var subs = n.querySelectorAll('[data-reveal]:not(.rv-in),[data-reveal-card]:not(.rv-in)');
+              for (var k = 0; k < subs.length; k++) els.push(subs[k]);
+            }
+            if (els.length) watchLater(els);
+          }
+        }
+      });
+
+      function start() {
+        // 先释放旧页面节点的观察（IO 对 target 持强引用，防 View Transitions 换页后泄漏）
+        io.disconnect();
+        mo.disconnect();
+        // 文章页不做滚动进入动画（保持原有载入动画）
+        if (document.body.dataset.isArticle === 'true') return;
+        mo.observe(document.body, { childList: true, subtree: true });
+        waveDone = false; // 每个页面重新武装首屏波次的交错节奏
+        watchLater(document.querySelectorAll('[data-reveal]:not(.rv-in),[data-reveal-card]:not(.rv-in)'));
+      }
+
+      start();
+      document.addEventListener('astro:after-swap', start);
+      // VT 彻底结束后再兜一次扫描（幂等：已入场的元素会被 :not(.rv-in) 过滤掉）
+      document.addEventListener('astro:page-load', function () {
+        if (document.body.dataset.isArticle === 'true') return;
+        watchLater(document.querySelectorAll('[data-reveal]:not(.rv-in),[data-reveal-card]:not(.rv-in)'));
+      });
+
+      // 定时兜底重扫：client:idle 组件（如创作日历）的水合插入时机不定，
+      // MO 可能错过（实测日历卡因此永久隐藏），按时间点补扫，重复 observe 会去重
+      [400, 1200, 3000].forEach(function (t) {
+        setTimeout(function () {
+          if (document.body.dataset.isArticle === 'true') return;
+          scan(document);
+        }, t);
+      });
+
+      // 兜底：若 5 秒内 IO 一个都没投递（异常环境），强制全部显示保内容
+      setTimeout(function () {
+        if (document.querySelector('.rv-in')) return;
+        var pend = document.querySelectorAll('[data-reveal]:not(.rv-in),[data-reveal-card]:not(.rv-in)');
+        for (var i = 0; i < pend.length; i++) pend[i].classList.add('rv-in');
+      }, 5000);
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', boot, { once: true });
+    } else {
+      boot();
+    }
+  })();
+</script>
 
 
