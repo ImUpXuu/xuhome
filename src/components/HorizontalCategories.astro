@@ -4,10 +4,10 @@ import CalendarWidget from './CalendarWidget.svelte';
 interface Props {
   categories: { name: string; count: number }[];
   activeCategory: string | null;
-  postsDataUrl?: string;
+  posts: { slug: string; title: string; date: string; description: string }[];
 }
 
-const { categories, activeCategory, postsDataUrl = '' } = Astro.props;
+const { categories, activeCategory, posts = [] } = Astro.props;
 ---
 
 <script>
@@ -103,7 +103,7 @@ const { categories, activeCategory, postsDataUrl = '' } = Astro.props;
             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
-        <CalendarWidget posts={[]} dataUrl={postsDataUrl} client:idle />
+        <CalendarWidget posts={posts} client:idle />
       </div>
     </dialog>
   </>

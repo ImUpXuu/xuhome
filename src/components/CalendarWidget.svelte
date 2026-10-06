@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
-
   interface CalendarPost {
     slug: string;
     title: string;
@@ -9,33 +7,24 @@
   }
 
   export let posts: CalendarPost[] = [];
-  export let dataUrl: string = '';
 
-  let currentDate = new Date();
-  let selectedDate: Date | null = null;
-  let isPickerOpen = false;
-  let mounted = false;
-
-  onMount(() => {
+  // 初始月份取最新文章所在月：构建期 SSR 与客户端水合从同一份 posts prop
+  // 推导出完全一致的状态（用 new Date() 会导致构建月≠访问月的水合错位）
+  let latest = '';
+  for (const p of posts) {
+    if (p.date && p.date !== '未知时间') {
+      const d = p.date.slice(0, 10);
+      if (d > latest) latest = d;
+    }
+  }
+  let currentDate: Date;
+  if (latest) {
+    const [y, m] = latest.split('-').map(Number);
+    currentDate = new Date(y, m - 1, 1);
+  } else {
     currentDate = new Date();
-    mounted = true;
-    if (posts.length > 0) return;
-    if (!dataUrl) return;
-
-    fetch(dataUrl)
-      .then(res => res.ok ? res.json() : Promise.reject(new Error(`Failed to load ${dataUrl}`)))
-      .then((loadedPosts: CalendarPost[]) => {
-        if (Array.isArray(loadedPosts)) {
-          posts = loadedPosts.map(post => ({
-            slug: post.slug,
-            title: post.title,
-            date: post.date,
-            description: post.description,
-          }));
-        }
-      })
-      .catch(err => console.warn('[CalendarWidget] post data unavailable', err));
-  });
+  }
+  let selectedDate: Date | null = null;
 
   $: currentYear = currentDate.getFullYear();
   $: currentMonth = currentDate.getMonth();
@@ -86,7 +75,6 @@
   const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
 </script>
 
-{#if mounted}
 <div class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] p-3.5 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm w-full relative animate-card-entrance opacity-0" data-nosnippet aria-hidden="true" style="animation-delay: 0.08s" data-reveal-card>
   <div class="text-center font-mono text-[11px] font-black text-slate-450 mb-1.5 uppercase tracking-widest block select-none">
     #upxuu的创作日历
@@ -190,4 +178,3 @@
     </div>
   {/if}
 </div>
-{/if}
