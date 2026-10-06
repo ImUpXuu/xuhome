@@ -468,7 +468,7 @@
             ></div>
           </div>
         {/if}
-        <div class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] rounded-sm p-0 flex flex-row overflow-hidden shadow-[6px_6px_0px_0px_#0284c7] hover:shadow-[10px_10px_0px_0px_#10b981] hover:-translate-y-1 transition-all duration-300">
+        <div class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] rounded-sm p-0 flex flex-row overflow-hidden shadow-[6px_6px_0px_0px_#0284c7] hover:shadow-[10px_10px_0px_0px_#10b981] hover:-translate-y-1 transition-all duration-300 min-h-[150px] sm:min-h-[170px]">
           <div class="flex-1 p-3.5 sm:p-5 md:p-6 flex flex-col justify-between min-w-0">
             <a href={`/posts/${encodeURIComponent(post.slug)}/`} class="block group">
               <h2 class="rv-txt text-sm sm:text-base md:text-xl font-black text-[#0284c7] mb-1 md:mb-2 group-hover:text-[#0ea5e9] transition-colors leading-snug">
@@ -504,7 +504,7 @@
           </div>
           
           <a href={`/posts/${encodeURIComponent(post.slug)}/`} class="w-[100px] sm:w-[130px] md:w-[190px] shrink-0 border-l-4 border-[#0284c7] relative bg-[#fde68a] flex items-center justify-center overflow-hidden">
-            <img src={post.img || placeholderImg} alt={post.title} width="190" height="120" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" referrerpolicy="no-referrer" on:error={(e) => { const imgEl = e.currentTarget as HTMLImageElement; if (imgEl.src !== placeholderImg) { imgEl.src = placeholderImg; } }} />
+            <img src={post.img || placeholderImg} alt={post.title} width="190" height="120" loading="lazy" decoding="async" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" referrerpolicy="no-referrer" on:error={(e) => { const imgEl = e.currentTarget as HTMLImageElement; if (imgEl.src !== placeholderImg) { imgEl.src = placeholderImg; } }} />
           </a>
         </div>
       </article>
