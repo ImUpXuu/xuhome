@@ -186,9 +186,13 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
     {seoConfig.preconnect.map(conn => (
       <link rel="preconnect" href={conn.url} crossorigin={conn.crossOrigin === "anonymous" ? "anonymous" : undefined} />
     ))}
-    {/* 自托管字体（CDN: img.upxuu.lcrworld.xyz），不再请求 Google Fonts */}
+    {/* 自托管字体（CDN: img.upxuu.lcrworld.xyz），不再请求 Google Fonts。
+        fonts.css 异步加载移出渲染阻塞链：preload 提前拉取，media=print 不阻塞首屏，
+        加载完 onload 切回 all 生效；font-display:swap 下文字先用系统字体渲染再无阻塞换装 */}
     <link rel="preconnect" href="https://img.upxuu.lcrworld.xyz" crossorigin />
-    <link rel="stylesheet" href="https://img.upxuu.lcrworld.xyz/font/fonts.css" />
+    <link rel="preload" href="https://img.upxuu.lcrworld.xyz/font/fonts.css" as="style" />
+    <link rel="stylesheet" href="https://img.upxuu.lcrworld.xyz/font/fonts.css" media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="https://img.upxuu.lcrworld.xyz/font/fonts.css" /></noscript>
     {!isArticle && (
       <script is:inline define:vars={{ desktopBgUrls: DESKTOP_BG_URLS, mobileBgUrls: MOBILE_BG_URLS }}>
         /* 首屏渲染前随机定下一张背景图（桌面 1-3 / 移动 4-6）并提前 preload，
