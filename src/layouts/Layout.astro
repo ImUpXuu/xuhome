@@ -214,24 +214,23 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
       </script>
     )}
 
-    <script is:inline>
+    <script is:inline define:vars={{ umamiUrls: siteConfig.analytics.umami.map(u => ({ src: u.src, id: u.id })) }}>
       (function() {
         function loadUmami() {
-          var idle = window.requestIdleCallback || function(f){ setTimeout(f, 200); };
+          var idle = window.requestIdleCallback || function(f){ setTimeout(f, 300); };
+          // timeout 兜底：后台标签页/繁忙页面下 rIC 也保证在 2.5s 内触发
           idle(function() {
-            var urls = JSON.parse(document.getElementById('umami-urls').textContent);
-            urls.forEach(function(u) {
+            umamiUrls.forEach(function(u) {
               var s = document.createElement('script');
               s.async = true; s.src = u.src; s.setAttribute('data-website-id', u.id);
               document.head.appendChild(s);
             });
-          });
+          }, { timeout: 2500 });
         }
         if (document.readyState === 'complete') loadUmami();
         else window.addEventListener('load', loadUmami);
       })();
     </script>
-    <script type="application/json" id="umami-urls">{JSON.stringify(siteConfig.analytics.umami.map(u => ({ src: u.src, id: u.id })))}</script>
     <script type="text/javascript">
       /* Clarity：页面 load 后再加载，不阻塞首屏 */
       window.addEventListener('load', function() {
