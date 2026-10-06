@@ -4,9 +4,9 @@
   export let path = '';
   // 批量预取模式：父组件传 { '/posts/xxx/': n } 对象则直读（不发起请求）；
   // 传 null 表示批量请求在途（等待）；不传（undefined）则自己单页请求（文章页/说说页）
-  export let viewsMap: Record<string, number> | null | undefined = undefined;
+  export let viewsMap; // undefined=单取, null=批量在途, object=直读
 
-  function norm(p: string): string {
+  function norm(p) {
     let x = p.startsWith('/') ? p : '/posts/' + p;
     if (!x.endsWith('/')) x += '/';
     return x;
