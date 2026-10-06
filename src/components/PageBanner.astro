@@ -1,0 +1,195 @@
+---
+/**
+ * 纯 Astro 版 Banner（零 JS 框架）：
+ * 原实现是 React island（motion/react + react-type-animation + react-dom），
+ * 每页为此下载 ~125KB gzip。现改为服务端渲染 + 40 行原生打字机 + CSS spring
+ * 入场（关键帧与全站 reveal 同一条曲线），视觉行为保持一致。
+ */
+import { infoConfig } from '../config/info';
+import { subtitleConfig } from '../config/site';
+
+interface Props {
+  pathname?: string;
+  categoryName?: string | null;
+  tagName?: string | null;
+  postsCount?: number;
+  post?: any;
+}
+
+const {
+  pathname: propPathname = '/',
+  categoryName = null,
+  tagName = null,
+  postsCount = 0,
+  post = null,
+} = Astro.props;
+
+const pathname = propPathname || '/';
+const isHome = pathname === '/' || pathname === '/index.html';
+const isTalks = pathname === '/talk' || pathname === '/talks' || pathname.startsWith('/talk/') || pathname.startsWith('/talks/');
+const hasRightContent = !!(categoryName || tagName || post || isTalks);
+
+// 打字机序列（react-type-animation 语义：字符串=打字内容，数字=停留毫秒，打完删除切下一句）
+const subtitleSeq = JSON.stringify(subtitleConfig.sequence);
+const talkSeq = JSON.stringify(infoConfig.banner.talkTicker.sequence);
+
+---
+
+<div
+  class="banner-hero bg-white border-4 border-[#0284c7] p-3.5 sm:p-6 md:p-10 shadow-[6px_6px_0px_0px_#0284c7] sm:shadow-[8px_8px_0px_0px_#0284c7] rounded-sm text-center relative overflow-hidden flex flex-col justify-center min-h-[110px] sm:min-h-[180px] md:min-h-[220px]"
+>
+  <div
+    class="absolute top-0 left-0 w-full h-full pointer-events-none"
+    style={`background-image: linear-gradient(45deg, #fde68a 25%, transparent 25%, transparent 75%, #fde68a 75%, #fde68a), linear-gradient(45deg, #fde68a 25%, transparent 25%, transparent 75%, #fde68a 75%, #fde68a); background-size: 20px 20px; background-position: 0 0, 10px 10px; opacity: ${infoConfig.banner.gridPatternOpacity};`}
+  />
+  <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-amber-200/10 via-transparent to-transparent pointer-events-none animate-pulse"></div>
+
+  <div class={`relative z-10 flex w-full h-full gap-2 sm:gap-6 md:gap-8 mx-auto max-w-4xl px-2 sm:px-6 md:px-10 transition-all duration-550 ${hasRightContent ? 'flex-col md:flex-row items-center justify-center md:justify-between' : 'flex-col items-center justify-center text-center'}`}>
+    {/* Left: Site Identity */}
+    <div class={`banner-left flex flex-col items-center shrink-0 ${hasRightContent ? 'md:items-start text-center md:text-left' : 'text-center'}`}>
+      <a href="/" class="hover:opacity-90 active:scale-98 transition-all inline-block">
+        {isHome ? (
+          <h1 class="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-[#0284c7] mb-1.5 sm:mb-3 md:mb-5 tracking-widest -rotate-1 inline-block">
+            {infoConfig.banner.title}'s blog
+          </h1>
+        ) : (
+          <p class="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-[#0284c7] mb-1.5 sm:mb-3 md:mb-5 tracking-widest -rotate-1 inline-block">
+            {infoConfig.banner.title}'s blog
+          </p>
+        )}
+      </a>
+      <div class={`text-xs md:text-lg font-bold text-slate-600 dark:text-slate-300 font-mono h-6 sm:h-8 flex items-center justify-center -rotate-1 ${hasRightContent ? 'md:justify-start' : ''}`}>
+        <span
+          class="banner-type bg-[#fde68a] px-2.5 py-0.5 shadow-[2px_2px_0px_0px_#0284c7] border-2 border-[#0284c7] inline-block font-sans whitespace-nowrap"
+          data-typewriter={subtitleSeq}
+        >{subtitleConfig.sequence[0]}</span>
+      </div>
+    </div>
+
+    {/* Right: Context Card（CSS spring 入场，换页重挂自动重播，等价原 AnimatePresence 行为） */}
+    {hasRightContent && (
+      <div class="flex items-center justify-center md:justify-end shrink-0 min-w-0 max-w-full">
+        <div class="banner-card flex flex-col items-center md:items-end justify-center gap-1 md:gap-1.5 mt-2 md:mt-0 max-w-full">
+          {categoryName && (
+            <>
+              <div class="text-[10px] md:text-xs font-black text-[#0ea5e9] bg-white dark:bg-slate-700 border-2 border-[#0284c7] px-2 py-0.5 rounded-sm shadow-[2px_2px_0px_0px_#0284c7] md:rotate-2 uppercase tracking-widest shrink-0 select-none">
+                {infoConfig.banner.labels.category}
+              </div>
+              <h2 class="text-sm md:text-3xl font-black text-[#0284c7] bg-[#fde68a] border-2 md:border-3 border-[#0284c7] shadow-[2.5px_2.5px_0px_0px_#f59e0b] px-4 py-1 md:-rotate-1 shrink-0 max-w-[70vw] md:max-w-[450px] truncate">
+                {categoryName}
+              </h2>
+              <div class="font-bold text-[#f59e0b] bg-white border-2 border-[#f59e0b] px-2.5 py-0.5 shadow-[2px_2px_0px_0px_#0284c7] text-[10px] md:text-xs shrink-0">
+                {postsCount} 篇
+              </div>
+            </>
+          )}
+          {tagName && (
+            <>
+              <div class="text-[10px] md:text-xs font-black text-[#0ea5e9] bg-white dark:bg-slate-700 border-2 border-[#0284c7] px-2 py-0.5 rounded-sm shadow-[2px_2px_0px_0px_#0284c7] md:rotate-2 uppercase tracking-widest shrink-0 select-none">
+                {infoConfig.banner.labels.tag}
+              </div>
+              <h2 class="text-sm md:text-3xl font-black text-[#0284c7] bg-[#fde68a] border-2 md:border-3 border-[#0284c7] shadow-[2.5px_2.5px_0px_0px_#f59e0b] px-4 py-1 md:-rotate-1 shrink-0 max-w-[70vw] md:max-w-[450px] truncate font-sans">
+                #{tagName}
+              </h2>
+              <div class="font-bold text-[#f59e0b] bg-white border-2 border-[#f59e0b] px-2.5 py-0.5 shadow-[2px_2px_0px_0px_#0284c7] text-[10px] md:text-xs shrink-0">
+                {postsCount} 篇
+              </div>
+            </>
+          )}
+          {post && (
+            <>
+              <div class="text-[10px] md:text-xs font-black text-[#0ea5e9] bg-white dark:bg-slate-700 border-2 border-[#0284c7] px-2 py-0.5 rounded-sm shadow-[2px_2px_0px_0px_#0284c7] md:rotate-2 uppercase tracking-widest shrink-0 select-none">
+                {infoConfig.banner.labels.post}
+              </div>
+              <h2 class="text-xs sm:text-base md:text-2xl font-black text-[#0284c7] bg-[#fde68a] border-2 md:border-3 border-[#0284c7] shadow-[2.5px_2.5px_0px_0px_#f59e0b] px-3.5 py-1.5 md:-rotate-1 shrink-0 max-w-[70vw] md:max-w-[450px] leading-snug font-sans text-center md:text-right break-words line-clamp-2 md:line-clamp-1">
+                {post.title}
+              </h2>
+              <div class="font-mono font-bold text-[#f59e0b] bg-white border-2 border-[#f59e0b] px-2 py-0.5 shadow-[2px_2px_0px_0px_#0284c7] text-[9px] md:text-xs shrink-0 tracking-wider animate-pulse">
+                {post.date}
+              </div>
+            </>
+          )}
+          {isTalks && (
+            <>
+              <div class="text-[10px] md:text-xs font-black text-[#0ea5e9] bg-white border-2 border-[#0284c7] px-2.5 py-0.5 rounded-sm shadow-[2px_2px_0px_0px_#0284c7] md:rotate-2 uppercase tracking-widest shrink-0 select-none">
+                {infoConfig.banner.labels.talk}
+              </div>
+              <h2 class="text-xs md:text-lg font-bold text-slate-700 dark:text-slate-200 font-mono h-8 md:h-11 flex items-center justify-center md:justify-end -rotate-1 max-w-[70vw] md:max-w-[450px]">
+                <span
+                  class="banner-type bg-[#fde68a] px-3 py-1 shadow-[2px_2px_0px_0px_#0284c7] border-2 border-[#0284c7] inline-block font-sans whitespace-nowrap"
+                  data-typewriter={talkSeq}
+                >{infoConfig.banner.talkTicker.sequence[0]}</span>
+              </h2>
+            </>
+          )}
+        </div>
+      </div>
+    )}
+  </div>
+</div>
+
+<style>
+  /* 右侧上下文卡片：spring 入场（与原 AnimatePresence spring 300/25 同手感） */
+  .banner-card {
+    animation: banner-card-in 0.5s var(--banner-spring) both;
+    --banner-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  @keyframes banner-card-in {
+    from { opacity: 0; transform: translateX(60px) scale(0.95); }
+    to   { opacity: 1; transform: none; }
+  }
+  /* 打字机光标 */
+  .banner-type::after {
+    content: '|';
+    margin-left: 1px;
+    animation: banner-cursor 1s steps(1) infinite;
+  }
+  @keyframes banner-cursor {
+    0%, 49% { opacity: 1; }
+    50%, 100% { opacity: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .banner-card { animation: none; }
+    .banner-type::after { animation: none; }
+  }
+</style>
+
+<script is:inline data-astro-rerun>
+  // 原生打字机：序列 [文本, 停留ms, 文本, ...]——打出→停留→删除→下一句，无限循环
+  (function () {
+    var reduced = false;
+    try { reduced = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
+    document.querySelectorAll('[data-typewriter]').forEach(function (el) {
+      if (el.__twRunning) return;
+      el.__twRunning = true;
+      var seq;
+      try { seq = JSON.parse(el.getAttribute('data-typewriter')); } catch (e) { return; }
+      var texts = seq.filter(function (x) { return typeof x === 'string'; });
+      if (reduced || texts.length === 0) { el.textContent = texts[0] || ''; return; }
+      var ti = 0, i = 0, dir = 1;
+      function tick() {
+        var text = texts[ti];
+        if (dir > 0) {
+          i++;
+          el.textContent = text.slice(0, i);
+          if (i >= text.length) {
+            // 停留时长取字符串后面的数字，缺省 2500
+            var pause = (typeof seq[seq.indexOf(text) + 1] === 'number') ? seq[seq.indexOf(text) + 1] : 2500;
+            dir = -1;
+            setTimeout(tick, pause);
+            return;
+          }
+          setTimeout(tick, 90);
+        } else {
+          i--;
+          el.textContent = text.slice(0, i);
+          if (i <= 0) { dir = 1; ti = (ti + 1) % texts.length; setTimeout(tick, 350); return; }
+          setTimeout(tick, 45);
+        }
+      }
+      // 先清空再起打（SSR 里预填了第一句，避免 JS 前空白）
+      el.textContent = '';
+      setTimeout(tick, 600);
+    });
+  })();
+</script>

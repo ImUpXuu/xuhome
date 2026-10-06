@@ -6,7 +6,7 @@ import { ClientRouter } from 'astro:transitions';
 import NavBar from '../components/NavBar.astro';
 import PrefetchLinks from '../components/PrefetchLinks.svelte';
 // 暂时禁用：import WelcomeToast from '../components/WelcomeToast.astro';
-import { PageBanner } from '../components/PageBanner';
+import PageBanner from '../components/PageBanner.astro';
 import MusicPlayer from '../components/MusicPlayer.svelte';
 import { execSync } from 'child_process';
 import { getCollection } from 'astro:content';
@@ -540,7 +540,6 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
           <div class="max-w-[1440px] w-full mx-auto flex flex-col gap-2 sm:gap-3">
             {!hideBanner && (
             <PageBanner 
-              client:idle
               pathname={Astro.url.pathname}
               categoryName={categoryName}
               tagName={tagName}
