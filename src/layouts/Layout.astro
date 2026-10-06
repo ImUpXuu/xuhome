@@ -108,7 +108,7 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
     <link rel="icon" href={siteConfig.avatar} />
     <link rel="apple-touch-icon" href={siteConfig.avatar} />
     {/* WebMCP 工具注册 */}
-    <script is:inline src="/webmcp-register.js"></script>
+    <script is:inline src="/webmcp-register.js" defer></script>
 
     {/* Open Graph Tags */}
     <meta property="og:title" content={pageTitle} />
@@ -214,17 +214,35 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
       </script>
     )}
 
-    {siteConfig.analytics.umami.map(u => (
-      <script async src={u.src} data-website-id={u.id}></script>
-    ))}
+    <script is:inline>
+      (function() {
+        function loadUmami() {
+          var idle = window.requestIdleCallback || function(f){ setTimeout(f, 200); };
+          idle(function() {
+            var urls = JSON.parse(document.getElementById('umami-urls').textContent);
+            urls.forEach(function(u) {
+              var s = document.createElement('script');
+              s.async = true; s.src = u.src; s.setAttribute('data-website-id', u.id);
+              document.head.appendChild(s);
+            });
+          });
+        }
+        if (document.readyState === 'complete') loadUmami();
+        else window.addEventListener('load', loadUmami);
+      })();
+    </script>
+    <script type="application/json" id="umami-urls">{JSON.stringify(siteConfig.analytics.umami.map(u => ({ src: u.src, id: u.id })))}</script>
     <script type="text/javascript">
       /* Clarity：页面 load 后再加载，不阻塞首屏 */
       window.addEventListener('load', function() {
+        var idle = window.requestIdleCallback || function(f){ setTimeout(f, 200); };
+        idle(function() {
         (function(c,l,a,r,i,t,y){
           c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
           t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
           y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
         })(window, document, "clarity", "script", "uziyyjxiky");
+        });
       });
     </script>
   <style is:global>
@@ -556,7 +574,7 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
           <div class="max-w-[1440px] w-full mx-auto flex flex-col gap-2 sm:gap-3">
             {!hideBanner && (
             <PageBanner 
-              client:load
+              client:idle
               pathname={Astro.url.pathname}
               categoryName={categoryName}
               tagName={tagName}
@@ -878,7 +896,7 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
     </button>
 
     {/* 只有音乐页才加载播放器，其它页面不请求任何音乐播放器代码 */}
-    <PrefetchLinks client:load />
+    <PrefetchLinks client:idle />
     {isMusicPage && (
       <MusicPlayer client:load transition:persist="music-player" />
     )}
