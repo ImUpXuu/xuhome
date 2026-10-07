@@ -9,6 +9,12 @@
 
   onMount(() => {
     shuffled = [...friendsConfig].sort(() => Math.random() - 0.5);
+    // 补扫 hydration 前已失败的图片：SSR HTML 的 img 在 JS 绑定 on:error 之前就 404 的话，
+    // error 事件已丢失（on:error 永远不触发，断图一直挂着）。complete && naturalWidth===0 即已失败。
+    document.querySelectorAll<HTMLImageElement>('img[data-friend-avatar]').forEach((img) => {
+      const name = img.dataset.friendAvatar;
+      if (name && img.complete && img.naturalWidth === 0) handleImgError(name);
+    });
   });
 
   $: filteredFriends = searchTerm.trim() === "" 
@@ -145,6 +151,7 @@
                   loading="lazy"
                   decoding="async"
                   referrerpolicy="no-referrer"
+                  data-friend-avatar={friend.name}
                   on:error={() => handleImgError(friend.name)}
                   class="rounded-full border-3 border-[#0284c7] object-cover bg-white shadow-[2px_2px_0px_0px_#0284c7]"
                   style="width:40px;height:40px;object-fit:cover"

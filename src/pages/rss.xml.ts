@@ -90,7 +90,8 @@ export async function GET(context: APIContext) {
       return {
         pubDate,
         sortTime: new Date(pubDate).getTime(),
-        html: renderItem(`「说说」${talk.data.title}`, url, desc, pubDate, content, author),
+        // 无 title 的说说取正文开头兜底，避免 RSS 里渲染成 "undefined"
+        html: renderItem(`「说说」${talk.data.title || body.replace(/[#*`_\[\]()\-!>]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 20) || '无题说说'}`, url, desc, pubDate, content, author),
       };
     }),
   ]

@@ -1,11 +1,19 @@
 import rss from '@astrojs/rss';
 import { getCollection } from 'astro:content';
 import { siteConfig } from '../config/site';
+import { toBeijingInstant } from '../utils/dateFormat';
 import MarkdownIt from 'markdown-it';
 import sanitizeHtml from 'sanitize-html';
 import type { APIContext } from 'astro';
 
 const parser = new MarkdownIt();
+
+/** 说说标题兜底：无 title 的说说取正文开头，避免 RSS 里渲染成 "undefined" */
+function talkTitleOf(talk: { data: { title?: string } }, body: string): string {
+  if (talk.data.title) return talk.data.title;
+  const plain = body.replace(/[#*`_\[\]()\-!>]/g, ' ').replace(/\s+/g, ' ').trim();
+  return plain.slice(0, 20) || '无题说说';
+}
 
 function stripInvalidXmlChars(str: string): string {
   return str.replace(
@@ -40,7 +48,8 @@ export async function GET(context: APIContext) {
       const permalink = `${siteUrl}/posts/${slug}/`;
       return {
         title: post.data.title,
-        pubDate: post.data.published || post.data.date,
+        // frontmatter 日期被 js-yaml 误存为 UTC 实例，减 8h 还原真实时刻（否则 pubDate 晚 8h）
+        pubDate: toBeijingInstant(post.data.published || post.data.date) || new Date(),
         description: desc,
         link: permalink,
         guid: permalink,
@@ -56,8 +65,8 @@ export async function GET(context: APIContext) {
       const slug = (talk.data.slug || talk.slug || talk.id || '').trim();
       const permalink = `${siteUrl}/talk/${slug}/`;
       return {
-        title: `「说说」${talk.data.title}`,
-        pubDate: talk.data.date,
+        title: `「说说」${talkTitleOf(talk, body)}`,
+        pubDate: toBeijingInstant(talk.data.date) || new Date(),
         description: body.substring(0, 200).replace(/[#*`_\[\]()\-]/g, '').trim() || '',
         link: permalink,
         guid: permalink,

@@ -1,6 +1,7 @@
 import rss from '@astrojs/rss';
 import { getCollection } from 'astro:content';
 import { siteConfig } from '../config/site';
+import { toBeijingInstant } from '../utils/dateFormat';
 import MarkdownIt from 'markdown-it';
 import sanitizeHtml from 'sanitize-html';
 import type { APIContext } from 'astro';
@@ -37,7 +38,8 @@ export async function GET(context: APIContext) {
       const permalink = `${siteUrl}/posts/${slug}/`;
       return {
         title: post.data.title,
-        pubDate: post.data.published || post.data.date,
+        // frontmatter 日期被 js-yaml 误存为 UTC 实例，减 8h 还原真实时刻（否则 pubDate 晚 8h）
+        pubDate: toBeijingInstant(post.data.published || post.data.date) || new Date(),
         description: desc,
         link: permalink,
         guid: permalink,

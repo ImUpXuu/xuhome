@@ -59,12 +59,14 @@ export async function getProcessedPosts(): Promise<PostItem[]> {
     if (rawDate) {
       const d = new Date(rawDate);
       if (!isNaN(d.getTime())) {
-        const year = d.getFullYear();
-        const month = String(d.getMonth() + 1).padStart(2, '0');
-        const day = String(d.getDate()).padStart(2, '0');
-        const hours = String(d.getHours()).padStart(2, '0');
-        const minutes = String(d.getMinutes()).padStart(2, '0');
-        const seconds = String(d.getSeconds()).padStart(2, '0');
+        // js-yaml 把北京墙钟误存为 UTC 实例；用 UTC getter 保证任何构建机时区下输出一致
+        // （本地时区 getter 在 UTC+8 机器上会把日期 +1 天）
+        const year = d.getUTCFullYear();
+        const month = String(d.getUTCMonth() + 1).padStart(2, '0');
+        const day = String(d.getUTCDate()).padStart(2, '0');
+        const hours = String(d.getUTCHours()).padStart(2, '0');
+        const minutes = String(d.getUTCMinutes()).padStart(2, '0');
+        const seconds = String(d.getUTCSeconds()).padStart(2, '0');
         parsedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
       }
     }
@@ -147,12 +149,13 @@ export async function getProcessedTalks(): Promise<TalkItem[]> {
     if (data.date) {
       const d = new Date(data.date);
       if (!isNaN(d.getTime())) {
-        const year = d.getFullYear();
-        const month = String(d.getMonth() + 1).padStart(2, '0');
-        const day = String(d.getDate()).padStart(2, '0');
-        const hours = String(d.getHours()).padStart(2, '0');
-        const minutes = String(d.getMinutes()).padStart(2, '0');
-        const seconds = String(d.getSeconds()).padStart(2, '0');
+        // 同上：UTC getter 保证构建机时区无关
+        const year = d.getUTCFullYear();
+        const month = String(d.getUTCMonth() + 1).padStart(2, '0');
+        const day = String(d.getUTCDate()).padStart(2, '0');
+        const hours = String(d.getUTCHours()).padStart(2, '0');
+        const minutes = String(d.getUTCMinutes()).padStart(2, '0');
+        const seconds = String(d.getUTCSeconds()).padStart(2, '0');
         parsedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
       }
     }

@@ -441,6 +441,9 @@ const isBlogStatsPage = pathname === '/blogstats';
       const desktopMoreToggle = document.getElementById('desktop-more-toggle');
       const desktopMoreDropdown = document.getElementById('desktop-more-dropdown');
       if (!desktopMoreToggle || !desktopMoreDropdown) return;
+      // 移动菜单有自己的开合逻辑；这里若对汉堡按钮的点击执行 closeNavDropdowns，
+      // 移动监听器随后会读到"已关闭"状态又把它重新打开（菜单永远关不掉的根因）
+      if (e.target.closest('#mobile-menu-toggle, #mobile-menu-dropdown, #mobile-search-toggle, #mobile-search-dialog')) return;
       if (e.target.closest('#desktop-more-toggle')) {
         e.stopPropagation();
         const isOpen = !desktopMoreDropdown.classList.contains('hidden');
