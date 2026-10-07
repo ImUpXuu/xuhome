@@ -46,6 +46,7 @@ interface Props {
   isArticle?: boolean;
   hideFooter?: boolean;
   hideBanner?: boolean;
+  revealPace?: 'normal' | 'slow';
 }
 
 const {
@@ -62,6 +63,7 @@ const {
   isArticle = false,
   hideFooter = false,
   hideBanner = false,
+  revealPace = 'normal',
 } = Astro.props;
 
 const pageTitle = title
@@ -337,6 +339,19 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
       transform: none;
       filter: blur(0px);
     }
+    /* 慢节奏页（归档/关于/友链）：450ms 的默认行程在这类小卡片长列表上肉眼几乎
+       看不见，滚动时像"没有动画"。行程加大 + 引擎把播放拉长到 900ms 才感觉得到 */
+    html.rv-ready body[data-reveal-pace="slow"] [data-reveal]:not(.rv-in) {
+      transform: translateY(18px);
+      filter: blur(4px);
+    }
+    html.rv-ready body[data-reveal-pace="slow"] [data-reveal-card]:not(.rv-in) {
+      transform: translateY(36px) scale(0.96);
+    }
+    html.rv-ready body[data-reveal-pace="slow"] [data-reveal-card] .rv-txt {
+      transform: translateY(18px);
+      filter: blur(4px);
+    }
     /* 非文章页：带 reveal 标记的元素改由滚动触发，旧的载入动画让位
        （选择器同时要求 [data-reveal-card]，HorizontalCategories 等无标记元素不受影响） */
     html.rv-ready body:not([data-is-article="true"]) .animate-card-entrance[data-reveal-card] {
@@ -344,12 +359,15 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
     }
     @media (prefers-reduced-motion: reduce) {
       html.rv-ready [data-reveal]:not(.rv-in),
-      html.rv-ready [data-reveal-card]:not(.rv-in) {
+      html.rv-ready [data-reveal-card]:not(.rv-in),
+      html.rv-ready body[data-reveal-pace="slow"] [data-reveal]:not(.rv-in),
+      html.rv-ready body[data-reveal-pace="slow"] [data-reveal-card]:not(.rv-in) {
         opacity: 1;
         transform: none;
         filter: none;
       }
-      html.rv-ready [data-reveal-card] .rv-txt {
+      html.rv-ready [data-reveal-card] .rv-txt,
+      html.rv-ready body[data-reveal-pace="slow"] [data-reveal-card] .rv-txt {
         opacity: 1;
         transform: none;
         filter: none;
@@ -433,7 +451,7 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
   </script>
   <ClientRouter />
 </head>
-  <body data-bg-desktop={DESKTOP_BG_URLS.join(',')} data-bg-mobile={MOBILE_BG_URLS.join(',')} data-is-article={isArticle ? "true" : "false"} class="dark:bg-slate-900 text-slate-900 dark:text-slate-100 selection:bg-[#fde68a] selection:text-[#0284c7]">
+  <body data-bg-desktop={DESKTOP_BG_URLS.join(',')} data-bg-mobile={MOBILE_BG_URLS.join(',')} data-is-article={isArticle ? "true" : "false"} data-reveal-pace={revealPace} class="dark:bg-slate-900 text-slate-900 dark:text-slate-100 selection:bg-[#fde68a] selection:text-[#0284c7]">
     {/* Persistent full-page bg layer (survives View Transitions) */}
     <div
       id="site-bg"
@@ -644,6 +662,12 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
           <div class="font-bold">
             本站文章与说说累计 <span class="text-[#0284c7]">{wordCountK}k 字</span>
           </div>
+          {/* 总访客量/总浏览量：blog.api /api/stats 客户端拉取（数据到达才显示，失败不占位） */}
+          <div id="footer-visits" class="font-bold" hidden>
+            总访客量 <span id="fv-uv" class="text-[#0284c7]">--</span> 人
+            <span class="mx-1.5 text-slate-400">·</span>
+            总浏览量 <span id="fv-pv" class="text-[#0284c7]">--</span> 次
+          </div>
           <div id="footer-uptime" class="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400">
             本站已在互联网中航行 <span id="uptime-display" class="font-bold text-[#0284c7]">计算中...</span>
           </div>
@@ -673,6 +697,38 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
       el.textContent = days + '\u5929' + String(hours).padStart(2,'0') + '\u5c0f\u65f6' + String(mins).padStart(2,'0') + '\u5206' + String(secs).padStart(2,'0') + '\u79d2';
     }, 1000);
   }
+</script>
+<script>
+  // 页脚总访客量/总浏览量：blog.api.upxuu.com /api/stats（服务端缓存 60s，
+  // 前端 60s 内存缓存 + astro:page-load 重填，换页不重复打接口）
+  function loadFooterVisits() {
+    const row = document.getElementById('footer-visits');
+    const uvEl = document.getElementById('fv-uv');
+    const pvEl = document.getElementById('fv-pv');
+    if (!row || !uvEl || !pvEl) return;
+    const cached = window.__footerVisits;
+    if (cached && Date.now() - cached.at < 60000) {
+      uvEl.textContent = cached.sessions.toLocaleString('zh-CN');
+      pvEl.textContent = cached.pv.toLocaleString('zh-CN');
+      row.hidden = false;
+      return;
+    }
+    if (window.__footerVisitsFetching) return;
+    window.__footerVisitsFetching = true;
+    fetch('https://blog.api.upxuu.com/api/stats', { signal: AbortSignal.timeout(8000) })
+      .then(r => r.json())
+      .then(d => {
+        if (!d || typeof d.pv !== 'number' || typeof d.sessions !== 'number') return;
+        window.__footerVisits = { pv: d.pv, sessions: d.sessions, at: Date.now() };
+        uvEl.textContent = d.sessions.toLocaleString('zh-CN');
+        pvEl.textContent = d.pv.toLocaleString('zh-CN');
+        row.hidden = false;
+      })
+      .catch(() => {})
+      .finally(() => { window.__footerVisitsFetching = false; });
+  }
+  loadFooterVisits();
+  document.addEventListener('astro:page-load', loadFooterVisits);
 </script>
 <script is:inline>
   (function () {
@@ -958,6 +1014,9 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
       // rootMargin 0px：只要露出任意 1px 就触发（对齐 framer-motion amount:"some" 语义）。
       // 交错延迟只用于首屏波次；滚动触发的入场零延迟——底边刚露头的卡片必须立刻显现
       var waveDone = false;
+      // 慢节奏页（归档/关于/友链，body[data-reveal-pace="slow"]）：
+      // 小卡片长列表上 450ms 的位移肉眼几乎看不见，播放松到 900ms、交错放宽才有"在动"的感觉
+      var slowPace = false;
       var io = new IntersectionObserver(function (entries) {
         var batch = 0;
         for (var i = 0; i < entries.length; i++) {
@@ -965,7 +1024,7 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
           if (!en.isIntersecting) continue;
           var el = en.target;
           io.unobserve(el);
-          revealNow(el, waveDone ? 0 : Math.min(batch * 60, 300));
+          revealNow(el, waveDone ? 0 : Math.min(batch * (slowPace ? 90 : 60), slowPace ? 450 : 300));
           batch++;
         }
         waveDone = true;
@@ -980,21 +1039,25 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
         if (!el.animate) return; // 极老浏览器：直接显示
         var isCard = el.hasAttribute('data-reveal-card');
         var spring = 'cubic-bezier(0.34, 1.56, 0.64, 1)';
+        var dur = slowPace ? 900 : 450;
+        var cardY = slowPace ? 36 : 25;
+        var txtY = slowPace ? 18 : 12;
+        var blurPx = slowPace ? 4 : 3;
         el.animate(
           isCard
-            ? [{ opacity: 0, transform: 'translateY(25px) scale(0.96)' },
+            ? [{ opacity: 0, transform: 'translateY(' + cardY + 'px) scale(0.96)' },
                { opacity: 1, transform: 'none' }]
-            : [{ opacity: 0, transform: 'translateY(12px)', filter: 'blur(3px)' },
+            : [{ opacity: 0, transform: 'translateY(' + txtY + 'px)', filter: 'blur(' + blurPx + 'px)' },
                { opacity: 1, transform: 'none', filter: 'blur(0px)' }],
-          { duration: 450, delay: delayMs, easing: spring, fill: 'backwards' }
+          { duration: dur, delay: delayMs, easing: spring, fill: 'backwards' }
         );
         // 卡片内文字逐个凝焦（比卡片晚 60ms 起步）
         var txts = el.querySelectorAll('.rv-txt');
         for (var t = 0; t < txts.length; t++) {
           txts[t].animate(
-            [{ opacity: 0, transform: 'translateY(12px)', filter: 'blur(3px)' },
+            [{ opacity: 0, transform: 'translateY(' + txtY + 'px)', filter: 'blur(' + blurPx + 'px)' },
              { opacity: 1, transform: 'none', filter: 'blur(0px)' }],
-            { duration: 450, delay: delayMs + 60 + t * 50, easing: spring, fill: 'backwards' }
+            { duration: dur, delay: delayMs + 60 + t * 50, easing: spring, fill: 'backwards' }
           );
         }
       }
@@ -1040,6 +1103,7 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
         mo.disconnect();
         // 文章页不做滚动进入动画（保持原有载入动画）
         if (document.body.dataset.isArticle === 'true') return;
+        slowPace = document.body.dataset.revealPace === 'slow';
         mo.observe(document.body, { childList: true, subtree: true });
         waveDone = false; // 每个页面重新武装首屏波次的交错节奏
         watchLater(document.querySelectorAll('[data-reveal]:not(.rv-in),[data-reveal-card]:not(.rv-in)'));
