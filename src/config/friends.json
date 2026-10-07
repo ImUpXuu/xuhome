@@ -904,5 +904,12 @@
     "url": "https://zeyun.org",
     "avatar": "https://zeyun.org/favicon/Happy_Mac.PNG",
     "description": "一个记录技术探索，学习实践与网络安全实践的小站"
+  },
+  {
+    "name": "HZH",
+    "url": "https://clannad.top",
+    "avatar": "https://clannad.top/favicon.png",
+    "description": "Welcome to HZH",
+    "rss": "https://clannad.top/feed.xml"
   }
 ]
