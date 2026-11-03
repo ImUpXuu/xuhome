@@ -912,5 +912,11 @@
     "url": "https://tinkerlog.dpdns.org/",
     "avatar": "https://tinkerlog.dpdns.org/favicon.ico",
     "description": "一个银的折腾记录。写 Hugo 建站、评论系统、图床、收录优化这些踩过的坑，也写点随手的心得。技术为主，偶尔跑题。"
+  },
+  {
+    "name": "摸鱼猫泡泡",
+    "url": "https://jiangbyte.cn",
+    "avatar": "https://jiangbyte.cn/img/logo.png",
+    "description": "记录开发、工具与工程实践"
   }
 ]
