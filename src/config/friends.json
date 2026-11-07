@@ -877,10 +877,10 @@
     "description": "记录代码、折腾与生活"
   },
   {
-    "name": "寻 Mi 处",
+    "name": "昭鸢笺",
     "url": "https://blog.mibase.top",
     "avatar": "https://blog.mibase.top/img/miro.jpg",
-    "description": "寻觅文字、代码与感兴趣的一切"
+    "description": "昭有明朗向远之意，鸢乘风而上，笺以载笔墨见闻"
   },
   {
     "name": "冷汐的杂货铺",
@@ -914,6 +914,19 @@
     "description": "一个银的折腾记录。写 Hugo 建站、评论系统、图床、收录优化这些踩过的坑，也写点随手的心得。技术为主，偶尔跑题。"
   },
   {
+    "name": "Trasindの奇幻冒险",
+    "url": "https://lmeternity.dpdns.org",
+    "avatar": "https://lmeternity.dpdns.org/self/avatar.webp",
+    "description": "一场关于代码与故事的冒险。"
+  },
+  {
+    "name": "SamsBlog",
+    "url": "https://blog.moesam.com",
+    "avatar": "https://blog.moesam.com/media/brand/logo.jpg",
+    "description": "只是一只大黄狗",
+    "rss": "https://blog.moesam.com/rss.xml"
+  },
+  {
     "name": "摸鱼猫泡泡",
     "url": "https://jiangbyte.cn",
     "avatar": "https://jiangbyte.cn/img/logo.png",
@@ -924,5 +937,12 @@
     "url": "https://www.cqjszx.cn",
     "avatar": "https://www.cqjszx.cn/favicon.ico",
     "description": "巧克力的小站"
+  },
+  {
+    "name": "拾光纪",
+    "url": "https://n22b64.cn",
+    "avatar": "https://n22b64.cn/%E5%85%83%E8%AE%A4%E7%9F%A5%E5%AF%BC%E5%B8%88.png",
+    "description": "拾起散落的光",
+    "rss": "https://n22b64.cn/blog/api/v1/home/rss.xml"
   }
 ]
