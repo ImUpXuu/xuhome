@@ -950,5 +950,12 @@
     "url": "https://www.yadelei.top",
     "avatar": "https://www.yadelei.top/upload/%E5%A4%B4%E5%83%8F-%E5%9C%86%E8%A7%92.png?width=800",
     "description": "美味烤鸭的美味博客，极品美味～"
+  },
+  {
+    "name": "Hyde Blog",
+    "url": "https://seasir.top",
+    "avatar": "https://seasir.top/assets/avatar.avif",
+    "description": "人心中的成见是一座大山",
+    "rss": "https://seasir.top/rss.xml"
   }
 ]
