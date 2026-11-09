@@ -957,5 +957,11 @@
     "avatar": "https://seasir.top/assets/avatar.avif",
     "description": "人心中的成见是一座大山",
     "rss": "https://seasir.top/rss.xml"
+  },
+  {
+    "name": "Qian‘s Blog",
+    "url": "https://blogqian.com",
+    "avatar": "https://blogqian.com/avatar.png",
+    "description": "From codes to clouds."
   }
 ]
