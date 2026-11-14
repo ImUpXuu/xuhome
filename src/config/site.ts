@@ -99,6 +99,8 @@ export interface NavItem {
 
 export const navConfig: {
   desktop: NavItem[];
+  /** "FUN" 父菜单里的项（桌面端下拉，窄屏时在"更多"里展开） */
+  fun: NavItem[];
   mobileMore: NavItem[];
   external: NavItem[];
 } = {
@@ -109,8 +111,10 @@ export const navConfig: {
     { name: "友链", href: "/friends" },
     { name: "关于", href: "/about" },
     { name: "归档", href: "/posts" },
-    { name: "统计", href: "/stats" },
     { name: "标签", href: "/tags" },
+  ],
+  /** "FUN" 父菜单（AI + 音乐） */
+  fun: [
     { name: "AI", href: "https://ai.upxuu.com/", external: true },
     { name: "音乐", href: "/music" },
   ],

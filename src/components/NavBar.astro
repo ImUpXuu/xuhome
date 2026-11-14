@@ -5,6 +5,7 @@ const { pathname } = Astro.url;
 
 // 从配置中获取导航项
 const nav = navConfig.desktop;
+const fun = navConfig.fun;
 const ext = navConfig.external;
 const mob = navConfig.mobileMore;
 
@@ -90,17 +91,6 @@ const isBlogStatsPage = pathname === '/blogstats';
 
       <a
         href={nav[5].href}
-        target="_blank" rel="noopener noreferrer"
-        class={`hidden lg:flex px-1.5 py-0.5 sm:px-3 sm:py-1.5 border-2 border-[#0284c7] items-center gap-0.5 sm:gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-xs sm:text-sm tracking-wider shrink-0 whitespace-nowrap text-[#0284c7] shadow-[1px_1px_0px_0px_#fde68a] sm:shadow-[2px_2px_0px_0px_#fde68a] bg-[rgba(250,248,245,0.55)]`}
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 sm:w-4 sm:h-4 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-        </svg>
-        <span>{nav[5].name}</span>
-      </a>
-
-      <a
-        href={nav[6].href}
         class={`hidden xl:flex px-1.5 py-0.5 sm:px-3 sm:py-1.5 border-2 border-[#0284c7] items-center gap-0.5 sm:gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-xs sm:text-sm tracking-wider shrink-0 whitespace-nowrap ${
           isTagsPage ? 'bg-[#0ea5e9] text-white shadow-[1px_1px_0px_0px_#0284c7] sm:shadow-[2px_2px_0px_0px_#0284c7]' : 'text-[#0284c7] shadow-[1px_1px_0px_0px_#fde68a] sm:shadow-[2px_2px_0px_0px_#fde68a] bg-[rgba(250,248,245,0.55)]'
         }`}
@@ -108,33 +98,35 @@ const isBlogStatsPage = pathname === '/blogstats';
         <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 sm:w-4 sm:h-4 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82zM7 7h.01" />
         </svg>
-        <span>{nav[6].name}</span>
+        <span>{nav[5].name}</span>
       </a>
 
-      <a
-        href={nav[7].href}
-        target="_blank" rel="noopener noreferrer"
-        class={`hidden xl:flex px-1.5 py-0.5 sm:px-3 sm:py-1.5 border-2 border-[#0284c7] items-center gap-0.5 sm:gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-xs sm:text-sm tracking-wider shrink-0 whitespace-nowrap ${
-          isAiPage ? 'bg-[#0ea5e9] text-white shadow-[1px_1px_0px_0px_#0284c7] sm:shadow-[2px_2px_0px_0px_#0284c7]' : 'text-[#0284c7] shadow-[1px_1px_0px_0px_#fde68a] sm:shadow-[2px_2px_0px_0px_#fde68a] bg-[rgba(250,248,245,0.55)]'
-        }`}
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 sm:w-4 sm:h-4 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M12 2a5 5 0 015 5v2h1a2 2 0 012 2v8a2 2 0 01-2 2H6a2 2 0 01-2-2v-8a2 2 0 012-2h1V7a5 5 0 015-5zm0 2a3 3 0 00-3 3v2h6V7a3 3 0 00-3-3z" />
-        </svg>
-        <span>{nav[7].name}</span>
-      </a>
-
-      <a
-        href={nav[8].href}
-        class={`hidden xl:flex px-1.5 py-0.5 sm:px-3 sm:py-1.5 border-2 border-[#0284c7] items-center gap-0.5 sm:gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-xs sm:text-sm tracking-wider shrink-0 whitespace-nowrap ${
-          isMusicPage ? 'bg-[#0ea5e9] text-white shadow-[1px_1px_0px_0px_#0284c7] sm:shadow-[2px_2px_0px_0px_#0284c7]' : 'text-[#0284c7] shadow-[1px_1px_0px_0px_#fde68a] sm:shadow-[2px_2px_0px_0px_#fde68a] bg-[rgba(250,248,245,0.55)]'
-        }`}
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 sm:w-4 sm:h-4 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M9 18V5l12-2v13M9 18a3 3 0 01-6 0M12 16V6l-3 12m15-1a3 3 0 01-6 0" />
-        </svg>
-        <span>{nav[8].name}</span>
-      </a>
+      {/* FUN 父菜单：AI + 音乐 */}
+      <div class="hidden xl:block relative self-center">
+        <button
+          id="desktop-fun-toggle"
+          aria-expanded="false"
+          aria-label="FUN"
+          class={`px-1.5 py-0.5 sm:px-3 sm:py-1.5 border-2 border-[#0284c7] flex items-center gap-0.5 sm:gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-xs sm:text-sm tracking-wider shrink-0 whitespace-nowrap ${
+            isMusicPage ? 'bg-[#0ea5e9] text-white shadow-[1px_1px_0px_0px_#0284c7] sm:shadow-[2px_2px_0px_0px_#0284c7]' : 'text-[#0284c7] shadow-[1px_1px_0px_0px_#fde68a] sm:shadow-[2px_2px_0px_0px_#fde68a] bg-[rgba(250,248,245,0.55)]'
+          }`}
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 sm:w-4 sm:h-4 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span>FUN</span>
+        </button>
+        <div id="desktop-fun-dropdown" class="absolute right-0 mt-3 w-32 bg-white dark:bg-slate-800 border-3 border-[#0284c7] shadow-[3px_3px_0px_0px_#0284c7] rounded-sm p-1.5 flex flex-col gap-1.5 z-[110] transform rotate-0.5 hidden">
+          <a href={fun[0].href} target="_blank" rel="noopener noreferrer" class={`p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none ${isAiPage ? "bg-[#0ea5e9] text-white" : "bg-[rgba(250,248,245,0.55)] dark:bg-slate-700 text-[#0284c7]"}`}>
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 2a5 5 0 015 5v2h1a2 2 0 012 2v8a2 2 0 01-2 2H6a2 2 0 01-2-2v-8a2 2 0 012-2h1V7a5 5 0 015-5zm0 2a3 3 0 00-3 3v2h6V7a3 3 0 00-3-3z" /></svg>
+            {fun[0].name}
+          </a>
+          <a href={fun[1].href} class={`p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none ${isMusicPage ? "bg-[#0ea5e9] text-white" : "bg-[rgba(250,248,245,0.55)] dark:bg-slate-700 text-[#0284c7]"}`}>
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 18V5l12-2v13M9 18a3 3 0 01-6 0M12 16V6l-3 12m15-1a3 3 0 01-6 0" /></svg>
+            {fun[1].name}
+          </a>
+        </div>
+      </div>
 
       <a
         href={ext[0].href}
@@ -173,17 +165,17 @@ const isBlogStatsPage = pathname === '/blogstats';
           <span class="hidden md:inline">{i18nConfig.common.more}</span>
         </button>
         <div id="desktop-more-dropdown" class="absolute right-0 mt-3 w-32 bg-white dark:bg-slate-800 border-3 border-[#0284c7] shadow-[3px_3px_0px_0px_#0284c7] rounded-sm p-1.5 flex flex-col gap-1.5 z-[110] transform rotate-0.5 hidden">
-          <a href={nav[6].href} class={`xl:hidden p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none ${isTagsPage ? "bg-[#0ea5e9] text-white" : "bg-[rgba(250,248,245,0.55)] dark:bg-slate-700 text-[#0284c7]"}`}>
+          <a href={nav[5].href} class={`xl:hidden p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none ${isTagsPage ? "bg-[#0ea5e9] text-white" : "bg-[rgba(250,248,245,0.55)] dark:bg-slate-700 text-[#0284c7]"}`}>
             <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82zM7 7h.01" /></svg>
-            {nav[6].name}
+            {nav[5].name}
           </a>
-          <a href={nav[7].href} target="_blank" rel="noopener noreferrer" class={`xl:hidden p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none ${isAiPage ? "bg-[#0ea5e9] text-white" : "bg-[rgba(250,248,245,0.55)] dark:bg-slate-700 text-[#0284c7]"}`}>
+          <a href={fun[0].href} target="_blank" rel="noopener noreferrer" class={`xl:hidden p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none ${isAiPage ? "bg-[#0ea5e9] text-white" : "bg-[rgba(250,248,245,0.55)] dark:bg-slate-700 text-[#0284c7]"}`}>
             <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 2a5 5 0 015 5v2h1a2 2 0 012 2v8a2 2 0 01-2 2H6a2 2 0 01-2-2v-8a2 2 0 012-2h1V7a5 5 0 015-5zm0 2a3 3 0 00-3 3v2h6V7a3 3 0 00-3-3z" /></svg>
-            {nav[7].name}
+            {fun[0].name}
           </a>
-          <a href={nav[8].href} class={`xl:hidden p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none ${isMusicPage ? "bg-[#0ea5e9] text-white" : "bg-[rgba(250,248,245,0.55)] dark:bg-slate-700 text-[#0284c7]"}`}>
+          <a href={fun[1].href} class={`xl:hidden p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none ${isMusicPage ? "bg-[#0ea5e9] text-white" : "bg-[rgba(250,248,245,0.55)] dark:bg-slate-700 text-[#0284c7]"}`}>
             <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 18V5l12-2v13M9 18a3 3 0 01-6 0M12 16V6l-3 12m15-1a3 3 0 01-6 0" /></svg>
-            {nav[8].name}
+            {fun[1].name}
           </a>
           <a href={ext[0].href} target="_blank" rel="noopener noreferrer" class="xl:hidden p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider bg-[#ebf3ff] dark:bg-slate-700 text-[#0284c7] select-none">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
@@ -203,7 +195,7 @@ const isBlogStatsPage = pathname === '/blogstats';
             </svg>
             {mob[2].name}
           </a>
-          <a href={mob[3].href} class="lg:hidden p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none bg-[rgba(250,248,245,0.55)] dark:bg-slate-700 text-[#0284c7]">
+          <a href={mob[3].href} class="p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none bg-[rgba(250,248,245,0.55)] dark:bg-slate-700 text-[#0284c7]">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
             </svg>
@@ -363,6 +355,8 @@ const isBlogStatsPage = pathname === '/blogstats';
     const menuIconClose = document.getElementById('menu-icon-close');
     const desktopMoreDropdown = document.getElementById('desktop-more-dropdown');
     const desktopMoreToggle = document.getElementById('desktop-more-toggle');
+    const desktopFunDropdown = document.getElementById('desktop-fun-dropdown');
+    const desktopFunToggle = document.getElementById('desktop-fun-toggle');
 
     if (mobileMenuDropdown && !mobileMenuDropdown.classList.contains('hidden')) {
       mobileMenuDropdown.classList.add('hidden');
@@ -382,6 +376,11 @@ const isBlogStatsPage = pathname === '/blogstats';
         desktopMoreToggle.classList.remove('bg-[#fde68a]');
         desktopMoreToggle.classList.add('bg-[rgba(250,248,245,0.55)]');
       }
+    }
+
+    if (desktopFunDropdown && !desktopFunDropdown.classList.contains('hidden')) {
+      desktopFunDropdown.classList.add('hidden');
+      if (desktopFunToggle) desktopFunToggle.setAttribute('aria-expanded', 'false');
     }
   }
 
@@ -440,10 +439,26 @@ const isBlogStatsPage = pathname === '/blogstats';
     document.addEventListener('click', (e) => {
       const desktopMoreToggle = document.getElementById('desktop-more-toggle');
       const desktopMoreDropdown = document.getElementById('desktop-more-dropdown');
-      if (!desktopMoreToggle || !desktopMoreDropdown) return;
+      const desktopFunToggle = document.getElementById('desktop-fun-toggle');
+      const desktopFunDropdown = document.getElementById('desktop-fun-dropdown');
       // 移动菜单有自己的开合逻辑；这里若对汉堡按钮的点击执行 closeNavDropdowns，
       // 移动监听器随后会读到"已关闭"状态又把它重新打开（菜单永远关不掉的根因）
       if (e.target.closest('#mobile-menu-toggle, #mobile-menu-dropdown, #mobile-search-toggle, #mobile-search-dialog')) return;
+      // FUN 父菜单
+      if (desktopFunToggle && desktopFunDropdown) {
+        if (e.target.closest('#desktop-fun-toggle')) {
+          e.stopPropagation();
+          const isFunOpen = !desktopFunDropdown.classList.contains('hidden');
+          closeNavDropdowns();
+          if (!isFunOpen) {
+            desktopFunDropdown.classList.remove('hidden');
+            desktopFunToggle.setAttribute('aria-expanded', 'true');
+          }
+          return;
+        }
+        if (e.target.closest('#desktop-fun-dropdown')) return;
+      }
+      if (!desktopMoreToggle || !desktopMoreDropdown) return;
       if (e.target.closest('#desktop-more-toggle')) {
         e.stopPropagation();
         const isOpen = !desktopMoreDropdown.classList.contains('hidden');

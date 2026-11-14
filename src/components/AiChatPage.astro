@@ -1,7 +1,7 @@
 ---
 // 独立全屏 AI 问答页 + 自绘 Dock 栏（不复用 NavBar）。
 import { siteConfig, navConfig } from '../config/site';
-const dockNav = navConfig.desktop.filter(n => !n.external && n.href !== '/ai');
+const dockNav = [...navConfig.desktop, ...navConfig.fun].filter(n => !n.external && n.href !== '/ai');
 const avatar = siteConfig.avatar;
 const siteTitle = siteConfig.title;
 ---
@@ -355,7 +355,7 @@ const siteTitle = siteConfig.title;
   </a>
   <nav class="dock-nav">
     {dockNav.map(n => (
-      <a href={n.href} class="dock-item" data-label={n.name}>{n.name === '首页' ? '🏠' : n.name === '说说' ? '💬' : n.name === '友链' ? '🤝' : n.name === '关于' ? '👤' : n.name === '归档' ? '📚' : '🏷️'}</a>
+      <a href={n.href} class="dock-item" data-label={n.name}>{n.name === '首页' ? '🏠' : n.name === '说说' ? '💬' : n.name === '友链' ? '🤝' : n.name === '关于' ? '👤' : n.name === '归档' ? '📚' : n.name === '音乐' ? '🎵' : '🏷️'}</a>
     ))}
   </nav>
   <div class="badge" id="modelBadge">loading…</div>
