@@ -60,24 +60,24 @@ const years = Object.keys(yearsMap).sort((a, b) => b.localeCompare(a));
           <p class="text-slate-500 text-sm mt-2 font-mono">{i18nConfig.archive.emptySubtext}</p>
         </div>
       ) : (
-      <div class="relative border-l-4 border-dashed border-[#0284c7]/30 ml-4 pl-6 space-y-12">
+      <div class="relative border-l-4 border-dashed border-[#0284c7]/45 ml-4 pl-6 space-y-12">
         {archiveKeys.map((key) => (
           <div class="relative" id={`archive-${key}`}>
             {/* Timeline dot */}
-            <div class="absolute -left-[30px] top-1.5 w-4 h-4 bg-[#fde68a] border-4 border-[#0284c7] rounded-full shadow-[2px_2px_0px_0px_#f59e0b]" data-reveal></div>
+            <div class="absolute -left-[30px] top-1.5 w-4 h-4 bg-[#fde68a] border-4 border-[#0284c7] rounded-full shadow-[2px_2px_0px_0px_#0284c7]" data-reveal></div>
 
-            <h2 class="text-xl font-black text-[#0284c7] dark:text-[#38bdf8] mb-4 bg-[#e0f2fe] dark:bg-slate-800 inline-block px-3 py-1 rounded-sm border-2 border-[#0284c7] shadow-[2px_2px_0px_0px_#0284c7] tracking-wider" data-reveal>
+            <h2 class="text-xl font-black text-[#0284c7] dark:text-[#38bdf8] mb-4 bg-[#e0f2fe] dark:bg-slate-800 inline-block px-3 py-1 rounded-sm border-2 border-[#0284c7] shadow-[3px_3px_0px_0px_#0284c7] tracking-wider" data-reveal>
               {key}
             </h2>
 
             <div class="flex flex-col gap-4">
               {archiveMap[key].map(post => (
                 <div data-reveal-card>
-                  <a href={`/posts/${encodeURIComponent(post.slug)}`} data-astro-prefetch class="relative z-10 group flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 p-3 bg-white dark:bg-slate-800 border-2 border-[#0284c7]/30 hover:border-[#0284c7] rounded-sm transition-all hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_#0284c7]">
-                    <span class="font-mono text-xs font-black text-slate-400 shrink-0">
+                  <a href={`/posts/${encodeURIComponent(post.slug)}`} data-astro-prefetch class="relative z-10 group flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 p-2.5 bg-[#faf8f5] dark:bg-slate-800 border-2 border-[#0284c7] rounded-sm shadow-[3px_3px_0px_0px_#0284c7] transition-all hover:shadow-none hover:translate-x-[3px] hover:translate-y-[3px]">
+                    <span class="shrink-0 self-start sm:self-auto bg-[#fde68a] border-2 border-[#0284c7] px-1.5 py-0.5 font-mono text-[11px] font-black tabular-nums text-[#0284c7]">
                       {post.date.substring(5, 10)}
                     </span>
-                    <h3 class="font-bold text-slate-700 dark:text-slate-200 group-hover:text-[#0ea5e9] transition-colors line-clamp-1 flex-1">
+                    <h3 class="font-black text-[#0284c7] dark:text-sky-200 group-hover:text-[#0ea5e9] transition-colors line-clamp-1 flex-1">
                       {post.title}
                     </h3>
                   </a>
@@ -98,20 +98,20 @@ const years = Object.keys(yearsMap).sort((a, b) => b.localeCompare(a));
         </div>
         <span class="text-[10px] font-mono font-bold text-slate-400">{allPosts.length} 篇</span>
       </div>
-      <div class="border-l-2 border-dashed border-[#0284c7]/25 ml-2 pl-4" id="archive-nav-desktop">
+      <div class="border-l-2 border-dashed border-[#0284c7]/50 ml-2 pl-4" id="archive-nav-desktop">
         {years.map(year => (
           <div class="relative archive-year-group" data-year={year}>
-            <div class="absolute -left-[21px] top-3 w-2 h-2 bg-[#0284c7] rounded-full"></div>
+            <div class="absolute -left-[21px] top-3 w-2.5 h-2.5 bg-[#fde68a] border-2 border-[#0284c7]"></div>
             <button
               type="button"
-              class="archive-year-toggle w-full flex items-center gap-2 py-2 font-black text-base text-[#0284c7] dark:text-[#38bdf8] hover:text-[#0ea5e9] transition-colors cursor-pointer select-none"
+              class="archive-year-toggle w-full flex items-center gap-2 px-2 py-1.5 font-black text-base text-[#0284c7] dark:text-[#38bdf8] bg-[#faf8f5] dark:bg-slate-800 border-2 border-[#0284c7] rounded-sm shadow-[2px_2px_0px_0px_#0284c7] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] hover:text-[#0ea5e9] transition-all cursor-pointer select-none"
               aria-expanded="false"
             >
               <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 stroke-[3] transition-transform duration-300 chevron-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
               </svg>
               <span>{year}</span>
-              <span class="text-[10px] font-mono font-bold text-slate-400 ml-auto">
+              <span class="ml-auto bg-[#fde68a] border-2 border-[#0284c7] px-1 font-mono text-[10px] font-black tabular-nums text-[#0284c7]">
                 {yearsMap[year].reduce((n, k) => n + archiveMap[k].length, 0)}
               </span>
             </button>
@@ -121,10 +121,10 @@ const years = Object.keys(yearsMap).sort((a, b) => b.localeCompare(a));
                   {yearsMap[year].map(key => (
                     <a
                       href={`#archive-${key}`}
-                      class="archive-nav-link block font-bold text-xs text-slate-500 dark:text-slate-400 hover:text-[#0ea5e9] hover:translate-x-1 transition-all py-1.5 pl-3 rounded-sm"
+                      class="archive-nav-link block font-bold text-xs text-slate-600 dark:text-slate-400 hover:text-[#0284c7] hover:bg-[#fde68a]/50 hover:translate-x-1 transition-all py-1.5 pl-3 rounded-sm"
                       data-target={`archive-${key}`}
                     >
-                      {key.includes('年') ? key.substring(5) : key} <span class="font-mono text-[10px] text-slate-400">({archiveMap[key].length})</span>
+                      {key.includes('年') ? key.substring(5) : key} <span class="font-mono text-[10px] text-slate-500 dark:text-slate-500">({archiveMap[key].length})</span>
                     </a>
                   ))}
                 </div>
@@ -138,7 +138,7 @@ const years = Object.keys(yearsMap).sort((a, b) => b.localeCompare(a));
     {/* Mobile timeline drawer */}
     <div id="mobile-timeline-drawer" class="fixed inset-0 z-50 pointer-events-none lg:!hidden" style="opacity: 0; transition: opacity 0.3s ease;">
       <div class="absolute inset-0 bg-black/30" id="mobile-timeline-overlay" style="opacity: 0; transition: opacity 0.3s ease;"></div>
-      <div id="mobile-timeline-panel" class="absolute bottom-0 left-0 right-0 bg-white dark:bg-slate-800 border-t-[10px] border-[#0284c7] rounded-t-3xl shadow-[0_-20px_60px_-10px_rgba(0,0,0,0.3)] max-h-[70vh] flex flex-col overflow-hidden pointer-events-auto" style="transform: translateY(100%); transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);">
+      <div id="mobile-timeline-panel" class="absolute bottom-0 left-0 right-0 bg-[#faf8f5] dark:bg-slate-800 border-t-[10px] border-[#0284c7] rounded-t-3xl shadow-[0_-20px_60px_-10px_rgba(0,0,0,0.3)] max-h-[70vh] flex flex-col overflow-hidden pointer-events-auto" style="transform: translateY(100%); transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);">
         <div class="flex items-center justify-between p-4 border-b-4 border-[#0284c7] shrink-0">
           <h3 class="font-black text-[#0284c7] text-lg">{i18nConfig.archive.timelineTitle}</h3>
           <button id="mobile-timeline-close" class="w-9 h-9 flex items-center justify-center border-2 border-[#0284c7] bg-[#fde68a] rounded-sm shadow-[2px_2px_0px_0px_#0284c7] active:translate-y-0.5 active:shadow-none transition-all cursor-pointer">
@@ -146,16 +146,16 @@ const years = Object.keys(yearsMap).sort((a, b) => b.localeCompare(a));
           </button>
         </div>
         <div class="overflow-y-auto custom-scrollbar p-4 flex-1 relative" id="archive-nav-mobile">
-          <div class="border-l-2 border-[#0284c7]/20 ml-2 space-y-4 py-2">
+          <div class="border-l-2 border-dashed border-[#0284c7]/50 ml-2 space-y-4 py-2">
             {years.map(year => (
               <div class="relative pl-4 group">
-                <div class="absolute -left-[5px] top-2 w-2 h-2 bg-[#0284c7] rounded-full"></div>
-                <div class="font-black text-base text-[#0284c7] mb-2">{year}</div>
+                <div class="absolute -left-[6px] top-2 w-2.5 h-2.5 bg-[#fde68a] border-2 border-[#0284c7]"></div>
+                <div class="inline-block font-black text-base text-[#0284c7] mb-2 px-2 py-0.5 bg-[#faf8f5] border-2 border-[#0284c7] rounded-sm shadow-[2px_2px_0px_0px_#0284c7]">{year}</div>
                 <div class="space-y-1">
                   {yearsMap[year].map(key => (
                     <a 
                       href={`#archive-${key}`} 
-                      class="block font-bold text-xs text-slate-500 dark:text-slate-400 hover:text-[#0ea5e9] hover:translate-x-1 transition-all py-1 archive-nav-link"
+                      class="block font-bold text-xs text-slate-600 dark:text-slate-400 hover:text-[#0284c7] hover:bg-[#fde68a]/50 hover:translate-x-1 transition-all py-1 archive-nav-link"
                       data-target={`archive-${key}`}
                     >
                       {key.includes('年') ? key.substring(5) : key} ({archiveMap[key].length})
