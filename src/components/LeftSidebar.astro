@@ -12,6 +12,10 @@ interface CalendarPost {
 
 export interface Props {
   posts?: CalendarPost[];
+  /** 只传日期的最小载荷（首页用，避免整份文章列表进 props） */
+  calendarDates?: string[];
+  /** 客户端补全日历标题/描述用的共享索引地址 */
+  calendarDataUrl?: string;
   tags: { name: string; count: number }[];
   activeTag?: string | null;
   showCalendar?: boolean;
@@ -19,14 +23,23 @@ export interface Props {
   showAuthor?: boolean;
 }
 
-const { posts = [], tags, activeTag = null, showCalendar = true, showTags = true, showAuthor = true } = Astro.props;
+const {
+  posts = [],
+  calendarDates = [],
+  calendarDataUrl = '',
+  tags,
+  activeTag = null,
+  showCalendar = true,
+  showTags = true,
+  showAuthor = true,
+} = Astro.props;
 ---
 
 {
   showAuthor && <AuthorCard />
 }
 {
-  showCalendar && <CalendarWidget posts={posts} client:idle />
+  showCalendar && <CalendarWidget posts={posts} dates={calendarDates} dataUrl={calendarDataUrl} client:idle />
 }
 {
   showTags && <SidebarTags tags={tags} activeTag={activeTag} />

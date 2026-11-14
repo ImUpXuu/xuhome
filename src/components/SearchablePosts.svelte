@@ -3,6 +3,7 @@
   import { afterUpdate, onMount } from 'svelte';
   import { flip } from 'svelte/animate';
   import { siteConfig, i18nConfig } from '../config/site';
+  import { loadPosts } from '../utils/postsClient';
 
   interface SearchablePost {
     id: string;
@@ -311,9 +312,8 @@
 
     if (dataUrl) {
       isLoadingPosts = posts.length === 0;
-      fetch(dataUrl)
-        .then(res => res.ok ? res.json() : Promise.reject(new Error(`Failed to load ${dataUrl}`)))
-        .then((loadedPosts: SearchablePost[]) => {
+      loadPosts(dataUrl)
+        .then((loadedPosts) => {
           if (Array.isArray(loadedPosts) && loadedPosts.length > 0) {
             posts = loadedPosts;
           }

@@ -1,4 +1,7 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
+  import { loadPosts } from '../utils/postsClient';
+
   interface CalendarPost {
     slug: string;
     title: string;
@@ -7,11 +10,19 @@
   }
 
   export let posts: CalendarPost[] = [];
+  // 首页只传日期（SSR 画圆点用），标题/描述由客户端共享索引补全
+  export let dates: string[] = [];
+  export let dataUrl: string = '';
 
-  // 初始月份取最新文章所在月：构建期 SSR 与客户端水合从同一份 posts prop
+  // SSR 与水合首帧共用这份最小数据，避免整份文章列表被序列化进 props
+  let list: CalendarPost[] = posts.length
+    ? posts
+    : dates.map((date) => ({ slug: '', title: '', date, description: '' }));
+
+  // 初始月份取最新文章所在月：构建期 SSR 与客户端水合从同一份数据
   // 推导出完全一致的状态（用 new Date() 会导致构建月≠访问月的水合错位）
   let latest = '';
-  for (const p of posts) {
+  for (const p of list) {
     if (p.date && p.date !== '未知时间') {
       const d = p.date.slice(0, 10);
       if (d > latest) latest = d;
@@ -37,7 +48,7 @@
   // Generate days array
   $: days = Array.from({ length: daysInMonth }, (_, i) => new Date(currentYear, currentMonth, i + 1));
 
-  $: postsByDay = posts.reduce((acc, p) => {
+  $: postsByDay = list.reduce((acc, p) => {
     if (!p.date || p.date === '未知时间') return acc;
     const key = p.date.slice(0, 10);
     acc[key] = acc[key] || [];
@@ -71,6 +82,22 @@
   }
 
   $: selectedDateEvents = selectedDate ? (postsByDay[formatYMD(selectedDate)] || []) : [];
+
+  onMount(() => {
+    // 已经有完整 posts（分类/标签页）就不用再拉；首页只拿到日期时补全标题与描述
+    if (posts.length > 0 || !dataUrl) return;
+    loadPosts(dataUrl)
+      .then((loaded) => {
+        if (!Array.isArray(loaded) || loaded.length === 0) return;
+        list = loaded.map((p) => ({
+          slug: p.slug,
+          title: p.title,
+          date: p.date,
+          description: p.description,
+        }));
+      })
+      .catch((err) => console.warn('[CalendarWidget] post data unavailable', err));
+  });
 
   const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
 </script>
@@ -144,6 +171,7 @@
       
       <div class="space-y-2 max-h-[160px] overflow-y-auto custom-scrollbar pr-1 pt-1">
         {#each selectedDateEvents as event}
+          {#if event.slug}
           <a 
             href={`/posts/${event.slug}`}
             class="p-2 text-left bg-[rgba(250,248,245,0.55)] dark:bg-slate-700 hover:bg-[#fffbeb] dark:hover:bg-slate-600 border-2 border-[#0284c7] hover:shadow-none hover:translate-y-[1px] rounded-sm transition-all cursor-pointer group block"
@@ -158,6 +186,7 @@
               </p>
             {/if}
           </a>
+          {/if}
         {/each}
       </div>
     </div>
