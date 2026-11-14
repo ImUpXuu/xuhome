@@ -6,6 +6,7 @@ const { pathname } = Astro.url;
 // 从配置中获取导航项
 const nav = navConfig.desktop;
 const fun = navConfig.fun;
+const social = navConfig.social;
 const ext = navConfig.external;
 const mob = navConfig.mobileMore;
 
@@ -13,6 +14,8 @@ const isTalkPage = pathname === '/talks' || pathname.startsWith('/talks/');
 const isPostPage = pathname === '/' || pathname.startsWith('/page/') || pathname.startsWith('/posts/') || pathname.startsWith('/category/') || pathname.startsWith('/tag/');
 const isAboutPage = pathname === '/about';
 const isFriendsPage = pathname === '/friends' || pathname === '/links';
+const isMomentsPage = pathname === '/moments' || pathname.startsWith('/moments/');
+const isSocialPage = isFriendsPage || isMomentsPage;
 const isArchivePage = pathname === '/posts';
 const isTagsPage = pathname === '/tags' || pathname.startsWith('/tag/') || pathname.startsWith('/tags/');
 const isAiPage = pathname === '/ai';
@@ -53,17 +56,33 @@ const isBlogStatsPage = pathname === '/blogstats';
         <span>{nav[1].name}</span>
       </a>
       
-      <a
-        href={nav[2].href}
-        class={`hidden sm:flex px-1.5 py-0.5 sm:px-3 sm:py-1.5 border-2 border-[#0284c7] items-center gap-0.5 sm:gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-xs sm:text-sm tracking-wider shrink-0 whitespace-nowrap ${
-          isFriendsPage ? 'bg-[#0ea5e9] text-white shadow-[1px_1px_0px_0px_#0284c7] sm:shadow-[2px_2px_0px_0px_#0284c7]' : 'text-[#0284c7] shadow-[1px_1px_0px_0px_#fde68a] sm:shadow-[2px_2px_0px_0px_#fde68a] bg-[rgba(250,248,245,0.55)]'
-        }`}
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" class={`w-3 h-3 sm:w-4 sm:h-4 ${isFriendsPage ? 'fill-white stroke-white' : 'stroke-red-500 fill-red-400'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-        </svg>
-        <span>{nav[2].name}</span>
-      </a>
+      <div class="hidden sm:block relative self-center">
+        <button
+          id="desktop-social-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="desktop-social-dropdown"
+          class={`px-1.5 py-0.5 sm:px-3 sm:py-1.5 border-2 border-[#0284c7] flex items-center gap-0.5 sm:gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-xs sm:text-sm tracking-wider shrink-0 whitespace-nowrap ${
+            isSocialPage ? 'bg-[#0ea5e9] text-white shadow-[1px_1px_0px_0px_#0284c7] sm:shadow-[2px_2px_0px_0px_#0284c7]' : 'text-[#0284c7] shadow-[1px_1px_0px_0px_#fde68a] sm:shadow-[2px_2px_0px_0px_#fde68a] bg-[rgba(250,248,245,0.55)]'
+          }`}
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class={`w-3 h-3 sm:w-4 sm:h-4 ${isSocialPage ? 'fill-white stroke-white' : 'stroke-red-500 fill-red-400'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+          </svg>
+          <span>{nav[2].name}</span>
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 stroke-[3]" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m6 9 6 6 6-6" /></svg>
+        </button>
+        <div id="desktop-social-dropdown" class="absolute left-0 mt-3 w-40 bg-white dark:bg-slate-800 border-2 border-[#0284c7] shadow-[3px_3px_0px_0px_#0284c7] rounded-sm p-1.5 flex flex-col gap-1 z-[110] hidden">
+          <a href={social[0].href} class={`p-2 flex items-center gap-2 rounded-sm transition-colors ${isFriendsPage ? 'bg-[#0ea5e9] text-white' : 'text-[#0284c7] hover:bg-sky-50 dark:hover:bg-slate-700'}`} aria-current={isFriendsPage ? 'page' : undefined}>
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71" /></svg>
+            <span class="min-w-0"><span class="block text-xs font-black">{social[0].name}</span><span class={`mt-0.5 block text-[9px] font-bold ${isFriendsPage ? 'text-sky-100' : 'text-slate-400'}`}>有趣的独立博客</span></span>
+          </a>
+          <a href={social[1].href} class={`p-2 flex items-center gap-2 rounded-sm transition-colors ${isMomentsPage ? 'bg-[#0ea5e9] text-white' : 'text-[#0284c7] hover:bg-sky-50 dark:hover:bg-slate-700'}`} aria-current={isMomentsPage ? 'page' : undefined}>
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.86 9.86 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
+            <span class="min-w-0"><span class="block text-xs font-black">{social[1].name}</span><span class={`mt-0.5 block text-[9px] font-bold ${isMomentsPage ? 'text-sky-100' : 'text-slate-400'}`}>近 15 天的朋友新文章</span></span>
+          </a>
+        </div>
+      </div>
 
       <a
         href={nav[3].href}
@@ -260,17 +279,27 @@ const isBlogStatsPage = pathname === '/blogstats';
             </svg>
             <span id="mobile-dark-mode-label">{i18nConfig.common.darkMode}</span>
           </button>
-          <a
-            href={mob[0].href}
-            class={`p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none ${
-              isFriendsPage ? "bg-[#0ea5e9] text-white" : "bg-[rgba(250,248,245,0.55)] dark:bg-slate-700 text-[#0284c7]"
-            }`}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" class={`w-3.5 h-3.5 ${isFriendsPage ? "fill-white text-white" : "fill-red-400 text-red-500"}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-            </svg>
-            <span>{mob[0].name}</span>
-          </a>
+          <div>
+            <button
+              id="mobile-social-toggle"
+              type="button"
+              aria-expanded="false"
+              aria-controls="mobile-social-dropdown"
+              class={`p-2 border border-[#0284c7]/20 flex w-full items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none ${isSocialPage ? 'bg-[#0ea5e9] text-white' : 'bg-[rgba(250,248,245,0.55)] dark:bg-slate-700 text-[#0284c7]'}`}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class={`w-3.5 h-3.5 ${isSocialPage ? 'fill-white text-white' : 'fill-red-400 text-red-500'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
+              <span>{mob[0].name}</span>
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m6 9 6 6 6-6" /></svg>
+            </button>
+            <div id="mobile-social-dropdown" class="ml-4 flex flex-col gap-1 border-l-2 border-dashed border-[#0284c7]/30 py-0.5 pl-3 hidden">
+              <a href={social[0].href} class={`p-1.5 flex items-center gap-2 rounded-sm text-[11px] font-black ${isFriendsPage ? 'bg-[#0ea5e9] text-white' : 'text-[#0284c7]'}`} aria-current={isFriendsPage ? 'page' : undefined}>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71" /></svg>{social[0].name}
+              </a>
+              <a href={social[1].href} class={`p-1.5 flex items-center gap-2 rounded-sm text-[11px] font-black ${isMomentsPage ? 'bg-[#0ea5e9] text-white' : 'text-[#0284c7]'}`} aria-current={isMomentsPage ? 'page' : undefined}>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.86 9.86 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>{social[1].name}
+              </a>
+            </div>
+          </div>
           <a href={mob[1].href} class={`p-2 border border-[#0284c7]/20 flex items-center justify-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm font-black uppercase text-[11px] tracking-wider select-none ${isAboutPage ? "bg-[#0ea5e9] text-white" : "bg-[rgba(250,248,245,0.55)] dark:bg-slate-700 text-[#0284c7]"}`}>
             <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>{mob[1].name}
           </a>
@@ -357,6 +386,10 @@ const isBlogStatsPage = pathname === '/blogstats';
     const desktopMoreToggle = document.getElementById('desktop-more-toggle');
     const desktopFunDropdown = document.getElementById('desktop-fun-dropdown');
     const desktopFunToggle = document.getElementById('desktop-fun-toggle');
+    const desktopSocialDropdown = document.getElementById('desktop-social-dropdown');
+    const desktopSocialToggle = document.getElementById('desktop-social-toggle');
+    const mobileSocialDropdown = document.getElementById('mobile-social-dropdown');
+    const mobileSocialToggle = document.getElementById('mobile-social-toggle');
 
     if (mobileMenuDropdown && !mobileMenuDropdown.classList.contains('hidden')) {
       mobileMenuDropdown.classList.add('hidden');
@@ -381,6 +414,16 @@ const isBlogStatsPage = pathname === '/blogstats';
     if (desktopFunDropdown && !desktopFunDropdown.classList.contains('hidden')) {
       desktopFunDropdown.classList.add('hidden');
       if (desktopFunToggle) desktopFunToggle.setAttribute('aria-expanded', 'false');
+    }
+
+    if (desktopSocialDropdown && !desktopSocialDropdown.classList.contains('hidden')) {
+      desktopSocialDropdown.classList.add('hidden');
+      if (desktopSocialToggle) desktopSocialToggle.setAttribute('aria-expanded', 'false');
+    }
+
+    if (mobileSocialDropdown && !mobileSocialDropdown.classList.contains('hidden')) {
+      mobileSocialDropdown.classList.add('hidden');
+      if (mobileSocialToggle) mobileSocialToggle.setAttribute('aria-expanded', 'false');
     }
   }
 
@@ -441,9 +484,25 @@ const isBlogStatsPage = pathname === '/blogstats';
       const desktopMoreDropdown = document.getElementById('desktop-more-dropdown');
       const desktopFunToggle = document.getElementById('desktop-fun-toggle');
       const desktopFunDropdown = document.getElementById('desktop-fun-dropdown');
+      const desktopSocialToggle = document.getElementById('desktop-social-toggle');
+      const desktopSocialDropdown = document.getElementById('desktop-social-dropdown');
       // 移动菜单有自己的开合逻辑；这里若对汉堡按钮的点击执行 closeNavDropdowns，
       // 移动监听器随后会读到"已关闭"状态又把它重新打开（菜单永远关不掉的根因）
       if (e.target.closest('#mobile-menu-toggle, #mobile-menu-dropdown, #mobile-search-toggle, #mobile-search-dialog')) return;
+      // 社交父菜单
+      if (desktopSocialToggle && desktopSocialDropdown) {
+        if (e.target.closest('#desktop-social-toggle')) {
+          e.stopPropagation();
+          const isSocialOpen = !desktopSocialDropdown.classList.contains('hidden');
+          closeNavDropdowns();
+          if (!isSocialOpen) {
+            desktopSocialDropdown.classList.remove('hidden');
+            desktopSocialToggle.setAttribute('aria-expanded', 'true');
+          }
+          return;
+        }
+        if (e.target.closest('#desktop-social-dropdown')) return;
+      }
       // FUN 父菜单
       if (desktopFunToggle && desktopFunDropdown) {
         if (e.target.closest('#desktop-fun-toggle')) {
@@ -472,6 +531,17 @@ const isBlogStatsPage = pathname === '/blogstats';
       }
       if (e.target.closest('#desktop-more-dropdown')) return;
       closeNavDropdowns();
+    });
+
+    // Mobile social submenu: keep the outer menu open while switching entries.
+    document.addEventListener('click', (e) => {
+      const toggle = document.getElementById('mobile-social-toggle');
+      const dropdown = document.getElementById('mobile-social-dropdown');
+      if (!toggle || !dropdown || !e.target.closest('#mobile-social-toggle')) return;
+      e.stopPropagation();
+      const willOpen = dropdown.classList.contains('hidden');
+      dropdown.classList.toggle('hidden', !willOpen);
+      toggle.setAttribute('aria-expanded', String(willOpen));
     });
 
     // Mobile menu toggle

@@ -1,0 +1,14 @@
+---
+import Layout from '../layouts/Layout.astro';
+import MomentsFeed from '../components/MomentsFeed.svelte';
+import { i18nConfig } from '../config/site';
+---
+
+<Layout
+  title={i18nConfig.moments.title}
+  description={i18nConfig.moments.description}
+  keywords={['朋友圈', '友链', 'RSS 聚合', '独立博客']}
+  hideBanner={true}
+>
+  <MomentsFeed client:load />
+</Layout>

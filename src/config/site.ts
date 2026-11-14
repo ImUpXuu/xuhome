@@ -101,6 +101,8 @@ export const navConfig: {
   desktop: NavItem[];
   /** "FUN" 父菜单里的项（桌面端下拉，窄屏时在"更多"里展开） */
   fun: NavItem[];
+  /** "社交"父菜单：友链目录与朋友圈聚合 */
+  social: NavItem[];
   mobileMore: NavItem[];
   external: NavItem[];
 } = {
@@ -108,7 +110,7 @@ export const navConfig: {
   desktop: [
     { name: "首页", href: "/" },
     { name: "说说", href: "/talks" },
-    { name: "友链", href: "/friends" },
+    { name: "社交", href: "/friends" },
     { name: "关于", href: "/about" },
     { name: "归档", href: "/posts" },
     { name: "标签", href: "/tags" },
@@ -118,13 +120,18 @@ export const navConfig: {
     { name: "AI", href: "https://ai.upxuu.com/", external: true },
     { name: "音乐", href: "/music" },
   ],
+  /** "社交"父菜单：独立友链目录与近 15 天朋友圈 */
+  social: [
+    { name: "友链", href: "/friends" },
+    { name: "朋友圈", href: "/moments" },
+  ],
   /**
    * 移动端汉堡菜单中的额外项
    * 注意：NavBar.astro 用 mob[N] 硬编码下标取值，新增项只能追加到末尾，
    * 插在中间会让后面所有菜单项错位。
    */
   mobileMore: [
-    { name: "友链", href: "/friends" },
+    { name: "社交", href: "/friends" },
     { name: "关于", href: "/about" },
     { name: "归档页面", href: "/posts" },
     { name: "网站统计", href: "/stats" },
@@ -391,6 +398,11 @@ export const i18nConfig = {
   friends: {
     title: "友情链接",
     description: "UpXuu的友情链接，汇集各路神仙的有趣博客、个人小站。",
+  },
+  /** 朋友圈聚合页面 */
+  moments: {
+    title: "朋友圈",
+    description: "汇集独立博客朋友们最近 15 天发布的新文章，在时间线上发现彼此的新近况。",
   },
   /** 隐私政策页面 */
   privacy: {
