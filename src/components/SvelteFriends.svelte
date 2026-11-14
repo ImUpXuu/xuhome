@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { friendsConfig, type Friend } from "../config/friends";
+  import { friendsConfig, expiredFriendsConfig, type Friend } from "../config/friends";
   import { siteConfig } from "../config/site";
 
   let searchTerm = "";
@@ -279,6 +279,25 @@
         </div>
       </div>
     </div>
+
+    {#if expiredFriendsConfig.length > 0}
+      <!-- 暂时失效的友联：只留名称，不做链接、不跳转 -->
+      <div class="mt-8 pt-5 border-t-2 border-dashed border-slate-300 dark:border-slate-600" data-reveal>
+        <div class="flex flex-wrap items-center gap-2 mb-3 select-none">
+          <span class="text-[10px] sm:text-xs font-black text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 border border-slate-300 dark:border-slate-600 rounded-sm">
+            暂时失效的友联
+          </span>
+          <span class="text-[10px] font-mono font-bold text-slate-400">（暂不可访问，仅保留名称）</span>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          {#each expiredFriendsConfig as item (item.url)}
+            <span class="text-xs font-bold text-slate-500 dark:text-slate-400 bg-white/60 dark:bg-slate-800/60 border-2 border-slate-300 dark:border-slate-600 px-2.5 py-1 rounded-sm opacity-60 cursor-default select-none">
+              {item.name}
+            </span>
+          {/each}
+        </div>
+      </div>
+    {/if}
 
     <!-- Waline comments placeholder (handled in Astro page) -->
     <div id="waline-placeholder"></div>
