@@ -1,25 +1,14 @@
 ---
-import { siteConfig, footerConfig } from '../config/site';
-import { infoConfig } from '../config/info';
+import { siteConfig } from '../config/site';
 import { seoConfig } from '../config/seo';
 import { ClientRouter } from 'astro:transitions';
 import NavBar from '../components/NavBar.astro';
+import SiteFooter from '../components/SiteFooter.astro';
 import PrefetchLinks from '../components/PrefetchLinks.svelte';
 // 暂时禁用：import WelcomeToast from '../components/WelcomeToast.astro';
 import PageBanner from '../components/PageBanner.astro';
 import MusicPlayer from '../components/MusicPlayer.svelte';
-import { execSync } from 'child_process';
-import { getCollection } from 'astro:content';
-import { countBodyChars } from '../utils/wordCount.mjs';
 import '../index.css';
-
-// 页脚字数统计：与建站统计页共用同一口径（src/utils/wordCount.mjs），
-// 否则同一个站会显示两个不同的"总字数"
-const footerPosts = await getCollection('posts');
-const footerTalks = await getCollection('talks');
-const footerChars = footerPosts.reduce((sum, p) => sum + countBodyChars(p.body || ''), 0)
-  + footerTalks.reduce((sum, t) => sum + countBodyChars(t.body || ''), 0);
-const wordCountK = (footerChars / 1000).toFixed(1);
 
 const DESKTOP_BG_URLS = [
   'https://img.upxuu.lcrworld.xyz/images/2026/7/1.webp',
@@ -615,121 +604,10 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
       )}
       
       {!hideFooter && (
-      <footer class="w-full select-none">
-        <div class="max-w-5xl mx-auto px-4 py-6 text-center text-xs font-mono text-black dark:text-slate-300 leading-relaxed space-y-3">
-          {/* 导航链接：积木粗野主义按钮组 */}
-          <div class="flex flex-wrap justify-center gap-2">
-            {infoConfig.footer.links.map((link) => (
-              <a href={link.path} target={link.external ? "_blank" : undefined} rel={link.external ? "noopener noreferrer" : undefined}
-                 class="px-3 py-1 border-2 border-[#0284c7] rounded-sm font-black text-xs text-[#0284c7] bg-[#fde68a] shadow-[2px_2px_0px_0px_#0284c7] hover:bg-[#0ea5e9] hover:text-white hover:-translate-y-0.5 hover:shadow-[3px_3px_0px_0px_#0284c7] active:translate-y-0 active:shadow-[1px_1px_0px_0px_#0284c7] transition-all whitespace-nowrap">
-                {link.name}
-              </a>
-            ))}
-          </div>
-          {/* 版权 + 备案 */}
-          <div class="font-bold">
-            <span>{infoConfig.footer.copyrightText}</span>
-            {infoConfig.footer.icp.text && <>
-              <span class="mx-1.5 text-slate-400">·</span>
-              <a href={infoConfig.footer.icp.link} target="_blank" rel="noopener noreferrer" class="text-[#0284c7] hover:underline">{infoConfig.footer.icp.text}</a>
-            </>}
-          </div>
-          {/* QQ 交流群 */}
-          <div>
-            <a href="https://qm.qq.com/q/mlH3QB1hC2" target="_blank" rel="noopener noreferrer" class="text-[#0284c7] hover:underline font-bold">欢迎点击加入upxuu的交流Q群 1103232422</a>
-          </div>
-          <div>
-            <span>{footerConfig.repoText}</span><a href={footerConfig.repoUrl} class="hover:text-[#0ea5e9] underline font-bold">{footerConfig.repoDisplayName}</a>
-            {(() => {
-              try {
-                const log = execSync('git log -n 1 --pretty=format:"%h||%ci"').toString().trim();
-                const [hash, dateRaw] = log.split('||');
-                const d = dateRaw ? new Date(dateRaw) : null;
-                const formattedDate = d
-                  ? `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
-                  : '';
-                return <>
-                  <span class="mx-1">·</span>
-                  <a href={`${footerConfig.repoUrl}/commit/${hash}`} class="hover:text-[#0ea5e9] underline font-bold">{hash}</a>
-                  {formattedDate && <><span class="mx-0.5">·</span><span>{formattedDate}</span></>}
-                </>;
-              } catch (e) {
-                console.warn('[Layout] Git info unavailable at build time');
-                return null;
-              }
-            })()}
-          </div>
-          <div class="font-bold">
-            本站文章与说说累计 <span class="text-[#0284c7]">{wordCountK}k 字</span>
-          </div>
-          {/* 总访客量/总浏览量：blog.api /api/stats 客户端拉取（数据到达才显示，失败不占位） */}
-          <div id="footer-visits" class="font-bold" hidden>
-            总访客量 <span id="fv-uv" class="text-[#0284c7]">--</span> 人
-            <span class="mx-1.5 text-slate-400">·</span>
-            总浏览量 <span id="fv-pv" class="text-[#0284c7]">--</span> 次
-          </div>
-          <div id="footer-uptime" class="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400">
-            本站已在互联网中航行 <span id="uptime-display" class="font-bold text-[#0284c7]">计算中...</span>
-          </div>
-          <div class="mt-3 flex justify-center">
-            <a href="https://www.blogsclub.org/rank.html" target="_blank" rel="noopener noreferrer">
-              <img src="https://www.blogsclub.org/badge/upxuu.com"
-                   style="height:60px!important" loading="lazy" alt="BlogsClub" />
-            </a>
-          </div>
-        </div>
-      </footer>
+        <SiteFooter />
       )}
     </div>
 
-<script>
-  if (!window._uptimeStarted) {
-    window._uptimeStarted = true;
-    const start = new Date(2025, 8, 30, 20, 20, 0);
-    setInterval(function() {
-      const el = document.getElementById('uptime-display');
-      if (!el) return;
-      const diff = (Date.now() - start.getTime()) / 1000;
-      const days = Math.floor(diff / 86400);
-      const hours = Math.floor((diff % 86400) / 3600);
-      const mins = Math.floor((diff % 3600) / 60);
-      const secs = Math.floor(diff % 60);
-      el.textContent = days + '\u5929' + String(hours).padStart(2,'0') + '\u5c0f\u65f6' + String(mins).padStart(2,'0') + '\u5206' + String(secs).padStart(2,'0') + '\u79d2';
-    }, 1000);
-  }
-</script>
-<script>
-  // 页脚总访客量/总浏览量：blog.api.upxuu.com /api/stats（服务端缓存 60s，
-  // 前端 60s 内存缓存 + astro:page-load 重填，换页不重复打接口）
-  function loadFooterVisits() {
-    const row = document.getElementById('footer-visits');
-    const uvEl = document.getElementById('fv-uv');
-    const pvEl = document.getElementById('fv-pv');
-    if (!row || !uvEl || !pvEl) return;
-    const cached = window.__footerVisits;
-    if (cached && Date.now() - cached.at < 60000) {
-      uvEl.textContent = cached.sessions.toLocaleString('zh-CN');
-      pvEl.textContent = cached.pv.toLocaleString('zh-CN');
-      row.hidden = false;
-      return;
-    }
-    if (window.__footerVisitsFetching) return;
-    window.__footerVisitsFetching = true;
-    fetch('https://blog.api.upxuu.com/api/stats', { signal: AbortSignal.timeout(8000) })
-      .then(r => r.json())
-      .then(d => {
-        if (!d || typeof d.pv !== 'number' || typeof d.sessions !== 'number') return;
-        window.__footerVisits = { pv: d.pv, sessions: d.sessions, at: Date.now() };
-        uvEl.textContent = d.sessions.toLocaleString('zh-CN');
-        pvEl.textContent = d.pv.toLocaleString('zh-CN');
-        row.hidden = false;
-      })
-      .catch(() => {})
-      .finally(() => { window.__footerVisitsFetching = false; });
-  }
-  loadFooterVisits();
-  document.addEventListener('astro:page-load', loadFooterVisits);
-</script>
 <script is:inline>
   (function () {
     function applySiteBg() {
