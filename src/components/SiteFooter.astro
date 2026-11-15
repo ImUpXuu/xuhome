@@ -28,6 +28,16 @@ const gitInfo = (() => {
   }
 })();
 
+// 构建产物来源标记：显式 DEPLOY_PLATFORM 优先，其次 Vercel 自动注入的 VERCEL=1，兜底阿里云
+const readBuildEnv = (key: string) => String(process.env[key] ?? '').trim();
+const deployPlatform = (() => {
+  const explicit = readBuildEnv('DEPLOY_PLATFORM').toLowerCase();
+  if (explicit === 'vercel' || explicit === 'aliyun') return explicit;
+  if (readBuildEnv('VERCEL') === '1') return 'vercel';
+  return 'aliyun';
+})();
+const deployPlatformLabel = deployPlatform === 'vercel' ? 'vercel cdn' : 'kr aliyun';
+
 // startTime 记作北京时间墙钟；按本地组件拼 +08:00，避免 CI 的 UTC 时区改变计时起点
 const startTime = siteConfig.startTime;
 const pad = (n: number) => String(n).padStart(2, '0');
@@ -108,6 +118,7 @@ const qqGroupUrl = 'https://qm.qq.com/q/mlH3QB1hC2';
               {gitInfo.formattedDate && <span class="whitespace-nowrap"> · {gitInfo.formattedDate}</span>}
             </>
           )}
+          <span class="whitespace-nowrap"> · 响应平台：{deployPlatformLabel}</span>
         </p>
       </div>
       <a href="https://www.blogsclub.org/rank.html" target="_blank" rel="noopener noreferrer" aria-label="BlogsClub 排名" class="inline-flex shrink-0 opacity-80 transition-opacity hover:opacity-100">
