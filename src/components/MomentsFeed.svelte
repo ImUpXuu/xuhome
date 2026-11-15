@@ -14,11 +14,20 @@
   let moments: MomentItem[] = [];
   let visibleCount = PAGE_SIZE;
   let generatedAt = '';
+  const SNAPSHOT_KEY = '__xuhomeMomentsSnapshot';
+  const SLOW_LOAD_MS = 4000;
+  const TIMEOUT_HINT_MS = 10000;
+  let moments: MomentItem[] = [];
+  let visibleCount = PAGE_SIZE;
+  let generatedAt = '';
   let loading = true;
   let refreshing = false;
   let errorMessage = '';
+  let slowLoading = false;
+  let timeoutHint = false;
   let destroyed = false;
   let failedAvatars = new Set<string>();
+  let loadTimer: number | undefined;
 
   $: visibleMoments = moments.slice(0, visibleCount);
   $: dayGroups = groupByDay(visibleMoments);
@@ -27,20 +36,53 @@
 
   onMount(() => {
     destroyed = false;
+    try {
+      const raw = sessionStorage.getItem(SNAPSHOT_KEY);
+      if (raw) {
+        const snapshot: unknown = JSON.parse(raw);
+        if (snapshot && typeof snapshot === 'object' && Array.isArray((snapshot as { items?: unknown }).items)) {
+          const items = (snapshot as { items: unknown[] }).items;
+          if (items.every((item) => item && typeof item === 'object' && typeof (item as MomentItem).id === 'string' && typeof (item as MomentItem).publishedAt === 'string')) {
+            moments = items as MomentItem[];
+            visibleCount = Math.min(Math.max(visibleCount, PAGE_SIZE), moments.length);
+            generatedAt = typeof (snapshot as { generatedAt?: unknown }).generatedAt === 'string' ? (snapshot as { generatedAt: string }).generatedAt : '';
+            loading = false;
+          }
+        }
+      }
+    } catch { /* Ignore malformed or unavailable session storage. */ }
+    beginLoadTimers();
     void refresh();
-    return () => { destroyed = true; };
+    return () => {
+      destroyed = true;
+      if (loadTimer) window.clearTimeout(loadTimer);
+    };
   });
+
+  function beginLoadTimers() {
+    if (loadTimer) window.clearTimeout(loadTimer);
+    slowLoading = false;
+    timeoutHint = false;
+    loadTimer = window.setTimeout(() => {
+      if (!destroyed && loading) slowLoading = true;
+    }, SLOW_LOAD_MS);
+    window.setTimeout(() => {
+      if (!destroyed && loading) timeoutHint = true;
+    }, TIMEOUT_HINT_MS);
+  }
 
   async function refresh(force = false) {
     if (refreshing) return;
     refreshing = true;
     errorMessage = '';
+    if (loading) beginLoadTimers();
     try {
       const result = await loadMoments(endpoint, force);
       if (destroyed) return;
       moments = result.items;
-      visibleCount = PAGE_SIZE;
+      visibleCount = Math.min(Math.max(visibleCount, PAGE_SIZE), result.items.length);
       generatedAt = result.generatedAt;
+      try { sessionStorage.setItem(SNAPSHOT_KEY, JSON.stringify(result)); } catch { /* Storage is optional. */ }
     } catch (error) {
       if (destroyed) return;
       errorMessage = error instanceof DOMException && error.name === 'AbortError'
@@ -50,6 +92,8 @@
       if (!destroyed) {
         loading = false;
         refreshing = false;
+        slowLoading = false;
+        timeoutHint = false;
       }
     }
   }
@@ -124,18 +168,16 @@
     <div>
       <h1 class="mb-2 text-xl font-black uppercase leading-tight text-[#0284c7] dark:text-[#38bdf8] sm:text-2xl md:text-3xl">Moments 朋友圈</h1>
       <div class="flex flex-wrap items-center justify-center gap-2 sm:justify-start">
-        <span class="rounded-sm border border-slate-200 bg-slate-100 px-2 py-0.5 font-mono text-xs font-bold text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">那些人，那些新文章</span>
-        <span class="rounded-sm border border-[#f59e0b] bg-amber-50 px-2 py-0.5 font-mono text-[10px] font-bold text-[#b45309] dark:bg-amber-900/30 dark:text-amber-300">近 15 天</span>
-        {#if !loading && !errorMessage}
-          <span class="rounded-sm border border-emerald-400 bg-green-50 px-2 py-0.5 font-mono text-[10px] font-bold text-green-700 dark:border-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300">{moments.length} 篇 · {sourceCount} 位朋友</span>
-        {/if}
+        <span class="rounded-sm border-2 border-slate-200 bg-slate-100 px-2 py-0.5 font-mono text-xs font-bold text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">那些人，那些新文章</span>
+        <span class="rounded-sm border-2 border-[#f59e0b] bg-amber-50 px-2 py-0.5 font-mono text-[11px] font-bold text-[#b45309] dark:bg-amber-900/30 dark:text-amber-300">近 15 天</span>
+        <span class="rounded-sm border-2 border-emerald-400 bg-green-50 px-2 py-0.5 font-mono text-[11px] font-bold text-green-700 dark:border-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300">{loading ? '— 篇 · — 位朋友' : `${moments.length} 篇 · ${sourceCount} 位朋友`}</span>
       </div>
     </div>
     <div class="flex items-center gap-2">
       <span class="hidden text-[10px] font-mono font-bold text-slate-400 dark:text-slate-500 sm:inline">{#if generatedAt}{formatUpdatedAt(generatedAt)}{:else}RSS 聚合{/if}</span>
       <button
         type="button"
-        class="flex items-center gap-1.5 rounded-sm border-2 border-[#0284c7] bg-white px-3 py-1.5 text-xs font-black text-[#0284c7] shadow-[2px_2px_0px_0px_#0284c7] transition-all hover:bg-[#fde68a] active:translate-x-0.5 active:translate-y-0.5 active:shadow-none disabled:cursor-wait disabled:opacity-60 dark:bg-slate-800 dark:text-sky-400"
+        class="flex min-w-[88px] items-center justify-center gap-1.5 rounded-sm border-2 border-[#0284c7] bg-white px-3 py-1.5 text-xs font-black text-[#0284c7] shadow-[2px_2px_0px_0px_#0284c7] transition-[transform,box-shadow,border-color] hover:bg-[#fde68a] active:translate-x-0.5 active:translate-y-0.5 active:shadow-none disabled:cursor-wait disabled:opacity-60 dark:bg-slate-800 dark:text-sky-400"
         on:click={() => refresh(true)}
         disabled={refreshing}
         aria-label="重新获取朋友圈文章"
@@ -152,14 +194,19 @@
 
   <div aria-busy={loading || refreshing}>
     {#if loading}
-      <div class="space-y-4 pt-2" role="status" aria-label="正在加载朋友圈">
+      <div class="space-y-6 pt-1 sm:space-y-7" role="status" aria-live="polite">
         {#each Array(4) as _}
-          <div class="animate-pulse border-2 border-slate-200 bg-[rgba(250,248,245,0.9)] p-4 shadow-[2px_2px_0px_0px_rgba(2,132,199,0.12)] dark:border-slate-700 dark:bg-slate-800">
-            <div class="flex items-center gap-3"><div class="h-9 w-9 rounded-sm bg-slate-200 dark:bg-slate-700"></div><div class="h-3 w-28 rounded-sm bg-slate-200 dark:bg-slate-700"></div></div>
-            <div class="mt-4 h-5 w-3/4 rounded-sm bg-slate-200 dark:bg-slate-700"></div>
-            <div class="mt-3 h-3 w-full rounded-sm bg-slate-200/80 dark:bg-slate-700/80"></div>
+          <div class="grid gap-2 sm:grid-cols-[78px_minmax(0,1fr)] sm:gap-4">
+            <div class="flex items-center gap-2 pl-1 sm:flex-col sm:items-start sm:gap-1 sm:pl-0"><div class="h-5 w-12 rounded-sm bg-slate-200 animate-pulse dark:bg-slate-700"></div><div class="h-3 w-10 rounded-sm bg-slate-200 animate-pulse dark:bg-slate-700"></div></div>
+            <div class="min-h-[128px] border-2 border-slate-200 bg-[rgba(250,248,245,0.9)] p-4 shadow-[2px_2px_0px_0px_rgba(2,132,199,0.12)] dark:border-slate-700 dark:bg-slate-800">
+              <div class="flex items-center gap-3"><div class="h-9 w-9 rounded-sm bg-slate-200 animate-pulse dark:bg-slate-700"></div><div class="h-3 w-28 rounded-sm bg-slate-200 animate-pulse dark:bg-slate-700"></div></div>
+              <div class="mt-4 h-5 w-3/4 rounded-sm bg-slate-200 animate-pulse dark:bg-slate-700"></div>
+              <div class="mt-3 h-3 w-full rounded-sm bg-slate-200/80 animate-pulse dark:bg-slate-700/80"></div>
+            </div>
           </div>
         {/each}
+        {#if slowLoading}<p class="text-center text-xs font-bold text-slate-500 dark:text-slate-400">还在连朋友圈的 RSS，请稍等…</p>{/if}
+        {#if timeoutHint}<button type="button" class="mx-auto block text-xs font-bold text-[#0284c7] underline" on:click={() => refresh(true)}>等待较久，重试</button>{/if}
       </div>
     {:else if errorMessage && moments.length === 0}
       <section class="my-8 border-2 border-dashed border-[#0284c7] bg-[rgba(250,248,245,0.92)] px-5 py-10 text-center shadow-[3px_3px_0px_0px_#0284c7] dark:bg-slate-800" role="alert">
