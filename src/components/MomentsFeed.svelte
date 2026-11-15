@@ -231,11 +231,11 @@
               <span class="text-[10px] font-black text-[#0284c7] dark:text-sky-400 sm:pl-1">{dayLabel(group.date)}</span>
             </div>
 
-            <div class="space-y-3">
+              <div class="space-y-3.5 sm:space-y-4">
               {#each group.items as item (item.id)}
-                <article class="group border-2 border-[#0284c7] bg-[rgba(250,248,245,0.94)] p-3.5 shadow-[3px_3px_0px_0px_rgba(2,132,199,0.28)] transition-all hover:-translate-y-0.5 hover:border-[#f59e0b] hover:shadow-[3px_3px_0px_0px_#f59e0b] sm:p-4 dark:bg-slate-800">
+                <article class="group border-4 border-[#0284c7] bg-[rgba(250,248,245,0.94)] p-4 shadow-[5px_5px_0px_0px_#0284c7] transition-[transform,box-shadow,border-color] duration-150 ease-out hover:-translate-x-1 hover:-translate-y-1 hover:border-[#f59e0b] hover:shadow-[8px_8px_0px_0px_#f59e0b] focus-within:ring-4 focus-within:ring-[#f59e0b] focus-within:ring-offset-2 sm:p-5 dark:bg-slate-800">
                   <div class="flex items-center justify-between gap-3">
-                    <a href={item.sourceUrl} target="_blank" rel="noopener noreferrer" class="flex min-w-0 items-center gap-2.5 text-xs font-black text-[#0284c7] transition-colors hover:text-[#0ea5e9] dark:text-sky-400">
+                    <a href={item.sourceUrl} target="_blank" rel="noopener noreferrer" class="flex min-w-0 items-center gap-2.5 text-[11px] font-black text-[#0284c7] transition-colors hover:text-[#0ea5e9] dark:text-sky-400">
                       {#if item.avatar && !failedAvatars.has(item.id)}
                         <img src={item.avatar} alt="" width="36" height="36" loading="lazy" decoding="async" referrerpolicy="no-referrer" class="h-9 w-9 shrink-0 -rotate-2 rounded-sm border-2 border-[#0284c7] bg-white object-cover shadow-[2px_2px_0px_0px_#0284c7]" on:error={() => markAvatarFailed(item.id)} />
                       {:else}
@@ -243,21 +243,21 @@
                       {/if}
                       <span class="truncate">{item.source}</span>
                     </a>
-                    <time datetime={item.publishedAt} class="shrink-0 border border-amber-300 bg-amber-50 px-1.5 py-0.5 font-mono text-[10px] font-bold text-amber-700 dark:border-amber-700 dark:bg-amber-900/30 dark:text-amber-300" title={relativeTime(item.publishedAt)}>{formatTime(item.publishedAt)}</time>
+                    <time datetime={item.publishedAt} class="shrink-0 border-2 border-amber-300 bg-amber-50 px-1.5 py-0.5 font-mono text-[11px] font-bold text-amber-700 dark:border-amber-700 dark:bg-amber-900/30 dark:text-amber-300" title={relativeTime(item.publishedAt)}>{formatTime(item.publishedAt)}</time>
                   </div>
 
                   <div class="mt-3 flex items-start gap-2">
                     <span class="mt-2 h-2 w-2 shrink-0 -skew-x-12 border border-[#0284c7] bg-[#f59e0b] shadow-[1px_1px_0px_0px_#0284c7]" aria-hidden="true"></span>
-                    <h2 class="min-w-0 text-[15px] font-black leading-6 text-slate-800 dark:text-slate-100 sm:text-base">
-                      <a href={item.link} target="_blank" rel="noopener noreferrer" class="transition-colors hover:text-[#0284c7] dark:hover:text-sky-400">{item.title}<svg xmlns="http://www.w3.org/2000/svg" class="mb-0.5 ml-1 inline h-3.5 w-3.5 text-[#0284c7] opacity-60 transition-all group-hover:translate-x-0.5 group-hover:opacity-100 dark:text-sky-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M7 17L17 7M7 7h10v10" /></svg></a>
+                    <h2 class="min-w-0 text-base font-black leading-6 text-slate-800 dark:text-slate-100 sm:text-[17px]">
+                      <a href={item.link} target="_blank" rel="noopener noreferrer" tabindex="-1" aria-hidden="true" class="transition-colors hover:text-[#0284c7] dark:hover:text-sky-400">{item.title}<svg xmlns="http://www.w3.org/2000/svg" class="mb-0.5 ml-1 inline h-3.5 w-3.5 text-[#0284c7] opacity-60 transition-all group-hover:translate-x-0.5 group-hover:opacity-100 dark:text-sky-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M7 17L17 7M7 7h10v10" /></svg></a>
                     </h2>
                   </div>
                   {#if item.description}
-                    <p class="mt-2 line-clamp-2 pl-4 text-xs font-medium leading-5 text-slate-600 dark:text-slate-300">{item.description}</p>
+                    <p class="mt-2 line-clamp-2 pl-4 text-[13px] font-medium leading-6 text-slate-600 dark:text-slate-300">{item.description}</p>
                   {/if}
-                  <div class="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-dashed border-sky-200/80 pt-2 text-[10px] font-bold text-slate-500 dark:border-slate-700 dark:text-slate-400">
-                    <span class="truncate">{hostname(item.sourceUrl)} <span class="mx-1 text-slate-300">·</span> {relativeTime(item.publishedAt)}</span>
-                    <a href={item.link} target="_blank" rel="noopener noreferrer" class="shrink-0 text-[#0284c7] hover:underline dark:text-sky-400">阅读全文 →</a>
+                  <div class="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-dashed border-sky-200/80 pt-2 text-[11px] font-bold text-slate-500 dark:border-slate-700 dark:text-slate-400">
+                    <span class="truncate">{hostname(item.sourceUrl)}</span>
+                    <a href={item.link} target="_blank" rel="noopener noreferrer" class="shrink-0 border-2 border-[#0284c7] px-2 py-0.5 text-[#0284c7] hover:underline focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#f59e0b] focus-visible:ring-offset-2 dark:text-sky-400">阅读全文 →</a>
                   </div>
                 </article>
               {/each}
