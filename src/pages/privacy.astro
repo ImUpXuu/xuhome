@@ -23,13 +23,10 @@ import { i18nConfig } from '../config/site';
     <div class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] p-5 sm:p-7 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm mb-8">
       <h2 class="text-base sm:text-lg font-black text-[#0284c7] mb-3">声明</h2>
       <p class="text-sm sm:text-base leading-relaxed text-slate-700 dark:text-slate-300">
-        本隐私政策说明了 <strong class="text-[#0284c7]">UpXuu 博客</strong>（以下简称"本站"，域名 upxuu.com）如何收集、使用、存储、共享和披露你在访问过程中涉及的个人信息。
+        本政策说明 <strong class="text-[#0284c7]">UpXuu 的个人博客</strong>（https://upxuu.com，下称"本站"）在你访问时如何处理与个人信息相关的数据。本站是一个个人非商业博客，功能以阅读为主，不提供账号注册、支付或用户画像服务。
       </p>
       <p class="mt-3 text-sm sm:text-base leading-relaxed text-slate-700 dark:text-slate-300">
-        本站为个人博客站点，由个人运营，非商业用途。但本站使用了统计、评论等功能服务，涉及对访客数据的处理，因此依据中国相关法律法规（《个人信息保护法》《网络安全法》《民法典》等）制定本隐私政策。
-      </p>
-      <p class="mt-3 text-sm sm:text-base leading-relaxed text-slate-700 dark:text-slate-300">
-        <strong>在你使用本站之前，请仔细阅读本政策。</strong>访问或继续使用本站，即表示你同意本隐私政策的条款。
+        本站遵循最小必要原则：能用浏览器本地存储解决的，不上传服务器；能自托管的，不交给第三方。本政策逐项列出本站实际使用的每一项服务，包括其运营方与数据流向。
       </p>
     </div>
 
@@ -42,42 +39,42 @@ import { i18nConfig } from '../config/site';
         <table class="w-full text-sm border-collapse">
           <tbody>
             <tr class="border-b border-slate-200 dark:border-slate-700">
-              <td class="py-2 px-3 font-black text-[#0284c7] w-32 align-top">站点名称</td>
-              <td class="py-2 px-3">UpXuu 博客</td>
+              <td class="py-2 px-3 font-black text-[#0284c7] w-32 align-top">处理者</td>
+              <td class="py-2 px-3">UpXuu（个人开发者，非企业主体）</td>
             </tr>
             <tr class="border-b border-slate-200 dark:border-slate-700">
-              <td class="py-2 px-3 font-black text-[#0284c7] align-top">站点域名</td>
+              <td class="py-2 px-3 font-black text-[#0284c7] align-top">站点</td>
               <td class="py-2 px-3">
-                <a href="https://upxuu.com" class="text-[#0284c7] underline hover:text-[#0ea5e9]">upxuu.com</a>
+                <a href="https://upxuu.com" class="text-[#0284c7] underline hover:text-[#0ea5e9]">https://upxuu.com</a>
               </td>
             </tr>
             <tr class="border-b border-slate-200 dark:border-slate-700">
-              <td class="py-2 px-3 font-black text-[#0284c7] align-top">运营者</td>
-              <td class="py-2 px-3">个人（UpXuu）</td>
-            </tr>
-            <tr class="border-b border-slate-200 dark:border-slate-700">
-              <td class="py-2 px-3 font-black text-[#0284c7] align-top">联系方式</td>
+              <td class="py-2 px-3 font-black text-[#0284c7] align-top">联系邮箱</td>
               <td class="py-2 px-3">
-                📧 <a href={`mailto:${i18nConfig.privacy.contactEmail}`} class="text-[#0284c7] underline hover:text-[#0ea5e9] font-bold">{i18nConfig.privacy.contactEmail}</a><br>
-                🐙 <a href="https://github.com/ImUpXuu" target="_blank" rel="noopener noreferrer" class="text-[#0284c7] underline hover:text-[#0ea5e9] font-bold">github.com/ImUpXuu</a>
+                📧 <a href={`mailto:${i18nConfig.privacy.contactEmail}`} class="text-[#0284c7] underline hover:text-[#0ea5e9] font-bold">{i18nConfig.privacy.contactEmail}</a>
               </td>
             </tr>
             <tr>
-              <td class="py-2 px-3 font-black text-[#0284c7] align-top">站点性质</td>
-              <td class="py-2 px-3">非商业个人博客</td>
+              <td class="py-2 px-3 font-black text-[#0284c7] align-top">代码仓库</td>
+              <td class="py-2 px-3">
+                <a href="https://github.com/ImUpXuu/xuhome" target="_blank" rel="noopener noreferrer" class="text-[#0284c7] underline hover:text-[#0ea5e9] font-bold">github.com/ImUpXuu/xuhome</a>
+              </td>
             </tr>
           </tbody>
         </table>
+        <p class="mt-3 text-xs sm:text-sm text-slate-500 dark:text-slate-400">
+          本站不设数据保护官（DPO）。与隐私相关的任何请求，请发送至上述邮箱。
+        </p>
       </div>
     </div>
 
     <!-- Section 2: 收集的信息 -->
     <div class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] p-5 sm:p-7 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm mb-6">
       <h2 class="text-lg sm:text-xl font-black text-[#0284c7] border-b-4 border-[#0284c7] pb-2 mb-5 uppercase tracking-wider inline-block pr-4">
-        二、我们收集的信息
+        二、本站收集的信息
       </h2>
       <p class="text-sm sm:text-base leading-relaxed text-slate-700 dark:text-slate-300 mb-5">
-        本站在提供服务的过程中，通过以下方式收集信息。以下按服务类别逐一说明。
+        以下按服务类别逐项说明。每项都注明"收集什么 / 用途 / 存在哪里 / 是否涉及第三方"。
       </p>
 
       <div class="space-y-6 text-sm sm:text-base leading-relaxed text-slate-700 dark:text-slate-300">
@@ -86,274 +83,432 @@ import { i18nConfig } from '../config/site';
         <div>
           <h3 class="font-black text-slate-800 dark:text-slate-200 text-sm sm:text-base mb-2">
             <span class="inline-block w-2.5 h-2.5 bg-[#f59e0b] border-2 border-[#0284c7] mr-2 align-middle"></span>
-            2.1 Umami Analytics（访问统计）
+            2.1 访问统计：Umami Analytics
           </h3>
-          <p>
-            本站使用自托管的 <strong>Umami Analytics</strong> 实例收集匿名的页面访问数据，用于了解站点访问量。
-          </p>
           <ul class="list-disc list-inside mt-2 ml-4 space-y-1 text-slate-600 dark:text-slate-400">
-            <li>访问的页面路径（URL）</li>
-            <li>来源站点（Referer）</li>
-            <li>浏览器类型与操作系统</li>
-            <li>设备类型与屏幕分辨率</li>
-            <li>基于 IP 的国家/地区级别粗略位置</li>
+            <li><strong class="text-slate-800 dark:text-slate-200">收集</strong>：页面路径、来源页（Referer）、浏览器与操作系统类型、设备类型、屏幕尺寸、由服务端根据 IP 推断的国家/地区、匿名会话标识。</li>
+            <li><strong class="text-slate-800 dark:text-slate-200">用途</strong>：统计访问量与热门内容，判断哪些文章值得继续写。</li>
+            <li><strong class="text-slate-800 dark:text-slate-200">存储</strong>：站长自托管的 Umami 实例（<code>stats.upxuu.com</code>）的数据库中，以聚合统计形式保存。</li>
+            <li><strong class="text-slate-800 dark:text-slate-200">第三方</strong>：无。该实例由站长自行部署，数据不提供给任何第三方分析平台。</li>
+            <li><strong class="text-slate-800 dark:text-slate-200">加载方式</strong>：页面空闲（<code>requestIdleCallback</code>）后才加载统计脚本，不阻塞阅读。</li>
+            <li><strong class="text-slate-800 dark:text-slate-200">不使用</strong>：本站不使用 Google Analytics、百度统计等第三方统计服务。</li>
           </ul>
-          <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">
-            ⚠ Umami 不使用 Cookie，不追踪跨站行为。数据不与个人身份关联，仅以聚合形式展示。
-          </p>
           <div class="mt-2 p-3 bg-[rgba(250,248,245,0.55)] dark:bg-slate-700 border-2 border-slate-300 dark:border-slate-600 rounded-sm text-xs font-mono text-slate-500 dark:text-slate-400">
-            服务方：stats.upxuu.com（第一方，部署于 Vercel，数据存储位于香港）
+            服务方：stats.upxuu.com（第一方自托管 Umami）
           </div>
         </div>
 
-        <!-- 2.2 Microsoft Clarity -->
+        <!-- 2.2 阅读量与站点数据接口 -->
         <div>
           <h3 class="font-black text-slate-800 dark:text-slate-200 text-sm sm:text-base mb-2">
             <span class="inline-block w-2.5 h-2.5 bg-[#f59e0b] border-2 border-[#0284c7] mr-2 align-middle"></span>
-            2.2 Microsoft Clarity（用户行为分析）
+            2.2 阅读量与站点数据接口
           </h3>
-          <p>
-            本站使用微软提供的 <strong>Microsoft Clarity</strong> 服务收集用户行为数据。该服务会记录你在本站页面上的操作行为，包括：
-          </p>
           <ul class="list-disc list-inside mt-2 ml-4 space-y-1 text-slate-600 dark:text-slate-400">
-            <li><strong>会话录屏（Session Recording）</strong>——以匿名方式录制你在页面上的点击、滚动、输入轨迹</li>
-            <li><strong>热力图（Heatmap）</strong>——汇总用户点击和滚动区域的热度分布</li>
-            <li>页面 URL、设备信息、操作系统、浏览器类型</li>
+            <li><strong class="text-slate-800 dark:text-slate-200">收集</strong>：你在本站内访问的文章路径（如 <code>/posts/xxx/</code>），用于查询该文章的阅读量。</li>
+            <li><strong class="text-slate-800 dark:text-slate-200">用途</strong>：展示文章阅读数、页脚总访问量、<code>/stats</code> 页面的趋势图。</li>
+            <li><strong class="text-slate-800 dark:text-slate-200">存储</strong>：数据源与 2.1 相同（Umami 数据库）。接口（<code>blog.api.upxuu.com</code>）为<strong>只读</strong>服务，仅做查询与聚合，不写入新的个人信息。</li>
+            <li><strong class="text-slate-800 dark:text-slate-200">第三方</strong>：无。</li>
+          </ul>
+          <div class="mt-2 p-3 bg-[rgba(250,248,245,0.55)] dark:bg-slate-700 border-2 border-slate-300 dark:border-slate-600 rounded-sm text-xs font-mono text-slate-500 dark:text-slate-400">
+            服务方：blog.api.upxuu.com（第一方自建，只读接口）
+          </div>
+        </div>
+
+        <!-- 2.3 Microsoft Clarity -->
+        <div>
+          <h3 class="font-black text-slate-800 dark:text-slate-200 text-sm sm:text-base mb-2">
+            <span class="inline-block w-2.5 h-2.5 bg-[#f59e0b] border-2 border-[#0284c7] mr-2 align-middle"></span>
+            2.3 Microsoft Clarity（页面行为分析）
+          </h3>
+          <ul class="list-disc list-inside mt-2 ml-4 space-y-1 text-slate-600 dark:text-slate-400">
+            <li><strong class="text-slate-800 dark:text-slate-200">收集</strong>：鼠标移动、点击、滚动等交互行为；<strong>会话录屏</strong>（页面内容的可视化回放）；设备与浏览器信息；由 Clarity 自行生成的 Cookie 标识。</li>
+            <li><strong class="text-slate-800 dark:text-slate-200">用途</strong>：了解页面哪里难用（例如按钮点不到、内容看不全），改进排版与交互。</li>
+            <li><strong class="text-slate-800 dark:text-slate-200">存储</strong>：Microsoft 的云端服务器（境外）。Clarity 默认保留期约 30 天，之后自动删除。</li>
+            <li><strong class="text-slate-800 dark:text-slate-200">第三方</strong>：Microsoft Corporation。</li>
+            <li><strong class="text-slate-800 dark:text-slate-200">Cookie</strong>：Clarity 可能写入 <code>_clck</code>、<code>_uetvid</code>、<code>_uetmsclkid</code> 等标识。</li>
+            <li><strong class="text-slate-800 dark:text-slate-200">如何拒绝</strong>：安装 Ghostery、uBlock Origin 等拦截扩展，或在浏览器中屏蔽 <code>clarity.ms</code> 域名，即可完全阻止该服务。</li>
           </ul>
           <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">
-            ⚠ Clarity 使用 Cookie 识别用户会话。录屏数据经匿名化处理，不收集键盘输入的敏感信息（如密码、信用卡号）。数据存储在微软的服务器上（可能涉及境外传输），受微软隐私政策约束。详情参见
+            详情参见
             <a href="https://clarity.microsoft.com/privacy-policy/" target="_blank" rel="noopener noreferrer" class="text-[#0284c7] underline hover:text-[#0ea5e9]">Microsoft Clarity 隐私政策</a>。
-            你可以通过浏览器扩展（如 Ghostery）或 AdBlock 等工具屏蔽 Clarity 脚本。
           </p>
           <div class="mt-2 p-3 bg-[rgba(250,248,245,0.55)] dark:bg-slate-700 border-2 border-slate-300 dark:border-slate-600 rounded-sm text-xs font-mono text-slate-500 dark:text-slate-400">
             服务方：clarity.ms（第三方，Microsoft Corporation，美国）
           </div>
         </div>
 
-        <!-- 2.3 Beat PV -->
+        <!-- 2.4 Waline Comments -->
         <div>
           <h3 class="font-black text-slate-800 dark:text-slate-200 text-sm sm:text-base mb-2">
             <span class="inline-block w-2.5 h-2.5 bg-[#f59e0b] border-2 border-[#0284c7] mr-2 align-middle"></span>
-            2.3 访问计数（Beat PV）
+            2.4 评论系统：Waline（自托管）
           </h3>
           <p>
-            本站使用自部署的 <strong>Beat</strong> 统计服务进行页面访问计数。Beat 部署在 <strong>Cloudflare Workers</strong> 边缘计算平台上，由本站运营者完全控制。每次页面加载时，通过 <code>sendBeacon</code> 发送当前页面路径，用于统计各页面的访问次数。文章详情页会额外查询该页面的累计 PV 并在页面底部展示。
+            本站评论系统由站长自行部署（<code>comment.upxuu.com</code>），不使用 Disqus 等第三方评论平台。
           </p>
-          <ul class="list-disc list-inside mt-2 ml-4 space-y-1 text-slate-600 dark:text-slate-400">
-            <li>当前页面路径（含 URL hash）</li>
-            <li>IP 地址、User-Agent、Referer（作为 HTTP 请求元数据自动发送）</li>
-          </ul>
-          <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">
-            ⚠ Beat 数据由本站运营者管理，不向任何第三方共享。PV 数据以页面维度聚合展示，不与个人身份关联。
-          </p>
-          <div class="mt-2 p-3 bg-[rgba(250,248,245,0.55)] dark:bg-slate-700 border-2 border-slate-300 dark:border-slate-600 rounded-sm text-xs font-mono text-slate-500 dark:text-slate-400">
-            服务方：beat.345696.xyz（第一方自部署，Cloudflare Workers）
-          </div>
-        </div>
-
-        <!-- 2.4 BlogAPI Stats -->
-        <div>
-          <h3 class="font-black text-slate-800 dark:text-slate-200 text-sm sm:text-base mb-2">
-            <span class="inline-block w-2.5 h-2.5 bg-[#f59e0b] border-2 border-[#0284c7] mr-2 align-middle"></span>
-            2.4 站点访问量展示
-          </h3>
-          <p>
-            本站欢迎提示和页脚区域展示全站累积访问量和在线人数。该数据通过第三方统计 API 获取，仅读取聚合后的数值（PV 总数、当前在线人数），不发送额外的个人信息。
-          </p>
-          <ul class="list-disc list-inside mt-2 ml-4 space-y-1 text-slate-600 dark:text-slate-400">
-            <li>API 请求会携带 IP、User-Agent、Referer 作为标准 HTTP 元数据</li>
-          </ul>
-          <div class="mt-2 p-3 bg-[rgba(250,248,245,0.55)] dark:bg-slate-700 border-2 border-slate-300 dark:border-slate-600 rounded-sm text-xs font-mono text-slate-500 dark:text-slate-400">
-            服务方：blogapi.476543.xyz（第三方统计 API）
-          </div>
-        </div>
-
-        <!-- 2.5 Waline Comments -->
-        <div>
-          <h3 class="font-black text-slate-800 dark:text-slate-200 text-sm sm:text-base mb-2">
-            <span class="inline-block w-2.5 h-2.5 bg-[#f59e0b] border-2 border-[#0284c7] mr-2 align-middle"></span>
-            2.5 评论系统（Waline）
-          </h3>
-          <p>
-            文章详情页集成了自托管的 <strong>Waline</strong> 评论系统。当你发表评论时，我们收集以下信息：
-          </p>
-          <ul class="list-disc list-inside mt-2 ml-4 space-y-1 text-slate-600 dark:text-slate-400">
-            <li>你主动填写的<strong>昵称、邮箱、网址</strong>（均为可选）</li>
-            <li>评论正文内容（Markdown 格式）</li>
-            <li>浏览器 User-Agent（用于展示操作系统/浏览器图标）</li>
-            <li>IP 地址（由服务器自动记录，用于反垃圾评论）</li>
-          </ul>
-          <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">
-            ⚠ 邮箱不会公开展示，仅用于 Gravatar 头像匹配和收到回复时的邮件通知。
-          </p>
-          <div class="mt-2 p-3 bg-[rgba(250,248,245,0.55)] dark:bg-slate-700 border-2 border-slate-300 dark:border-slate-600 rounded-sm text-xs font-mono text-slate-500 dark:text-slate-400">
-            评论服务：comment.upxuu.com（第一方自托管）<br>
-          </div>
-        </div>
-
-        <!-- 2.6 AI Features -->
-        <div>
-          <h3 class="font-black text-slate-800 dark:text-slate-200 text-sm sm:text-base mb-2">
-            <span class="inline-block w-2.5 h-2.5 bg-[#f59e0b] border-2 border-[#0284c7] mr-2 align-middle"></span>
-            2.6 AI 摘要与对话
-          </h3>
-          <p>
-            本站提供 AI 文章摘要和 AI 对话功能（当前可能处于暂停或调整状态）。当启用时：
-          </p>
-          <ul class="list-disc list-inside mt-2 ml-4 space-y-1 text-slate-600 dark:text-slate-400">
-            <li><strong>AI 摘要</strong>——发送当前文章的 URL 至服务端，服务端抓取文章内容后由 AI 模型生成摘要</li>
-            <li><strong>AI 对话</strong>——你输入的消息连同完整的对话历史会发送至服务端，由 AI 模型处理后返回回复</li>
-          </ul>
-          <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">
-            ⚠ 聊天记录和模型偏好保存在你的浏览器本地存储（localStorage）中，不会由本站上传至服务器。但你发送的对话内容会经 AI 服务端处理。
-          </p>
-          <div class="mt-2 p-3 bg-[rgba(250,248,245,0.55)] dark:bg-slate-700 border-2 border-slate-300 dark:border-slate-600 rounded-sm text-xs font-mono text-slate-500 dark:text-slate-400">
-            服务方：blogapi.upxuu.com（第一方自托管 AI 后端）
-          </div>
-        </div>
-
-        <!-- 2.7 Location & Weather -->
-        <div>
-          <h3 class="font-black text-slate-800 dark:text-slate-200 text-sm sm:text-base mb-2">
-            <span class="inline-block w-2.5 h-2.5 bg-[#f59e0b] border-2 border-[#0284c7] mr-2 align-middle"></span>
-            2.7 欢迎提示中的位置与天气
-          </h3>
-          <p>
-            首次访问时，本站通过第三方 API 获取基于访客 IP 的城市级别位置和当日天气信息，用于在欢迎提示中展示个性化问候。你的 IP 地址会在请求过程中由该 API 服务方识别和处理。
-          </p>
-          <div class="mt-2 p-3 bg-[rgba(250,248,245,0.55)] dark:bg-slate-700 border-2 border-slate-300 dark:border-slate-600 rounded-sm text-xs font-mono text-slate-500 dark:text-slate-400">
-            服务方：uapis.cn（第三方聚合 API）
-          </div>
-        </div>
-
-        <!-- 2.8 External Resources -->
-        <div>
-          <h3 class="font-black text-slate-800 dark:text-slate-200 text-sm sm:text-base mb-2">
-            <span class="inline-block w-2.5 h-2.5 bg-[#f59e0b] border-2 border-[#0284c7] mr-2 align-middle"></span>
-            2.8 第三方资源加载
-          </h3>
-          <p>本站加载以下第三方资源，这些服务的服务器会收到标准的 HTTP 请求元数据（IP 地址、User-Agent、Referer）：</p>
+          <p class="mt-3 font-bold text-slate-800 dark:text-slate-200">你提交评论时会收集：</p>
           <div class="overflow-x-auto mt-2">
             <table class="w-full text-xs sm:text-sm border-collapse">
               <thead>
                 <tr class="border-b-3 border-[#0284c7]">
-                  <th class="text-left py-2 px-3 font-black text-[#0284c7] uppercase tracking-wider">资源</th>
+                  <th class="text-left py-2 px-3 font-black text-[#0284c7] uppercase tracking-wider">字段</th>
+                  <th class="text-left py-2 px-3 font-black text-[#0284c7] uppercase tracking-wider">是否必填</th>
+                  <th class="text-left py-2 px-3 font-black text-[#0284c7] uppercase tracking-wider">是否公开显示</th>
                   <th class="text-left py-2 px-3 font-black text-[#0284c7] uppercase tracking-wider">用途</th>
-                  <th class="text-left py-2 px-3 font-black text-[#0284c7] uppercase tracking-wider">服务方</th>
                 </tr>
               </thead>
               <tbody class="text-slate-600 dark:text-slate-400">
                 <tr class="border-b border-slate-200 dark:border-slate-700">
-                  <td class="py-2 px-3 font-bold">Google Fonts</td>
-                  <td class="py-2 px-3">提供 Fredoka、Noto Sans SC、JetBrains Mono 字体</td>
-                  <td class="py-2 px-3 font-mono text-[10px]">fonts.googleapis.com / gstatic.com（Google LLC，美国）</td>
+                  <td class="py-2 px-3 font-bold">昵称</td>
+                  <td class="py-2 px-3">必填</td>
+                  <td class="py-2 px-3"><strong class="text-slate-800 dark:text-slate-200">公开</strong></td>
+                  <td class="py-2 px-3">标识评论者</td>
                 </tr>
                 <tr class="border-b border-slate-200 dark:border-slate-700">
-                  <td class="py-2 px-3 font-bold">GitHub API</td>
-                  <td class="py-2 px-3">关于页展示公开仓库列表（构建时请求）</td>
-                  <td class="py-2 px-3 font-mono text-[10px]">api.github.com（GitHub, Inc.，美国）</td>
+                  <td class="py-2 px-3 font-bold">邮箱</td>
+                  <td class="py-2 px-3">必填</td>
+                  <td class="py-2 px-3"><strong class="text-slate-800 dark:text-slate-200">不公开</strong></td>
+                  <td class="py-2 px-3">接收回复通知；生成头像</td>
                 </tr>
                 <tr class="border-b border-slate-200 dark:border-slate-700">
-                  <td class="py-2 px-3 font-bold">Bilibili 视频列表</td>
-                  <td class="py-2 px-3">关于页展示 UP 主视频动态</td>
-                  <td class="py-2 px-3 font-mono text-[10px]">uapis.cn（第三方聚合 API，构建时请求）</td>
+                  <td class="py-2 px-3 font-bold">个人网址</td>
+                  <td class="py-2 px-3">选填</td>
+                  <td class="py-2 px-3"><strong class="text-slate-800 dark:text-slate-200">公开</strong>（作为昵称链接）</td>
+                  <td class="py-2 px-3">展示你的站点</td>
                 </tr>
                 <tr class="border-b border-slate-200 dark:border-slate-700">
-                  <td class="py-2 px-3 font-bold">GitHub Stats / Streak 卡片</td>
-                  <td class="py-2 px-3">关于页展示贡献统计图</td>
-                  <td class="py-2 px-3 font-mono text-[10px]">github-readme-stats.shion.dev / streak-stats.demolab.com</td>
+                  <td class="py-2 px-3 font-bold">评论正文</td>
+                  <td class="py-2 px-3">必填</td>
+                  <td class="py-2 px-3"><strong class="text-slate-800 dark:text-slate-200">公开</strong></td>
+                  <td class="py-2 px-3">评论内容</td>
                 </tr>
                 <tr class="border-b border-slate-200 dark:border-slate-700">
-                  <td class="py-2 px-3 font-bold">GitHub Profile 访问计数</td>
-                  <td class="py-2 px-3">关于页展示 GitHub 访问量图标</td>
-                  <td class="py-2 px-3 font-mono text-[10px]">komarev.com</td>
+                  <td class="py-2 px-3 font-bold">IP 地址</td>
+                  <td class="py-2 px-3">自动</td>
+                  <td class="py-2 px-3">不公开（仅服务端保存）</td>
+                  <td class="py-2 px-3">反垃圾、审核</td>
                 </tr>
                 <tr class="border-b border-slate-200 dark:border-slate-700">
-                  <td class="py-2 px-3 font-bold">随机封面图</td>
-                  <td class="py-2 px-3">为无封面文章提供随机图片</td>
-                  <td class="py-2 px-3 font-mono text-[10px]">bing.biturl.top</td>
+                  <td class="py-2 px-3 font-bold">User-Agent</td>
+                  <td class="py-2 px-3">自动</td>
+                  <td class="py-2 px-3"><strong class="text-slate-800 dark:text-slate-200">部分公开</strong></td>
+                  <td class="py-2 px-3">见下</td>
                 </tr>
                 <tr class="border-b border-slate-200 dark:border-slate-700">
-                  <td class="py-2 px-3 font-bold">QR 码生成</td>
-                  <td class="py-2 px-3">分享功能中生成二维码图片</td>
-                  <td class="py-2 px-3 font-mono text-[10px]">api.qrserver.com</td>
+                  <td class="py-2 px-3 font-bold">由 IP 推断的省份</td>
+                  <td class="py-2 px-3">自动</td>
+                  <td class="py-2 px-3"><strong class="text-slate-800 dark:text-slate-200">公开</strong></td>
+                  <td class="py-2 px-3">评论旁显示地区标签</td>
                 </tr>
                 <tr class="border-b border-slate-200 dark:border-slate-700">
-                  <td class="py-2 px-3 font-bold">BlogsClub 徽章</td>
-                  <td class="py-2 px-3">页脚展示博客联盟排名徽章</td>
-                  <td class="py-2 px-3 font-mono text-[10px]">blogsclub.org</td>
-                </tr>
-                <tr class="border-b border-slate-200 dark:border-slate-700">
-                  <td class="py-2 px-3 font-bold">jsDelivr CDN</td>
-                  <td class="py-2 px-3">评论系统静态资源依赖</td>
-                  <td class="py-2 px-3 font-mono text-[10px]">cdn.jsdelivr.net</td>
+                  <td class="py-2 px-3 font-bold">浏览器与操作系统</td>
+                  <td class="py-2 px-3">自动</td>
+                  <td class="py-2 px-3"><strong class="text-slate-800 dark:text-slate-200">公开</strong></td>
+                  <td class="py-2 px-3">评论旁显示浏览器/系统图标</td>
                 </tr>
                 <tr>
-                  <td class="py-2 px-3 font-bold">背景图片 CDN</td>
-                  <td class="py-2 px-3">页面装饰背景图片</td>
-                  <td class="py-2 px-3 font-mono text-[10px]">img.upxuu.com（第一方图床）</td>
+                  <td class="py-2 px-3 font-bold">提交时间</td>
+                  <td class="py-2 px-3">自动</td>
+                  <td class="py-2 px-3">公开</td>
+                  <td class="py-2 px-3">评论排序</td>
                 </tr>
               </tbody>
             </table>
           </div>
-        </div>
-
-        <!-- 2.9 Sharing -->
-        <div>
-          <h3 class="font-black text-slate-800 dark:text-slate-200 text-sm sm:text-base mb-2">
-            <span class="inline-block w-2.5 h-2.5 bg-[#f59e0b] border-2 border-[#0284c7] mr-2 align-middle"></span>
-            2.9 社交分享
-          </h3>
-          <p>
-            文章和说说页面提供分享功能。当你点击分享按钮时，会跳转至第三方平台，此时该平台将收到你在本站页面的 URL、文章标题等信息：
+          <p class="mt-3 p-3 bg-[#fffbeb] dark:bg-slate-700 border-2 border-[#f59e0b] rounded-sm text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+            <strong>请注意</strong>：本站评论接口是公开只读的，上述标为"公开"的字段（昵称、网址、正文、<strong>省份</strong>、<strong>浏览器版本</strong>、<strong>操作系统</strong>）任何人都可以通过接口读取。如果你不希望暴露所在省份或设备信息，请不要发表评论。
           </p>
-          <ul class="list-disc list-inside mt-2 ml-4 space-y-1 text-slate-600 dark:text-slate-400">
-            <li><strong>QQ 空间分享</strong>——sns.qzone.qq.com</li>
-            <li><strong>X (Twitter) 分享</strong>——twitter.com/intent/tweet</li>
-            <li><strong>QR 码生成</strong>——发送当前页面 URL 至 api.qrserver.com 生成二维码图片</li>
-            <li><strong>海报生成</strong>——在本地浏览器中生成，不涉及外部服务</li>
-          </ul>
-        </div>
-
-        <!-- 2.10 Music Embeds -->
-        <div>
-          <h3 class="font-black text-slate-800 dark:text-slate-200 text-sm sm:text-base mb-2">
-            <span class="inline-block w-2.5 h-2.5 bg-[#f59e0b] border-2 border-[#0284c7] mr-2 align-middle"></span>
-            2.10 第三方嵌入内容
-          </h3>
-          <p>
-            部分文章中可能嵌入第三方内容（如网易云音乐播放器 iframe）。加载这些嵌入内容时，第三方服务会收到包含你 IP 地址和 User-Agent 的标准 HTTP 请求。
+          <p class="mt-3">
+            <strong class="text-slate-800 dark:text-slate-200">头像</strong>：评论头像由 <strong>Libravatar</strong>（<code>seccdn.libravatar.org</code>）根据你邮箱的哈希值生成。你的邮箱<strong>明文不会</strong>发送给 Libravatar，但邮箱的哈希值会作为 URL 的一部分被其服务器收到。若你不希望如此，可使用与常用邮箱不同的地址发表评论。
           </p>
-          <ul class="list-disc list-inside mt-2 ml-4 space-y-1 text-slate-600 dark:text-slate-400">
-            <li><strong>网易云音乐外链播放器</strong>——music.163.com（网易云音乐）</li>
-            <li><strong>GitHub 仓库卡片</strong>——opengraph.githubassets.com（GitHub, Inc.）</li>
-            <li><strong>AI 对话页面</strong>——ai.upxuu.com（第一方，iframe 嵌入）</li>
-          </ul>
-        </div>
-
-        <!-- 2.11 Server Monitoring -->
-        <div>
-          <h3 class="font-black text-slate-800 dark:text-slate-200 text-sm sm:text-base mb-2">
-            <span class="inline-block w-2.5 h-2.5 bg-[#f59e0b] border-2 border-[#0284c7] mr-2 align-middle"></span>
-            2.11 服务器状态监控
-          </h3>
-          <p>
-            关于页面展示本站服务器的实时带宽和运行状态。此数据通过第一方 API 获取（服务端带宽信息），不涉及访客个人信息的收集或发送。
+          <p class="mt-2">
+            <strong class="text-slate-800 dark:text-slate-200">表情图片</strong>：评论框的表情图片从 <strong>unpkg</strong>（npm 公共 CDN，由 Cloudflare 承载）加载，加载时你的 IP、UA、Referer 会被该 CDN 收到。
+          </p>
+          <p class="mt-2">
+            <strong class="text-slate-800 dark:text-slate-200">评论审核</strong>：为防止垃圾评论，站长使用自建的审核后台对评论做自动初筛。<strong>该审核过程会将评论正文、昵称与邮箱发送给第三方大语言模型进行判定</strong>。审核后台仅站长本人可访问，审核结果不对外公开。
+          </p>
+          <p class="mt-2">
+            <strong class="text-slate-800 dark:text-slate-200">邮件通知</strong>：若你留下邮箱并收到回复，Waline 可能通过邮件通知你。邮件通知由站长服务器发出。
           </p>
           <div class="mt-2 p-3 bg-[rgba(250,248,245,0.55)] dark:bg-slate-700 border-2 border-slate-300 dark:border-slate-600 rounded-sm text-xs font-mono text-slate-500 dark:text-slate-400">
-            服务方：monitor-api.upxuu.com（第一方自托管）
+            评论服务：comment.upxuu.com（第一方自托管 Waline）
           </div>
         </div>
 
-        <!-- 2.12 Friend Links -->
+        <!-- 2.5 AI -->
         <div>
           <h3 class="font-black text-slate-800 dark:text-slate-200 text-sm sm:text-base mb-2">
             <span class="inline-block w-2.5 h-2.5 bg-[#f59e0b] border-2 border-[#0284c7] mr-2 align-middle"></span>
-            2.12 友情链接
+            2.5 AI 对话（ai.upxuu.com）
+          </h3>
+          <ul class="list-disc list-inside mt-2 ml-4 space-y-1 text-slate-600 dark:text-slate-400">
+            <li><strong class="text-slate-800 dark:text-slate-200">入口</strong>：站内 <code>/ai</code> 页面，以及导航栏的"AI"外链。</li>
+            <li><strong class="text-slate-800 dark:text-slate-200">收集</strong>：你输入的问题、最近若干轮对话上下文、人机验证 token。</li>
+            <li><strong class="text-slate-800 dark:text-slate-200">发送到哪</strong>：先发送到站长自建的 AI 后端（<code>ai.upxuu.com</code>），再由该后端转发给上游大语言模型服务商。<strong>上游服务商由后端配置决定，本站不在此列出具体厂商</strong>；如你需要确认，请通过页尾邮箱询问。</li>
+            <li><strong class="text-slate-800 dark:text-slate-200">本地保存</strong>：对话历史保存在你浏览器的 <code>localStorage</code>（键名 <code>upxuu_ai_history</code>，最多 24 条）。本站不会主动把这份历史上传；清除浏览器数据即可删除。</li>
+            <li><strong class="text-slate-800 dark:text-slate-200">人机验证</strong>：提交前会通过 <strong>Cap</strong>（<code>cap.upxuu.com</code>，站长自托管）完成一次工作量证明验证，用于防止接口被脚本滥用。该过程不收集额外个人信息。</li>
+            <li><strong class="text-slate-800 dark:text-slate-200">注意</strong>：AI 后端页面自身会加载 Google Fonts（<code>fonts.googleapis.com</code>），因此访问 AI 功能时你的 IP 也会被 Google 收到。</li>
+          </ul>
+          <div class="mt-2 p-3 bg-[rgba(250,248,245,0.55)] dark:bg-slate-700 border-2 border-slate-300 dark:border-slate-600 rounded-sm text-xs font-mono text-slate-500 dark:text-slate-400">
+            服务方：ai.upxuu.com / cap.upxuu.com（第一方自建）
+          </div>
+        </div>
+
+        <!-- 2.6 Music -->
+        <div>
+          <h3 class="font-black text-slate-800 dark:text-slate-200 text-sm sm:text-base mb-2">
+            <span class="inline-block w-2.5 h-2.5 bg-[#f59e0b] border-2 border-[#0284c7] mr-2 align-middle"></span>
+            2.6 音乐播放器
+          </h3>
+          <ul class="list-disc list-inside mt-2 ml-4 space-y-1 text-slate-600 dark:text-slate-400">
+            <li>站内播放器通过站长自建的代理接口（<code>music.upxuu.com</code>）请求<strong>网易云音乐</strong>的歌单与音频。你选择的歌单 ID / 搜索词会作为请求参数发送到该代理与网易云。</li>
+            <li>部分文章内嵌网易云音乐的官方播放器 iframe（<code>music.163.com</code>），加载时网易云可获取你的 IP、UA 与 Referer。</li>
+            <li>音量与"后台播放"开关只保存在你浏览器本地（<code>music-volume</code>、<code>music-bg</code>）。</li>
+          </ul>
+        </div>
+
+        <!-- 2.7 Moments -->
+        <div>
+          <h3 class="font-black text-slate-800 dark:text-slate-200 text-sm sm:text-base mb-2">
+            <span class="inline-block w-2.5 h-2.5 bg-[#f59e0b] border-2 border-[#0284c7] mr-2 align-middle"></span>
+            2.7 朋友圈（/moments）
           </h3>
           <p>
-            友链页面展示的第三方站点信息和头像来源于本站配置数据及第三方站点自身。加载友链页面时，你的浏览器会向各友链站点的头像地址发送图片请求（已设置 <code>referrerpolicy="no-referrer"</code> 不泄露来源页）。点击友链卡片会跳转至第三方站点。
+            <code>/moments</code> 页面展示友邻博客最近 15 天的更新。页面会从 <code>friend.upxuu.com</code> 拉取一份由多位博主公开内容聚合而成的 JSON，并在你的浏览器中渲染。
           </p>
+          <ul class="list-disc list-inside mt-2 ml-4 space-y-1 text-slate-600 dark:text-slate-400">
+            <li><strong class="text-slate-800 dark:text-slate-200">本站不收集</strong>你在此页面的任何个人信息。</li>
+            <li>但渲染过程中，你的浏览器会向<strong>约 40 余个第三方博客域名</strong>请求头像与封面图（部分头像来自 <code>www.google.com</code> 的站点图标服务），这些站点因此能获知你的 IP、UA 与 Referer。</li>
+            <li>聚合数据会在当前会话中缓存于 <code>sessionStorage</code>（<code>__xuhomeMomentsSnapshot</code>），关闭标签页即清除。</li>
+          </ul>
+        </div>
+
+        <!-- 2.8 Friends -->
+        <div>
+          <h3 class="font-black text-slate-800 dark:text-slate-200 text-sm sm:text-base mb-2">
+            <span class="inline-block w-2.5 h-2.5 bg-[#f59e0b] border-2 border-[#0284c7] mr-2 align-middle"></span>
+            2.8 友链页（/friends）
+          </h3>
+          <p>
+            友链页展示约 140 个友邻站点。页面加载时会从各站点拉取头像图片，<strong>这些第三方站点会收到你的 IP、UA 与 Referer</strong>。本站不向它们传递任何额外信息。
+          </p>
+        </div>
+
+        <!-- 2.9 About -->
+        <div>
+          <h3 class="font-black text-slate-800 dark:text-slate-200 text-sm sm:text-base mb-2">
+            <span class="inline-block w-2.5 h-2.5 bg-[#f59e0b] border-2 border-[#0284c7] mr-2 align-middle"></span>
+            2.9 关于页（/about）
+          </h3>
+          <ul class="list-disc list-inside mt-2 ml-4 space-y-1 text-slate-600 dark:text-slate-400">
+            <li>GitHub 仓库列表与 Bilibili 视频列表在<strong>构建时</strong>由服务器抓取并写入静态页面，访客浏览时不产生请求。</li>
+            <li>但页面上的统计徽章图片由你的浏览器直接加载：<code>github-readme-stats.shion.dev</code>、<code>streak-stats.demolab.com</code>、<code>komarev.com</code>；Bilibili 视频封面来自 <code>hdslb.com</code>。这些服务会收到你的 IP、UA 与 Referer。</li>
+          </ul>
+        </div>
+
+        <!-- 2.10 Sharing -->
+        <div>
+          <h3 class="font-black text-slate-800 dark:text-slate-200 text-sm sm:text-base mb-2">
+            <span class="inline-block w-2.5 h-2.5 bg-[#f59e0b] border-2 border-[#0284c7] mr-2 align-middle"></span>
+            2.10 分享功能
+          </h3>
+          <ul class="list-disc list-inside mt-2 ml-4 space-y-1 text-slate-600 dark:text-slate-400">
+            <li><strong class="text-slate-800 dark:text-slate-200">生成海报</strong>：完全在你的浏览器本地用 canvas 绘制，不上传任何内容。</li>
+            <li><strong class="text-slate-800 dark:text-slate-200">分享到 QQ 空间 / X</strong>：点击后会在新窗口打开对应平台的分享页，页面 URL 与标题会作为参数传给该平台。</li>
+            <li><strong class="text-slate-800 dark:text-slate-200">生成二维码</strong>：由 <code>api.qrserver.com</code> 生成，被分享的链接会作为参数发送给该服务。</li>
+          </ul>
+        </div>
+
+        <!-- 2.11 Stats -->
+        <div>
+          <h3 class="font-black text-slate-800 dark:text-slate-200 text-sm sm:text-base mb-2">
+            <span class="inline-block w-2.5 h-2.5 bg-[#f59e0b] border-2 border-[#0284c7] mr-2 align-middle"></span>
+            2.11 服务状态
+          </h3>
+          <p>
+            <code>/stats</code> 页面的服务器流量信息来自站长自建的监控接口（<code>monitor-api.upxuu.com</code>）。仅传输流量数值，不涉及访客个人信息。
+          </p>
+        </div>
+
+        <!-- 2.12 Assets -->
+        <div>
+          <h3 class="font-black text-slate-800 dark:text-slate-200 text-sm sm:text-base mb-2">
+            <span class="inline-block w-2.5 h-2.5 bg-[#f59e0b] border-2 border-[#0284c7] mr-2 align-middle"></span>
+            2.12 字体、图片与静态资源
+          </h3>
+          <p>
+            本站字体与背景图由站长自建的 CDN（<code>img.upxuu.lcrworld.xyz</code>）提供，<strong>不再请求 Google Fonts</strong>。加载时该 CDN 会收到你的 IP、UA 与 Referer。
+          </p>
+          <p class="mt-2">
+            页面还包含对 <code>f.xxu6.top</code> 的 DNS 预取与预连接声明，仅用于加速，<strong>不加载任何内容</strong>，但建立连接时该域名会获知你的 IP。
+          </p>
+        </div>
+
+        <!-- 2.13 Third-party list -->
+        <div>
+          <h3 class="font-black text-slate-800 dark:text-slate-200 text-sm sm:text-base mb-2">
+            <span class="inline-block w-2.5 h-2.5 bg-[#f59e0b] border-2 border-[#0284c7] mr-2 align-middle"></span>
+            2.13 其他第三方资源一览
+          </h3>
+          <div class="overflow-x-auto mt-2">
+            <table class="w-full text-xs sm:text-sm border-collapse">
+              <thead>
+                <tr class="border-b-3 border-[#0284c7]">
+                  <th class="text-left py-2 px-3 font-black text-[#0284c7] uppercase tracking-wider">域名</th>
+                  <th class="text-left py-2 px-3 font-black text-[#0284c7] uppercase tracking-wider">运营方</th>
+                  <th class="text-left py-2 px-3 font-black text-[#0284c7] uppercase tracking-wider">何时加载</th>
+                  <th class="text-left py-2 px-3 font-black text-[#0284c7] uppercase tracking-wider">对方可获知</th>
+                </tr>
+              </thead>
+              <tbody class="text-slate-600 dark:text-slate-400">
+                <tr class="border-b border-slate-200 dark:border-slate-700">
+                  <td class="py-2 px-3 font-mono text-[10px] sm:text-xs">stats.upxuu.com</td>
+                  <td class="py-2 px-3">站长自建（Umami）</td>
+                  <td class="py-2 px-3">全站，空闲时</td>
+                  <td class="py-2 px-3">IP、UA、页面路径</td>
+                </tr>
+                <tr class="border-b border-slate-200 dark:border-slate-700">
+                  <td class="py-2 px-3 font-mono text-[10px] sm:text-xs">blog.api.upxuu.com</td>
+                  <td class="py-2 px-3">站长自建</td>
+                  <td class="py-2 px-3">文章页、列表页、页脚</td>
+                  <td class="py-2 px-3">IP、UA、请求路径</td>
+                </tr>
+                <tr class="border-b border-slate-200 dark:border-slate-700">
+                  <td class="py-2 px-3 font-mono text-[10px] sm:text-xs">clarity.ms</td>
+                  <td class="py-2 px-3">Microsoft</td>
+                  <td class="py-2 px-3">全站，空闲时</td>
+                  <td class="py-2 px-3">IP、UA、行为、录屏</td>
+                </tr>
+                <tr class="border-b border-slate-200 dark:border-slate-700">
+                  <td class="py-2 px-3 font-mono text-[10px] sm:text-xs">comment.upxuu.com</td>
+                  <td class="py-2 px-3">站长自建（Waline）</td>
+                  <td class="py-2 px-3">文章页</td>
+                  <td class="py-2 px-3">IP、UA、Referer</td>
+                </tr>
+                <tr class="border-b border-slate-200 dark:border-slate-700">
+                  <td class="py-2 px-3 font-mono text-[10px] sm:text-xs">seccdn.libravatar.org</td>
+                  <td class="py-2 px-3">Libravatar</td>
+                  <td class="py-2 px-3">评论区</td>
+                  <td class="py-2 px-3">IP、UA、邮箱哈希</td>
+                </tr>
+                <tr class="border-b border-slate-200 dark:border-slate-700">
+                  <td class="py-2 px-3 font-mono text-[10px] sm:text-xs">unpkg.com</td>
+                  <td class="py-2 px-3">unpkg / Cloudflare</td>
+                  <td class="py-2 px-3">打开表情面板</td>
+                  <td class="py-2 px-3">IP、UA、Referer</td>
+                </tr>
+                <tr class="border-b border-slate-200 dark:border-slate-700">
+                  <td class="py-2 px-3 font-mono text-[10px] sm:text-xs">ai.upxuu.com</td>
+                  <td class="py-2 px-3">站长自建</td>
+                  <td class="py-2 px-3">使用 AI 功能</td>
+                  <td class="py-2 px-3">IP、UA、问题内容</td>
+                </tr>
+                <tr class="border-b border-slate-200 dark:border-slate-700">
+                  <td class="py-2 px-3 font-mono text-[10px] sm:text-xs">cap.upxuu.com</td>
+                  <td class="py-2 px-3">站长自建（Cap）</td>
+                  <td class="py-2 px-3">使用 AI 功能</td>
+                  <td class="py-2 px-3">IP、UA</td>
+                </tr>
+                <tr class="border-b border-slate-200 dark:border-slate-700">
+                  <td class="py-2 px-3 font-mono text-[10px] sm:text-xs">music.upxuu.com</td>
+                  <td class="py-2 px-3">站长自建（Meting）</td>
+                  <td class="py-2 px-3">打开播放器</td>
+                  <td class="py-2 px-3">IP、UA、歌单参数</td>
+                </tr>
+                <tr class="border-b border-slate-200 dark:border-slate-700">
+                  <td class="py-2 px-3 font-mono text-[10px] sm:text-xs">music.163.com</td>
+                  <td class="py-2 px-3">网易云音乐</td>
+                  <td class="py-2 px-3">文章内嵌播放器</td>
+                  <td class="py-2 px-3">IP、UA、Referer</td>
+                </tr>
+                <tr class="border-b border-slate-200 dark:border-slate-700">
+                  <td class="py-2 px-3 font-mono text-[10px] sm:text-xs">img.upxuu.lcrworld.xyz</td>
+                  <td class="py-2 px-3">站长自建 CDN</td>
+                  <td class="py-2 px-3">全站</td>
+                  <td class="py-2 px-3">IP、UA、Referer</td>
+                </tr>
+                <tr class="border-b border-slate-200 dark:border-slate-700">
+                  <td class="py-2 px-3 font-mono text-[10px] sm:text-xs">friend.upxuu.com</td>
+                  <td class="py-2 px-3">站长自建</td>
+                  <td class="py-2 px-3"><code>/moments</code></td>
+                  <td class="py-2 px-3">IP、UA</td>
+                </tr>
+                <tr class="border-b border-slate-200 dark:border-slate-700">
+                  <td class="py-2 px-3 font-mono text-[10px] sm:text-xs">monitor-api.upxuu.com</td>
+                  <td class="py-2 px-3">站长自建</td>
+                  <td class="py-2 px-3"><code>/stats</code></td>
+                  <td class="py-2 px-3">IP、UA</td>
+                </tr>
+                <tr class="border-b border-slate-200 dark:border-slate-700">
+                  <td class="py-2 px-3 font-mono text-[10px] sm:text-xs">www.google.com</td>
+                  <td class="py-2 px-3">Google</td>
+                  <td class="py-2 px-3"><code>/moments</code> 头像图标</td>
+                  <td class="py-2 px-3">IP、UA、Referer</td>
+                </tr>
+                <tr class="border-b border-slate-200 dark:border-slate-700">
+                  <td class="py-2 px-3 font-mono text-[10px] sm:text-xs">约 140 个友链站点</td>
+                  <td class="py-2 px-3">各站站长</td>
+                  <td class="py-2 px-3"><code>/friends</code></td>
+                  <td class="py-2 px-3">IP、UA、Referer</td>
+                </tr>
+                <tr class="border-b border-slate-200 dark:border-slate-700">
+                  <td class="py-2 px-3 font-mono text-[10px] sm:text-xs">github-readme-stats.shion.dev</td>
+                  <td class="py-2 px-3">第三方</td>
+                  <td class="py-2 px-3"><code>/about</code></td>
+                  <td class="py-2 px-3">IP、UA、Referer</td>
+                </tr>
+                <tr class="border-b border-slate-200 dark:border-slate-700">
+                  <td class="py-2 px-3 font-mono text-[10px] sm:text-xs">streak-stats.demolab.com</td>
+                  <td class="py-2 px-3">第三方</td>
+                  <td class="py-2 px-3"><code>/about</code></td>
+                  <td class="py-2 px-3">IP、UA、Referer</td>
+                </tr>
+                <tr class="border-b border-slate-200 dark:border-slate-700">
+                  <td class="py-2 px-3 font-mono text-[10px] sm:text-xs">komarev.com</td>
+                  <td class="py-2 px-3">第三方</td>
+                  <td class="py-2 px-3"><code>/about</code></td>
+                  <td class="py-2 px-3">IP、UA、Referer</td>
+                </tr>
+                <tr class="border-b border-slate-200 dark:border-slate-700">
+                  <td class="py-2 px-3 font-mono text-[10px] sm:text-xs">i0/i1/i2.hdslb.com</td>
+                  <td class="py-2 px-3">Bilibili</td>
+                  <td class="py-2 px-3"><code>/about</code> 封面</td>
+                  <td class="py-2 px-3">IP、UA、Referer</td>
+                </tr>
+                <tr class="border-b border-slate-200 dark:border-slate-700">
+                  <td class="py-2 px-3 font-mono text-[10px] sm:text-xs">api.qrserver.com</td>
+                  <td class="py-2 px-3">第三方</td>
+                  <td class="py-2 px-3">生成分享二维码</td>
+                  <td class="py-2 px-3">IP、UA、被分享链接</td>
+                </tr>
+                <tr class="border-b border-slate-200 dark:border-slate-700">
+                  <td class="py-2 px-3 font-mono text-[10px] sm:text-xs">sns.qzone.qq.com</td>
+                  <td class="py-2 px-3">腾讯</td>
+                  <td class="py-2 px-3">分享到 QQ 空间</td>
+                  <td class="py-2 px-3">IP、UA、被分享链接</td>
+                </tr>
+                <tr class="border-b border-slate-200 dark:border-slate-700">
+                  <td class="py-2 px-3 font-mono text-[10px] sm:text-xs">twitter.com</td>
+                  <td class="py-2 px-3">X</td>
+                  <td class="py-2 px-3">分享到 X</td>
+                  <td class="py-2 px-3">IP、UA、被分享链接</td>
+                </tr>
+                <tr class="border-b border-slate-200 dark:border-slate-700">
+                  <td class="py-2 px-3 font-mono text-[10px] sm:text-xs">www.blogsclub.org</td>
+                  <td class="py-2 px-3">BlogsClub</td>
+                  <td class="py-2 px-3">页脚徽章</td>
+                  <td class="py-2 px-3">IP、UA、Referer</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-3 font-mono text-[10px] sm:text-xs">www.travellings.cn</td>
+                  <td class="py-2 px-3">开往</td>
+                  <td class="py-2 px-3">点击"开往"</td>
+                  <td class="py-2 px-3">IP、UA、Referer</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
 
       </div>
@@ -365,70 +520,24 @@ import { i18nConfig } from '../config/site';
         三、数据共享与跨境传输
       </h2>
       <div class="space-y-4 text-sm sm:text-base leading-relaxed text-slate-700 dark:text-slate-300">
-        <h3 class="font-black text-slate-800 dark:text-slate-200">3.1 共享给第三方</h3>
-        <p>
-          本站不会出售你的个人信息。但基于本站使用的服务，你的部分数据会由以下第三方处理：
+        <p class="p-3 bg-[#fde68a] dark:bg-slate-700 border-2 border-[#0284c7] rounded-sm font-bold text-slate-800 dark:text-slate-200">
+          本站不出售、不出租、不交换你的个人信息，也不用于广告投放。
         </p>
-        <div class="overflow-x-auto">
-          <table class="w-full text-xs sm:text-sm border-collapse">
-            <thead>
-              <tr class="border-b-3 border-[#0284c7]">
-                <th class="text-left py-2 px-3 font-black text-[#0284c7] uppercase tracking-wider">第三方</th>
-                <th class="text-left py-2 px-3 font-black text-[#0284c7] uppercase tracking-wider">共享的数据</th>
-                <th class="text-left py-2 px-3 font-black text-[#0284c7] uppercase tracking-wider">所属地区</th>
-              </tr>
-            </thead>
-            <tbody class="text-slate-600 dark:text-slate-400">
-              <tr class="border-b border-slate-200 dark:border-slate-700">
-                <td class="py-2 px-3 font-bold">Microsoft Clarity</td>
-                <td class="py-2 px-3">会话录屏、热力图、设备信息、页面 URL</td>
-                <td class="py-2 px-3">🇺🇸 美国</td>
-              </tr>
-              <tr class="border-b border-slate-200 dark:border-slate-700">
-                <td class="py-2 px-3 font-bold">Google Fonts</td>
-                <td class="py-2 px-3">IP 地址、User-Agent、Referer</td>
-                <td class="py-2 px-3">🇺🇸 美国</td>
-              </tr>
-              <tr class="border-b border-slate-200 dark:border-slate-700">
-                <td class="py-2 px-3 font-bold">GitHub API / GitHub Stats</td>
-                <td class="py-2 px-3">IP 地址、User-Agent</td>
-                <td class="py-2 px-3">🇺🇸 美国</td>
-              </tr>
-              <tr class="border-b border-slate-200 dark:border-slate-700">
-                <td class="py-2 px-3 font-bold">blogapi.476543.xyz</td>
-                <td class="py-2 px-3">IP 地址、User-Agent</td>
-                <td class="py-2 px-3">待确认</td>
-              </tr>
-              <tr class="border-b border-slate-200 dark:border-slate-700">
-                <td class="py-2 px-3 font-bold">uapis.cn</td>
-                <td class="py-2 px-3">IP 地址（用于定位）</td>
-                <td class="py-2 px-3">🇨🇳 中国</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <h3 class="font-black text-slate-800 dark:text-slate-200 mt-5">3.2 跨境传输</h3>
-        <p>
-          由于本站使用了 Microsoft Clarity、Google Fonts、GitHub API 等服务，你的部分数据（如 IP 地址、页面行为数据）可能被传输至境外服务器（主要位于美国）。同时，本站部分基础设施部署在境外或特别行政区：
-        </p>
-        <ul class="list-disc list-inside ml-4 space-y-2 text-slate-600 dark:text-slate-400">
-          <li><strong>韩国服务器</strong>——本站部分服务和数据存储在位于韩国的服务器上</li>
-          <li><strong>Vercel CDN（香港）</strong>——本站部分服务（如 stats.upxuu.com 统计）部署在 Vercel 平台，其 CDN 节点和数据存储位于香港</li>
-          <li><strong>Cloudflare CDN 边缘节点</strong>——本站使用 Cloudflare 提供 CDN 加速和安全防护，你的请求可能经由 Cloudflare 分布在全球（含中国大陆以外）的边缘节点处理。在此过程中，Cloudflare 可能临时处理你的 IP 地址、User-Agent、请求路径等元数据（依据 Cloudflare 隐私政策：cloudflare.com/privacypolicy/）</li>
-          <li><strong>Cloudflare Workers</strong>——Beat 统计服务（beat.345696.xyz）运行在 Cloudflare Workers 平台上，数据在边缘节点处理和存储，可能涉及跨境传输</li>
-        </ul>
-        <p>
-          本站在此明确告知以下事项：
-        </p>
-        <ul class="list-disc list-inside ml-4 space-y-2 text-slate-600 dark:text-slate-400">
-          <li><strong>境外接收方</strong>：Microsoft Corporation、Google LLC、GitHub, Inc.、Cloudflare, Inc.</li>
-          <li><strong>传输目的</strong>：提供访问统计、字体加载、CDN 加速、关于页数据展示等服务</li>
-          <li><strong>传输的数据种类</strong>：IP 地址、设备信息、页面 URL、用户行为（Clarity 录屏数据）</li>
-          <li><strong>安全保障措施</strong>：这些服务商均签署了适用的数据处理协议（Microsoft 符合 EU GDPR、Google 亦有隐私框架、Cloudflare 符合 SOC 2 / ISO 27001 认证）</li>
-        </ul>
-        <p class="mt-3 p-3 bg-[rgba(250,248,245,0.55)] dark:bg-slate-700 border-2 border-slate-300 dark:border-slate-600 rounded-sm text-xs text-slate-500 dark:text-slate-400">
-          <strong>豁免说明</strong>：依据《促进和规范数据跨境流动规定》，本站作为小型个人博客，年累计向境外提供个人信息远低于 10 万人（不含敏感个人信息），属于豁免情形。但你仍享有知悉数据流向的权利。如果你不同意数据的跨境传输，建议不使用本站，或通过浏览器插件屏蔽上述第三方服务的脚本加载。
+        <p>数据可能流向以下三类接收方：</p>
+        <ol class="list-decimal list-inside ml-4 space-y-2 text-slate-600 dark:text-slate-400">
+          <li><strong class="text-slate-800 dark:text-slate-200">站长自建服务</strong>：Umami、Waline、AI 后端、Cap、Meting、朋友圈聚合、监控接口。这些服务运行在站长自有的服务器与云平台上，数据由站长控制。</li>
+          <li><strong class="text-slate-800 dark:text-slate-200">境外第三方</strong>：
+            <ul class="list-disc list-inside ml-4 mt-1 space-y-1">
+              <li><strong>Microsoft Clarity</strong> —— 行为数据与录屏，位于境外。</li>
+              <li><strong>Google</strong> —— 仅 AI 后端页面的字体，以及 <code>/moments</code> 的站点图标。</li>
+              <li><strong>GitHub</strong> —— 仅构建时抓取仓库信息（不涉及访客数据）。</li>
+              <li><strong>Libravatar / unpkg / qrserver / X</strong> —— 见 2.13 表。</li>
+            </ul>
+          </li>
+          <li><strong class="text-slate-800 dark:text-slate-200">托管平台</strong>：本站与部分自建服务部署在 Vercel 上。Vercel 的 CDN 节点可能位于美国等地，其边缘节点会处理你的 IP、UA 与请求路径。评论、AI、统计 API 运行在站长自有的服务器上。</li>
+        </ol>
+        <p class="p-3 bg-[rgba(250,248,245,0.55)] dark:bg-slate-700 border-2 border-slate-300 dark:border-slate-600 rounded-sm text-xs sm:text-sm text-slate-600 dark:text-slate-400">
+          <strong class="text-slate-800 dark:text-slate-200">关于跨境</strong>：由于上述服务的存在，你的部分数据（IP、UA、页面行为）可能被传输至中国大陆以外的服务器。如果你不希望发生这种传输，可以通过浏览器扩展屏蔽对应域名，或停止使用相关功能（评论、AI、音乐、朋友圈）。
         </p>
       </div>
     </div>
@@ -439,15 +548,15 @@ import { i18nConfig } from '../config/site';
         四、浏览器本地存储与 Cookie
       </h2>
       <div class="space-y-4 text-sm sm:text-base leading-relaxed text-slate-700 dark:text-slate-300">
-        <h3 class="font-black text-slate-800 dark:text-slate-200">4.1 本地存储</h3>
-        <p>本站在你的浏览器中存储以下信息。所有数据仅保存在本地设备上，不会由本站主动上传至服务器：</p>
+        <h3 class="font-black text-slate-800 dark:text-slate-200">4.1 本地存储（本站写入）</h3>
         <div class="overflow-x-auto">
           <table class="w-full text-xs sm:text-sm border-collapse">
             <thead>
               <tr class="border-b-3 border-[#0284c7]">
-                <th class="text-left py-2 px-3 font-black text-[#0284c7] uppercase tracking-wider">存储键</th>
+                <th class="text-left py-2 px-3 font-black text-[#0284c7] uppercase tracking-wider">键</th>
                 <th class="text-left py-2 px-3 font-black text-[#0284c7] uppercase tracking-wider">类型</th>
                 <th class="text-left py-2 px-3 font-black text-[#0284c7] uppercase tracking-wider">用途</th>
+                <th class="text-left py-2 px-3 font-black text-[#0284c7] uppercase tracking-wider">生命周期</th>
               </tr>
             </thead>
             <tbody class="text-slate-600 dark:text-slate-400">
@@ -455,47 +564,78 @@ import { i18nConfig } from '../config/site';
                 <td class="py-2 px-3 font-mono text-[10px] sm:text-xs">theme</td>
                 <td class="py-2 px-3">localStorage</td>
                 <td class="py-2 px-3">深色/浅色主题偏好</td>
+                <td class="py-2 px-3">永久，直到你清除</td>
               </tr>
               <tr class="border-b border-slate-200 dark:border-slate-700">
-                <td class="py-2 px-3 font-mono text-[10px] sm:text-xs">xuai-chat-model</td>
+                <td class="py-2 px-3 font-mono text-[10px] sm:text-xs">upxuu_ai_history</td>
                 <td class="py-2 px-3">localStorage</td>
-                <td class="py-2 px-3">AI 对话模型选择偏好</td>
+                <td class="py-2 px-3">AI 对话历史（最多 24 条）</td>
+                <td class="py-2 px-3">永久，直到你清除</td>
               </tr>
               <tr class="border-b border-slate-200 dark:border-slate-700">
-                <td class="py-2 px-3 font-mono text-[10px] sm:text-xs">xuai-chat-&#123;文章路径&#125;</td>
+                <td class="py-2 px-3 font-mono text-[10px] sm:text-xs">talk-like-&#123;说说ID&#125;</td>
                 <td class="py-2 px-3">localStorage</td>
-                <td class="py-2 px-3">AI 对话历史记录（按文章分片存储）</td>
+                <td class="py-2 px-3">你说说的点赞状态与计数</td>
+                <td class="py-2 px-3">永久，直到你清除</td>
               </tr>
               <tr class="border-b border-slate-200 dark:border-slate-700">
-                <td class="py-2 px-3 font-mono text-[10px] sm:text-xs">xuai-summary-model</td>
+                <td class="py-2 px-3 font-mono text-[10px] sm:text-xs">music-volume</td>
                 <td class="py-2 px-3">localStorage</td>
-                <td class="py-2 px-3">AI 摘要模型选择偏好</td>
+                <td class="py-2 px-3">播放器音量</td>
+                <td class="py-2 px-3">永久，直到你清除</td>
               </tr>
               <tr class="border-b border-slate-200 dark:border-slate-700">
-                <td class="py-2 px-3 font-mono text-[10px] sm:text-xs">xuhome_visit_flag</td>
+                <td class="py-2 px-3 font-mono text-[10px] sm:text-xs">music-bg</td>
                 <td class="py-2 px-3">sessionStorage</td>
-                <td class="py-2 px-3">欢迎提示弹窗已展示标记（会话级，关闭标签页即清除）</td>
+                <td class="py-2 px-3">是否后台播放</td>
+                <td class="py-2 px-3">会话结束</td>
+              </tr>
+              <tr class="border-b border-slate-200 dark:border-slate-700">
+                <td class="py-2 px-3 font-mono text-[10px] sm:text-xs">cacheDebug</td>
+                <td class="py-2 px-3">sessionStorage</td>
+                <td class="py-2 px-3">是否显示缓存调试面板</td>
+                <td class="py-2 px-3">会话结束</td>
+              </tr>
+              <tr class="border-b border-slate-200 dark:border-slate-700">
+                <td class="py-2 px-3 font-mono text-[10px] sm:text-xs">[cache]lastClick</td>
+                <td class="py-2 px-3">sessionStorage</td>
+                <td class="py-2 px-3">上次点击是否命中预取缓存</td>
+                <td class="py-2 px-3">会话结束</td>
+              </tr>
+              <tr class="border-b border-slate-200 dark:border-slate-700">
+                <td class="py-2 px-3 font-mono text-[10px] sm:text-xs">__xuhomeMomentsSnapshot</td>
+                <td class="py-2 px-3">sessionStorage</td>
+                <td class="py-2 px-3">朋友圈数据快照</td>
+                <td class="py-2 px-3">会话结束</td>
               </tr>
               <tr>
-                <td class="py-2 px-3 font-mono text-[10px] sm:text-xs">xuai-summary-v3-&#123;文章标识&#125;</td>
-                <td class="py-2 px-3">sessionStorage</td>
-                <td class="py-2 px-3">AI 摘要结果缓存（会话级）</td>
+                <td class="py-2 px-3 font-mono text-[10px] sm:text-xs">xuhome-article-cache-v1</td>
+                <td class="py-2 px-3">CacheStorage</td>
+                <td class="py-2 px-3">预取的文章页面缓存</td>
+                <td class="py-2 px-3">直到你清除</td>
               </tr>
             </tbody>
           </table>
         </div>
+        <p class="mt-3">
+          <strong class="text-slate-800 dark:text-slate-200">评论系统写入的键</strong>：Waline 会把你填写的昵称、邮箱、网址以及表情/编辑器偏好保存在 <code>localStorage</code>（键名前缀 <code>WALINE_</code>），以便下次评论时自动填充。这些数据只存在你的浏览器里。
+        </p>
+        <p class="text-xs text-slate-500 dark:text-slate-400">
+          以上数据<strong>均不会由本站主动上传</strong>。你可以随时通过浏览器设置清除；清除后主题、评论表单填充、AI 历史等会重置。
+        </p>
 
         <h3 class="font-black text-slate-800 dark:text-slate-200 mt-5">4.2 Cookie</h3>
         <p>
-          本站本身<strong class="text-[#0284c7]">不设置任何第一方 Cookie</strong>。但以下第三方服务可能会设置 Cookie：
+          <strong class="text-[#0284c7]">本站不设置任何第一方 Cookie。</strong>你可以在浏览器开发者工具中验证：本站响应头不含 <code>Set-Cookie</code>。
         </p>
+        <p class="mt-2">第三方 Cookie 可能来自：</p>
         <ul class="list-disc list-inside ml-4 space-y-1 text-slate-600 dark:text-slate-400">
-          <li><strong>Microsoft Clarity</strong>——使用 Cookie 识别用户会话，用于会话录屏去重</li>
-          <li><strong>Waline 评论系统</strong>——可能设置用于用户识别和会话管理的必要 Cookie</li>
-          <li><strong>第三方嵌入内容</strong>（如网易云播放器）——由各第三方平台自行管理</li>
+          <li><strong class="text-slate-800 dark:text-slate-200">Microsoft Clarity</strong>：会话识别与去重（<code>_clck</code>、<code>_uetvid</code>、<code>_uetmsclkid</code> 等）。</li>
+          <li><strong class="text-slate-800 dark:text-slate-200">评论系统</strong>：Waline 在你登录/填写信息后可能写入必要标识。</li>
+          <li><strong class="text-slate-800 dark:text-slate-200">内嵌内容</strong>：网易云播放器、分享平台页面等由各自平台管理。</li>
         </ul>
         <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">
-          你可以通过浏览器设置拒绝或删除 Cookie。请注意，禁用 Cookie 可能导致部分功能（如评论、AI 对话）无法正常使用。
+          禁用 Cookie 不会影响阅读文章，但可能导致评论、AI 对话、音乐播放等功能异常。
         </p>
       </div>
     </div>
@@ -506,16 +646,15 @@ import { i18nConfig } from '../config/site';
         五、信息使用目的
       </h2>
       <div class="space-y-3 text-sm sm:text-base leading-relaxed text-slate-700 dark:text-slate-300">
-        <p>本站收集上述信息的目的如下：</p>
-        <ul class="list-disc list-inside ml-4 space-y-2 text-slate-600 dark:text-slate-400">
-          <li><strong>保障站点正常运行</strong>——基础访问统计和页面计数帮助了解站点运行状况</li>
-          <li><strong>改善用户体验</strong>——行为分析（Clarity）帮助发现页面可用性问题、优化布局</li>
-          <li><strong>提供互动功能</strong>——评论系统允许读者留言互动，AI 功能辅助阅读</li>
-          <li><strong>安全防护</strong>——评论 IP 记录用于防止垃圾评论和滥用</li>
-          <li><strong>个性化展示</strong>——主题偏好、欢迎提示、天气信息等增强浏览体验</li>
-        </ul>
-        <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">
-          本站不会超出上述目的范围处理个人信息，始终采取对个人权益影响最小的方式。
+        <p>本站处理上述信息仅用于：</p>
+        <ol class="list-decimal list-inside ml-4 space-y-2 text-slate-600 dark:text-slate-400">
+          <li>展示内容与页面（阅读量、评论、朋友圈、友链）。</li>
+          <li>了解访问情况，决定内容方向与性能优化。</li>
+          <li>防止垃圾评论与接口滥用（AI 审核、Cap 验证）。</li>
+          <li>回应你的来信（当你主动发送邮件时）。</li>
+        </ol>
+        <p class="mt-2 p-3 bg-[#fde68a] dark:bg-slate-700 border-2 border-[#0284c7] rounded-sm font-bold text-slate-800 dark:text-slate-200">
+          本站不进行用户画像、不投放广告、不做个性化推荐、不向第三方出售数据。
         </p>
       </div>
     </div>
@@ -523,76 +662,66 @@ import { i18nConfig } from '../config/site';
     <!-- Section 6: 存储期限 -->
     <div class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] p-5 sm:p-7 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm mb-6">
       <h2 class="text-lg sm:text-xl font-black text-[#0284c7] border-b-4 border-[#0284c7] pb-2 mb-5 uppercase tracking-wider inline-block pr-4">
-        六、数据存储期限
+        六、存储期限
       </h2>
       <div class="overflow-x-auto text-sm sm:text-base">
         <table class="w-full text-xs sm:text-sm border-collapse">
           <thead>
             <tr class="border-b-3 border-[#0284c7]">
               <th class="text-left py-2 px-3 font-black text-[#0284c7] uppercase tracking-wider">数据类别</th>
-              <th class="text-left py-2 px-3 font-black text-[#0284c7] uppercase tracking-wider">存储期限</th>
+              <th class="text-left py-2 px-3 font-black text-[#0284c7] uppercase tracking-wider">期限</th>
               <th class="text-left py-2 px-3 font-black text-[#0284c7] uppercase tracking-wider">说明</th>
             </tr>
           </thead>
           <tbody class="text-slate-600 dark:text-slate-400">
             <tr class="border-b border-slate-200 dark:border-slate-700">
-              <td class="py-2 px-3">访问统计（Umami / Beat）</td>
-              <td class="py-2 px-3">长期存储</td>
-              <td class="py-2 px-3">以聚合统计数据形式保留，用于长期趋势分析</td>
+              <td class="py-2 px-3">访问统计（Umami）</td>
+              <td class="py-2 px-3">长期</td>
+              <td class="py-2 px-3">以聚合形式保留，用于长期趋势对比</td>
             </tr>
             <tr class="border-b border-slate-200 dark:border-slate-700">
               <td class="py-2 px-3">Clarity 行为数据</td>
-              <td class="py-2 px-3">30 天</td>
-              <td class="py-2 px-3">Clarity 默认保留 30 天会话录屏，之后自动删除</td>
+              <td class="py-2 px-3">约 30 天</td>
+              <td class="py-2 px-3">由 Microsoft 默认策略自动删除</td>
             </tr>
             <tr class="border-b border-slate-200 dark:border-slate-700">
               <td class="py-2 px-3">评论数据</td>
-              <td class="py-2 px-3">长期存储</td>
-              <td class="py-2 px-3">评论内容作为博客交互记录保留，除非你要求删除</td>
+              <td class="py-2 px-3">长期</td>
+              <td class="py-2 px-3">作为博客的公开交互记录保留；你可要求删除</td>
             </tr>
             <tr class="border-b border-slate-200 dark:border-slate-700">
+              <td class="py-2 px-3">AI 对话</td>
+              <td class="py-2 px-3">不存储</td>
+              <td class="py-2 px-3">仅存在于你的浏览器；服务端不保留对话记录</td>
+            </tr>
+            <tr>
               <td class="py-2 px-3">浏览器本地存储</td>
-              <td class="py-2 px-3">localStorage：永久；sessionStorage：会话结束</td>
-              <td class="py-2 px-3">你随时可手动清除浏览器数据</td>
+              <td class="py-2 px-3">见 4.1</td>
+              <td class="py-2 px-3">你随时可清除</td>
             </tr>
           </tbody>
         </table>
       </div>
       <p class="mt-3 text-xs text-slate-500 dark:text-slate-400">
-        当处理目的已实现、数据不再必要，或你撤回同意时，本站将删除或匿名化处理你的个人信息。
+        当处理目的已实现或你提出删除请求时，本站会删除或匿名化相应数据。
       </p>
     </div>
 
     <!-- Section 7: 数据安全 -->
     <div class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] p-5 sm:p-7 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm mb-6">
       <h2 class="text-lg sm:text-xl font-black text-[#0284c7] border-b-4 border-[#0284c7] pb-2 mb-5 uppercase tracking-wider inline-block pr-4">
-        七、数据安全措施
+        七、安全措施
       </h2>
       <div class="space-y-3 text-sm sm:text-base leading-relaxed text-slate-700 dark:text-slate-300">
-        <p>本站采取以下合理的安全措施保护你的数据：</p>
         <ul class="list-disc list-inside ml-4 space-y-2 text-slate-600 dark:text-slate-400">
-          <li><strong>HTTPS 加密传输</strong>——全站启用 HTTPS，所有数据传输均经 TLS 加密</li>
-          <li><strong>自托管服务</strong>——核心服务（评论、统计、AI 后端）运行在自有服务器上，减少数据暴露面</li>
-          <li><strong>访问控制</strong>——服务器部署访问控制，评论管理有后台保护</li>
-          <li><strong>评论管理</strong>——后台评论审核用于防止自动化滥用</li>
-          <li><strong>第三方筛选</strong>——仅接入知名、可信的第三方服务</li>
+          <li><strong class="text-slate-800 dark:text-slate-200">全站 HTTPS</strong>，所有数据传输经 TLS 加密。</li>
+          <li><strong class="text-slate-800 dark:text-slate-200">核心服务（评论、统计、AI、验证）自托管</strong>，减少第三方暴露面。</li>
+          <li><strong class="text-slate-800 dark:text-slate-200">评论审核后台设有访问控制</strong>，仅站长可访问，且已设置 <code>noindex</code>。</li>
+          <li><strong class="text-slate-800 dark:text-slate-200">统计接口为只读</strong>，不接受写入。</li>
         </ul>
         <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">
-          ⚠ 请注意，互联网上的数据传输无法保证 100% 绝对安全。但本站在此做出以下承诺：
+          ⚠ 互联网传输不存在绝对安全。本站会在发现安全事件后采取补救措施，并通过站内公告或页尾邮箱通知受影响用户。
         </p>
-        <div class="mt-3 p-4 bg-[rgba(250,248,245,0.55)] dark:bg-slate-700 border-2 border-[#0284c7] rounded-sm text-sm space-y-2">
-          <p class="font-black text-[#0284c7]">🔒 数据泄露事件通知承诺</p>
-          <p>
-            本站承诺：
-          </p>
-          <ul class="list-disc list-inside ml-4 space-y-1.5 text-slate-600 dark:text-slate-400">
-            <li>发生或可能发生个人信息泄露、篡改、丢失等安全事件时，将<strong>立即启动应急预案</strong>，采取补救措施阻止危害扩大</li>
-            <li>将在发现安全事件后<strong>第一时间</strong>（不超过 24 小时）通知履行个人信息保护职责的部门</li>
-            <li>将<strong>及时</strong>通过本站公告、页脚通知条、邮件等方式告知受影响的个人信息主体</li>
-            <li>通知内容将包括：安全事件类型、涉及的数据种类、可能的影响、已采取/拟采取的补救措施、你可以采取的降低风险的措施、本站的联系方式</li>
-            <li>如难以逐一通知受影响的个人，将在本站首页发布公告</li>
-          </ul>
-        </div>
       </div>
     </div>
 
@@ -603,46 +732,33 @@ import { i18nConfig } from '../config/site';
       </h2>
       <div class="space-y-4 text-sm sm:text-base leading-relaxed text-slate-700 dark:text-slate-300">
         <p>
-          依据中国相关法律法规，你享有以下权利：
+          你可以通过 <strong class="text-[#0284c7]">{i18nConfig.privacy.contactEmail}</strong> 行使以下权利：
         </p>
         <ul class="list-none ml-0 space-y-3 text-slate-600 dark:text-slate-400">
           <li class="flex gap-2">
-            <span class="shrink-0 w-6 h-6 border-2 border-[#0284c7] bg-[#fde68a] flex items-center justify-center text-[10px] font-black text-[#0284c7]">知</span>
-            <div><strong class="text-slate-800 dark:text-slate-200">知情权</strong>——你有权了解本站收集了哪些与你相关的信息及其处理方式，即本隐私政策所载内容。</div>
-          </li>
-          <li class="flex gap-2">
-            <span class="shrink-0 w-6 h-6 border-2 border-[#0284c7] bg-[#fde68a] flex items-center justify-center text-[10px] font-black text-[#0284c7]">决</span>
-            <div><strong class="text-slate-800 dark:text-slate-200">决定权</strong>——你有权决定是否允许本站处理你的个人信息。</div>
-          </li>
-          <li class="flex gap-2">
             <span class="shrink-0 w-6 h-6 border-2 border-[#0284c7] bg-[#fde68a] flex items-center justify-center text-[10px] font-black text-[#0284c7]">查</span>
-            <div><strong class="text-slate-800 dark:text-slate-200">查阅与复制权</strong>——你有权查阅、复制本站持有的与你相关的个人信息。</div>
+            <div><strong class="text-slate-800 dark:text-slate-200">查阅</strong>——了解本站持有哪些与你相关的数据。</div>
           </li>
           <li class="flex gap-2">
             <span class="shrink-0 w-6 h-6 border-2 border-[#0284c7] bg-[#fde68a] flex items-center justify-center text-[10px] font-black text-[#0284c7]">更</span>
-            <div><strong class="text-slate-800 dark:text-slate-200">更正权</strong>——你有权要求更正不准确的个人信息。</div>
+            <div><strong class="text-slate-800 dark:text-slate-200">更正</strong>——要求修改不准确的评论信息（如昵称、网址）。</div>
           </li>
           <li class="flex gap-2">
             <span class="shrink-0 w-6 h-6 border-2 border-[#0284c7] bg-[#fde68a] flex items-center justify-center text-[10px] font-black text-[#0284c7]">删</span>
-            <div><strong class="text-slate-800 dark:text-slate-200">删除权</strong>——你有权要求删除你的评论内容或个人数据。当处理目的已实现、你撤回同意、或本站停止运营时，我们将删除或匿名化你的个人信息。</div>
+            <div><strong class="text-slate-800 dark:text-slate-200">删除</strong>——要求删除你的评论及其关联的邮箱、IP 记录。</div>
           </li>
           <li class="flex gap-2">
             <span class="shrink-0 w-6 h-6 border-2 border-[#0284c7] bg-[#fde68a] flex items-center justify-center text-[10px] font-black text-[#0284c7]">撤</span>
-            <div><strong class="text-slate-800 dark:text-slate-200">撤回同意权</strong>——基于同意的处理活动，你有权随时撤回同意。撤回同意不影响撤回前的处理效力。</div>
+            <div><strong class="text-slate-800 dark:text-slate-200">撤回</strong>——停止使用相关功能即视为撤回；也可要求删除已提交的数据。</div>
           </li>
           <li class="flex gap-2">
-            <span class="shrink-0 w-6 h-6 border-2 border-[#0284c7] bg-[#fde68a] flex items-center justify-center text-[10px] font-black text-[#0284c7]">拒</span>
-            <div><strong class="text-slate-800 dark:text-slate-200">拒绝自动化处理权</strong>——你有权拒绝仅通过自动化决策方式作出的决定。</div>
+            <span class="shrink-0 w-6 h-6 border-2 border-[#0284c7] bg-[#fde68a] flex items-center justify-center text-[10px] font-black text-[#0284c7]">解</span>
+            <div><strong class="text-slate-800 dark:text-slate-200">解释</strong>——要求说明某类数据的具体用途。</div>
           </li>
         </ul>
         <p class="mt-3">
-          <strong>如何行使权利：</strong>
+          由于本站没有账号体系，处理请求时可能需要你提供评论发布时间或链接以定位数据。一般在收到请求后 15 个工作日内答复。
         </p>
-        <ul class="list-disc list-inside ml-4 space-y-2 text-slate-600 dark:text-slate-400">
-          <li>通过浏览器设置清除 Cookie 和本地存储数据</li>
-          <li>使用广告拦截器或隐私浏览器扩展屏蔽第三方统计脚本</li>
-          <li>通过下方联系方式向本站运营者提出书面请求（请在邮件中说明你要行使的权利、相关数据及身份证明）</li>
-        </ul>
         <p class="mt-3">
           如需联系，请通过以下方式：
         </p>
@@ -650,9 +766,6 @@ import { i18nConfig } from '../config/site';
           <p>📧 邮箱：<a href={`mailto:${i18nConfig.privacy.contactEmail}`} class="text-[#0284c7] underline hover:text-[#0ea5e9] transition-colors font-bold">{i18nConfig.privacy.contactEmail}</a></p>
           <p>🐙 GitHub：<a href="https://github.com/ImUpXuu" target="_blank" rel="noopener noreferrer" class="text-[#0284c7] underline hover:text-[#0ea5e9] transition-colors font-bold">ImUpXuu</a></p>
         </div>
-        <p class="mt-3 text-xs text-slate-500 dark:text-slate-400">
-          我们将在收到你的请求后 15 个工作日内予以答复。
-        </p>
       </div>
     </div>
 
@@ -663,14 +776,8 @@ import { i18nConfig } from '../config/site';
       </h2>
       <div class="space-y-3 text-sm sm:text-base leading-relaxed text-slate-700 dark:text-slate-300">
         <p>
-          本站声明如下：
+          本站内容面向一般读者，不针对未成年人设计，也不主动收集未成年人的个人信息。若你是未成年人，请在监护人指导下使用评论与 AI 功能；若监护人发现未成年人向本站提交了个人信息，可来信要求删除。
         </p>
-        <ul class="list-disc list-inside ml-4 space-y-2 text-slate-600 dark:text-slate-400">
-          <li>本站面向公众开放，不主动向未成年人收集个人信息，但无法识别访客年龄</li>
-          <li>本站内容可能对任何年龄段的访问者可见</li>
-          <li>如果你是未满 14 周岁的未成年人，请在监护人陪同下阅读本隐私政策，并在监护人同意后方可使用需要提交个人信息的功能（如发表评论）</li>
-          <li>监护人发现本站持有未成年人个人信息且未经同意的，有权要求我们删除</li>
-        </ul>
       </div>
     </div>
 
@@ -680,7 +787,7 @@ import { i18nConfig } from '../config/site';
         十、外部链接
       </h2>
       <p class="text-sm sm:text-base leading-relaxed text-slate-700 dark:text-slate-300">
-        本站包含指向第三方网站（如友情链接、社交媒体、GitHub、Bilibili 等）的链接。点击这些链接将离开本站，跳转至第三方网站。我们不对这些第三方网站的隐私做法、数据安全或内容负责。建议你在访问第三方网站时查阅其各自的隐私政策。
+        本站文章与友链中包含大量指向其他网站的链接。点击后你将离开本站，<strong>那些网站的数据处理行为由各自的隐私政策约束</strong>，本站无法控制。请在提交个人信息前阅读对方的政策。
       </p>
     </div>
 
@@ -691,20 +798,31 @@ import { i18nConfig } from '../config/site';
       </h2>
       <div class="space-y-3 text-sm sm:text-base leading-relaxed text-slate-700 dark:text-slate-300">
         <p>
-          我们可能会不时更新本隐私政策。更新后的版本将发布在此页面，顶部标注"最后更新日期"。
+          本政策会随功能变化更新。更新时会修改页首的"最后更新日期"。若变更涉及新的数据收集方式，本站会在首页或页脚提示。建议你定期回看本页。
         </p>
-        <ul class="list-disc list-inside ml-4 space-y-2 text-slate-600 dark:text-slate-400">
-          <li><strong>重大变更</strong>（如新增第三方数据处理、变更处理目的）将通过站内公告或 RSS 通知</li>
-          <li><strong>一般更新</strong>（如修正措辞、更新服务列表）将直接更新本文档</li>
-          <li>建议你定期查看本页面以了解最新信息</li>
-        </ul>
       </div>
     </div>
 
-    <!-- Section 12: 免责声明 -->
+    <!-- Section 12: 联系我们 -->
     <div class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] p-5 sm:p-7 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm mb-6">
       <h2 class="text-lg sm:text-xl font-black text-[#0284c7] border-b-4 border-[#0284c7] pb-2 mb-5 uppercase tracking-wider inline-block pr-4">
-        十二、免责声明
+        十二、联系我们
+      </h2>
+      <div class="space-y-3 text-sm sm:text-base leading-relaxed text-slate-700 dark:text-slate-300">
+        <p>如对本政策有任何疑问、异议或请求：</p>
+        <div class="p-4 bg-[rgba(250,248,245,0.55)] dark:bg-slate-700 border-2 border-[#0284c7] rounded-sm text-sm">
+          <p>📧 <a href={`mailto:${i18nConfig.privacy.contactEmail}`} class="text-[#0284c7] underline hover:text-[#0ea5e9] transition-colors font-bold">{i18nConfig.privacy.contactEmail}</a></p>
+        </div>
+        <p>
+          也可以在本站 GitHub 仓库（<a href="https://github.com/ImUpXuu/xuhome" target="_blank" rel="noopener noreferrer" class="text-[#0284c7] underline hover:text-[#0ea5e9]">github.com/ImUpXuu/xuhome</a>）提交 Issue。
+        </p>
+      </div>
+    </div>
+
+    <!-- Section 13: 免责声明 -->
+    <div class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] p-5 sm:p-7 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm mb-6">
+      <h2 class="text-lg sm:text-xl font-black text-[#0284c7] border-b-4 border-[#0284c7] pb-2 mb-5 uppercase tracking-wider inline-block pr-4">
+        十三、免责声明
       </h2>
       <div class="space-y-3 text-sm sm:text-base leading-relaxed text-slate-700 dark:text-slate-300">
         <p>
