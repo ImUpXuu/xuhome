@@ -227,8 +227,8 @@
           </div>
           <p class="text-xs text-slate-400">
             添加完毕后，可以通过下方 GitHub Issue 快速申请，或发邮件联系：
-            <a href="mailto:upxuu6@gmail.com" class="text-[#0284c7] hover:underline font-bold ml-1">
-              upxuu6@gmail.com
+            <a href="mailto:xu@i.upxuu.com" class="text-[#0284c7] hover:underline font-bold ml-1">
+              xu@i.upxuu.com
             </a>
           </p>
           <a 

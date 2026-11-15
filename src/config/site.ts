@@ -29,7 +29,7 @@ export const siteConfig = {
     bilibiliMid: "3546855124240550",
     /** AuthorCard 上显示的 Bilibili 文字 */
     bilibiliDisplayName: "UPXUU",
-    email: "upxuu@outlook.com",
+    email: "xu@i.upxuu.com",
     website: "https://upxuu.com",
     /** 关于页额外社交链接 */
     twitter: "https://x.com/IMUPXUU",
@@ -323,15 +323,15 @@ export const aboutConfig = {
   /** GitHub 显示文字 */
   githubValue: "@ImUpXuu\nupxuu",
   /** 邮箱显示文字 */
-  emailValue: "ME@UPXUU.COM",
+  emailValue: "xu@i.upxuu.com",
   /** 邮箱链接 */
-  emailLink: "mailto:ME@UPXUU.COM",
+  emailLink: "mailto:xu@i.upxuu.com",
   /** 微信显示文字 */
   wechatValue: "@imljxu",
   /** QQ 显示文字 */
   qqValue: "3697773416",
   /** GitHub Socials 区块的邮箱链接 */
-  socialEmailLink: "mailto:me@upxuu.com",
+  socialEmailLink: "mailto:xu@i.upxuu.com",
 };
 
 /**
@@ -410,7 +410,7 @@ export const i18nConfig = {
     description: "UpXuu 博客的隐私政策——我们如何收集、使用和保护你的个人信息。",
     lastUpdated: "2026 年 11 月 15 日",
     effectiveDate: "2026 年 11 月 15 日",
-    contactEmail: "me@upxuu.com",
+    contactEmail: "xu@i.upxuu.com",
   },
   /** 统计页面 */
   stats: {
