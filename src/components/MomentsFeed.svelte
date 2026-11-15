@@ -42,6 +42,53 @@
 
   onMount(() => {
     destroyed = false;
+    let frame = 0;
+    let feedTop = 0;
+    let feedHeight = 1;
+    let resizeTimer: number | undefined;
+    let activeDay = '';
+    const root = document.querySelector<HTMLElement>('[data-moments-root]');
+    let feed: HTMLElement | null = null;
+    const measure = () => {
+      feed = root?.querySelector<HTMLElement>('[data-moments-feed]') || null;
+      if (!feed) return;
+      const rect = feed.getBoundingClientRect();
+      feedTop = rect.top + window.scrollY;
+      feedHeight = Math.max(rect.height, 1);
+      updateProgress();
+    };
+    const updateProgress = () => {
+      if (frame) return;
+      frame = window.requestAnimationFrame(() => {
+        frame = 0;
+        if (!feed || window.matchMedia('(max-width: 639px)').matches) return;
+        const p = Math.max(0, Math.min(1, (window.scrollY + window.innerHeight * 0.35 - feedTop) / feedHeight));
+        feed.style.setProperty('--tl-progress', String(p));
+      });
+    };
+    const onScroll = () => updateProgress();
+    const onResize = () => {
+      if (resizeTimer) window.clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(measure, 150);
+    };
+    const io = new IntersectionObserver((entries) => {
+      const current = entries.filter(entry => entry.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+      if (current) {
+        activeDay = (current.target as HTMLElement).dataset.day || '';
+        feed?.querySelectorAll('[data-day-dot]').forEach(dot => dot.classList.toggle('is-current', dot.getAttribute('data-day-dot') === activeDay));
+      }
+    }, { rootMargin: '-20% 0px -65% 0px', threshold: 0 });
+    const observeDays = () => {
+      io.disconnect();
+      feed = root?.querySelector<HTMLElement>('[data-moments-feed]') || null;
+      feed?.querySelectorAll('[data-day]').forEach(day => io.observe(day));
+      measure();
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onResize);
+    const observer = new MutationObserver(observeDays);
+    if (root) observer.observe(root, { childList: true, subtree: true });
+    requestAnimationFrame(observeDays);
     try {
       const raw = sessionStorage.getItem(SNAPSHOT_KEY);
       if (raw) {
@@ -63,6 +110,12 @@
     return () => {
       destroyed = true;
       window.clearInterval(interval);
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onResize);
+      io.disconnect();
+      observer.disconnect();
+      if (frame) cancelAnimationFrame(frame);
+      if (resizeTimer) window.clearTimeout(resizeTimer);
       clearLoadTimers();
       if (newItemsTimer) window.clearTimeout(newItemsTimer);
     };
@@ -258,10 +311,12 @@
         <a href="/friends" class="mt-4 inline-block border-2 border-[#0284c7] bg-white px-4 py-2 text-xs font-black text-[#0284c7] shadow-[2px_2px_0px_0px_#0284c7] transition-colors hover:bg-[#fde68a] dark:bg-slate-700">去友链看看 →</a>
       </section>
     {:else}
-      <div class="space-y-6 pt-1 sm:space-y-7">
+    <div class="relative" data-moments-root>
+      <div class="relative space-y-6 pt-1 sm:space-y-7" data-moments-feed>
+        <div class="moments-rail" aria-hidden="true"><span class="moments-progress"></span></div>
         {#each dayGroups as group (group.key)}
-          <section class="grid gap-2 sm:grid-cols-[78px_minmax(0,1fr)] sm:gap-4">
-            <div class="flex items-center gap-2 pl-1 sm:flex-col sm:items-start sm:gap-1 sm:pl-0">
+          <section data-day={group.key} class="relative grid grid-cols-[24px_minmax(0,1fr)] gap-2 sm:grid-cols-[78px_minmax(0,1fr)] sm:gap-4">
+            <div class="relative flex items-center gap-2 pl-1 sm:flex-col sm:items-start sm:gap-1 sm:pl-0"><span data-day-dot={group.key} class="moments-dot" aria-hidden="true"></span>
               <span class="inline-block -rotate-1 border-2 border-[#0284c7] bg-[#fde68a] px-2 py-0.5 font-mono text-[11px] font-black text-[#0c4a6e] shadow-[2px_2px_0px_0px_#0284c7] dark:border-amber-400 dark:bg-amber-400/15 dark:text-amber-300">{String(group.date.getMonth() + 1).padStart(2, '0')}.{String(group.date.getDate()).padStart(2, '0')}</span>
               <h2 class="text-[11px] font-black text-[#0284c7] dark:text-sky-400 sm:pl-1"><time datetime={group.key}>{dayLabel(group.date)}</time></h2>
             </div>
@@ -300,6 +355,7 @@
           </section>
         {/each}
       </div>
+    </div>
 
       {#if hasMore}
         <div class="flex justify-center py-7">
@@ -319,7 +375,45 @@
 </div>
 
 <style>
+  .moments-rail {
+    position: absolute;
+    z-index: 0;
+    top: 0.65rem;
+    bottom: 0.65rem;
+    left: 39px;
+    width: 2px;
+    border-left: 2px dashed rgb(2 132 199 / 45%);
+    pointer-events: none;
+  }
+  .moments-progress {
+    position: absolute;
+    inset: 0 auto auto -2px;
+    width: 2px;
+    height: 100%;
+    background: #0284c7;
+    transform: scaleY(var(--tl-progress, 0));
+    transform-origin: top;
+    transition: transform 120ms linear;
+  }
+  .moments-dot {
+    position: absolute;
+    z-index: 1;
+    left: -5px;
+    top: 0.55rem;
+    width: 10px;
+    height: 10px;
+    border: 2px solid #0284c7;
+    background: #faf8f5;
+    transform: rotate(45deg);
+  }
+  .moments-dot.is-current { background: #f59e0b; border-color: #f59e0b; }
+  @media (max-width: 639px) {
+    .moments-rail { left: 11px; width: 1px; border-left-width: 1px; }
+    .moments-progress { display: none; }
+    .moments-dot { left: -4px; width: 9px; height: 9px; }
+  }
   @media (prefers-reduced-motion: reduce) {
+    .moments-progress { transition: none; transform: none; }
     :global([data-reveal-card]), :global(.animate-pulse) { animation: none !important; }
     :global(.group:hover) { transform: none !important; }
   }
