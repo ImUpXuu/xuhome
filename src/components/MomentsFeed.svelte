@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { loadMoments, type MomentItem } from '../utils/momentsClient';
+  import { loadMoments, MOMENTS_WINDOW_DAYS, type MomentItem } from '../utils/momentsClient';
 
   export let endpoint = 'https://friend.upxuu.com/moments.json';
 
@@ -24,11 +24,16 @@
   let loading = true;
   let refreshing = false;
   let errorMessage = '';
+  let errorDismissed = false;
+  let newItemsCount = 0;
+  let newItemsVisible = false;
+  let newItemsTimer: number | undefined;
   let slowLoading = false;
   let timeoutHint = false;
   let destroyed = false;
   let failedAvatars = new Set<string>();
   let loadTimer: number | undefined;
+  let timeoutHintTimer: number | undefined;
 
   $: visibleMoments = moments.slice(0, visibleCount);
   $: dayGroups = groupByDay(visibleMoments);
@@ -58,18 +63,30 @@
     return () => {
       destroyed = true;
       window.clearInterval(interval);
-      if (loadTimer) window.clearTimeout(loadTimer);
+      clearLoadTimers();
+      if (newItemsTimer) window.clearTimeout(newItemsTimer);
     };
   });
 
+  function clearLoadTimers() {
+    if (loadTimer) {
+      window.clearTimeout(loadTimer);
+      loadTimer = undefined;
+    }
+    if (timeoutHintTimer) {
+      window.clearTimeout(timeoutHintTimer);
+      timeoutHintTimer = undefined;
+    }
+  }
+
   function beginLoadTimers() {
-    if (loadTimer) window.clearTimeout(loadTimer);
+    clearLoadTimers();
     slowLoading = false;
     timeoutHint = false;
     loadTimer = window.setTimeout(() => {
       if (!destroyed && loading) slowLoading = true;
     }, SLOW_LOAD_MS);
-    window.setTimeout(() => {
+    timeoutHintTimer = window.setTimeout(() => {
       if (!destroyed && loading) timeoutHint = true;
     }, TIMEOUT_HINT_MS);
   }
@@ -82,19 +99,33 @@
     try {
       const result = await loadMoments(endpoint, force);
       if (destroyed) return;
+      const previousIds = new Set(moments.map((item) => item.id));
+      const addedCount = result.items.reduce((count, item) => count + (previousIds.has(item.id) ? 0 : 1), 0);
       moments = result.items;
       visibleCount = Math.min(Math.max(visibleCount, PAGE_SIZE), result.items.length);
       generatedAt = result.generatedAt;
+      errorDismissed = false;
+      if (addedCount > 0 && previousIds.size > 0) {
+        newItemsCount = addedCount;
+        newItemsVisible = true;
+        if (newItemsTimer) window.clearTimeout(newItemsTimer);
+        newItemsTimer = window.setTimeout(() => {
+          newItemsVisible = false;
+          newItemsTimer = undefined;
+        }, 3000);
+      }
       try { sessionStorage.setItem(SNAPSHOT_KEY, JSON.stringify(result)); } catch { /* Storage is optional. */ }
     } catch (error) {
       if (destroyed) return;
       errorMessage = error instanceof DOMException && error.name === 'AbortError'
         ? '连接等待超时了，请稍后再试。'
         : error instanceof Error ? error.message : '暂时无法连接朋友圈。';
+      errorDismissed = false;
     } finally {
       if (!destroyed) {
         loading = false;
         refreshing = false;
+        clearLoadTimers();
         slowLoading = false;
         timeoutHint = false;
       }
@@ -165,22 +196,22 @@
 
 <div class="mx-auto w-full max-w-[1180px] px-2 pb-14 sm:px-5">
   <header class="mb-5 flex flex-col items-center justify-between gap-4 border-b-4 border-[#0284c7] pb-5 text-center sm:flex-row sm:text-left" data-reveal>
-    <div>
-      <h1 class="mb-2 text-xl font-black uppercase leading-tight text-[#0284c7] dark:text-[#38bdf8] sm:text-2xl md:text-3xl">Moments 朋友圈</h1>
-      <div class="flex flex-wrap items-center justify-center gap-2 sm:justify-start">
-        <span class="rounded-sm border-2 border-slate-200 bg-slate-100 px-2 py-0.5 font-mono text-xs font-bold text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">那些人，那些新文章</span>
-        <span class="rounded-sm border-2 border-[#f59e0b] bg-amber-50 px-2 py-0.5 font-mono text-[11px] font-bold text-[#b45309] dark:bg-amber-900/30 dark:text-amber-300">近 15 天</span>
-        <span class="rounded-sm border-2 border-emerald-400 bg-green-50 px-2 py-0.5 font-mono text-[11px] font-bold text-green-700 dark:border-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300">{loading ? '— 篇 · — 位朋友' : `${moments.length} 篇 · ${sourceCount} 位朋友`}</span>
-      </div>
+    <div class="flex min-h-[2.25rem] flex-wrap items-center justify-center gap-2 sm:justify-start" role="toolbar" aria-label="朋友圈工具栏">
+      <span class="sr-only">Moments 朋友圈</span>
+      <span class="rounded-sm border-2 border-slate-200 bg-slate-100 px-2 py-0.5 font-mono text-xs font-bold text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">那些人，那些新文章</span>
+      <span class="rounded-sm border-2 border-[#f59e0b] bg-amber-50 px-2 py-0.5 font-mono text-[11px] font-bold text-[#0c4a6e] dark:border-amber-400 dark:bg-amber-400/15 dark:text-amber-300">近 {MOMENTS_WINDOW_DAYS} 天</span>
+      <span class="rounded-sm border-2 border-emerald-400 bg-green-50 px-2 py-0.5 font-mono text-[11px] font-bold text-green-700 dark:border-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300">{loading ? '— 篇 · — 位朋友' : `${moments.length} 篇 · ${sourceCount} 位朋友`}</span>
+      <span class="inline-flex min-w-[7rem] justify-center" aria-live="polite"><span class:opacity-0={!newItemsVisible} class="rounded-sm border-2 border-sky-400 bg-sky-100 px-2 py-0.5 font-mono text-[11px] font-bold text-sky-800 transition-opacity duration-300 dark:bg-sky-900/40 dark:text-sky-200">+{newItemsCount} 条新动态</span></span>
     </div>
     <div class="flex items-center gap-2">
-      <span class="hidden text-[10px] font-mono font-bold text-slate-400 dark:text-slate-500 sm:inline">{#if generatedAt}{formatUpdatedAt(generatedAt)}{:else}RSS 聚合{/if}</span>
+      <span class="hidden text-[11px] font-mono font-bold text-slate-400 dark:text-slate-500 sm:inline">{formatUpdatedAt(generatedAt)}</span>
       <button
         type="button"
-        class="flex min-w-[88px] items-center justify-center gap-1.5 rounded-sm border-2 border-[#0284c7] bg-white px-3 py-1.5 text-xs font-black text-[#0284c7] shadow-[2px_2px_0px_0px_#0284c7] transition-[transform,box-shadow,border-color] hover:bg-[#fde68a] active:translate-x-0.5 active:translate-y-0.5 active:shadow-none disabled:cursor-wait disabled:opacity-60 dark:bg-slate-800 dark:text-sky-400"
+        class="flex min-w-[88px] items-center justify-center gap-1.5 rounded-sm border-2 border-[#0284c7] bg-white px-3 py-1.5 text-xs font-black text-[#0284c7] shadow-[2px_2px_0px_0px_#0284c7] transition-[transform,box-shadow,border-color] hover:bg-[#fde68a] dark:bg-slate-800 dark:text-sky-400 dark:hover:bg-amber-400/20 dark:hover:text-amber-200 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#f59e0b] focus-visible:ring-offset-2"
         on:click={() => refresh(true)}
         disabled={refreshing}
         aria-label="重新获取朋友圈文章"
+        aria-describedby={errorMessage && moments.length > 0 && !errorDismissed ? 'moments-sync-error' : undefined}
       >
         <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" class:animate-spin={refreshing} fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20 11a8.1 8.1 0 00-15.5-2M4 4v5h5M4 13a8.1 8.1 0 0015.5 2M20 20v-5h-5" /></svg>
         {refreshing ? '同步中' : '刷新动态'}
@@ -188,8 +219,12 @@
     </div>
   </header>
 
-  {#if errorMessage && moments.length > 0}
-    <div class="mb-4 border-l-4 border-amber-400 bg-amber-50/90 px-3 py-2 text-xs font-bold text-amber-800 dark:bg-amber-950/30 dark:text-amber-200" role="status">这次同步没有成功，下面保留上次读到的内容。{errorMessage}</div>
+  {#if errorMessage && moments.length > 0 && !errorDismissed}
+    <div id="moments-sync-error" class="mb-4 flex items-start gap-3 border-4 border-amber-400 bg-amber-50/90 px-3 py-2 text-xs font-bold text-amber-800 shadow-[4px_4px_0px_0px_#f59e0b] dark:bg-amber-950/30 dark:text-amber-200" role="status">
+      <span class="min-w-0 flex-1">这次同步没有成功，已保留上次内容。{errorMessage}</span>
+      <button type="button" class="shrink-0 border-2 border-amber-500 px-2 py-0.5 text-[11px] hover:bg-amber-200 dark:hover:bg-amber-400/20 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#f59e0b] focus-visible:ring-offset-2" on:click={() => refresh(true)}>重试</button>
+      <button type="button" aria-label="关闭同步失败提示" class="shrink-0 text-lg leading-none focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#f59e0b] focus-visible:ring-offset-2" on:click={() => { errorDismissed = true; }}>×</button>
+    </div>
   {/if}
 
   <div aria-busy={loading || refreshing}>
@@ -206,19 +241,19 @@
           </div>
         {/each}
         {#if slowLoading}<p class="text-center text-xs font-bold text-slate-500 dark:text-slate-400">还在连朋友圈的 RSS，请稍等…</p>{/if}
-        {#if timeoutHint}<button type="button" class="mx-auto block text-xs font-bold text-[#0284c7] underline" on:click={() => refresh(true)}>等待较久，重试</button>{/if}
+        {#if timeoutHint}<button type="button" class="mx-auto block text-xs font-bold text-[#0284c7] underline focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#f59e0b] focus-visible:ring-offset-2" on:click={() => refresh(true)}>等待较久，重试</button>{/if}
       </div>
     {:else if errorMessage && moments.length === 0}
-      <section class="my-8 border-2 border-dashed border-[#0284c7] bg-[rgba(250,248,245,0.92)] px-5 py-10 text-center shadow-[3px_3px_0px_0px_#0284c7] dark:bg-slate-800" role="alert">
+      <section class="my-8 border-4 border-[#0284c7] bg-[rgba(250,248,245,0.94)] px-5 py-10 text-center shadow-[5px_5px_0px_0px_#0284c7] dark:border-sky-400 dark:bg-[#1e293b] dark:shadow-[5px_5px_0px_0px_#0369a1]" role="alert">
         <div class="mx-auto flex h-10 w-10 rotate-2 items-center justify-center border-2 border-[#0284c7] bg-[#fde68a] text-lg font-black text-[#0284c7] shadow-[2px_2px_0px_0px_#0284c7]">!</div>
         <h2 class="mt-4 font-black text-[#0284c7] dark:text-sky-400">朋友圈暂时没连上</h2>
         <p class="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-500 dark:text-slate-400">{errorMessage} 可以重新拉取，或者稍后再来看看。</p>
-        <button type="button" class="mt-4 border-2 border-[#0284c7] bg-[#0284c7] px-4 py-2 text-xs font-black text-white shadow-[2px_2px_0px_0px_#f59e0b] transition-all hover:bg-[#0ea5e9] active:translate-x-0.5 active:translate-y-0.5 active:shadow-none" on:click={() => refresh(true)}>重新连接</button>
+        <button type="button" class="mt-4 border-2 border-[#0284c7] bg-[#0284c7] px-4 py-2 text-xs font-black text-white shadow-[2px_2px_0px_0px_#f59e0b] transition-[transform,box-shadow,background-color] hover:bg-[#0ea5e9] active:translate-x-0.5 active:translate-y-0.5 active:shadow-none focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#f59e0b] focus-visible:ring-offset-2" on:click={() => refresh(true)}>重新连接</button>
       </section>
     {:else if moments.length === 0}
-      <section class="my-8 border-2 border-dashed border-[#0284c7] bg-[rgba(250,248,245,0.92)] px-5 py-10 text-center shadow-[3px_3px_0px_0px_#0284c7] dark:bg-slate-800">
-        <span class="inline-block -rotate-3 border-2 border-[#0284c7] bg-[#fde68a] px-2 py-1 font-mono text-xs font-black text-[#0284c7] shadow-[2px_2px_0px_0px_#0284c7]">15 DAYS</span>
-        <h2 class="mt-4 font-black text-[#0284c7] dark:text-sky-400">这十五天，有点安静</h2>
+      <section class="my-8 border-4 border-[#0284c7] bg-[rgba(250,248,245,0.94)] px-5 py-10 text-center shadow-[5px_5px_0px_0px_#0284c7] dark:border-sky-400 dark:bg-[#1e293b] dark:shadow-[5px_5px_0px_0px_#0369a1]">
+        <span class="inline-block -rotate-3 border-2 border-[#0284c7] bg-[#fde68a] px-2 py-1 font-mono text-xs font-black text-[#0c4a6e] shadow-[2px_2px_0px_0px_#0284c7] dark:border-amber-400 dark:bg-amber-400/15 dark:text-amber-300">{MOMENTS_WINDOW_DAYS} DAYS</span>
+        <h2 class="mt-4 font-black text-[#0284c7] dark:text-sky-400">这{MOMENTS_WINDOW_DAYS}天，有点安静</h2>
         <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">朋友们大概正在认真生活。先去友链里串串门吧。</p>
         <a href="/friends" class="mt-4 inline-block border-2 border-[#0284c7] bg-white px-4 py-2 text-xs font-black text-[#0284c7] shadow-[2px_2px_0px_0px_#0284c7] transition-colors hover:bg-[#fde68a] dark:bg-slate-700">去友链看看 →</a>
       </section>
@@ -227,13 +262,13 @@
         {#each dayGroups as group (group.key)}
           <section class="grid gap-2 sm:grid-cols-[78px_minmax(0,1fr)] sm:gap-4">
             <div class="flex items-center gap-2 pl-1 sm:flex-col sm:items-start sm:gap-1 sm:pl-0">
-              <span class="inline-block -rotate-1 border-2 border-[#0284c7] bg-[#fde68a] px-2 py-0.5 font-mono text-[11px] font-black text-[#0284c7] shadow-[2px_2px_0px_0px_#0284c7]">{String(group.date.getMonth() + 1).padStart(2, '0')}.{String(group.date.getDate()).padStart(2, '0')}</span>
-              <span class="text-[10px] font-black text-[#0284c7] dark:text-sky-400 sm:pl-1">{dayLabel(group.date)}</span>
+              <span class="inline-block -rotate-1 border-2 border-[#0284c7] bg-[#fde68a] px-2 py-0.5 font-mono text-[11px] font-black text-[#0c4a6e] shadow-[2px_2px_0px_0px_#0284c7] dark:border-amber-400 dark:bg-amber-400/15 dark:text-amber-300">{String(group.date.getMonth() + 1).padStart(2, '0')}.{String(group.date.getDate()).padStart(2, '0')}</span>
+              <h2 class="text-[11px] font-black text-[#0284c7] dark:text-sky-400 sm:pl-1"><time datetime={group.key}>{dayLabel(group.date)}</time></h2>
             </div>
 
               <div class="space-y-3.5 sm:space-y-4">
               {#each group.items as item (item.id)}
-                <article data-reveal-card class="group border-4 border-[#0284c7] bg-[rgba(250,248,245,0.94)] p-4 shadow-[5px_5px_0px_0px_#0284c7] transition-[transform,box-shadow,border-color] duration-150 ease-out hover:-translate-x-1 hover:-translate-y-1 hover:border-[#f59e0b] hover:shadow-[8px_8px_0px_0px_#f59e0b] focus-within:ring-4 focus-within:ring-[#f59e0b] focus-within:ring-offset-2 sm:p-5 dark:bg-slate-800">
+                <article data-reveal-card class="group border-4 border-[#0284c7] bg-[rgba(250,248,245,0.94)] p-4 shadow-[5px_5px_0px_0px_#0284c7] transition-[transform,box-shadow,border-color] duration-150 ease-out hover:-translate-x-1 hover:-translate-y-1 hover:border-[#f59e0b] hover:shadow-[8px_8px_0px_0px_#f59e0b] focus-within:ring-4 focus-within:ring-[#f59e0b] focus-within:ring-offset-2 sm:p-5 dark:border-sky-400 dark:bg-[#1e293b] dark:shadow-[5px_5px_0px_0px_#0369a1]">
                   <div class="flex items-center justify-between gap-3">
                     <a href={item.sourceUrl} target="_blank" rel="noopener noreferrer" class="flex min-w-0 items-center gap-2.5 text-[11px] font-black text-[#0284c7] transition-colors hover:text-[#0ea5e9] dark:text-sky-400">
                       {#if item.avatar && !failedAvatars.has(item.id)}
@@ -249,7 +284,7 @@
                   <div class="mt-3 flex items-start gap-2">
                     <span class="mt-2 h-2 w-2 shrink-0 -skew-x-12 border border-[#0284c7] bg-[#f59e0b] shadow-[1px_1px_0px_0px_#0284c7]" aria-hidden="true"></span>
                     <h2 class="min-w-0 text-base font-black leading-6 text-slate-800 dark:text-slate-100 sm:text-[17px] rv-txt">
-                      <a href={item.link} target="_blank" rel="noopener noreferrer" tabindex="-1" aria-hidden="true" class="transition-colors hover:text-[#0284c7] dark:hover:text-sky-400">{item.title}<svg xmlns="http://www.w3.org/2000/svg" class="mb-0.5 ml-1 inline h-3.5 w-3.5 text-[#0284c7] opacity-60 transition-all group-hover:translate-x-0.5 group-hover:opacity-100 dark:text-sky-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M7 17L17 7M7 7h10v10" /></svg></a>
+                      <a href={item.link} target="_blank" rel="noopener noreferrer" class="transition-colors hover:text-[#0284c7] dark:hover:text-sky-400">{item.title}<svg xmlns="http://www.w3.org/2000/svg" class="mb-0.5 ml-1 inline h-3.5 w-3.5 text-[#0284c7] opacity-60 transition-[transform,opacity] group-hover:translate-x-0.5 group-hover:opacity-100 dark:text-sky-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M7 17L17 7M7 7h10v10" /></svg></a>
                     </h2>
                   </div>
                   {#if item.description}
@@ -268,15 +303,15 @@
 
       {#if hasMore}
         <div class="flex justify-center py-7">
-          <button type="button" on:click={loadMore} class="border-2 border-[#0284c7] bg-white px-6 py-2.5 text-xs font-black uppercase tracking-wider text-[#0284c7] shadow-[3px_3px_0px_0px_#0284c7] transition-all hover:bg-[#fde68a] active:translate-x-0.5 active:translate-y-0.5 active:shadow-none dark:bg-slate-700">再看一些（{visibleMoments.length}/{moments.length}）</button>
+          <button type="button" on:click={loadMore} class="border-2 border-[#0284c7] bg-white px-6 py-2.5 text-xs font-black uppercase tracking-wider text-[#0284c7] shadow-[3px_3px_0px_0px_#0284c7] transition-[transform,box-shadow,background-color] hover:bg-[#fde68a] active:translate-x-0.5 active:translate-y-0.5 active:shadow-none focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#f59e0b] focus-visible:ring-offset-2 dark:bg-slate-700">再看一些（{visibleMoments.length}/{moments.length}）</button>
         </div>
       {/if}
 
-      <footer class="mt-3 flex flex-wrap items-center justify-between gap-3 border-t-2 border-[#0284c7]/25 pt-4 text-[10px] font-bold text-slate-500 dark:border-slate-700 dark:text-slate-400" data-reveal>
+      <footer class="mt-3 flex flex-col gap-2 border-t-2 border-[#0284c7]/25 pt-4 text-[11px] font-bold text-slate-500 dark:border-slate-700 dark:text-slate-400 sm:flex-row sm:items-center sm:justify-between" data-reveal>
         <span>文章版权归原作者所有，点击标题前往原站阅读。</span>
         <div class="flex items-center gap-3">
-          <a href="https://friend.upxuu.com/moments.xml" target="_blank" rel="noopener noreferrer" class="border border-[#0284c7] bg-white px-2 py-1 text-[#0284c7] transition-colors hover:bg-[#fde68a] dark:bg-slate-800 dark:text-sky-400">RSS 订阅 ↗</a>
-          <a href="https://friend.upxuu.com/" target="_blank" rel="noopener noreferrer" class="text-[#0284c7] transition-colors hover:text-[#0ea5e9] dark:text-sky-400">Friend RSS Hub ↗</a>
+          <a href="https://friend.upxuu.com/moments.xml" target="_blank" rel="noopener noreferrer" class="border-2 border-[#0284c7] bg-white px-2 py-1 text-[#0284c7] transition-colors hover:bg-[#fde68a] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#f59e0b] focus-visible:ring-offset-2 dark:bg-slate-800 dark:text-sky-400 dark:hover:bg-amber-400/20 dark:hover:text-amber-200">RSS 订阅 ↗</a>
+          <a href="https://friend.upxuu.com/" target="_blank" rel="noopener noreferrer" class="text-[#0284c7] transition-colors hover:text-[#0ea5e9] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#f59e0b] focus-visible:ring-offset-2 dark:text-sky-400">Friend RSS Hub ↗</a>
         </div>
       </footer>
     {/if}
