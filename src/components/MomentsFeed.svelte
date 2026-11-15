@@ -286,7 +286,7 @@
         {#each Array(4) as _}
           <div class="grid gap-2 sm:grid-cols-[78px_minmax(0,1fr)] sm:gap-4">
             <div class="flex items-center gap-2 pl-1 sm:flex-col sm:items-start sm:gap-1 sm:pl-0"><div class="h-5 w-12 rounded-sm bg-slate-200 animate-pulse dark:bg-slate-700"></div><div class="h-3 w-10 rounded-sm bg-slate-200 animate-pulse dark:bg-slate-700"></div></div>
-            <div class="min-h-[128px] border-2 border-slate-200 bg-[rgba(250,248,245,0.9)] p-4 shadow-[2px_2px_0px_0px_rgba(2,132,199,0.12)] dark:border-slate-700 dark:bg-slate-800">
+            <div class="min-h-[128px] border-2 border-slate-200 bg-[rgba(250,248,245,0.78)] p-4 shadow-[2px_2px_0px_0px_rgba(2,132,199,0.12)] dark:border-slate-700 dark:bg-[rgba(30,41,59,0.80)]">
               <div class="flex items-center gap-3"><div class="h-9 w-9 rounded-sm bg-slate-200 animate-pulse dark:bg-slate-700"></div><div class="h-3 w-28 rounded-sm bg-slate-200 animate-pulse dark:bg-slate-700"></div></div>
               <div class="mt-4 h-5 w-3/4 rounded-sm bg-slate-200 animate-pulse dark:bg-slate-700"></div>
               <div class="mt-3 h-3 w-full rounded-sm bg-slate-200/80 animate-pulse dark:bg-slate-700/80"></div>
@@ -323,7 +323,11 @@
 
               <div class="space-y-3.5 sm:space-y-4">
               {#each group.items as item (item.id)}
-                <article data-reveal-card class="group border-4 border-[#0284c7] bg-[rgba(250,248,245,0.94)] p-4 shadow-[5px_5px_0px_0px_#0284c7] transition-[transform,box-shadow,border-color] duration-150 ease-out hover:-translate-x-1 hover:-translate-y-1 hover:border-[#f59e0b] hover:shadow-[8px_8px_0px_0px_#f59e0b] focus-within:ring-4 focus-within:ring-[#f59e0b] focus-within:ring-offset-2 sm:p-5 dark:border-sky-400 dark:bg-[#1e293b] dark:shadow-[5px_5px_0px_0px_#0369a1]">
+                <article data-reveal-card class="group relative overflow-hidden border-4 border-[#0284c7] bg-[rgba(250,248,245,0.78)] p-4 shadow-[5px_5px_0px_0px_#0284c7] transition-[transform,box-shadow,border-color] duration-150 ease-out hover:-translate-x-1 hover:-translate-y-1 hover:border-[#f59e0b] hover:shadow-[8px_8px_0px_0px_#f59e0b] focus-within:ring-4 focus-within:ring-[#f59e0b] focus-within:ring-offset-2 sm:p-5 dark:border-sky-400 dark:bg-[rgba(30,41,59,0.80)] dark:shadow-[5px_5px_0px_0px_#0369a1]">
+                  {#if item.avatar && !failedAvatars.has(item.id)}
+                    <img src={item.avatar} alt="" aria-hidden="true" width="176" height="176" loading="lazy" decoding="async" referrerpolicy="no-referrer" class="pointer-events-none absolute right-2 top-1/2 z-0 h-40 w-40 -translate-y-1/2 rotate-6 object-cover opacity-[0.10] dark:opacity-[0.12] sm:right-5 sm:h-44 sm:w-44" on:error={() => markAvatarFailed(item.id)} />
+                  {/if}
+                  <div class="relative z-10">
                   <div class="flex items-center justify-between gap-3">
                     <a href={item.sourceUrl} target="_blank" rel="noopener noreferrer" class="flex min-w-0 items-center gap-2.5 text-[11px] font-black text-[#0284c7] transition-colors hover:text-[#0ea5e9] dark:text-sky-400">
                       {#if item.avatar && !failedAvatars.has(item.id)}
@@ -348,6 +352,7 @@
                   <div class="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-dashed border-sky-200/80 pt-2 text-[11px] font-bold text-slate-500 dark:border-slate-700 dark:text-slate-400 rv-txt">
                     <span class="truncate">{hostname(item.sourceUrl)}</span>
                     <a href={item.link} target="_blank" rel="noopener noreferrer" class="shrink-0 border-2 border-[#0284c7] px-2 py-0.5 text-[#0284c7] hover:underline focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#f59e0b] focus-visible:ring-offset-2 dark:text-sky-400">阅读全文 →</a>
+                  </div>
                   </div>
                 </article>
               {/each}
