@@ -11,6 +11,9 @@
   }
 
   const PAGE_SIZE = 18;
+  let moments: MomentItem[] = [];
+  let visibleCount = PAGE_SIZE;
+  let generatedAt = '';
   const dateFormatter = new Intl.DateTimeFormat('zh-CN', { weekday: 'short' });
   const timeFormatter = new Intl.DateTimeFormat('zh-CN', { hour: '2-digit', minute: '2-digit', hour12: false });
   const updatedFormatter = new Intl.DateTimeFormat('zh-CN', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false });
