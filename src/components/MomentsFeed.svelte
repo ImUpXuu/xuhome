@@ -11,15 +11,13 @@
   }
 
   const PAGE_SIZE = 18;
-  let moments: MomentItem[] = [];
-  let visibleCount = PAGE_SIZE;
-  let generatedAt = '';
+  const dateFormatter = new Intl.DateTimeFormat('zh-CN', { weekday: 'short' });
+  const timeFormatter = new Intl.DateTimeFormat('zh-CN', { hour: '2-digit', minute: '2-digit', hour12: false });
+  const updatedFormatter = new Intl.DateTimeFormat('zh-CN', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false });
+  let relativeTimeTick = 0;
   const SNAPSHOT_KEY = '__xuhomeMomentsSnapshot';
   const SLOW_LOAD_MS = 4000;
   const TIMEOUT_HINT_MS = 10000;
-  let moments: MomentItem[] = [];
-  let visibleCount = PAGE_SIZE;
-  let generatedAt = '';
   let loading = true;
   let refreshing = false;
   let errorMessage = '';
@@ -53,8 +51,10 @@
     } catch { /* Ignore malformed or unavailable session storage. */ }
     beginLoadTimers();
     void refresh();
+    const interval = window.setInterval(() => { relativeTimeTick += 1; }, 60000);
     return () => {
       destroyed = true;
+      window.clearInterval(interval);
       if (loadTimer) window.clearTimeout(loadTimer);
     };
   });
@@ -121,24 +121,21 @@
     const difference = Math.round((today.getTime() - day.getTime()) / 86400000);
     if (difference === 0) return '今天';
     if (difference === 1) return '昨天';
-    return new Intl.DateTimeFormat('zh-CN', { weekday: 'short' }).format(date);
+    return dateFormatter.format(date);
   }
 
   function formatTime(value: string): string {
-    return new Intl.DateTimeFormat('zh-CN', {
-      hour: '2-digit', minute: '2-digit', hour12: false,
-    }).format(new Date(value));
+    return timeFormatter.format(new Date(value));
   }
 
   function formatUpdatedAt(value: string): string {
-    const date = value ? new Date(value) : new Date();
-    if (Number.isNaN(date.getTime())) return '刚刚同步';
-    return `${new Intl.DateTimeFormat('zh-CN', {
-      month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false,
-    }).format(date)} 更新`;
+    const date = value ? new Date(value) : null;
+    if (!date || Number.isNaN(date.getTime())) return '同步时间未知';
+    return `${updatedFormatter.format(date)} 更新`;
   }
 
   function relativeTime(value: string): string {
+    void relativeTimeTick;
     const difference = Math.max(0, Date.now() - Date.parse(value));
     const hours = Math.floor(difference / 3600000);
     if (hours < 1) return '一小时内';
@@ -225,7 +222,7 @@
     {:else}
       <div class="space-y-6 pt-1 sm:space-y-7">
         {#each dayGroups as group (group.key)}
-          <section class="grid gap-2 sm:grid-cols-[78px_minmax(0,1fr)] sm:gap-4" data-reveal-card>
+          <section class="grid gap-2 sm:grid-cols-[78px_minmax(0,1fr)] sm:gap-4">
             <div class="flex items-center gap-2 pl-1 sm:flex-col sm:items-start sm:gap-1 sm:pl-0">
               <span class="inline-block -rotate-1 border-2 border-[#0284c7] bg-[#fde68a] px-2 py-0.5 font-mono text-[11px] font-black text-[#0284c7] shadow-[2px_2px_0px_0px_#0284c7]">{String(group.date.getMonth() + 1).padStart(2, '0')}.{String(group.date.getDate()).padStart(2, '0')}</span>
               <span class="text-[10px] font-black text-[#0284c7] dark:text-sky-400 sm:pl-1">{dayLabel(group.date)}</span>
@@ -233,7 +230,7 @@
 
               <div class="space-y-3.5 sm:space-y-4">
               {#each group.items as item (item.id)}
-                <article class="group border-4 border-[#0284c7] bg-[rgba(250,248,245,0.94)] p-4 shadow-[5px_5px_0px_0px_#0284c7] transition-[transform,box-shadow,border-color] duration-150 ease-out hover:-translate-x-1 hover:-translate-y-1 hover:border-[#f59e0b] hover:shadow-[8px_8px_0px_0px_#f59e0b] focus-within:ring-4 focus-within:ring-[#f59e0b] focus-within:ring-offset-2 sm:p-5 dark:bg-slate-800">
+                <article data-reveal-card class="group border-4 border-[#0284c7] bg-[rgba(250,248,245,0.94)] p-4 shadow-[5px_5px_0px_0px_#0284c7] transition-[transform,box-shadow,border-color] duration-150 ease-out hover:-translate-x-1 hover:-translate-y-1 hover:border-[#f59e0b] hover:shadow-[8px_8px_0px_0px_#f59e0b] focus-within:ring-4 focus-within:ring-[#f59e0b] focus-within:ring-offset-2 sm:p-5 dark:bg-slate-800">
                   <div class="flex items-center justify-between gap-3">
                     <a href={item.sourceUrl} target="_blank" rel="noopener noreferrer" class="flex min-w-0 items-center gap-2.5 text-[11px] font-black text-[#0284c7] transition-colors hover:text-[#0ea5e9] dark:text-sky-400">
                       {#if item.avatar && !failedAvatars.has(item.id)}
@@ -241,21 +238,21 @@
                       {:else}
                         <span class="flex h-9 w-9 shrink-0 -rotate-2 items-center justify-center rounded-sm border-2 border-[#0284c7] text-sm font-black text-[#0284c7] shadow-[2px_2px_0px_0px_#0284c7] dark:text-sky-400" style={avatarStyle(item.source)} aria-hidden="true">{Array.from(item.source)[0] || '友'}</span>
                       {/if}
-                      <span class="truncate">{item.source}</span>
+                      <span class="truncate rv-txt">{item.source}</span>
                     </a>
                     <time datetime={item.publishedAt} class="shrink-0 border-2 border-amber-300 bg-amber-50 px-1.5 py-0.5 font-mono text-[11px] font-bold text-amber-700 dark:border-amber-700 dark:bg-amber-900/30 dark:text-amber-300" title={relativeTime(item.publishedAt)}>{formatTime(item.publishedAt)}</time>
                   </div>
 
                   <div class="mt-3 flex items-start gap-2">
                     <span class="mt-2 h-2 w-2 shrink-0 -skew-x-12 border border-[#0284c7] bg-[#f59e0b] shadow-[1px_1px_0px_0px_#0284c7]" aria-hidden="true"></span>
-                    <h2 class="min-w-0 text-base font-black leading-6 text-slate-800 dark:text-slate-100 sm:text-[17px]">
+                    <h2 class="min-w-0 text-base font-black leading-6 text-slate-800 dark:text-slate-100 sm:text-[17px] rv-txt">
                       <a href={item.link} target="_blank" rel="noopener noreferrer" tabindex="-1" aria-hidden="true" class="transition-colors hover:text-[#0284c7] dark:hover:text-sky-400">{item.title}<svg xmlns="http://www.w3.org/2000/svg" class="mb-0.5 ml-1 inline h-3.5 w-3.5 text-[#0284c7] opacity-60 transition-all group-hover:translate-x-0.5 group-hover:opacity-100 dark:text-sky-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M7 17L17 7M7 7h10v10" /></svg></a>
                     </h2>
                   </div>
                   {#if item.description}
-                    <p class="mt-2 line-clamp-2 pl-4 text-[13px] font-medium leading-6 text-slate-600 dark:text-slate-300">{item.description}</p>
+                    <p class="mt-2 line-clamp-2 pl-4 text-[13px] font-medium leading-6 text-slate-600 dark:text-slate-300 rv-txt">{item.description}</p>
                   {/if}
-                  <div class="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-dashed border-sky-200/80 pt-2 text-[11px] font-bold text-slate-500 dark:border-slate-700 dark:text-slate-400">
+                  <div class="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-dashed border-sky-200/80 pt-2 text-[11px] font-bold text-slate-500 dark:border-slate-700 dark:text-slate-400 rv-txt">
                     <span class="truncate">{hostname(item.sourceUrl)}</span>
                     <a href={item.link} target="_blank" rel="noopener noreferrer" class="shrink-0 border-2 border-[#0284c7] px-2 py-0.5 text-[#0284c7] hover:underline focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#f59e0b] focus-visible:ring-offset-2 dark:text-sky-400">阅读全文 →</a>
                   </div>
@@ -282,3 +279,10 @@
     {/if}
   </div>
 </div>
+
+<style>
+  @media (prefers-reduced-motion: reduce) {
+    :global([data-reveal-card]), :global(.animate-pulse) { animation: none !important; }
+    :global(.group:hover) { transform: none !important; }
+  }
+</style>
