@@ -1,0 +1,1 @@
+{"buildCommand":"mkdir -p .eo-disabled && mv middleware.js .eo-disabled/middleware.js && pnpm build","installCommand":"pnpm install","outputDirectory":"dist"}
