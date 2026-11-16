@@ -4,7 +4,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const ROOT = 'G:/project/xuhome/src';
+const ROOT = path.resolve(__dirname, '..', 'src');
 const files = [];
 (function walk(dir) {
   for (const n of fs.readdirSync(dir, { withFileTypes: true })) {
