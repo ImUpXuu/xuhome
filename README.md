@@ -8,7 +8,6 @@
 [![Svelte](https://img.shields.io/badge/Svelte-5-FF3E00?logo=svelte)](https://svelte.dev)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-4-06B6D4?logo=tailwindcss)](https://tailwindcss.com)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.8-3178C6?logo=typescript)](https://www.typescriptlang.org)
-[![Vercel](https://img.shields.io/badge/Vercel-Deployed-000000?logo=vercel)](https://vercel.com)
 
 **在线地址 / Live Site:** [https://upxuu.com](https://upxuu.com)
 
@@ -35,7 +34,7 @@
 
 | 功能 | 说明 |
 |------|------|
-| **AI 摘要**    | 每篇文章自动生成 AI 摘要，支持 GPT-OSS / DeepSeek R1 / Qwen 3.5 多模型切换 |
+| **AI 摘要**    | 每篇文章自动生成 AI 摘要，支持 GPT-OSS / Gemma 4 / DeepSeek R1 多模型切换 |
 | **AI 对话**    | 文章页面右侧浮动聊天窗口，可针对当前文章内容提问，支持多轮对话和模型切换 |
 
 ### 🗣️ 社交功能 / Social
@@ -213,12 +212,12 @@ export const siteConfig = {
     bilibili: "https://space.bilibili.com/...",
     bilibiliMid: "3546855124240550",       // 关于页拉取视频列表用
     bilibiliDisplayName: "UPXUU",
-    email: "upxuu@outlook.com",
+    email: "xu@i.upxuu.com",
     qqGroup: "https://qun.qq.com/...",     // 欢迎提示中的 QQ 群链接
     subscribe: "https://github.com/ImUpXuu/xuhome/issues",
     // twitter / youtube / wechat / qq ...
   },
-  waline: { serverURL: 'https://com2.upxuu.com' },
+  waline: { serverURL: 'https://comment.upxuu.com' },
   analytics: {
     umami: [                               // 可配多个 Umami 实例
       { src: "https://stats.upxuu.com/script.js", id: "cd983d6c-..." },
@@ -348,7 +347,7 @@ export const welcomeConfig = {
 
 ### 7. 关于页 / About Page
 
-`aboutConfig` 单独管理关于页的所有内容（角色、简介、技能、Bilibili/GitHub 区块文字等）。注意：关于页 Socials 区块的邮箱链接使用 `socialEmailLink: "mailto:me@upxuu.com"`，与 `siteConfig.socials.email` (`upxuu@outlook.com`) 不同，原博客即如此。
+`aboutConfig` 单独管理关于页的所有内容（角色、简介、技能、Bilibili/GitHub 区块文字等）。关于页 Socials 区块的邮箱链接使用 `socialEmailLink: "mailto:xu@i.upxuu.com"`，与 `siteConfig.socials.email` 一致，均为 xu@i.upxuu.com。
 
 ### 8. 全站文案 / i18n
 
@@ -426,6 +425,8 @@ category: "技术"
 文章正文，支持 Markdown、GFM、KaTeX 公式、代码高亮。
 ```
 
+> 文章与说说的 frontmatter 会在构建时按 `src/content.config.ts` 的 schema 校验：字段名写错或类型不对会直接报错并指出是哪篇文章哪个字段，不会静默通过。
+
 ### 写说说 / Writing Talks
 
 在 `src/content/talks/` 下创建 `.md` 文件：
@@ -433,7 +434,7 @@ category: "技术"
 ```markdown
 ---
 title: "日常动态"
-published: 2026-06-06 10:00:00
+date: 2026-06-06 10:00:00
 location: "石家庄"
 weather: "晴"
 mood: "开心"
@@ -463,29 +464,20 @@ tags: ["日常"]
 
 ## 🌐 部署 / Deployment
 
-### 部署到 Vercel（推荐）
+### 当前部署方式（GitHub Actions → Caddy）
 
-项目内置 `@astrojs/vercel` adapter，一键部署：
+推送到 `main` 分支即自动部署（`.github/workflows/deploy.yml`）：
+
+1. GitHub Actions 检出代码，Node 22 + pnpm 安装依赖并执行 `pnpm build`
+2. 构建产物 `dist/` 经 rsync 同步到 Caddy 服务器的 `/var/www/upxuu/`
 
 ```bash
-# 安装 Vercel CLI
-npm i -g vercel
-
-# 部署
-vercel
-
-# 生产部署
-vercel --prod
+# 本地验证构建
+pnpm build
+# 产物在 dist/，即部署到服务器的目录
 ```
 
-或在 Vercel Dashboard 中导入 GitHub 仓库，自动部署。
-
-**Vercel 环境变量：**
-
-| 变量 | 说明 |
-|------|------|
-| `GEMINI_API_KEY` | Gemini API Key（可选，用于 AI 功能） |
-| `APP_URL` | 站点 URL |
+> 注意：本站目前**不在 Vercel 上运行**。`astro.config.mjs` 里只设置了 `output: 'static'`，没有注册任何 adapter；`package.json` 里残留的 `@astrojs/vercel` / `@vercel/functions` 依赖未被使用，可后续清理。
 
 ### 部署到其他平台 / Other Platforms
 
@@ -495,8 +487,6 @@ vercel --prod
 pnpm build
 # 将 dist/ 目录部署到你的服务器
 ```
-
-支持 adapter 切换（Node / Netlify / Cloudflare Pages 等），修改 `astro.config.mjs` 即可。
 
 ---
 
