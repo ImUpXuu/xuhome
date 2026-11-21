@@ -90,11 +90,55 @@
     imgErrors.add(name);
     imgErrors = imgErrors; // trigger Svelte reactivity update
   }
+
+  // 组件内 reveal：不依赖全站引擎的扫描时机。节点创建时由 action 注册，
+  // 进入视口后加 .fx-on 播放淡入上浮；重排保留已入场状态，搜索新增节点同样生效。
+  // SSR 产物不带隐藏类，无 JS 时内容照常可见（渐进增强）。
+  let fxObserver: IntersectionObserver | null = null;
+
+  function getFxObserver(): IntersectionObserver | null {
+    if (typeof IntersectionObserver === "undefined") return null;
+    if (!fxObserver) {
+      fxObserver = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("fx-on");
+              fxObserver?.unobserve(entry.target);
+            }
+          }
+        },
+        { threshold: 0.08, rootMargin: "0px 0px -4% 0px" }
+      );
+    }
+    return fxObserver;
+  }
+
+  function reveal(node: HTMLElement, params?: { delay?: number }) {
+    const observer = getFxObserver();
+    if (!observer) {
+      node.classList.add("fx-on");
+      return {};
+    }
+    if (params?.delay) node.style.transitionDelay = `${params.delay}ms`;
+    node.classList.add("fx-rv");
+    observer.observe(node);
+    return {
+      update(next?: { delay?: number }) {
+        if (!node.classList.contains("fx-on") && next?.delay !== undefined) {
+          node.style.transitionDelay = `${next.delay}ms`;
+        }
+      },
+      destroy() {
+        observer.unobserve(node);
+      }
+    };
+  }
 </script>
 
 <div class="w-full space-y-6 sm:space-y-8">
   <!-- 友联底座：让入口、统计与检索先形成清晰的首屏层级。 -->
-  <header class="relative border-4 border-[#0284c7] bg-[rgba(250,248,245,0.94)] p-5 shadow-[4px_4px_0px_0px_#0284c7] sm:p-7 dark:border-sky-400 dark:bg-[rgba(30,41,59,0.94)] dark:shadow-[4px_4px_0px_0px_#0369a1]" data-reveal>
+  <header class="relative border-4 border-[#0284c7] bg-[rgba(250,248,245,0.94)] p-5 shadow-[4px_4px_0px_0px_#0284c7] sm:p-7 dark:border-sky-400 dark:bg-[rgba(30,41,59,0.94)] dark:shadow-[4px_4px_0px_0px_#0369a1]" use:reveal>
     <div class="absolute -top-3 right-6 flex gap-2 select-none" aria-hidden="true">
       <span class="h-3 w-3 -rotate-6 border-2 border-[#0284c7] bg-[#0ea5e9] shadow-[1px_1px_0px_0px_#0284c7] dark:border-sky-300"></span>
       <span class="h-3 w-3 rotate-3 border-2 border-[#0284c7] bg-[#f59e0b] shadow-[1px_1px_0px_0px_#0284c7] dark:border-sky-300"></span>
@@ -157,7 +201,7 @@
   <!-- Friends Card grid -->
   <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 2xl:grid-cols-4" aria-label="友情链接列表">
     {#each filteredFriends as friend, index (friend.url)}
-      <div data-reveal-card>
+      <div use:reveal={{ delay: (index % 12) * 35 }}>
         <a
           href={friend.url}
           target="_blank"
@@ -221,14 +265,14 @@
         </a>
       </div>
       {#if searchTerm.trim() === "" && index === applicationPromptIndex}
-        <a href="#friend-application" class="col-span-full flex items-center justify-center gap-2 rounded-sm border-3 border-dashed border-[#0284c7] bg-sky-50/70 px-4 py-3.5 text-center text-xs font-black text-[#0284c7] transition-all hover:bg-[#0ea5e9] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f59e0b] sm:text-sm dark:border-sky-500 dark:bg-sky-900/20 dark:text-sky-300 dark:hover:bg-sky-600 dark:hover:text-white" data-reveal>
+        <a href="#friend-application" class="col-span-full flex items-center justify-center gap-2 rounded-sm border-3 border-dashed border-[#0284c7] bg-sky-50/70 px-4 py-3.5 text-center text-xs font-black text-[#0284c7] transition-all hover:bg-[#0ea5e9] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f59e0b] sm:text-sm dark:border-sky-500 dark:bg-sky-900/20 dark:text-sky-300 dark:hover:bg-sky-600 dark:hover:text-white" use:reveal>
           也想把自己的小站放进这面墙？查看交换要求并提交申请 <span aria-hidden="true">→</span>
         </a>
       {/if}
     {/each}
 
     {#if filteredFriends.length === 0}
-      <div class="col-span-full rounded-sm border-4 border-[#0284c7] bg-[rgba(250,248,245,0.94)] p-10 text-center shadow-[4px_4px_0px_0px_#0284c7] dark:bg-slate-800" data-reveal>
+      <div class="col-span-full rounded-sm border-4 border-[#0284c7] bg-[rgba(250,248,245,0.94)] p-10 text-center shadow-[4px_4px_0px_0px_#0284c7] dark:bg-slate-800" use:reveal>
         <p class="font-black text-[#0284c7] dark:text-[#38bdf8]">没有找到符合“{searchTerm.trim()}”的好友</p>
         <p class="mt-2 text-xs font-bold text-slate-400">换个名称、简介或域名关键词试试。</p>
         <button
@@ -243,7 +287,7 @@
   </div>
 
   <!-- Application segment -->
-  <div class="relative scroll-mt-24" id="friend-application" data-reveal>
+  <div class="relative scroll-mt-24" id="friend-application" use:reveal>
     <div class="flex items-center gap-2 mb-4 select-none">
       <div class="p-1 px-2.5 bg-[#fde68a] border-2 border-[#0284c7] text-[#0284c7] text-xs font-black rounded-sm transform -rotate-2 shadow-[1.5px_1.5px_0px_0px_#0284c7]">
         APPLICATION
@@ -328,7 +372,7 @@
 
   {#if expiredFriendsConfig.length > 0}
     <!-- 暂时失效的友联：只留名称，不做链接、不跳转 -->
-    <div class="mt-8 pt-5 border-t-2 border-dashed border-slate-300 dark:border-slate-600" data-reveal>
+    <div class="mt-8 pt-5 border-t-2 border-dashed border-slate-300 dark:border-slate-600" use:reveal>
       <div class="flex flex-wrap items-center gap-2 mb-3 select-none">
         <span class="text-[10px] sm:text-xs font-black text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 border border-slate-300 dark:border-slate-600 rounded-sm">
           暂时失效的友联
@@ -348,3 +392,25 @@
   <!-- Waline comments placeholder (handled in Astro page) -->
   <div id="waline-placeholder"></div>
 </div>
+
+<style>
+  :global(.fx-rv) {
+    opacity: 0;
+    transform: translateY(14px);
+    transition:
+      opacity 0.45s ease,
+      transform 0.45s cubic-bezier(0.22, 0.61, 0.36, 1);
+    will-change: opacity, transform;
+  }
+  :global(.fx-rv.fx-on) {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    :global(.fx-rv) {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+</style>
