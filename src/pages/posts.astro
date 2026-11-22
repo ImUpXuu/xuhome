@@ -193,11 +193,6 @@ const years = Object.keys(yearsMap).sort((a, b) => b.localeCompare(a));
 </style>
 
 <script>
-  /* 受限动态时滚动立即到位，否则平滑 */
-  function prefersReducedMotion() {
-    return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
-  }
-
   // 年份折叠：默认只显示年份，点击丝滑滑出月份（grid-rows 0fr→1fr 过渡）
   function setYearOpen(group, open) {
     const wrap = group.querySelector('.archive-months-wrap');
@@ -285,7 +280,7 @@ const years = Object.keys(yearsMap).sort((a, b) => b.localeCompare(a));
             closeMobileTimeline();
             window.scrollTo({
               top: targetSection.offsetTop - 100,
-              behavior: prefersReducedMotion() ? 'auto' : 'smooth'
+              behavior: 'smooth'
             });
             window.history.pushState(null, '', '#' + targetId);
           }

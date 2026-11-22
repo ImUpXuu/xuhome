@@ -304,8 +304,7 @@
     // 只滚歌词容器本身，不触发页面滚动；用 smooth 过渡更丝滑
     const top = (el as HTMLElement).offsetTop - lyricScrollEl.offsetTop;
     const target = top - lyricScrollEl.clientHeight / 2 + (el as HTMLElement).offsetHeight / 2;
-    const rm = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-    lyricScrollEl.scrollTo({ top: target, behavior: rm ? 'auto' : 'smooth' });
+    lyricScrollEl.scrollTo({ top: target, behavior: 'smooth' });
   });
 
   /** 用户滚动歌词容器时标记为手动滚动，2.5 秒内不抢回滚动条 */

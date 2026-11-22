@@ -581,11 +581,6 @@ const busiest = summary.daily.reduce(
 </style>
 
 <script>
-  /* 受限动态时滚动立即到位，否则平滑 */
-  function prefersReducedMotion() {
-    return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
-  }
-
   /* ================= 常量与工具 ================= */
   const KIND_META = {
     post: { name: '文章', color: '#0284c7', icon: '📝' },
@@ -1247,7 +1242,7 @@ const busiest = summary.daily.reduce(
     const rows = list.querySelectorAll(`.cm-row[data-date="${date}"]`);
     if (!rows.length) return;
     for (const r of rows) r.classList.add('is-flash');
-    rows[0].scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth', block: 'center' });
+    rows[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
     // 高亮只是定位提示，两秒后褪掉，别一直亮着
     setTimeout(() => {
       for (const r of rows) r.classList.remove('is-flash');
@@ -1287,11 +1282,11 @@ const busiest = summary.daily.reduce(
       const list = $('commit-list');
       if (page === curPage && list) {
         focusOnDate(list, date);
-        list.closest('.brick').scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth', block: 'start' });
+        list.closest('.brick').scrollIntoView({ behavior: 'smooth', block: 'start' });
         return;
       }
       renderPage(state, page, date);
-      if (list) list.closest('.brick').scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth', block: 'start' });
+      if (list) list.closest('.brick').scrollIntoView({ behavior: 'smooth', block: 'start' });
     };
 
     // 热力图：默认最近一年

@@ -448,13 +448,13 @@
       value={searchQuery}
       on:input={handleSearchInput}
       toolparamdescription="搜索关键词，支持按文章标题、描述、标签或分类进行模糊匹配"
-      class="w-full bg-white dark:bg-slate-700 border-4 border-brand font-extrabold focus:outline-none px-4 sm:px-5 py-3 rounded-sm text-sm text-brand dark:text-slate-200 placeholder-slate-400 shadow-card focus:shadow-card-lg focus:-translate-x-0.5 focus:-translate-y-0.5 transition-all outline-none"
+      class="w-full bg-white dark:bg-slate-700 border-4 border-[#0284c7] font-extrabold focus:outline-none px-4 sm:px-5 py-3 rounded-sm text-sm text-[#0284c7] dark:text-slate-200 placeholder-slate-400 shadow-[4px_4px_0px_0px_#0284c7] focus:shadow-[6px_6px_0px_0px_#0284c7] focus:-translate-x-0.5 focus:-translate-y-0.5 transition-all outline-none"
     />
-    <div class="absolute right-4.5 top-1/2 -translate-y-1/2 text-brand flex items-center gap-2">
+    <div class="absolute right-4.5 top-1/2 -translate-y-1/2 text-[#0284c7] flex items-center gap-2">
       {#if searchQuery}
         <button 
           on:click={clearSearch}
-          class="text-slate-500 hover:text-brand font-black text-xs uppercase cursor-pointer"
+          class="text-slate-500 hover:text-[#0284c7] font-black text-xs uppercase cursor-pointer"
         >
           {i18nConfig.search.clear}
         </button>
@@ -465,14 +465,14 @@
     </div>
   </div>
 
-  <div bind:this={feedEl} class="flex flex-col gap-4 sm:gap-5 divide-y-2 divide-dashed divide-brand/45 mt-2 sm:mt-1">
+  <div bind:this={feedEl} class="flex flex-col gap-4 sm:gap-5 divide-y-2 divide-dashed divide-[#0284c7]/45 mt-2 sm:mt-1">
     {#if isLoadingPosts}
-      <div class="bg-white dark:bg-slate-800 border-4 border-brand p-12 shadow-card-lg rounded-sm text-center" data-reveal>
-        <p class="text-brand font-black tracking-widest uppercase">文章加载中...</p>
+      <div class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] p-12 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm text-center" data-reveal>
+        <p class="text-[#0284c7] font-black tracking-widest uppercase">文章加载中...</p>
       </div>
     {:else if displayedPosts.length === 0}
-      <div class="bg-white dark:bg-slate-800 border-4 border-brand p-12 shadow-card-lg rounded-sm text-center" data-reveal>
-        <p class="text-brand font-black tracking-widest uppercase">{loadFailed ? '文章数据加载失败' : i18nConfig.search.noResults}</p>
+      <div class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] p-12 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm text-center" data-reveal>
+        <p class="text-[#0284c7] font-black tracking-widest uppercase">{loadFailed ? '文章数据加载失败' : i18nConfig.search.noResults}</p>
       </div>
     {/if}
 
@@ -492,10 +492,10 @@
             ></div>
           </div>
         {/if}
-        <div class="bg-white dark:bg-slate-800 border-4 border-brand rounded-sm p-0 flex flex-row overflow-hidden shadow-card-lg hover:shadow-[10px_10px_0px_0px_#10b981] hover:-translate-y-1 transition-all duration-300 min-h-[150px] sm:min-h-[170px]">
+        <div class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] rounded-sm p-0 flex flex-row overflow-hidden shadow-[6px_6px_0px_0px_#0284c7] hover:shadow-[10px_10px_0px_0px_#10b981] hover:-translate-y-1 transition-all duration-300 min-h-[150px] sm:min-h-[170px]">
           <div class="flex-1 p-3.5 sm:p-5 md:p-6 flex flex-col justify-between min-w-0">
             <a href={`/posts/${encodeURIComponent(post.slug)}/`} class="block group">
-              <h2 class="rv-txt text-sm sm:text-base md:text-xl font-black text-brand mb-1 md:mb-2 group-hover:text-brand-soft transition-colors leading-snug">
+              <h2 class="rv-txt text-sm sm:text-base md:text-xl font-black text-[#0284c7] mb-1 md:mb-2 group-hover:text-[#0ea5e9] transition-colors leading-snug">
                 {post.title}
               </h2>
               <p class="rv-txt text-xs md:text-sm text-slate-700 dark:text-slate-300 font-medium line-clamp-2 leading-relaxed">
@@ -509,7 +509,7 @@
               {#if post.category}
                 <a 
                   href={`/category/${post.category}`}
-                  class="bg-accent dark:bg-amber-700/50 border-2 border-brand px-2 py-0.5 shadow-[1px_1px_0_0_var(--color-brand)] text-brand font-bold text-xs hover:bg-brand hover:text-white transition-colors uppercase cursor-pointer shrink-0"
+                  class="bg-[#fde68a] dark:bg-amber-700/50 border-2 border-[#0284c7] px-2 py-0.5 shadow-[1px_1px_0px_0px_#0284c7] text-[#0284c7] font-bold text-xs hover:bg-[#0284c7] hover:text-white transition-colors uppercase cursor-pointer shrink-0"
                 >
                   {post.category}
                 </a>
@@ -518,7 +518,7 @@
                 {#each post.tags.slice(0, 2) as tag}
                   <a 
                     href={`/tag/${tag}`}
-                    class="bg-white dark:bg-slate-700 border-2 border-brand text-slate-600 dark:text-slate-300 px-2 py-0.5 shadow-[1px_1px_0_0_var(--color-brand)] font-bold text-xs hover:bg-brand hover:text-white transition-colors cursor-pointer shrink-0"
+                    class="bg-white dark:bg-slate-700 border-2 border-[#0284c7] text-slate-600 dark:text-slate-300 px-2 py-0.5 shadow-[1px_1px_0px_0px_#0284c7] font-bold text-xs hover:bg-[#0284c7] hover:text-white transition-colors cursor-pointer shrink-0"
                   >
                     #{tag}
                   </a>
@@ -527,7 +527,7 @@
             </div>
           </div>
           
-          <a href={`/posts/${encodeURIComponent(post.slug)}/`} class="w-[100px] sm:w-[130px] md:w-[190px] shrink-0 border-l-4 border-brand relative bg-accent flex items-center justify-center overflow-hidden">
+          <a href={`/posts/${encodeURIComponent(post.slug)}/`} class="w-[100px] sm:w-[130px] md:w-[190px] shrink-0 border-l-4 border-[#0284c7] relative bg-[#fde68a] flex items-center justify-center overflow-hidden">
             <img src={post.img || placeholderImg} alt={post.title} width="190" height="120" loading={i < 3 ? 'eager' : 'lazy'} fetchpriority={i === 0 ? 'high' : null} decoding="async" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" referrerpolicy="no-referrer" on:error={(e) => { const imgEl = e.currentTarget as HTMLImageElement; if (imgEl.src !== placeholderImg) { imgEl.src = placeholderImg; } }} />
           </a>
         </div>
@@ -541,7 +541,7 @@
             on:click={prevPage}
             disabled={currentPage === 1}
             aria-label="Previous Page"
-            class="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-white dark:bg-slate-700 border-3 sm:border-4 border-brand rounded-sm {currentPage === 1 ? 'opacity-30 cursor-not-allowed' : 'hover:bg-brand-soft hover:text-white transition-colors cursor-pointer shadow-[3px_3px_0px_0px_#0284c7] sm:shadow-card'} "
+            class="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-white dark:bg-slate-700 border-3 sm:border-4 border-[#0284c7] rounded-sm {currentPage === 1 ? 'opacity-30 cursor-not-allowed' : 'hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer shadow-[3px_3px_0px_0px_#0284c7] sm:shadow-[4px_4px_0px_0px_#0284c7]'} "
           >
             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 sm:w-6 sm:h-6 stroke-[3]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
@@ -551,16 +551,16 @@
           <!-- Page numbers hidden on small screens, show only arrows -->
           <div class="hidden sm:flex items-center gap-2 sm:gap-3">
             {#if pageNumbers[0] > 1}
-              <button on:click={() => goToPage(1)} class="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-white dark:bg-slate-700 border-3 sm:border-4 border-brand rounded-sm font-black text-sm sm:text-base text-brand hover:bg-brand-soft hover:text-white transition-colors shadow-[3px_3px_0px_0px_#0284c7] sm:shadow-card cursor-pointer">1</button>
+              <button on:click={() => goToPage(1)} class="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-white dark:bg-slate-700 border-3 sm:border-4 border-[#0284c7] rounded-sm font-black text-sm sm:text-base text-[#0284c7] hover:bg-[#0ea5e9] hover:text-white transition-colors shadow-[3px_3px_0px_0px_#0284c7] sm:shadow-[4px_4px_0px_0px_#0284c7] cursor-pointer">1</button>
               {#if pageNumbers[0] > 2}
-                <span class="text-brand font-black px-1">...</span>
+                <span class="text-[#0284c7] font-black px-1">...</span>
               {/if}
             {/if}
 
             {#each pageNumbers as p}
               <button
                 on:click={() => goToPage(p)}
-                class="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center border-3 sm:border-4 border-brand rounded-sm font-black text-sm sm:text-base transition-all cursor-pointer shadow-[3px_3px_0px_0px_#0284c7] sm:shadow-card active:translate-y-1 active:shadow-none {currentPage === p ? 'bg-brand text-white' : 'bg-white dark:bg-slate-700 text-brand hover:bg-[#ebf3ff] dark:hover:bg-slate-600'}"
+                class="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center border-3 sm:border-4 border-[#0284c7] rounded-sm font-black text-sm sm:text-base transition-all cursor-pointer shadow-[3px_3px_0px_0px_#0284c7] sm:shadow-[4px_4px_0px_0px_#0284c7] active:translate-y-1 active:shadow-none {currentPage === p ? 'bg-[#0284c7] text-white' : 'bg-white dark:bg-slate-700 text-[#0284c7] hover:bg-[#ebf3ff] dark:hover:bg-slate-600'}"
               >
                 {p}
               </button>
@@ -568,14 +568,14 @@
 
             {#if pageNumbers[pageNumbers.length - 1] < totalPages}
               {#if pageNumbers[pageNumbers.length - 1] < totalPages - 1}
-                <span class="text-brand font-black px-1">...</span>
+                <span class="text-[#0284c7] font-black px-1">...</span>
               {/if}
-              <button on:click={() => goToPage(totalPages)} class="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-white dark:bg-slate-700 border-3 sm:border-4 border-brand rounded-sm font-black text-sm sm:text-base text-brand hover:bg-brand-soft hover:text-white transition-colors shadow-[3px_3px_0px_0px_#0284c7] sm:shadow-card cursor-pointer">{totalPages}</button>
+              <button on:click={() => goToPage(totalPages)} class="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-white dark:bg-slate-700 border-3 sm:border-4 border-[#0284c7] rounded-sm font-black text-sm sm:text-base text-[#0284c7] hover:bg-[#0ea5e9] hover:text-white transition-colors shadow-[3px_3px_0px_0px_#0284c7] sm:shadow-[4px_4px_0px_0px_#0284c7] cursor-pointer">{totalPages}</button>
             {/if}
           </div>
 
           <!-- Mobile page indicator -->
-          <div class="sm:hidden px-4 h-10 flex items-center justify-center font-black text-sm font-mono text-brand bg-accent dark:bg-amber-700/50 border-3 border-brand shadow-[3px_3px_0px_0px_#0284c7] rounded-sm">
+          <div class="sm:hidden px-4 h-10 flex items-center justify-center font-black text-sm font-mono text-[#0284c7] bg-[#fde68a] dark:bg-amber-700/50 border-3 border-[#0284c7] shadow-[3px_3px_0px_0px_#0284c7] rounded-sm">
             {currentPage} / {totalPages}
           </div>
 
@@ -583,7 +583,7 @@
             on:click={nextPage}
             disabled={currentPage === totalPages}
             aria-label="Next Page"
-            class="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-white dark:bg-slate-700 border-3 sm:border-4 border-brand rounded-sm {currentPage === totalPages ? 'opacity-30 cursor-not-allowed' : 'hover:bg-brand-soft hover:text-white transition-colors cursor-pointer shadow-[3px_3px_0px_0px_#0284c7] sm:shadow-card active:translate-y-1 active:shadow-none'}"
+            class="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center bg-white dark:bg-slate-700 border-3 sm:border-4 border-[#0284c7] rounded-sm {currentPage === totalPages ? 'opacity-30 cursor-not-allowed' : 'hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer shadow-[3px_3px_0px_0px_#0284c7] sm:shadow-[4px_4px_0px_0px_#0284c7] active:translate-y-1 active:shadow-none'}"
           >
             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 sm:w-6 sm:h-6 stroke-[3]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
@@ -601,7 +601,7 @@
               max={totalPages}
               placeholder={i18nConfig.search.jumpTo}
               toolparamdescription="输入要跳转的页码（1-{totalPages}）"
-              class="w-20 pl-3 pr-2 py-1.5 text-sm font-bold border-3 border-brand rounded-sm bg-white dark:bg-slate-700 dark:text-slate-200 focus:outline-none focus:shadow-[2px_2px_0px_0px_#0284c7] transition-all placeholder-slate-400 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              class="w-20 pl-3 pr-2 py-1.5 text-sm font-bold border-3 border-[#0284c7] rounded-sm bg-white dark:bg-slate-700 dark:text-slate-200 focus:outline-none focus:shadow-[2px_2px_0px_0px_#0284c7] transition-all placeholder-slate-400 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               on:keydown={(e) => {
                 if (e.key === 'Enter') {
                   const val = parseInt(e.currentTarget.value);
@@ -624,7 +624,7 @@
                 }
               }
             }}
-            class="px-3 py-1.5 text-sm font-black text-brand bg-accent border-3 border-brand rounded-sm shadow-[2px_2px_0px_0px_#0284c7] active:translate-y-0.5 active:shadow-none transition-all cursor-pointer"
+            class="px-3 py-1.5 text-sm font-black text-[#0284c7] bg-[#fde68a] border-3 border-[#0284c7] rounded-sm shadow-[2px_2px_0px_0px_#0284c7] active:translate-y-0.5 active:shadow-none transition-all cursor-pointer"
           >
             {i18nConfig.search.go}
           </button>

@@ -46,7 +46,7 @@ const qqGroupUrl = 'https://qm.qq.com/q/mlH3QB1hC2';
 ---
 
 <footer class="w-full px-2 pb-6 pt-2 text-slate-700 dark:text-slate-300 sm:px-6 sm:pb-8 md:px-8">
-  <div class="mx-auto max-w-[1100px] rounded-sm border-4 border-brand bg-[#faf8f5] p-4 shadow-card-lg dark:bg-slate-800 sm:p-6 sm:shadow-[8px_8px_0px_0px_#0284c7]">
+  <div class="mx-auto max-w-[1100px] rounded-sm border-4 border-[#0284c7] bg-[#faf8f5] p-4 shadow-[6px_6px_0px_0px_#0284c7] dark:bg-slate-800 sm:p-6 sm:shadow-[8px_8px_0px_0px_#0284c7]">
     <div class="flex flex-col items-center gap-5 text-center md:flex-row md:justify-between md:text-left">
       <a href="/" class="inline-flex shrink-0 items-center gap-3">
         <img
@@ -56,10 +56,10 @@ const qqGroupUrl = 'https://qm.qq.com/q/mlH3QB1hC2';
           height="48"
           loading="lazy"
           decoding="async"
-          class="h-12 w-12 rounded-sm border-2 border-brand object-cover shadow-[2px_2px_0px_0px_#0284c7]"
+          class="h-12 w-12 rounded-sm border-2 border-[#0284c7] object-cover shadow-[2px_2px_0px_0px_#0284c7]"
         />
         <span>
-          <span class="block font-sans text-xl font-black leading-tight text-brand dark:text-sky-300">{siteConfig.title}</span>
+          <span class="block font-sans text-xl font-black leading-tight text-[#0284c7] dark:text-sky-300">{siteConfig.title}</span>
           <span class="mt-0.5 block text-xs font-bold text-slate-500 dark:text-slate-400">{siteConfig.signature}</span>
         </span>
       </a>
@@ -70,7 +70,7 @@ const qqGroupUrl = 'https://qm.qq.com/q/mlH3QB1hC2';
             href={link.path}
             target={link.external ? '_blank' : undefined}
             rel={link.external ? 'noopener noreferrer' : undefined}
-            class="border-2 border-brand bg-white px-2.5 py-1 font-mono text-xs font-black text-brand shadow-[2px_2px_0px_0px_#fde68a] transition-all hover:-translate-y-0.5 hover:bg-brand hover:text-white dark:bg-slate-700 dark:text-sky-200 dark:hover:bg-brand dark:hover:text-white"
+            class="border-2 border-[#0284c7] bg-white px-2.5 py-1 font-mono text-xs font-black text-[#0284c7] shadow-[2px_2px_0px_0px_#fde68a] transition-all hover:-translate-y-0.5 hover:bg-[#0284c7] hover:text-white dark:bg-slate-700 dark:text-sky-200 dark:hover:bg-[#0284c7] dark:hover:text-white"
           >
             {link.name}
           </a>
@@ -79,40 +79,40 @@ const qqGroupUrl = 'https://qm.qq.com/q/mlH3QB1hC2';
           href={qqGroupUrl}
           target="_blank"
           rel="noopener noreferrer"
-          class="border-2 border-brand bg-accent px-2.5 py-1 font-mono text-xs font-black text-brand shadow-[2px_2px_0px_0px_#0284c7] transition-all hover:-translate-y-0.5 hover:bg-brand hover:text-white dark:bg-amber-700/60 dark:text-amber-50 dark:hover:bg-brand dark:hover:text-white"
+          class="border-2 border-[#0284c7] bg-[#fde68a] px-2.5 py-1 font-mono text-xs font-black text-[#0284c7] shadow-[2px_2px_0px_0px_#0284c7] transition-all hover:-translate-y-0.5 hover:bg-[#0284c7] hover:text-white dark:bg-amber-700/60 dark:text-amber-50 dark:hover:bg-[#0284c7] dark:hover:text-white"
         >
           QQ 交流群
         </a>
       </nav>
     </div>
 
-    <div class="mt-5 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 border-y-2 border-dashed border-brand/40 py-3 text-center font-mono text-xs text-slate-500 dark:text-slate-400 sm:text-xs">
-      <span>累计 <strong class="font-black text-brand dark:text-sky-300">{wordCountK}k 字</strong></span>
-      <span aria-hidden="true" class="text-brand/40">·</span>
-      <span>访客 <strong id="fv-uv" class="font-black text-brand dark:text-sky-300">—</strong> 人</span>
-      <span aria-hidden="true" class="text-brand/40">·</span>
-      <span>浏览 <strong id="fv-pv" class="font-black text-brand dark:text-sky-300">—</strong> 次</span>
-      <span aria-hidden="true" class="text-brand/40">·</span>
-      <span>已航行 <strong id="uptime-display" data-start={uptimeStart} class="font-black text-brand dark:text-sky-300">计算中...</strong></span>
+    <div class="mt-5 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 border-y-2 border-dashed border-[#0284c7]/40 py-3 text-center font-mono text-xs text-slate-500 dark:text-slate-400 sm:text-xs">
+      <span>累计 <strong class="font-black text-[#0284c7] dark:text-sky-300">{wordCountK}k 字</strong></span>
+      <span aria-hidden="true" class="text-[#0284c7]/40">·</span>
+      <span>访客 <strong id="fv-uv" class="font-black text-[#0284c7] dark:text-sky-300">—</strong> 人</span>
+      <span aria-hidden="true" class="text-[#0284c7]/40">·</span>
+      <span>浏览 <strong id="fv-pv" class="font-black text-[#0284c7] dark:text-sky-300">—</strong> 次</span>
+      <span aria-hidden="true" class="text-[#0284c7]/40">·</span>
+      <span>已航行 <strong id="uptime-display" data-start={uptimeStart} class="font-black text-[#0284c7] dark:text-sky-300">计算中...</strong></span>
     </div>
 
     <div class="mt-4 flex flex-col items-center gap-4 text-center font-mono text-xs leading-relaxed text-slate-500 dark:text-slate-400 md:flex-row md:justify-between md:text-left">
       <div class="min-w-0">
         <p class="font-bold text-slate-600 dark:text-slate-300">{footerConfig.copyrightText}</p>
         {footerConfig.icp.text && (
-          <a href={footerConfig.icp.link} target="_blank" rel="noopener noreferrer" class="mt-1 inline-block text-brand hover:underline dark:text-sky-300">
+          <a href={footerConfig.icp.link} target="_blank" rel="noopener noreferrer" class="mt-1 inline-block text-[#0284c7] hover:underline dark:text-sky-300">
             {footerConfig.icp.text}
           </a>
         )}
         <p class="mt-1 break-words">
           <span>{footerConfig.repoText}</span>
-          <a href={footerConfig.repoUrl} target="_blank" rel="noopener noreferrer" class="font-bold text-brand hover:underline dark:text-sky-300">
+          <a href={footerConfig.repoUrl} target="_blank" rel="noopener noreferrer" class="font-bold text-[#0284c7] hover:underline dark:text-sky-300">
             {footerConfig.repoDisplayName}
           </a>
           {gitInfo && (
             <>
               <span class="mx-1 text-slate-400">·</span>
-              <a href={`${footerConfig.repoUrl}/commit/${gitInfo.hash}`} target="_blank" rel="noopener noreferrer" class="font-bold text-brand hover:underline dark:text-sky-300">
+              <a href={`${footerConfig.repoUrl}/commit/${gitInfo.hash}`} target="_blank" rel="noopener noreferrer" class="font-bold text-[#0284c7] hover:underline dark:text-sky-300">
                 {gitInfo.hash}
               </a>
               {gitInfo.formattedDate && <span class="whitespace-nowrap"> · {gitInfo.formattedDate}</span>}

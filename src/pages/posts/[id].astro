@@ -94,10 +94,10 @@ const relatedPosts = (() => {
       
       {/* Main post body center panel */}
       <div class="flex-1 min-w-0 w-full space-y-8 lg:order-2">
-        <article class="article-paper bg-paper dark:bg-slate-800 border-4 border-brand p-4 sm:p-6 md:p-10 shadow-card-lg sm:shadow-[8px_8px_0px_0px_#0284c7] rounded-sm animate-card-entrance opacity-0">
-          <div class="border-b-4 border-brand pb-6 mb-8 text-center md:text-left flex flex-col md:flex-row justify-between items-center gap-4">
+        <article class="article-paper bg-[#efe1bf] dark:bg-slate-800 border-4 border-[#0284c7] p-4 sm:p-6 md:p-10 shadow-[6px_6px_0px_0px_#0284c7] sm:shadow-[8px_8px_0px_0px_#0284c7] rounded-sm animate-card-entrance opacity-0">
+          <div class="border-b-4 border-[#0284c7] pb-6 mb-8 text-center md:text-left flex flex-col md:flex-row justify-between items-center gap-4">
             <div>
-              <h1 class="text-xl sm:text-2xl md:text-3xl font-black text-brand mb-4 leading-tight">{post.title}</h1>
+              <h1 class="text-xl sm:text-2xl md:text-3xl font-black text-[#0284c7] mb-4 leading-tight">{post.title}</h1>
               <div class="flex flex-wrap items-center gap-3.5 justify-center md:justify-start">
                 <span class="text-slate-500 dark:text-slate-400 font-extrabold font-mono text-sm">{post.date}</span>
                 <span class="text-slate-500 dark:text-slate-400 font-extrabold font-mono text-sm">/ {i18nConfig.post.readingTime} {readTime} {i18nConfig.post.readingTimeUnit}</span>
@@ -106,7 +106,7 @@ const relatedPosts = (() => {
                 {post.category && (
                   <a 
                     href={`/category/${post.category}`} 
-                    class="bg-accent border-2 border-brand px-2.5 py-0.5 shadow-[2px_2px_0px_0px_#0284c7] text-center font-bold text-brand text-xs hover:bg-brand hover:text-white transition-colors"
+                    class="bg-[#fde68a] border-2 border-[#0284c7] px-2.5 py-0.5 shadow-[2px_2px_0px_0px_#0284c7] text-center font-bold text-[#0284c7] text-xs hover:bg-[#0284c7] hover:text-white transition-colors"
                   >
                     {post.category}
                   </a>
@@ -117,7 +117,7 @@ const relatedPosts = (() => {
                     {post.tags.map(tag => (
                       <a 
                         href={`/tag/${tag}`} 
-                        class="text-xs font-bold bg-white border-2 border-brand text-slate-600 px-2.5 py-0.5 shadow-[2px_2px_0px_0px_#0284c7] hover:bg-brand hover:text-white transition-colors"
+                        class="text-xs font-bold bg-white border-2 border-[#0284c7] text-slate-600 px-2.5 py-0.5 shadow-[2px_2px_0px_0px_#0284c7] hover:bg-[#0284c7] hover:text-white transition-colors"
                       >
                         #{tag}
                       </a>
@@ -137,17 +137,17 @@ const relatedPosts = (() => {
 
         {/* Copyright Metadata block */}
         <div 
-          class="bg-paper dark:bg-slate-800 border-4 border-brand p-5 md:p-7 shadow-card-lg rounded-sm relative transition-all duration-300 group/copyright animate-card-entrance opacity-0"
+          class="bg-[#efe1bf] dark:bg-slate-800 border-4 border-[#0284c7] p-5 md:p-7 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm relative transition-all duration-300 group/copyright animate-card-entrance opacity-0"
           id="post-copyright-card"
           style="animation-delay: 0.1s"
         >
-          <div class="absolute right-4 bottom-0 text-[110px] font-black text-brand/5 select-none pointer-events-none transform rotate-12 translate-y-12 translate-x-6 leading-none select-none">
+          <div class="absolute right-4 bottom-0 text-[110px] font-black text-[#0284c7]/5 select-none pointer-events-none transform rotate-12 translate-y-12 translate-x-6 leading-none select-none">
             C
           </div>
           
           <div class="relative z-10 space-y-4">
             <div class="flex items-start justify-between gap-3">
-              <h3 class="text-base sm:text-lg font-black text-brand leading-snug min-w-0">{post.title}</h3>
+              <h3 class="text-base sm:text-lg font-black text-[#0284c7] leading-snug min-w-0">{post.title}</h3>
               {/* 分享按钮：放在底部版权卡片右上角 */}
               <div class="shrink-0">
                 <ShareButton
@@ -163,16 +163,16 @@ const relatedPosts = (() => {
               </div>
             </div>
             
-            <div class="inline-block bg-[#e0f2fe]/80 border-2 border-brand-soft/20 px-3 py-1 rounded-sm text-xs font-bold text-brand hover:text-brand-soft hover:bg-[#e0f2fe] transition-all break-all select-all">
+            <div class="inline-block bg-[#e0f2fe]/80 border-2 border-[#0ea5e9]/20 px-3 py-1 rounded-sm text-xs font-bold text-[#0284c7] hover:text-[#0ea5e9] hover:bg-[#e0f2fe] transition-all break-all select-all">
               <a href={Astro.url.href} target="_blank" rel="noopener noreferrer">
                 {Astro.url.href}
               </a>
             </div>
 
-            <div class="grid grid-cols-3 gap-3 border-t-2 border-dashed border-brand/20 pt-4 text-[11px] sm:text-xs">
+            <div class="grid grid-cols-3 gap-3 border-t-2 border-dashed border-[#0284c7]/20 pt-4 text-[11px] sm:text-xs">
               <div>
                 <div class="text-slate-400 font-bold mb-1 uppercase tracking-wider">{i18nConfig.post.copyrightTitle}</div>
-                <div class="font-extrabold text-brand hover:translate-x-0.5 transition-transform">{siteConfig.author}</div>
+                <div class="font-extrabold text-[#0284c7] hover:translate-x-0.5 transition-transform">{siteConfig.author}</div>
               </div>
               <div>
                 <div class="text-slate-400 font-bold mb-1 uppercase tracking-wider">{i18nConfig.post.publishedTitle}</div>
@@ -181,7 +181,7 @@ const relatedPosts = (() => {
               <div>
                 <div class="text-slate-400 font-bold mb-1 uppercase tracking-wider">{i18nConfig.post.licenseTitle}</div>
                 <div>
-                  <a href={contentConfig.license.url} class="font-bold text-brand-soft hover:underline hover:text-brand transition-all">
+                  <a href={contentConfig.license.url} class="font-bold text-[#0ea5e9] hover:underline hover:text-[#0284c7] transition-all">
                     {contentConfig.license.name}
                   </a>
                 </div>
@@ -193,7 +193,7 @@ const relatedPosts = (() => {
         {/* Article history block —— 首屏只有次数与最后更改时间，明细点开才拉分片 */}
         {history && (
           <div
-            class="bg-paper dark:bg-slate-800 border-4 border-brand p-4 md:p-5 shadow-card-lg rounded-sm animate-card-entrance opacity-0"
+            class="bg-[#efe1bf] dark:bg-slate-800 border-4 border-[#0284c7] p-4 md:p-5 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm animate-card-entrance opacity-0"
             style="animation-delay: 0.12s"
           >
             <div
@@ -230,8 +230,8 @@ const relatedPosts = (() => {
         {/* Related Posts */}
         {relatedPosts.length > 0 && (
           <div class="animate-card-entrance opacity-0" style="animation-delay: 0.08s" data-prefetch="post-bottom">
-            <div class="bg-paper dark:bg-slate-800 border-4 border-brand p-4 shadow-card-lg rounded-sm">
-              <h3 class="font-black text-brand text-sm mb-3 flex items-center gap-2">
+            <div class="bg-[#efe1bf] dark:bg-slate-800 border-4 border-[#0284c7] p-4 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm">
+              <h3 class="font-black text-[#0284c7] text-sm mb-3 flex items-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 100 20 10 10 0 000-20z" />
                 </svg>
@@ -241,9 +241,9 @@ const relatedPosts = (() => {
                 {relatedPosts.map(rp => (
                   <a
                     href={`/posts/${encodeURIComponent(rp.slug)}`}
-                    class="group bg-paper dark:bg-slate-700 border-2 border-brand px-3 py-2 rounded-sm shadow-[3px_3px_0px_0px_#0284c7] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all duration-200 inline-flex items-center gap-2"
+                    class="group bg-[#efe1bf] dark:bg-slate-700 border-2 border-[#0284c7] px-3 py-2 rounded-sm shadow-[3px_3px_0px_0px_#0284c7] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all duration-200 inline-flex items-center gap-2"
                   >
-                    <span class="text-xs font-black text-slate-700 dark:text-slate-200 group-hover:text-brand-soft transition-colors whitespace-nowrap">{rp.title}</span>
+                    <span class="text-xs font-black text-slate-700 dark:text-slate-200 group-hover:text-[#0ea5e9] transition-colors whitespace-nowrap">{rp.title}</span>
                     <span class="text-[9px] font-bold text-slate-400 font-mono shrink-0">{rp.date}</span>
                   </a>
                 ))}
@@ -257,16 +257,16 @@ const relatedPosts = (() => {
           {prevPost ? (
             <a 
               href={`/posts/${encodeURIComponent(prevPost.slug)}`}
-              class="flex-1 min-w-0 bg-paper dark:bg-slate-800 hover:bg-[#e8d4a6] dark:hover:bg-slate-700 border-3 border-brand px-4 py-3 rounded-sm shadow-card hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all duration-200 flex items-center gap-3 group text-left"
+              class="flex-1 min-w-0 bg-[#efe1bf] dark:bg-slate-800 hover:bg-[#e8d4a6] dark:hover:bg-slate-700 border-3 border-[#0284c7] px-4 py-3 rounded-sm shadow-[4px_4px_0px_0px_#0284c7] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all duration-200 flex items-center gap-3 group text-left"
             >
-              <span class="text-brand-soft group-hover:-translate-x-1 transition-transform shrink-0 font-extrabold">❮</span>
+              <span class="text-[#0ea5e9] group-hover:-translate-x-1 transition-transform shrink-0 font-extrabold">❮</span>
               <div class="min-w-0 flex-1">
                 <div class="text-[9px] uppercase font-black tracking-widest text-slate-400 mb-0.5">{i18nConfig.post.prevPost}</div>
                 <p class="text-xs sm:text-sm font-black text-slate-700 dark:text-slate-200 truncate">{prevPost.title}</p>
               </div>
             </a>
           ) : (
-            <div class="hidden sm:block flex-1 border-3 border-dashed border-brand/20 px-4 py-3 rounded-sm text-center text-xs font-black text-slate-400 dark:text-slate-500 bg-slate-50/30 dark:bg-slate-700/30">
+            <div class="hidden sm:block flex-1 border-3 border-dashed border-[#0284c7]/20 px-4 py-3 rounded-sm text-center text-xs font-black text-slate-400 dark:text-slate-500 bg-slate-50/30 dark:bg-slate-700/30">
               {i18nConfig.post.noMorePrev}
             </div>
           )}
@@ -274,23 +274,23 @@ const relatedPosts = (() => {
           {nextPost ? (
             <a 
               href={`/posts/${encodeURIComponent(nextPost.slug)}`}
-              class="flex-1 min-w-0 bg-paper dark:bg-slate-800 hover:bg-[#e8d4a6] dark:hover:bg-slate-700 border-3 border-brand px-4 py-3 rounded-sm shadow-card hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all duration-200 flex items-center justify-between gap-3 group text-right"
+              class="flex-1 min-w-0 bg-[#efe1bf] dark:bg-slate-800 hover:bg-[#e8d4a6] dark:hover:bg-slate-700 border-3 border-[#0284c7] px-4 py-3 rounded-sm shadow-[4px_4px_0px_0px_#0284c7] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all duration-200 flex items-center justify-between gap-3 group text-right"
             >
               <div class="min-w-0 flex-1">
                 <div class="text-[9px] uppercase font-black tracking-widest text-slate-400 mb-0.5">{i18nConfig.post.nextPost}</div>
                 <p class="text-xs sm:text-sm font-black text-slate-700 dark:text-slate-200 truncate">{nextPost.title}</p>
               </div>
-              <span class="text-brand-soft group-hover:translate-x-1 transition-transform shrink-0 font-extrabold">❯</span>
+              <span class="text-[#0ea5e9] group-hover:translate-x-1 transition-transform shrink-0 font-extrabold">❯</span>
             </a>
           ) : (
-            <div class="hidden sm:block flex-1 border-3 border-dashed border-brand/20 px-4 py-3 rounded-sm text-center text-xs font-black text-slate-400 dark:text-slate-500 bg-slate-50/30 dark:bg-slate-700/30">
+            <div class="hidden sm:block flex-1 border-3 border-dashed border-[#0284c7]/20 px-4 py-3 rounded-sm text-center text-xs font-black text-slate-400 dark:text-slate-500 bg-slate-50/30 dark:bg-slate-700/30">
               {i18nConfig.post.noMoreNext}
             </div>
           )}
         </div>
 
         {/* Waline Comments */}
-        <WalineComment client:visible />
+        <WalineComment client:idle />
       </div>
 
       {/* Left Sidebar - AFTER main content in DOM for SEO */}
@@ -300,8 +300,8 @@ const relatedPosts = (() => {
 
       {/* Right Desktop Sticky TOC Side Menu */}
       <div class="hidden lg:block w-[260px] shrink-0 sticky top-[100px] z-10 self-start lg:order-3">
-        <div class="bg-paper dark:bg-slate-800 border-4 border-brand p-5 shadow-card-lg rounded-sm max-h-[calc(100vh-120px)] flex flex-col">
-          <h3 class="font-black text-brand text-lg mb-4 flex items-center gap-2 shrink-0">
+        <div class="bg-[#efe1bf] dark:bg-slate-800 border-4 border-[#0284c7] p-5 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm max-h-[calc(100vh-120px)] flex flex-col">
+          <h3 class="font-black text-[#0284c7] text-lg mb-4 flex items-center gap-2 shrink-0">
             {i18nConfig.post.tocTitle}
           </h3>
           {toc.length === 0 ? (
@@ -317,7 +317,7 @@ const relatedPosts = (() => {
                   >
                     <a 
                       href={`#${item.id}`} 
-                      class="toc-nav-link block py-1 hover:text-brand-soft hover:underline transition-colors line-clamp-1 border-l-2 pl-2 text-slate-600 dark:text-slate-300 border-transparent"
+                      class="toc-nav-link block py-1 hover:text-[#0ea5e9] hover:underline transition-colors line-clamp-1 border-l-2 pl-2 text-slate-600 dark:text-slate-300 border-transparent"
                       data-id={item.id}
                     >
                       {item.text}
@@ -337,11 +337,6 @@ const relatedPosts = (() => {
 
 <script>
   import { Fancybox } from '@fancyapps/ui';
-
-  /* 受限动态时滚动立即到位，否则平滑 */
-  function prefersReducedMotion() {
-    return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
-  }
 
   function setupPostDetail() {
     // Render image captions for images with alt text
@@ -425,19 +420,19 @@ const relatedPosts = (() => {
         
         // Create container
         const container = document.createElement('div');
-        container.className = 'my-8 relative border-4 border-brand rounded-sm overflow-hidden bg-[#1e293b] shadow-card-lg group animate-card-entrance';
+        container.className = 'my-8 relative border-4 border-[#0284c7] rounded-sm overflow-hidden bg-[#1e293b] shadow-[6px_6px_0px_0px_#0284c7] group animate-card-entrance';
         
         // Header
         const header = document.createElement('div');
-        header.className = 'bg-[#f1f5f9] border-b-4 border-brand px-4 py-2 flex items-center justify-between select-none';
+        header.className = 'bg-[#f1f5f9] border-b-4 border-[#0284c7] px-4 py-2 flex items-center justify-between select-none';
         header.innerHTML = `
           <div class="flex gap-2 items-center">
             <div class="w-2 h-2 rounded-full bg-[#ff5f56]"></div>
             <div class="w-2 h-2 rounded-full bg-[#ffbd2e]"></div>
             <div class="w-2 h-2 rounded-full bg-[#27c93f]"></div>
           </div>
-          <div class="font-mono text-[9px] font-black text-brand uppercase tracking-[0.2em] opacity-80">${language}</div>
-          <button class="copy-btn text-brand hover:bg-brand-soft hover:text-white transition-all p-1 border-2 border-brand rounded-sm bg-white shadow-[2px_2px_0px_0px_#0284c7] hover:shadow-none translate-x-[-1px] translate-y-[-1px] hover:translate-x-0 hover:translate-y-0" title="复制代码">
+          <div class="font-mono text-[9px] font-black text-[#0284c7] uppercase tracking-[0.2em] opacity-80">${language}</div>
+          <button class="copy-btn text-[#0284c7] hover:bg-[#0ea5e9] hover:text-white transition-all p-1 border-2 border-[#0284c7] rounded-sm bg-white shadow-[2px_2px_0px_0px_#0284c7] hover:shadow-none translate-x-[-1px] translate-y-[-1px] hover:translate-x-0 hover:translate-y-0" title="复制代码">
             <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
           </button>
         `;
@@ -475,7 +470,7 @@ const relatedPosts = (() => {
           const overlay = document.createElement('div');
           overlay.className = 'absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#1e293b] via-[#1e293b]/90 to-transparent flex items-end justify-center pb-4 z-10 fold-overlay';
           overlay.innerHTML = `
-            <button class="expand-btn bg-brand-soft border-2 border-brand text-white font-black px-4 py-1.5 flex items-center gap-2 shadow-[3px_3px_0px_0px_#0284c7] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all text-xs rounded-sm uppercase tracking-wider scale-90">
+            <button class="expand-btn bg-[#0ea5e9] border-2 border-[#0284c7] text-white font-black px-4 py-1.5 flex items-center gap-2 shadow-[3px_3px_0px_0px_#0284c7] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all text-xs rounded-sm uppercase tracking-wider scale-90">
               展开代码 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
             </button>
           `;
@@ -489,9 +484,9 @@ const relatedPosts = (() => {
             
             // Add collapse button at bottom
             const footer = document.createElement('div');
-            footer.className = 'border-t-2 border-dashed border-brand/20 bg-[#1e293b]/50 p-2 flex justify-center collapse-footer';
+            footer.className = 'border-t-2 border-dashed border-[#0284c7]/20 bg-[#1e293b]/50 p-2 flex justify-center collapse-footer';
             footer.innerHTML = `
-              <button class="collapse-btn bg-white border-2 border-brand text-brand font-black px-4 py-1 flex items-center gap-2 shadow-[2px_2px_0px_0px_#0284c7] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all text-[10px] rounded-sm uppercase tracking-wider">
+              <button class="collapse-btn bg-white border-2 border-[#0284c7] text-[#0284c7] font-black px-4 py-1 flex items-center gap-2 shadow-[2px_2px_0px_0px_#0284c7] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all text-[10px] rounded-sm uppercase tracking-wider">
                 收起代码 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
               </button>
             `;
@@ -505,7 +500,7 @@ const relatedPosts = (() => {
               if (rect.top < 0) {
                 window.scrollTo({
                   top: window.scrollY + rect.top - 100,
-                  behavior: prefersReducedMotion() ? 'auto' : 'smooth'
+                  behavior: 'smooth'
                 });
               }
             });
@@ -567,7 +562,7 @@ const relatedPosts = (() => {
             
             parentContainer.scrollTo({
               top: targetScroll,
-              behavior: prefersReducedMotion() ? 'auto' : 'smooth'
+              behavior: 'smooth'
             });
           }
         } else {
@@ -660,7 +655,7 @@ const relatedPosts = (() => {
             // Native smooth scroll to target
             window.scrollTo({
               top: targetEl.offsetTop - 100,
-              behavior: prefersReducedMotion() ? 'auto' : 'smooth'
+              behavior: 'smooth'
             });
             
             window.history.pushState(null, '', '#' + id);
