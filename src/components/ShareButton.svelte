@@ -23,7 +23,7 @@
     try {
       var p = new URL(shareUrl).pathname;
       if (!p.endsWith('/')) p += '/';
-      const res = await fetch('https://blog.api.upxuu.com/api/views?path=' + encodeURIComponent(p), { signal: AbortSignal.timeout(5000) });
+      const res = await fetch('https://blog.aoi.476543.xyz/api/views?path=' + encodeURIComponent(p), { signal: AbortSignal.timeout(5000) });
       const data = await res.json();
       if (data && typeof data.views === 'number') {
         pageViews = data.views;

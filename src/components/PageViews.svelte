@@ -24,7 +24,7 @@
   onMount(async () => {
     if (viewsMap !== undefined) return; // 批量模式：等父组件的数据，不发请求
     try {
-      const res = await fetch('https://blog.api.upxuu.com/api/views?path=' + encodeURIComponent(key), { signal: AbortSignal.timeout(5000) });
+      const res = await fetch('https://blog.aoi.476543.xyz/api/views?path=' + encodeURIComponent(key), { signal: AbortSignal.timeout(5000) });
       const data = await res.json();
       if (data && typeof data.views === 'number') {
         views = data.views;
