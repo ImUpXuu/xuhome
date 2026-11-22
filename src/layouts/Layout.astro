@@ -259,22 +259,24 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
         transform: translateY(0) scale(1);
       }
     }
-    .animate-card-entrance {
+    /* 默认状态：无动画、直接可见。隐藏职责只交给 html.motion-ready 门控，
+       任何脚本失败 / CSP 拦截 / CSS 被覆盖的场景都落到可见分支。
+       只有 JS 可用 + 动画上下文就绪时才允许"先隐藏再入场" */
+    .animate-card-entrance { animation: none; }
+    html.motion-ready .animate-card-entrance {
+      opacity: 0;
       animation: card-entrance 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
     }
-    /* 减弱动态效果：禁用 blur，降低动画幅度 */
+    /* 减弱动态效果：取消动画而非改写关键帧，并强制可见（!important 防止组件写回 opacity-0） */
     @media (prefers-reduced-motion: reduce) {
-      @keyframes content-in {
-        0% { opacity: 0; }
-        100% { opacity: 1; }
+      .animate-card-entrance {
+        animation: none !important;
+        opacity: 1 !important;
+        transform: none !important;
       }
-      @keyframes content-out {
-        100% { opacity: 0; }
-      }
-      @keyframes card-entrance {
-        0% { opacity: 0; }
-        100% { opacity: 1; }
-      }
+      /* content-in/content-out 保留极简淡入即可，它们不参与内容保护 */
+      @keyframes content-in { 0% { opacity: 0; } 100% { opacity: 1; } }
+      @keyframes content-out { 100% { opacity: 0; } }
     }
 
     /* ===== 换页过渡：跳过整页快照动画，让各页自己的元素入场动画当主角（对齐 i.upxuu.com 的 SPA 观感） =====
@@ -327,6 +329,14 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
       opacity: 1;
       transform: none;
       filter: blur(0px);
+    }
+    /* 引擎明确标记故障后，全部内容立即显示（覆盖 rv-ready 的隐藏） */
+    html.rv-failed [data-reveal],
+    html.rv-failed [data-reveal-card],
+    html.rv-failed [data-reveal-card] .rv-txt {
+      opacity: 1 !important;
+      transform: none !important;
+      filter: none !important;
     }
     /* 慢节奏页（归档/关于/友链）：450ms 的默认行程在这类小卡片长列表上肉眼几乎
        看不见，滚动时像"没有动画"。行程加大 + 引擎把播放拉长到 900ms 才感觉得到 */
@@ -435,6 +445,7 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
         if (m && m.matches) return;
         if (!('IntersectionObserver' in window)) return;
         document.documentElement.classList.add('rv-ready');
+        document.documentElement.classList.add('motion-ready');
       } catch (e) {}
     })();
   </script>
@@ -819,10 +830,12 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
     {/* Floating Back To Top button */}
     <button
       id="back-to-top-btn"
-      class="fixed bottom-24 right-6 z-[95] w-12 h-12 rounded-sm border-3 sm:border-4 border-[#0284c7] bg-[#fde68a] dark:bg-[#1e293b] text-[#0284c7] flex items-center justify-center cursor-pointer shadow-[4px_4px_0px_0px_#0284c7] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#0284c7] active:translate-y-0 active:shadow-none transition-all duration-150 opacity-0 pointer-events-none"
+      class="fixed bottom-24 right-6 z-[95] w-12 h-12 rounded-sm border-3 sm:border-4 border-[#0284c7] bg-[#fde68a] dark:bg-[#1e293b] text-[#0284c7] flex items-center justify-center cursor-pointer shadow-[4px_4px_0px_0px_#0284c7] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#0284c7] active:translate-y-0 active:shadow-none transition-all duration-150 invisible opacity-0 pointer-events-none"
       aria-label="回到顶部"
+      tabindex="-1"
+      aria-hidden="true"
     >
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 stroke-[3]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 stroke-[3]" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
         <path stroke-linecap="round" stroke-linejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" />
       </svg>
     </button>
@@ -854,21 +867,29 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
     const backToTopBtn = document.getElementById('back-to-top-btn');
     if (!backToTopBtn) return;
 
+    // 隐藏态：不可见、不可交互、不进焦点顺序与无障碍树
+    const syncBackToTop = (btn) => {
+      const show = window.scrollY > 300;
+      btn.classList.toggle('invisible', !show);
+      btn.classList.toggle('opacity-0', !show);
+      btn.classList.toggle('pointer-events-none', !show);
+      btn.classList.toggle('opacity-100', show);
+      btn.tabIndex = show ? 0 : -1;
+      btn.setAttribute('aria-hidden', String(!show));
+    };
+
     // Scroll listener: only once (window persists across view transitions)
     if (!window.__backToTopScrollSetup) {
       window.__backToTopScrollSetup = true;
       window.addEventListener('scroll', () => {
         const btn = document.getElementById('back-to-top-btn');
         if (!btn) return;
-        if (window.scrollY > 300) {
-          btn.classList.remove('opacity-0', 'pointer-events-none');
-          btn.classList.add('opacity-100');
-        } else {
-          btn.classList.add('opacity-0', 'pointer-events-none');
-          btn.classList.remove('opacity-100');
-        }
+        syncBackToTop(btn);
       }, { passive: true });
     }
+
+    // VT 换页后按钮重建，主动同步一次初始状态
+    syncBackToTop(backToTopBtn);
 
       // Click listener：按钮在 View Transition 后会重建，故每次脚本运行都重新绑定
       backToTopBtn.addEventListener('click', () => {
@@ -887,8 +908,24 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
     if (window.__xuhomeRevealBooted) return;
     window.__xuhomeRevealBooted = true;
 
-    function boot() {
-      if (!document.documentElement.classList.contains('rv-ready')) return;
+    var safetyTimer = null;
+
+    // 释放所有未入场元素：幂等，已 .rv-in 的不重复处理
+    function revealAllPending() {
+      var pend = document.querySelectorAll('[data-reveal]:not(.rv-in),[data-reveal-card]:not(.rv-in)');
+      for (var i = 0; i < pend.length; i++) pend[i].classList.add('rv-in');
+    }
+
+    // 最后保险：每次页面切换重新计时；页面隐藏后 3s 仍未入场的元素直接显示
+    function scheduleSafetyNet() {
+      clearTimeout(safetyTimer);
+      safetyTimer = setTimeout(function () {
+        if (document.body.dataset.isArticle === 'true') return;
+        revealAllPending();
+      }, 3000);
+    }
+
+    function initEngine() {
       // rootMargin 0px：只要露出任意 1px 就触发（对齐 framer-motion amount:"some" 语义）。
       // 交错延迟只用于首屏波次；滚动触发的入场零延迟——底边刚露头的卡片必须立刻显现
       var waveDone = false;
@@ -973,43 +1010,74 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
             if (els.length) watchLater(els);
           }
         }
+        // 水合替换整棵子树时，新增列表可能拿不到内部的标记元素；末尾补扫一次兜住（幂等）
+        scan(document);
       });
 
       function start() {
         // 先释放旧页面节点的观察（IO 对 target 持强引用，防 View Transitions 换页后泄漏）
         io.disconnect();
         mo.disconnect();
+        // 上一页的故障标记不带到下一页
+        document.documentElement.classList.remove('rv-failed');
         // 文章页不做滚动进入动画（保持原有载入动画）
-        if (document.body.dataset.isArticle === 'true') return;
+        if (document.body.dataset.isArticle === 'true') {
+          scheduleSafetyNet();
+          return;
+        }
         slowPace = document.body.dataset.revealPace === 'slow';
         mo.observe(document.body, { childList: true, subtree: true });
         waveDone = false; // 每个页面重新武装首屏波次的交错节奏
         watchLater(document.querySelectorAll('[data-reveal]:not(.rv-in),[data-reveal-card]:not(.rv-in)'));
+        scheduleSafetyNet();
       }
 
+      var engine = { start: start, scan: scan, watchLater: watchLater };
+      window.__xuhomeRevealEngine = engine;
       start();
-      document.addEventListener('astro:after-swap', start);
+      return engine;
+    }
+
+    function boot() {
+      if (!document.documentElement.classList.contains('rv-ready')) return;
+      var engine;
+      try {
+        if (window.__xuhomeRevealEngine) engine = window.__xuhomeRevealEngine;
+        else engine = initEngine();
+        bindListeners();
+      } catch (e) {
+        // 引擎本身不可信：释放所有隐藏，页面照常可读
+        document.documentElement.classList.add('rv-failed');
+        revealAllPending();
+      } finally {
+        // 无论如何都登记一次"最后保险"：页面隐藏后 3s 仍未入场的元素直接显示
+        scheduleSafetyNet();
+      }
+    }
+
+    // 全局监听只绑定一次，回调内动态取当前引擎（VT 换页后引擎可能重建）
+    function bindListeners() {
+      if (window.__xuhomeRevealListenersBound) return;
+      window.__xuhomeRevealListenersBound = true;
+      document.addEventListener('astro:after-swap', function () {
+        if (window.__xuhomeRevealEngine) window.__xuhomeRevealEngine.start();
+      });
       // VT 彻底结束后再兜一次扫描（幂等：已入场的元素会被 :not(.rv-in) 过滤掉）
       document.addEventListener('astro:page-load', function () {
+        // 引擎因异常未初始化时重新尝试（幂等）
+        if (!window.__xuhomeRevealEngine) {
+          boot();
+          return;
+        }
         if (document.body.dataset.isArticle === 'true') return;
-        watchLater(document.querySelectorAll('[data-reveal]:not(.rv-in),[data-reveal-card]:not(.rv-in)'));
+        window.__xuhomeRevealEngine.watchLater(
+          document.querySelectorAll('[data-reveal]:not(.rv-in),[data-reveal-card]:not(.rv-in)')
+        );
       });
-
-      // 定时兜底重扫：client:idle 组件（如创作日历）的水合插入时机不定，
-      // MO 可能错过（实测日历卡因此永久隐藏），按时间点补扫，重复 observe 会去重
-      [400, 1200, 3000].forEach(function (t) {
-        setTimeout(function () {
-          if (document.body.dataset.isArticle === 'true') return;
-          scan(document);
-        }, t);
+      // client:idle 组件（如创作日历）可能在 load 前后才插入，补扫一次
+      window.addEventListener('load', function () {
+        if (window.__xuhomeRevealEngine) window.__xuhomeRevealEngine.scan(document);
       });
-
-      // 兜底：若 5 秒内 IO 一个都没投递（异常环境），强制全部显示保内容
-      setTimeout(function () {
-        if (document.querySelector('.rv-in')) return;
-        var pend = document.querySelectorAll('[data-reveal]:not(.rv-in),[data-reveal-card]:not(.rv-in)');
-        for (var i = 0; i < pend.length; i++) pend[i].classList.add('rv-in');
-      }, 5000);
     }
 
     if (document.readyState === 'loading') {
@@ -1017,6 +1085,10 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
     } else {
       boot();
     }
+    // VT 换页后若引擎因异常未初始化，重新尝试（幂等）
+    document.addEventListener('astro:page-load', function () {
+      if (!window.__xuhomeRevealEngine) boot();
+    });
   })();
 </script>
 
