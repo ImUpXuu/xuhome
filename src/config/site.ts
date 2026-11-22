@@ -435,6 +435,8 @@ export const i18nConfig = {
   },
   /** 搜索 */
   search: {
+    /** 搜索框/搜索按钮的可访问名称 */
+    searchTitle: "搜索文章",
     placeholder: "搜索文章标题、简述、内容或标签...",
     clear: "清除",
     noResults: "哎呀，没有找到文章",
