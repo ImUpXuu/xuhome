@@ -131,9 +131,9 @@
     t.innerHTML = [
       '<div class="fixed bottom-4 left-2 right-2 sm:left-4 sm:right-auto z-[2000] translate-y-0 opacity-100 transition-all duration-500 ease-out" style="max-width:360px">',
       '  <div class="bg-white dark:bg-slate-800 border-2 border-[#ef4444] shadow-[4px_4px_0px_0px_#ef4444] rounded-sm p-2">',
-      '    <div class="bg-red-500 text-white text-[10px] font-black text-center px-2 py-1 rounded-sm mb-1.5">⚠ 服务器负载警告</div>',
+      '    <div class="bg-red-500 text-white text-xs font-black text-center px-2 py-1 rounded-sm mb-1.5">⚠ 服务器负载警告</div>',
       '    <div class="px-1 py-1 text-xs font-bold text-slate-700 dark:text-slate-200">' + msg + '</div>',
-      '    <button class="js-toast-close mt-1 text-[10px] text-slate-400 hover:text-[#0284c7] font-bold" style="display:block;margin-left:auto">关闭</button>',
+      '    <button class="js-toast-close mt-1 text-xs text-slate-400 hover:text-[#0284c7] font-bold" style="display:block;margin-left:auto">关闭</button>',
       '  </div>',
       '</div>'
     ].join('\n');
@@ -167,25 +167,25 @@
 
   <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 mb-4">
     <div class="bg-[rgba(250,248,245,0.55)] border-2 border-[#0284c7]/20 rounded-sm px-3 py-2">
-      <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">实时下载</div>
+      <div class="text-xs font-bold text-slate-400 uppercase tracking-wider">实时下载</div>
       <div class="text-lg font-black text-[#10b981] font-mono">{currentDown.toFixed(2)} <span class="text-xs text-slate-400">MB/s</span></div>
     </div>
     <div class="bg-[rgba(250,248,245,0.55)] border-2 border-[#0284c7]/20 rounded-sm px-3 py-2">
-      <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">实时上传</div>
+      <div class="text-xs font-bold text-slate-400 uppercase tracking-wider">实时上传</div>
       <div class="text-lg font-black text-[#f59e0b] font-mono">{currentUp.toFixed(2)} <span class="text-xs text-slate-400">MB/s</span></div>
     </div>
     <div class="bg-[rgba(250,248,245,0.55)] border-2 border-[#0284c7]/20 rounded-sm px-3 py-2">
-      <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">60m 平均</div>
+      <div class="text-xs font-bold text-slate-400 uppercase tracking-wider">60m 平均</div>
       <div class="text-lg font-black text-[#0284c7] font-mono">{avgDown.toFixed(2)} <span class="text-xs text-slate-400">MB/s</span></div>
     </div>
     <div class="bg-[rgba(250,248,245,0.55)] border-2 border-[#0284c7]/20 rounded-sm px-3 py-2">
-      <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">60m 峰值</div>
+      <div class="text-xs font-bold text-slate-400 uppercase tracking-wider">60m 峰值</div>
       <div class="text-lg font-black text-[#ef4444] font-mono">{maxDown.toFixed(2)} <span class="text-xs text-slate-400">MB/s</span></div>
     </div>
   </div>
 
   <div class="bg-[rgba(250,248,245,0.55)] border-2 border-[#0284c7]/20 rounded-sm p-2">
-    <div class="text-[10px] font-bold text-slate-400 mb-1 uppercase tracking-wider">
+    <div class="text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">
       <span class="inline-flex items-center gap-2">
         <span class="w-2 h-2 rounded-full bg-[#10b981]"></span> 下载
         <span class="w-2 h-2 rounded-full bg-[#f59e0b]"></span> 上传
@@ -195,7 +195,7 @@
     <canvas bind:this={canvasEl} class="w-full h-[160px] sm:h-[200px] rounded-sm"></canvas>
   </div>
 
-  <div class="mt-2 text-[9px] text-slate-400 font-mono text-right flex items-center justify-end gap-3">
+  <div class="mt-2 text-xs text-slate-400 font-mono text-right flex items-center justify-end gap-3">
     <span>每 5 秒自动刷新</span>
     <span class="text-[#10b981]">●</span> 下载
     <span class="text-[#f59e0b]">●</span> 上传

@@ -72,33 +72,33 @@ const talkSeq = JSON.stringify(infoConfig.banner.talkTicker.sequence);
         <div class="banner-card flex flex-col items-center md:items-end justify-center gap-1 md:gap-1.5 mt-2 md:mt-0 max-w-full">
           {categoryName && (
             <>
-              <div class="text-[10px] md:text-xs font-black text-[#0ea5e9] bg-white dark:bg-slate-700 border-2 border-[#0284c7] px-2 py-0.5 rounded-sm shadow-[2px_2px_0px_0px_#0284c7] md:rotate-2 uppercase tracking-widest shrink-0 select-none">
+              <div class="text-xs font-black text-[#0ea5e9] bg-white dark:bg-slate-700 border-2 border-[#0284c7] px-2 py-0.5 rounded-sm shadow-[2px_2px_0px_0px_#0284c7] md:rotate-2 uppercase tracking-widest shrink-0 select-none">
                 {infoConfig.banner.labels.category}
               </div>
               <h2 class="text-sm md:text-3xl font-black text-[#0284c7] bg-[#fde68a] border-2 md:border-3 border-[#0284c7] shadow-[2.5px_2.5px_0px_0px_#f59e0b] px-4 py-1 md:-rotate-1 shrink-0 max-w-[70vw] md:max-w-[450px] truncate">
                 {categoryName}
               </h2>
-              <div class="font-bold text-[#f59e0b] bg-white border-2 border-[#f59e0b] px-2.5 py-0.5 shadow-[2px_2px_0px_0px_#0284c7] text-[10px] md:text-xs shrink-0">
+              <div class="font-bold text-[#f59e0b] bg-white border-2 border-[#f59e0b] px-2.5 py-0.5 shadow-[2px_2px_0px_0px_#0284c7] text-xs shrink-0">
                 {postsCount} 篇
               </div>
             </>
           )}
           {tagName && (
             <>
-              <div class="text-[10px] md:text-xs font-black text-[#0ea5e9] bg-white dark:bg-slate-700 border-2 border-[#0284c7] px-2 py-0.5 rounded-sm shadow-[2px_2px_0px_0px_#0284c7] md:rotate-2 uppercase tracking-widest shrink-0 select-none">
+              <div class="text-xs font-black text-[#0ea5e9] bg-white dark:bg-slate-700 border-2 border-[#0284c7] px-2 py-0.5 rounded-sm shadow-[2px_2px_0px_0px_#0284c7] md:rotate-2 uppercase tracking-widest shrink-0 select-none">
                 {infoConfig.banner.labels.tag}
               </div>
               <h2 class="text-sm md:text-3xl font-black text-[#0284c7] bg-[#fde68a] border-2 md:border-3 border-[#0284c7] shadow-[2.5px_2.5px_0px_0px_#f59e0b] px-4 py-1 md:-rotate-1 shrink-0 max-w-[70vw] md:max-w-[450px] truncate font-sans">
                 #{tagName}
               </h2>
-              <div class="font-bold text-[#f59e0b] bg-white border-2 border-[#f59e0b] px-2.5 py-0.5 shadow-[2px_2px_0px_0px_#0284c7] text-[10px] md:text-xs shrink-0">
+              <div class="font-bold text-[#f59e0b] bg-white border-2 border-[#f59e0b] px-2.5 py-0.5 shadow-[2px_2px_0px_0px_#0284c7] text-xs shrink-0">
                 {postsCount} 篇
               </div>
             </>
           )}
           {post && (
             <>
-              <div class="text-[10px] md:text-xs font-black text-[#0ea5e9] bg-white dark:bg-slate-700 border-2 border-[#0284c7] px-2 py-0.5 rounded-sm shadow-[2px_2px_0px_0px_#0284c7] md:rotate-2 uppercase tracking-widest shrink-0 select-none">
+              <div class="text-xs font-black text-[#0ea5e9] bg-white dark:bg-slate-700 border-2 border-[#0284c7] px-2 py-0.5 rounded-sm shadow-[2px_2px_0px_0px_#0284c7] md:rotate-2 uppercase tracking-widest shrink-0 select-none">
                 {infoConfig.banner.labels.post}
               </div>
               <h2 class="text-xs sm:text-base md:text-2xl font-black text-[#0284c7] bg-[#fde68a] border-2 md:border-3 border-[#0284c7] shadow-[2.5px_2.5px_0px_0px_#f59e0b] px-3.5 py-1.5 md:-rotate-1 shrink-0 max-w-[70vw] md:max-w-[450px] leading-snug font-sans text-center md:text-right break-words line-clamp-2 md:line-clamp-1">
@@ -111,7 +111,7 @@ const talkSeq = JSON.stringify(infoConfig.banner.talkTicker.sequence);
           )}
           {isTalks && (
             <>
-              <div class="text-[10px] md:text-xs font-black text-[#0ea5e9] bg-white border-2 border-[#0284c7] px-2.5 py-0.5 rounded-sm shadow-[2px_2px_0px_0px_#0284c7] md:rotate-2 uppercase tracking-widest shrink-0 select-none">
+              <div class="text-xs font-black text-[#0ea5e9] bg-white border-2 border-[#0284c7] px-2.5 py-0.5 rounded-sm shadow-[2px_2px_0px_0px_#0284c7] md:rotate-2 uppercase tracking-widest shrink-0 select-none">
                 {infoConfig.banner.labels.talk}
               </div>
               <h2 class="text-xs md:text-lg font-bold text-slate-700 dark:text-slate-200 font-mono h-8 md:h-11 flex items-center justify-center md:justify-end -rotate-1 max-w-[70vw] md:max-w-[450px]">
