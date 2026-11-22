@@ -830,10 +830,12 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
     {/* Floating Back To Top button */}
     <button
       id="back-to-top-btn"
-      class="fixed bottom-24 right-6 z-[95] w-12 h-12 rounded-sm border-3 sm:border-4 border-[#0284c7] bg-[#fde68a] dark:bg-[#1e293b] text-[#0284c7] flex items-center justify-center cursor-pointer shadow-[4px_4px_0px_0px_#0284c7] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#0284c7] active:translate-y-0 active:shadow-none transition-all duration-150 opacity-0 pointer-events-none"
+      class="fixed bottom-24 right-6 z-[95] w-12 h-12 rounded-sm border-3 sm:border-4 border-[#0284c7] bg-[#fde68a] dark:bg-[#1e293b] text-[#0284c7] flex items-center justify-center cursor-pointer shadow-[4px_4px_0px_0px_#0284c7] hover:-translate-y-1 hover:shadow-[6px_6px_0px_0px_#0284c7] active:translate-y-0 active:shadow-none transition-all duration-150 invisible opacity-0 pointer-events-none"
       aria-label="回到顶部"
+      tabindex="-1"
+      aria-hidden="true"
     >
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 stroke-[3]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 stroke-[3]" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
         <path stroke-linecap="round" stroke-linejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" />
       </svg>
     </button>
@@ -865,21 +867,29 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
     const backToTopBtn = document.getElementById('back-to-top-btn');
     if (!backToTopBtn) return;
 
+    // 隐藏态：不可见、不可交互、不进焦点顺序与无障碍树
+    const syncBackToTop = (btn) => {
+      const show = window.scrollY > 300;
+      btn.classList.toggle('invisible', !show);
+      btn.classList.toggle('opacity-0', !show);
+      btn.classList.toggle('pointer-events-none', !show);
+      btn.classList.toggle('opacity-100', show);
+      btn.tabIndex = show ? 0 : -1;
+      btn.setAttribute('aria-hidden', String(!show));
+    };
+
     // Scroll listener: only once (window persists across view transitions)
     if (!window.__backToTopScrollSetup) {
       window.__backToTopScrollSetup = true;
       window.addEventListener('scroll', () => {
         const btn = document.getElementById('back-to-top-btn');
         if (!btn) return;
-        if (window.scrollY > 300) {
-          btn.classList.remove('opacity-0', 'pointer-events-none');
-          btn.classList.add('opacity-100');
-        } else {
-          btn.classList.add('opacity-0', 'pointer-events-none');
-          btn.classList.remove('opacity-100');
-        }
+        syncBackToTop(btn);
       }, { passive: true });
     }
+
+    // VT 换页后按钮重建，主动同步一次初始状态
+    syncBackToTop(backToTopBtn);
 
       // Click listener：按钮在 View Transition 后会重建，故每次脚本运行都重新绑定
       backToTopBtn.addEventListener('click', () => {
