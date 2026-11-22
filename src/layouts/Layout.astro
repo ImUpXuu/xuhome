@@ -872,7 +872,8 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
 
       // Click listener：按钮在 View Transition 后会重建，故每次脚本运行都重新绑定
       backToTopBtn.addEventListener('click', () => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        var rm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        window.scrollTo({ top: 0, behavior: rm ? 'auto' : 'smooth' });
       });
     }
 

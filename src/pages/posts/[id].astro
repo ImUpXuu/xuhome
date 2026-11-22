@@ -338,6 +338,11 @@ const relatedPosts = (() => {
 <script>
   import { Fancybox } from '@fancyapps/ui';
 
+  /* 受限动态时滚动立即到位，否则平滑 */
+  function prefersReducedMotion() {
+    return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  }
+
   function setupPostDetail() {
     // Render image captions for images with alt text
     function setupImageCaptions() {
@@ -500,7 +505,7 @@ const relatedPosts = (() => {
               if (rect.top < 0) {
                 window.scrollTo({
                   top: window.scrollY + rect.top - 100,
-                  behavior: 'smooth'
+                  behavior: prefersReducedMotion() ? 'auto' : 'smooth'
                 });
               }
             });
@@ -562,7 +567,7 @@ const relatedPosts = (() => {
             
             parentContainer.scrollTo({
               top: targetScroll,
-              behavior: 'smooth'
+              behavior: prefersReducedMotion() ? 'auto' : 'smooth'
             });
           }
         } else {
@@ -655,7 +660,7 @@ const relatedPosts = (() => {
             // Native smooth scroll to target
             window.scrollTo({
               top: targetEl.offsetTop - 100,
-              behavior: 'smooth'
+              behavior: prefersReducedMotion() ? 'auto' : 'smooth'
             });
             
             window.history.pushState(null, '', '#' + id);

@@ -40,6 +40,21 @@ html {
   scroll-padding-top: calc(var(--navbar-height) + 42px); /* offset for navbar */
 }
 
+/* 受限动态（prefers-reduced-motion: reduce）：关闭平滑滚动，把动画/过渡压到即时。
+   animation-delay 也需压成负值，否则延迟期内元素仍是初始态。 */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: -1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 /* Prevent horizontal overflow on mobile viewports while preserving sticky on desktop */
 @media (max-width: 1023px) {
   html, body {
