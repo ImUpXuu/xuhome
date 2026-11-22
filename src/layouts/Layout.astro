@@ -565,7 +565,7 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
     })();
     </script>
     {/* 暂时禁用：<WelcomeToast /> */}
-    <div class={isMusicPage ? 'flex flex-col h-[100dvh] overflow-hidden' : 'flex flex-col min-h-screen'}>
+    <div id="page-shell" class={isMusicPage ? 'flex flex-col h-[100dvh] overflow-hidden' : 'flex flex-col min-h-screen'}>
       <NavBar />
       
       {!isAboutPage ? (

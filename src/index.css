@@ -55,13 +55,35 @@ html {
   }
 }
 
-/* Prevent horizontal overflow on mobile viewports while preserving sticky on desktop */
+/* 不再用全局 overflow-x:hidden 掩盖溢出（它会裁掉焦点滚动并破坏 sticky 语义）。
+   仅在移动端对最外层内容壳做 clip 兜底；局部溢出由各自容器负责。 */
 @media (max-width: 1023px) {
   html, body {
     max-width: 100%;
-    overflow-x: hidden;
+  }
+  /* 兜底：clip 不创建滚动容器，不影响 position:sticky 与键盘焦点滚动 */
+  #page-shell {
+    overflow-x: clip;
+  }
+  @supports not (overflow: clip) {
+    #page-shell {
+      overflow-x: hidden;
+    }
   }
 }
+
+/* 长 URL / 无空格长串：允许任意断行 */
+.prose,
+.talk-content,
+.waline-custom-theme {
+  overflow-wrap: anywhere;
+}
+
+/* 行内代码不撑破容器 */
+.prose :not(pre) > code { overflow-wrap: anywhere; }
+
+/* 图片/视频不超容器 */
+.prose img, .prose video, .prose iframe { max-width: 100%; height: auto; }
 
 /* Ensure math formulas do not break mobile layout */
 .katex-display {
@@ -392,6 +414,10 @@ html {
   box-shadow: 4px 4px 0 0 #0284c7;
   background: #0f172a !important;
   padding: 1em 1.15em;
+  /* 代码块自身横向滚动，不再向外溢出 */
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  max-width: 100%;
 }
 .prose pre code {
   background: transparent !important;
