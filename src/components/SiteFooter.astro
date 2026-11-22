@@ -176,7 +176,7 @@ const qqGroupUrl = 'https://qm.qq.com/q/mlH3QB1hC2';
       }
       if (window.__footerVisitsFetching) return;
       window.__footerVisitsFetching = true;
-      fetch('https://blog.api.476543.xyz/api/stats', { signal: AbortSignal.timeout(8000) })
+      fetch('https://blogapi.476543.xyz/api/stats', { signal: AbortSignal.timeout(8000) })
         .then((r) => r.json())
         .then((d) => {
           if (!d || typeof d.pv !== 'number' || typeof d.sessions !== 'number') return;

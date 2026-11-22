@@ -49,7 +49,7 @@
     var paths = list.map(function (p) { return '/posts/' + p.slug + '/'; });
     window.clearTimeout(viewsFetchTimer);
     viewsFetchTimer = setTimeout(function () {
-      fetch('https://blog.api.476543.xyz/api/views-batch?paths=' + encodeURIComponent(paths.join(',')), { signal: AbortSignal.timeout(8000) })
+      fetch('https://blogapi.476543.xyz/api/views-batch?paths=' + encodeURIComponent(paths.join(',')), { signal: AbortSignal.timeout(8000) })
         .then(res => res.ok ? res.json() : Promise.reject(new Error('views-batch failed')))
         .then((d: any) => { if (d && d.views) viewsMap = d.views; })
         .catch(() => {});
