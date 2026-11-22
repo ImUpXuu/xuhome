@@ -27,6 +27,11 @@
   $: displayedTalks = filteredTalks.slice(0, visibleCount);
   $: hasMore = visibleCount < filteredTalks.length;
 
+  // 受限动态时滚动立即到位，否则平滑
+  function prefersReducedMotion(): boolean {
+    return typeof window !== 'undefined' && !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+  }
+
   function handleTagSelect(tag: string | null) {
     selectedTag = selectedTag === tag ? null : tag;
     visibleCount = talksPerPage;
@@ -151,7 +156,7 @@
             el.style.maxHeight = `${threshold}px`;
             overlay.classList.remove('opacity-0');
             collapseWrap.remove();
-            window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 100, behavior: 'smooth' });
+            window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 100, behavior: prefersReducedMotion() ? 'auto' : 'smooth' });
           });
         }, 700);
         foldTimers.push(t);
@@ -172,7 +177,7 @@
         if (element) {
           const yOffset = -80;
           const y = element.getBoundingClientRect().top + window.scrollY + yOffset;
-          window.scrollTo({ top: y, behavior: 'smooth' });
+          window.scrollTo({ top: y, behavior: prefersReducedMotion() ? 'auto' : 'smooth' });
           element.classList.add('ring-4', 'ring-[#0ea5e9]');
           setTimeout(() => element.classList.remove('ring-4', 'ring-[#0ea5e9]'), 1500);
         }

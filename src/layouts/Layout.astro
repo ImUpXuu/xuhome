@@ -573,7 +573,7 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
     })();
     </script>
     {/* 暂时禁用：<WelcomeToast /> */}
-    <div class={isMusicPage ? 'flex flex-col h-[100dvh] overflow-hidden' : 'flex flex-col min-h-screen'}>
+    <div id="page-shell" class={isMusicPage ? 'flex flex-col h-[100dvh] overflow-hidden' : 'flex flex-col min-h-screen'}>
       <NavBar />
       
       {!isAboutPage ? (
@@ -890,7 +890,8 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
 
       // Click listener：按钮在 View Transition 后会重建，故每次脚本运行都重新绑定
       backToTopBtn.addEventListener('click', () => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        var rm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        window.scrollTo({ top: 0, behavior: rm ? 'auto' : 'smooth' });
       });
     }
 
