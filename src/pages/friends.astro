@@ -1,6 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import SvelteFriends from '../components/SvelteFriends.svelte';
+import FriendsGrid from '../components/FriendsGrid.astro';
 import { WalineComment } from '../components/WalineComment';
 import { i18nConfig } from '../config/site';
 ---
@@ -11,6 +11,6 @@ import { i18nConfig } from '../config/site';
   keywords={['UpXuu', '友链', '友情链接', '博客']}
   revealPace="slow"
 >
-  <SvelteFriends client:load />
+  <FriendsGrid />
   <WalineComment client:idle />
 </Layout>
