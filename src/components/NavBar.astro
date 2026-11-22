@@ -360,10 +360,13 @@ const isBlogStatsPage = pathname === '/blogstats';
   {/* Mobile slide-down search dialog */}
   <div id="mobile-search-dialog" class="absolute left-0 right-0 top-full bg-[rgba(250,248,245,0.55)] dark:bg-slate-800 border-b-4 border-[#0284c7] px-4 py-3 shadow-[0px_6px_0px_0px_rgba(2,132,199,0.15)] flex flex-col gap-2 z-[90] hidden">
     <div class="relative w-full">
+      <label for="mobile-search-input" class="sr-only">{i18nConfig.search.searchTitle}</label>
       <input
-        type="text"
+        type="search"
         id="mobile-search-input"
         name="q"
+        autocomplete="off"
+        enterkeyhint="search"
         placeholder={i18nConfig.search.placeholder}
         toolparamdescription="搜索关键词，支持按文章标题、描述、标签或分类进行模糊匹配"
         class="w-full bg-white dark:bg-slate-700 border-3 border-[#0284c7] font-extrabold focus:outline-none px-4 py-2.5 rounded-sm text-sm text-[#0284c7] dark:text-slate-200 placeholder-slate-400 shadow-[2px_2px_0px_0px_#0284c7] outline-none"
@@ -597,10 +600,13 @@ const isBlogStatsPage = pathname === '/blogstats';
       const isOpen = !mobileSearchDialog.classList.contains('hidden');
       if (isOpen) {
         mobileSearchDialog.classList.add('hidden');
+        mobileSearchToggle.setAttribute('aria-expanded', 'false');
         mobileSearchToggle.classList.remove('bg-[#fde68a]');
         mobileSearchToggle.classList.add('bg-[rgba(250,248,245,0.55)]');
+        mobileSearchToggle.focus({ preventScroll: true }); // 关闭：焦点回到触发按钮
       } else {
         mobileSearchDialog.classList.remove('hidden');
+        mobileSearchToggle.setAttribute('aria-expanded', 'true');
         mobileSearchToggle.classList.add('bg-[#fde68a]');
         mobileSearchToggle.classList.remove('bg-[rgba(250,248,245,0.55)]');
         closeNavDropdowns();
@@ -610,7 +616,28 @@ const isBlogStatsPage = pathname === '/blogstats';
 
     // Close dropdowns on Escape
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') closeNavDropdowns();
+      if (e.key !== 'Escape') return;
+      // 搜索面板优先：先关面板并归还焦点，不再顺带关菜单
+      const dialog = document.getElementById('mobile-search-dialog');
+      const toggle = document.getElementById('mobile-search-toggle');
+      if (dialog && !dialog.classList.contains('hidden')) {
+        dialog.classList.add('hidden');
+        if (toggle) {
+          toggle.setAttribute('aria-expanded', 'false');
+          toggle.classList.remove('bg-[#fde68a]');
+          toggle.classList.add('bg-[rgba(250,248,245,0.55)]');
+          toggle.focus({ preventScroll: true });
+        }
+        return;
+      }
+      // 下拉菜单：Escape 后把焦点还给对应触发按钮
+      const openToggle = (document.querySelector('#desktop-more-dropdown:not(.hidden)') && document.getElementById('desktop-more-toggle'))
+        || (document.querySelector('#desktop-fun-dropdown:not(.hidden)') && document.getElementById('desktop-fun-toggle'))
+        || (document.querySelector('#desktop-social-dropdown:not(.hidden)') && document.getElementById('desktop-social-toggle'))
+        || (document.querySelector('#mobile-social-dropdown:not(.hidden)') && document.getElementById('mobile-social-toggle'))
+        || (document.querySelector('#mobile-menu-dropdown:not(.hidden)') && document.getElementById('mobile-menu-toggle'));
+      closeNavDropdowns();
+      if (openToggle) openToggle.focus({ preventScroll: true });
     });
 
     window.__navBarBound = true;

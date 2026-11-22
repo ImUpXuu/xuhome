@@ -1018,3 +1018,8 @@ body[data-is-article="true"] #site-bg {
   }
 }
 
+/* 自定义清除按钮已存在，隐藏 WebKit 原生搜索清除图标 */
+input[type="search"]::-webkit-search-cancel-button {
+  display: none;
+}
+

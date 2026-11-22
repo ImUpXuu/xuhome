@@ -437,9 +437,13 @@
 <div class="w-full flex flex-col gap-4 sm:gap-6">
   <!-- Interactive Search input inside Desktop view -->
   <div class="relative w-full hidden sm:block" data-reveal>
+    <label for="desktop-post-search" class="sr-only">{i18nConfig.search.searchTitle}</label>
     <input
-      type="text"
+      id="desktop-post-search"
+      type="search"
       name="q"
+      autocomplete="off"
+      enterkeyhint="search"
       placeholder={i18nConfig.search.placeholder}
       value={searchQuery}
       on:input={handleSearchInput}
