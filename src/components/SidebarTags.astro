@@ -27,7 +27,7 @@ const { tags, activeTag } = Astro.props;
           } ${idx >= 18 && !activeTag ? 'hidden' : ''}`}
         >
           <span>{tag.name}</span>
-          <span class="text-[9px] opacity-70">({tag.count})</span>
+          <span class="text-xs opacity-70">({tag.count})</span>
         </a>
       ))}
     </div>

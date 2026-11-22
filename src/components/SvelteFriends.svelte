@@ -150,10 +150,10 @@
           <img src={siteConfig.avatar} alt={siteConfig.author} class="h-full w-full object-cover" width="64" height="64" />
         </div>
         <div class="min-w-0">
-          <p class="mb-1 text-[10px] font-black uppercase tracking-[0.24em] text-[#0ea5e9]">Friends / 友情链接</p>
+          <p class="mb-1 text-xs font-black uppercase tracking-[0.24em] text-[#0ea5e9]">Friends / 友情链接</p>
           <h1 class="text-2xl font-black leading-tight text-[#0284c7] sm:text-3xl dark:text-[#38bdf8]">和有趣的人，互相抵达</h1>
           <p class="mt-2 text-xs font-bold leading-relaxed text-slate-500 sm:text-sm dark:text-slate-300">在互联网的不同角落，收藏一些认真生长的小站。</p>
-          <div class="mt-3 flex flex-wrap gap-2 font-mono text-[10px] font-bold sm:text-xs">
+          <div class="mt-3 flex flex-wrap gap-2 font-mono text-xs font-bold sm:text-xs">
             <span class="border border-[#f59e0b] bg-amber-50 px-2 py-0.5 text-[#b45309] dark:bg-amber-900/30 dark:text-amber-300">共计 {friendsConfig.length} 位好友</span>
             <span class="border border-[#0ea5e9]/40 bg-sky-50 px-2 py-0.5 text-[#0284c7] dark:bg-sky-900/30 dark:text-sky-300">随机排列 · 发现新邻居</span>
           </div>
@@ -193,7 +193,7 @@
             申请友联 <span aria-hidden="true">↓</span>
           </a>
         </div>
-        <p class="mt-2 text-right font-mono text-[10px] font-bold text-slate-400 dark:text-slate-400" aria-live="polite">当前找到 {filteredFriends.length} 位好友</p>
+        <p class="mt-2 text-right font-mono text-xs font-bold text-slate-400 dark:text-slate-400" aria-live="polite">当前找到 {filteredFriends.length} 位好友</p>
       </div>
     </div>
   </header>
@@ -237,14 +237,14 @@
                 <path stroke-linecap="round" stroke-linejoin="round" d="M14 5h5v5M10 14L19 5M19 14v4a1 1 0 01-1 1H6a1 1 0 01-1-1V6a1 1 0 011-1h4" />
               </svg>
             </div>
-            <p class="mt-1 truncate font-mono text-[10px] font-bold tracking-wide text-slate-400 sm:text-xs" title={friend.url}>{friend.url.replace(/^https?:\/\/(www\.)?/, "")}</p>
+            <p class="mt-1 truncate font-mono text-xs font-bold tracking-wide text-slate-400 sm:text-xs" title={friend.url}>{friend.url.replace(/^https?:\/\/(www\.)?/, "")}</p>
 
             <div class="flex flex-1 flex-col justify-end">
               {#if friend.description}
                 <p class="mt-2.5 line-clamp-2 text-xs font-medium leading-relaxed text-slate-500 dark:text-slate-400">{friend.description}</p>
               {/if}
 
-              <div class="mt-auto flex min-h-6 items-center justify-between gap-2 pt-3 font-mono text-[9px] font-bold">
+              <div class="mt-auto flex min-h-6 items-center justify-between gap-2 pt-3 font-mono text-xs font-bold">
                 <span class="inline-flex items-center gap-1.5 text-slate-400">
                   {#if friend.rss}
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-[#0ea5e9]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4 11a9 9 0 019 9M4 4a16 16 0 0116 16" /><circle cx="5" cy="19" r="1.5" fill="currentColor" stroke="none" /></svg>
@@ -352,7 +352,7 @@
           <ul class="mt-4 space-y-2">
             {#each siteDetails as detail}
               <li class="flex items-center gap-2">
-                <span class="w-16 shrink-0 text-[11px] font-black text-slate-500 dark:text-slate-400">{detail.label}</span>
+                <span class="w-16 shrink-0 text-xs font-black text-slate-500 dark:text-slate-400">{detail.label}</span>
                 <span class="min-w-0 flex-1 truncate font-mono text-xs font-bold text-slate-700 dark:text-slate-200" title={detail.value}>{detail.value}</span>
                 <button type="button" on:click={() => copyText(detail.value, detail.label)} aria-label={`复制${detail.label}`} class="shrink-0 cursor-pointer rounded-sm border-2 border-[#0284c7] bg-white/70 p-1.5 text-[#0284c7] shadow-[1.5px_1.5px_0px_0px_#0284c7] transition-all hover:bg-[#0ea5e9] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f59e0b] active:translate-x-0.5 active:translate-y-0.5 active:shadow-none dark:bg-slate-800">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="1.5" /><path stroke-linecap="round" d="M5 15V6a1.5 1.5 0 011.5-1.5H15" /></svg>
@@ -364,7 +364,7 @@
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="1.5" /><path stroke-linecap="round" d="M5 15V6a1.5 1.5 0 011.5-1.5H15" /></svg>
             复制全部资料
           </button>
-          <p class="mt-2.5 h-4 text-center font-mono text-[11px] font-bold text-emerald-600 dark:text-emerald-400" aria-live="polite">{copyStatus}</p>
+          <p class="mt-2.5 h-4 text-center font-mono text-xs font-bold text-emerald-600 dark:text-emerald-400" aria-live="polite">{copyStatus}</p>
         </div>
       </div>
     </div>
@@ -374,10 +374,10 @@
     <!-- 暂时失效的友联：只留名称，不做链接、不跳转 -->
     <div class="mt-8 pt-5 border-t-2 border-dashed border-slate-300 dark:border-slate-600" use:reveal>
       <div class="flex flex-wrap items-center gap-2 mb-3 select-none">
-        <span class="text-[10px] sm:text-xs font-black text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 border border-slate-300 dark:border-slate-600 rounded-sm">
+        <span class="text-xs font-black text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 border border-slate-300 dark:border-slate-600 rounded-sm">
           暂时失效的友联
         </span>
-        <span class="text-[10px] font-mono font-bold text-slate-400">（暂不可访问，仅保留名称）</span>
+        <span class="text-xs font-mono font-bold text-slate-400">（暂不可访问，仅保留名称）</span>
       </div>
       <div class="flex flex-wrap gap-2">
         {#each expiredFriendsConfig as item (item.url)}

@@ -92,7 +92,7 @@
             {#if talk.mood}
               <span class="text-xs ml-1" title="心情">{talk.mood}</span>
             {/if}
-            <span class="text-[10px] bg-[#fde68a] border-2 border-[#0284c7] px-1.5 py-0.5 shadow-[1px_1px_0px_0px_#0284c7] tracking-wider uppercase font-bold transform skew-x-12 ml-1">
+            <span class="text-xs bg-[#fde68a] border-2 border-[#0284c7] px-1.5 py-0.5 shadow-[1px_1px_0px_0px_#0284c7] tracking-wider uppercase font-bold transform skew-x-12 ml-1">
                逐光而上
             </span>
          </div>
@@ -156,7 +156,7 @@
            <span>{liked ? '❤️' : '🤍'}</span> LIKE{#if likeCount > 0}<span class="opacity-70">({likeCount})</span>{/if}
          </button>
        </div>
-       <div class="text-[10px] uppercase font-mono font-bold text-slate-400 dark:text-slate-500 select-none">
+       <div class="text-xs uppercase font-mono font-bold text-slate-400 dark:text-slate-500 select-none">
           ID: {talk.id}
        </div>
     </div>

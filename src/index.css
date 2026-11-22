@@ -1018,3 +1018,25 @@ body[data-is-article="true"] #site-bg {
   }
 }
 
+/* 自定义清除按钮已存在，隐藏 WebKit 原生搜索清除图标 */
+input[type="search"]::-webkit-search-cancel-button {
+  display: none;
+}
+
+
+/* 移动端：把可点区域扩展到至少 44×44，但不改变视觉占位 */
+@media (max-width: 639px) {
+  .tap-target {
+    position: relative;
+  }
+  .tap-target::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 44px;
+    height: 44px;
+    /* 透明可点区，不遮挡视觉 */
+  }
+}

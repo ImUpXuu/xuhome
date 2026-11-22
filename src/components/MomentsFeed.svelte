@@ -252,12 +252,12 @@
     <div class="flex min-h-[2.25rem] flex-wrap items-center justify-center gap-2 sm:justify-start" role="toolbar" aria-label="朋友圈工具栏">
       <span class="sr-only">Moments 朋友圈</span>
       <span class="rounded-sm border-2 border-slate-200 bg-slate-100 px-2 py-0.5 font-mono text-xs font-bold text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">那些人，那些新文章</span>
-      <span class="rounded-sm border-2 border-[#f59e0b] bg-amber-50 px-2 py-0.5 font-mono text-[11px] font-bold text-[#0c4a6e] dark:border-amber-400 dark:bg-amber-400/15 dark:text-amber-300">近 {MOMENTS_WINDOW_DAYS} 天</span>
-      <span class="rounded-sm border-2 border-emerald-400 bg-green-50 px-2 py-0.5 font-mono text-[11px] font-bold text-green-700 dark:border-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300">{loading ? '— 篇 · — 位朋友' : `${moments.length} 篇 · ${sourceCount} 位朋友`}</span>
-      <span class="inline-flex min-w-[7rem] justify-center" aria-live="polite"><span class:opacity-0={!newItemsVisible} class="rounded-sm border-2 border-sky-400 bg-sky-100 px-2 py-0.5 font-mono text-[11px] font-bold text-sky-800 transition-opacity duration-300 dark:bg-sky-900/40 dark:text-sky-200">+{newItemsCount} 条新动态</span></span>
+      <span class="rounded-sm border-2 border-[#f59e0b] bg-amber-50 px-2 py-0.5 font-mono text-xs font-bold text-[#0c4a6e] dark:border-amber-400 dark:bg-amber-400/15 dark:text-amber-300">近 {MOMENTS_WINDOW_DAYS} 天</span>
+      <span class="rounded-sm border-2 border-emerald-400 bg-green-50 px-2 py-0.5 font-mono text-xs font-bold text-green-700 dark:border-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300">{loading ? '— 篇 · — 位朋友' : `${moments.length} 篇 · ${sourceCount} 位朋友`}</span>
+      <span class="inline-flex min-w-[7rem] justify-center" aria-live="polite"><span class:opacity-0={!newItemsVisible} class="rounded-sm border-2 border-sky-400 bg-sky-100 px-2 py-0.5 font-mono text-xs font-bold text-sky-800 transition-opacity duration-300 dark:bg-sky-900/40 dark:text-sky-200">+{newItemsCount} 条新动态</span></span>
     </div>
     <div class="flex items-center gap-2">
-      <span class="hidden text-[11px] font-mono font-bold text-slate-400 dark:text-slate-500 sm:inline">{formatUpdatedAt(generatedAt)}</span>
+      <span class="hidden text-xs font-mono font-bold text-slate-400 dark:text-slate-500 sm:inline">{formatUpdatedAt(generatedAt)}</span>
       <button
         type="button"
         class="flex min-w-[88px] items-center justify-center gap-1.5 rounded-sm border-2 border-[#0284c7] bg-white px-3 py-1.5 text-xs font-black text-[#0284c7] shadow-[2px_2px_0px_0px_#0284c7] transition-[transform,box-shadow,border-color] hover:bg-[#fde68a] dark:bg-slate-800 dark:text-sky-400 dark:hover:bg-amber-400/20 dark:hover:text-amber-200 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#f59e0b] focus-visible:ring-offset-2"
@@ -275,7 +275,7 @@
   {#if errorMessage && moments.length > 0 && !errorDismissed}
     <div id="moments-sync-error" class="mb-4 flex items-start gap-3 border-4 border-amber-400 bg-amber-50/90 px-3 py-2 text-xs font-bold text-amber-800 shadow-[4px_4px_0px_0px_#f59e0b] dark:bg-amber-950/30 dark:text-amber-200" role="status">
       <span class="min-w-0 flex-1">这次同步没有成功，已保留上次内容。{errorMessage}</span>
-      <button type="button" class="shrink-0 border-2 border-amber-500 px-2 py-0.5 text-[11px] hover:bg-amber-200 dark:hover:bg-amber-400/20 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#f59e0b] focus-visible:ring-offset-2" on:click={() => refresh(true)}>重试</button>
+      <button type="button" class="shrink-0 border-2 border-amber-500 px-2 py-0.5 text-xs hover:bg-amber-200 dark:hover:bg-amber-400/20 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#f59e0b] focus-visible:ring-offset-2" on:click={() => refresh(true)}>重试</button>
       <button type="button" aria-label="关闭同步失败提示" class="shrink-0 text-lg leading-none focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#f59e0b] focus-visible:ring-offset-2" on:click={() => { errorDismissed = true; }}>×</button>
     </div>
   {/if}
@@ -317,8 +317,8 @@
         {#each dayGroups as group (group.key)}
           <section data-day={group.key} class="relative grid grid-cols-[24px_minmax(0,1fr)] gap-2 sm:grid-cols-[78px_minmax(0,1fr)] sm:gap-4">
             <div class="relative flex items-center gap-2 pl-1 sm:flex-col sm:items-start sm:gap-1 sm:pl-0"><span data-day-dot={group.key} class="moments-dot" aria-hidden="true"></span>
-              <span class="inline-block -rotate-1 border-2 border-[#0284c7] bg-[#fde68a] px-2 py-0.5 font-mono text-[11px] font-black text-[#0c4a6e] shadow-[2px_2px_0px_0px_#0284c7] dark:border-amber-400 dark:bg-amber-400/15 dark:text-amber-300">{String(group.date.getMonth() + 1).padStart(2, '0')}.{String(group.date.getDate()).padStart(2, '0')}</span>
-              <h2 class="text-[11px] font-black text-[#0284c7] dark:text-sky-400 sm:pl-1"><time datetime={group.key}>{dayLabel(group.date)}</time></h2>
+              <span class="inline-block -rotate-1 border-2 border-[#0284c7] bg-[#fde68a] px-2 py-0.5 font-mono text-xs font-black text-[#0c4a6e] shadow-[2px_2px_0px_0px_#0284c7] dark:border-amber-400 dark:bg-amber-400/15 dark:text-amber-300">{String(group.date.getMonth() + 1).padStart(2, '0')}.{String(group.date.getDate()).padStart(2, '0')}</span>
+              <h2 class="text-xs font-black text-[#0284c7] dark:text-sky-400 sm:pl-1"><time datetime={group.key}>{dayLabel(group.date)}</time></h2>
             </div>
 
               <div class="space-y-3.5 sm:space-y-4">
@@ -329,7 +329,7 @@
                   {/if}
                   <div class="relative z-10">
                   <div class="flex items-center justify-between gap-3">
-                    <a href={item.sourceUrl} target="_blank" rel="noopener noreferrer" class="flex min-w-0 items-center gap-2.5 text-[11px] font-black text-[#0284c7] transition-colors hover:text-[#0ea5e9] dark:text-sky-400">
+                    <a href={item.sourceUrl} target="_blank" rel="noopener noreferrer" class="flex min-w-0 items-center gap-2.5 text-xs font-black text-[#0284c7] transition-colors hover:text-[#0ea5e9] dark:text-sky-400">
                       {#if item.avatar && !failedAvatars.has(item.id)}
                         <img src={item.avatar} alt="" width="36" height="36" loading="lazy" decoding="async" referrerpolicy="no-referrer" class="h-9 w-9 shrink-0 -rotate-2 rounded-sm border-2 border-[#0284c7] bg-white object-cover shadow-[2px_2px_0px_0px_#0284c7]" on:error={() => markAvatarFailed(item.id)} />
                       {:else}
@@ -337,7 +337,7 @@
                       {/if}
                       <span class="truncate rv-txt">{item.source}</span>
                     </a>
-                    <time datetime={item.publishedAt} class="shrink-0 border-2 border-amber-300 bg-amber-50 px-1.5 py-0.5 font-mono text-[11px] font-bold text-amber-700 dark:border-amber-700 dark:bg-amber-900/30 dark:text-amber-300" title={relativeTime(item.publishedAt)}>{formatTime(item.publishedAt)}</time>
+                    <time datetime={item.publishedAt} class="shrink-0 border-2 border-amber-300 bg-amber-50 px-1.5 py-0.5 font-mono text-xs font-bold text-amber-700 dark:border-amber-700 dark:bg-amber-900/30 dark:text-amber-300" title={relativeTime(item.publishedAt)}>{formatTime(item.publishedAt)}</time>
                   </div>
 
                   <div class="mt-3 flex items-start gap-2">
@@ -349,7 +349,7 @@
                   {#if item.description}
                     <p class="mt-2 line-clamp-2 pl-4 text-[13px] font-medium leading-6 text-slate-600 dark:text-slate-300 rv-txt">{item.description}</p>
                   {/if}
-                  <div class="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-dashed border-sky-200/80 pt-2 text-[11px] font-bold text-slate-500 dark:border-slate-700 dark:text-slate-400 rv-txt">
+                  <div class="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-dashed border-sky-200/80 pt-2 text-xs font-bold text-slate-500 dark:border-slate-700 dark:text-slate-400 rv-txt">
                     <span class="truncate">{hostname(item.sourceUrl)}</span>
                     <a href={item.link} target="_blank" rel="noopener noreferrer" class="shrink-0 border-2 border-[#0284c7] px-2 py-0.5 text-[#0284c7] hover:underline focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#f59e0b] focus-visible:ring-offset-2 dark:text-sky-400">阅读全文 →</a>
                   </div>
@@ -368,7 +368,7 @@
         </div>
       {/if}
 
-      <footer class="mt-3 flex flex-col gap-2 border-t-2 border-[#0284c7]/25 pt-4 text-[11px] font-bold text-slate-500 dark:border-slate-700 dark:text-slate-400 sm:flex-row sm:items-center sm:justify-between" data-reveal>
+      <footer class="mt-3 flex flex-col gap-2 border-t-2 border-[#0284c7]/25 pt-4 text-xs font-bold text-slate-500 dark:border-slate-700 dark:text-slate-400 sm:flex-row sm:items-center sm:justify-between" data-reveal>
         <span>文章版权归原作者所有，点击标题前往原站阅读。</span>
         <div class="flex items-center gap-3">
           <a href="https://friend.upxuu.com/moments.xml" target="_blank" rel="noopener noreferrer" class="border-2 border-[#0284c7] bg-white px-2 py-1 text-[#0284c7] transition-colors hover:bg-[#fde68a] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#f59e0b] focus-visible:ring-offset-2 dark:bg-slate-800 dark:text-sky-400 dark:hover:bg-amber-400/20 dark:hover:text-amber-200">RSS 订阅 ↗</a>
