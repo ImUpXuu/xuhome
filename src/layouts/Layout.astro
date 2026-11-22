@@ -259,24 +259,22 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
         transform: translateY(0) scale(1);
       }
     }
-    /* 默认状态：无动画、直接可见。隐藏职责只交给 html.motion-ready 门控，
-       任何脚本失败 / CSP 拦截 / CSS 被覆盖的场景都落到可见分支。
-       只有 JS 可用 + 动画上下文就绪时才允许"先隐藏再入场" */
-    .animate-card-entrance { animation: none; }
-    html.motion-ready .animate-card-entrance {
-      opacity: 0;
+    .animate-card-entrance {
       animation: card-entrance 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
     }
-    /* 减弱动态效果：取消动画而非改写关键帧，并强制可见（!important 防止组件写回 opacity-0） */
+    /* 减弱动态效果：禁用 blur，降低动画幅度 */
     @media (prefers-reduced-motion: reduce) {
-      .animate-card-entrance {
-        animation: none !important;
-        opacity: 1 !important;
-        transform: none !important;
+      @keyframes content-in {
+        0% { opacity: 0; }
+        100% { opacity: 1; }
       }
-      /* content-in/content-out 保留极简淡入即可，它们不参与内容保护 */
-      @keyframes content-in { 0% { opacity: 0; } 100% { opacity: 1; } }
-      @keyframes content-out { 100% { opacity: 0; } }
+      @keyframes content-out {
+        100% { opacity: 0; }
+      }
+      @keyframes card-entrance {
+        0% { opacity: 0; }
+        100% { opacity: 1; }
+      }
     }
 
     /* ===== 换页过渡：跳过整页快照动画，让各页自己的元素入场动画当主角（对齐 i.upxuu.com 的 SPA 观感） =====
@@ -445,7 +443,6 @@ const isMusicPage = Astro.url.pathname === '/music' || Astro.url.pathname.starts
         if (m && m.matches) return;
         if (!('IntersectionObserver' in window)) return;
         document.documentElement.classList.add('rv-ready');
-        document.documentElement.classList.add('motion-ready');
       } catch (e) {}
     })();
   </script>

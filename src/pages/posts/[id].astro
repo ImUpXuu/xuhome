@@ -94,7 +94,7 @@ const relatedPosts = (() => {
       
       {/* Main post body center panel */}
       <div class="flex-1 min-w-0 w-full space-y-8 lg:order-2">
-        <article class="article-paper bg-[#efe1bf] dark:bg-slate-800 border-4 border-[#0284c7] p-4 sm:p-6 md:p-10 shadow-[6px_6px_0px_0px_#0284c7] sm:shadow-[8px_8px_0px_0px_#0284c7] rounded-sm animate-card-entrance">
+        <article class="article-paper bg-[#efe1bf] dark:bg-slate-800 border-4 border-[#0284c7] p-4 sm:p-6 md:p-10 shadow-[6px_6px_0px_0px_#0284c7] sm:shadow-[8px_8px_0px_0px_#0284c7] rounded-sm animate-card-entrance opacity-0">
           <div class="border-b-4 border-[#0284c7] pb-6 mb-8 text-center md:text-left flex flex-col md:flex-row justify-between items-center gap-4">
             <div>
               <h1 class="text-xl sm:text-2xl md:text-3xl font-black text-[#0284c7] mb-4 leading-tight">{post.title}</h1>
@@ -137,7 +137,7 @@ const relatedPosts = (() => {
 
         {/* Copyright Metadata block */}
         <div 
-          class="bg-[#efe1bf] dark:bg-slate-800 border-4 border-[#0284c7] p-5 md:p-7 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm relative transition-all duration-300 group/copyright animate-card-entrance"
+          class="bg-[#efe1bf] dark:bg-slate-800 border-4 border-[#0284c7] p-5 md:p-7 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm relative transition-all duration-300 group/copyright animate-card-entrance opacity-0"
           id="post-copyright-card"
           style="animation-delay: 0.1s"
         >
@@ -193,7 +193,7 @@ const relatedPosts = (() => {
         {/* Article history block —— 首屏只有次数与最后更改时间，明细点开才拉分片 */}
         {history && (
           <div
-            class="bg-[#efe1bf] dark:bg-slate-800 border-4 border-[#0284c7] p-4 md:p-5 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm animate-card-entrance"
+            class="bg-[#efe1bf] dark:bg-slate-800 border-4 border-[#0284c7] p-4 md:p-5 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm animate-card-entrance opacity-0"
             style="animation-delay: 0.12s"
           >
             <div
@@ -229,7 +229,7 @@ const relatedPosts = (() => {
 
         {/* Related Posts */}
         {relatedPosts.length > 0 && (
-          <div class="animate-card-entrance" style="animation-delay: 0.08s" data-prefetch="post-bottom">
+          <div class="animate-card-entrance opacity-0" style="animation-delay: 0.08s" data-prefetch="post-bottom">
             <div class="bg-[#efe1bf] dark:bg-slate-800 border-4 border-[#0284c7] p-4 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm">
               <h3 class="font-black text-[#0284c7] text-sm mb-3 flex items-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
@@ -253,7 +253,7 @@ const relatedPosts = (() => {
         )}
 
         {/* Previous / Next pagination navigation blocks */}
-        <div class="flex flex-col sm:flex-row gap-3 w-full animate-card-entrance" style="animation-delay: 0.1s" data-prefetch="post-bottom">
+        <div class="flex flex-col sm:flex-row gap-3 w-full animate-card-entrance opacity-0" style="animation-delay: 0.1s" data-prefetch="post-bottom">
           {prevPost ? (
             <a 
               href={`/posts/${encodeURIComponent(prevPost.slug)}`}

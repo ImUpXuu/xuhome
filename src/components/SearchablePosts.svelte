@@ -479,7 +479,7 @@
     {#each displayedPosts as post, i (post.slug)}
       <article
         id={`post-${post.id}`}
-        class="block relative group animate-card-entrance"
+        class="block relative group animate-card-entrance opacity-0"
         style="animation-delay: {0.2 + (i % 12) * 0.05}s"
         data-reveal-card
         animate:flip={{ duration: 400 }}

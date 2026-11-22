@@ -70,7 +70,7 @@
 
 <div class="max-w-[800px] mx-auto w-full space-y-6">
   <!-- Back button -->
-  <div class="mb-6 flex justify-start select-none animate-card-entrance">
+  <div class="mb-6 flex justify-start select-none animate-card-entrance opacity-0">
      <a href="/talks" class="px-3 py-1.5 border-3 border-[#0284c7] bg-white dark:bg-slate-700 text-[#0284c7] dark:text-slate-200 flex items-center gap-1.5 hover:bg-[#0ea5e9] hover:text-white transition-colors cursor-pointer rounded-sm shadow-[4px_4px_0px_0px_#0284c7] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all font-black uppercase text-xs">
         <span>&lsaquo; BACK TO TALKS</span>
      </a>
@@ -78,7 +78,7 @@
 
   <!-- Main Talk Card -->
   <div 
-    class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] p-5 md:p-6 shadow-[10px_10px_0px_0px_#f59e0b] rounded-sm relative animate-card-entrance"
+    class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] p-5 md:p-6 shadow-[10px_10px_0px_0px_#f59e0b] rounded-sm relative animate-card-entrance opacity-0"
     style="animation-delay: 0.06s"
   >
     <!-- Avatar & Meta Header -->
