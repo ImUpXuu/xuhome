@@ -77,7 +77,7 @@ const { categories, activeCategory, posts = [], dates = [], dataUrl = '' } = Ast
           }`}
         >
           <span>{cat.name}</span>
-          <span class={`px-1.5 py-0.5 text-xs rounded-full font-black ${activeCategory === cat.name ? 'bg-white/30 text-white' : 'bg-slate-100 dark:bg-slate-600 text-slate-500 dark:text-slate-300'}`}>
+          <span class={`px-1.5 py-0.5 text-[9px] rounded-full font-black ${activeCategory === cat.name ? 'bg-white/30 text-white' : 'bg-slate-100 dark:bg-slate-600 text-slate-500 dark:text-slate-300'}`}>
             {cat.count}
           </span>
         </a>

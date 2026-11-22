@@ -70,7 +70,7 @@ const qqGroupUrl = 'https://qm.qq.com/q/mlH3QB1hC2';
             href={link.path}
             target={link.external ? '_blank' : undefined}
             rel={link.external ? 'noopener noreferrer' : undefined}
-            class="border-2 border-[#0284c7] bg-white px-2.5 py-1 font-mono text-xs font-black text-[#0284c7] shadow-[2px_2px_0px_0px_#fde68a] transition-all hover:-translate-y-0.5 hover:bg-[#0284c7] hover:text-white dark:bg-slate-700 dark:text-sky-200 dark:hover:bg-[#0284c7] dark:hover:text-white"
+            class="border-2 border-[#0284c7] bg-white px-2.5 py-1 font-mono text-[11px] font-black text-[#0284c7] shadow-[2px_2px_0px_0px_#fde68a] transition-all hover:-translate-y-0.5 hover:bg-[#0284c7] hover:text-white dark:bg-slate-700 dark:text-sky-200 dark:hover:bg-[#0284c7] dark:hover:text-white"
           >
             {link.name}
           </a>
@@ -79,14 +79,14 @@ const qqGroupUrl = 'https://qm.qq.com/q/mlH3QB1hC2';
           href={qqGroupUrl}
           target="_blank"
           rel="noopener noreferrer"
-          class="border-2 border-[#0284c7] bg-[#fde68a] px-2.5 py-1 font-mono text-xs font-black text-[#0284c7] shadow-[2px_2px_0px_0px_#0284c7] transition-all hover:-translate-y-0.5 hover:bg-[#0284c7] hover:text-white dark:bg-amber-700/60 dark:text-amber-50 dark:hover:bg-[#0284c7] dark:hover:text-white"
+          class="border-2 border-[#0284c7] bg-[#fde68a] px-2.5 py-1 font-mono text-[11px] font-black text-[#0284c7] shadow-[2px_2px_0px_0px_#0284c7] transition-all hover:-translate-y-0.5 hover:bg-[#0284c7] hover:text-white dark:bg-amber-700/60 dark:text-amber-50 dark:hover:bg-[#0284c7] dark:hover:text-white"
         >
           QQ 交流群
         </a>
       </nav>
     </div>
 
-    <div class="mt-5 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 border-y-2 border-dashed border-[#0284c7]/40 py-3 text-center font-mono text-xs text-slate-500 dark:text-slate-400 sm:text-xs">
+    <div class="mt-5 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 border-y-2 border-dashed border-[#0284c7]/40 py-3 text-center font-mono text-[11px] text-slate-500 dark:text-slate-400 sm:text-xs">
       <span>累计 <strong class="font-black text-[#0284c7] dark:text-sky-300">{wordCountK}k 字</strong></span>
       <span aria-hidden="true" class="text-[#0284c7]/40">·</span>
       <span>访客 <strong id="fv-uv" class="font-black text-[#0284c7] dark:text-sky-300">—</strong> 人</span>
@@ -96,7 +96,7 @@ const qqGroupUrl = 'https://qm.qq.com/q/mlH3QB1hC2';
       <span>已航行 <strong id="uptime-display" data-start={uptimeStart} class="font-black text-[#0284c7] dark:text-sky-300">计算中...</strong></span>
     </div>
 
-    <div class="mt-4 flex flex-col items-center gap-4 text-center font-mono text-xs leading-relaxed text-slate-500 dark:text-slate-400 md:flex-row md:justify-between md:text-left">
+    <div class="mt-4 flex flex-col items-center gap-4 text-center font-mono text-[11px] leading-relaxed text-slate-500 dark:text-slate-400 md:flex-row md:justify-between md:text-left">
       <div class="min-w-0">
         <p class="font-bold text-slate-600 dark:text-slate-300">{footerConfig.copyrightText}</p>
         {footerConfig.icp.text && (

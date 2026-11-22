@@ -103,7 +103,7 @@
 </script>
 
 <div class="bg-white dark:bg-slate-800 border-4 border-[#0284c7] p-3.5 shadow-[6px_6px_0px_0px_#0284c7] rounded-sm w-full relative animate-card-entrance opacity-0" data-nosnippet style="animation-delay: 0.08s" data-reveal-card>
-  <div class="text-center font-mono text-xs font-black text-slate-450 mb-1.5 uppercase tracking-widest block select-none">
+  <div class="text-center font-mono text-[11px] font-black text-slate-450 mb-1.5 uppercase tracking-widest block select-none">
     #upxuu的创作日历
   </div>
   
@@ -128,7 +128,7 @@
   <div>
     <div class="grid grid-cols-7 gap-1 text-center mb-2 select-none">
       {#each weekdays as day}
-        <div class="text-xs font-black text-[#0284c7]/65">{day}</div>
+        <div class="text-[10px] font-black text-[#0284c7]/65">{day}</div>
       {/each}
     </div>
     <div class="grid grid-cols-7 gap-1">
@@ -141,7 +141,7 @@
         {@const isSelected = selectedDate && selectedDate.getTime() === day.getTime()}
         <button 
           on:click={() => handleDayClick(day, hasEvents)}
-          class="relative flex items-center justify-center h-[28px] text-xs rounded-sm border-2 font-black select-none cursor-pointer duration-150 outline-none focus-visible:ring-2 focus-visible:ring-[#0284c7] focus-visible:ring-offset-2
+          class="relative flex items-center justify-center h-[28px] text-[11px] rounded-sm border-2 font-black select-none cursor-pointer duration-150 outline-none focus-visible:ring-2 focus-visible:ring-[#0284c7] focus-visible:ring-offset-2
             {hasEvents             ? 'border-[#0284c7] hover:bg-[#fde68a] text-[#0284c7]' : 'border-transparent text-slate-450 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'}
             {isSelected ? 'bg-[#0ea5e9] text-white border-[#0284c7]' : hasEvents ? '' : ''}
           "
@@ -158,12 +158,12 @@
   {#if selectedDate && selectedDateEvents.length > 0}
     <div class="mt-4 pt-3 border-t-2 border-dashed border-[#0284c7]/20 animate-fade-in">
       <div class="flex justify-between items-center mb-2 gap-2">
-        <span class="text-xs font-black text-[#0284c7] tracking-wider shrink-0 bg-[#fde68a] px-1.5 py-0.5 border-2 border-[#0284c7]">
+        <span class="text-[10px] font-black text-[#0284c7] tracking-wider shrink-0 bg-[#fde68a] px-1.5 py-0.5 border-2 border-[#0284c7]">
           {formatYMD(selectedDate)} 作品
         </span>
         <button 
           on:click={() => selectedDate = null} 
-          class="text-xs font-black bg-white dark:bg-slate-700 text-slate-500 dark:text-slate-300 hover:text-red-500 px-1 border-2 border-[#0284c7] rounded-sm cursor-pointer transition-all"
+          class="text-[9px] font-black bg-white dark:bg-slate-700 text-slate-500 dark:text-slate-300 hover:text-red-500 px-1 border-2 border-[#0284c7] rounded-sm cursor-pointer transition-all"
         >
           关闭
         </button>
@@ -181,7 +181,7 @@
               {event.title}
             </h4>
             {#if event.description}
-              <p class="text-xs text-slate-600 dark:text-slate-400 line-clamp-2 leading-relaxed">
+              <p class="text-[10px] text-slate-600 dark:text-slate-400 line-clamp-2 leading-relaxed">
                 {event.description}
               </p>
             {/if}
@@ -193,17 +193,17 @@
   {:else if selectedDate}
     <div class="mt-4 pt-3 border-t-2 border-dashed border-[#0284c7]/20 text-center animate-fade-in">
       <div class="flex justify-between items-center mb-2 gap-2">
-        <span class="text-xs font-black text-[#0284c7] tracking-wider shrink-0 bg-[#fde68a] px-1.5 py-0.5 border-2 border-[#0284c7]">
+        <span class="text-[10px] font-black text-[#0284c7] tracking-wider shrink-0 bg-[#fde68a] px-1.5 py-0.5 border-2 border-[#0284c7]">
           {formatYMD(selectedDate)}
         </span>
         <button 
           on:click={() => selectedDate = null} 
-          class="text-xs font-black bg-white dark:bg-slate-700 text-slate-550 dark:text-slate-300 hover:text-red-500 px-1 border-2 border-[#0284c7] shadow-[1px_1px_0px_0px_#0284c7] hover:shadow-none hover:translate-y-[1px] rounded-sm cursor-pointer transition-all"
+          class="text-[9px] font-black bg-white dark:bg-slate-700 text-slate-550 dark:text-slate-300 hover:text-red-500 px-1 border-2 border-[#0284c7] shadow-[1px_1px_0px_0px_#0284c7] hover:shadow-none hover:translate-y-[1px] rounded-sm cursor-pointer transition-all"
         >
           关闭
         </button>
       </div>
-      <p class="text-xs text-slate-400 dark:text-slate-500 font-bold italic py-2">这天没有发布文章哦~</p>
+      <p class="text-[10px] text-slate-400 dark:text-slate-500 font-bold italic py-2">这天没有发布文章哦~</p>
     </div>
   {/if}
 </div>

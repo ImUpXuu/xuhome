@@ -422,7 +422,7 @@
         <span>🎵</span>
         <span class="truncate">{activeName || '歌单'}</span>
       </span>
-      <span class="text-xs font-black text-[#0284c7]/70 shrink-0">
+      <span class="text-[10px] font-black text-[#0284c7]/70 shrink-0">
         {showPlaylistMobile ? '收起 ▲' : '展开 ▼'}
       </span>
     </button>
@@ -447,7 +447,7 @@
             >
               <span class="truncate">{p.name}</span>
               {#if playlistCounts[p.id]}
-                <span class="shrink-0 text-xs font-black text-slate-400">{playlistCounts[p.id]}</span>
+                <span class="shrink-0 text-[10px] font-black text-slate-400">{playlistCounts[p.id]}</span>
               {/if}
             </button>
           {/each}
@@ -476,7 +476,7 @@
               >
                 <span>{p.name}</span>
                 {#if playlistCounts[p.id]}
-                  <span class="shrink-0 text-xs font-black text-slate-400">{playlistCounts[p.id]}</span>
+                  <span class="shrink-0 text-[10px] font-black text-slate-400">{playlistCounts[p.id]}</span>
                 {/if}
               </button>
             {/each}
@@ -652,7 +652,7 @@
         <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="14" rx="2"/><rect x="12" y="11" width="8" height="6" rx="1" fill="currentColor" stroke="none"/></svg>
       </button>
       <div class="hidden lg:flex items-center gap-2 w-20">
-        <span class="text-xs font-black text-slate-400">音量</span>
+        <span class="text-[10px] font-black text-slate-400">音量</span>
         <input type="range" min="0" max="1" step="0.01"
           class="w-full h-1.5 bg-[#fde68a] border border-[#0284c7] rounded-sm appearance-none cursor-pointer accent-[#0284c7]"
           bind:value={volume} on:input={(e) => setVolume((e.target as HTMLInputElement).valueAsNumber)} />
@@ -681,7 +681,7 @@
   </button>
   <div class="min-w-0 max-w-32 sm:max-w-44">
     <div class="text-xs font-black text-slate-800 dark:text-slate-100 truncate leading-tight">{currentSong ? currentSong.title : '——'}</div>
-    <div class="text-xs text-slate-400 truncate leading-tight">{currentSong?.author || ''}</div>
+    <div class="text-[10px] text-slate-400 truncate leading-tight">{currentSong?.author || ''}</div>
   </div>
   <button on:click={prev} aria-label="上一首" class="shrink-0 w-8 h-8 hidden sm:flex items-center justify-center text-[#0284c7] hover:bg-[#fde68a]/50 rounded-full transition-colors">
     <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M6.5 4h3v16h-3V4zM19 5v14L8 12l11-7z"/></svg>
@@ -732,7 +732,7 @@
       <div class="flex items-center justify-between gap-3">
         <div class="min-w-0">
           <div class="font-black text-sm text-[#0284c7] truncate">{currentSong.title}</div>
-          <div class="text-xs font-bold text-[#0284c7]/70 truncate">{currentSong.author}</div>
+          <div class="text-[11px] font-bold text-[#0284c7]/70 truncate">{currentSong.author}</div>
         </div>
         <button type="button" on:click={closeLyrics} aria-label="关闭歌词"
           class="shrink-0 w-11 h-11 flex items-center justify-center bg-white border-2 border-[#0284c7] text-[#0284c7] rounded-full shadow-[2px_2px_0px_0px_#0284c7] active:shadow-none active:translate-y-0.5 transition-all font-black text-xl">×</button>

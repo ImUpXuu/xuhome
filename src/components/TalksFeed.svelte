@@ -142,7 +142,7 @@
           const collapseWrap = document.createElement('div');
           collapseWrap.className = 'talk-collapse-wrap flex justify-center pt-3 pb-1';
           const collapseBtn = document.createElement('button');
-          collapseBtn.className = 'bg-white dark:bg-slate-700 border-2 border-[#0284c7] text-[#0284c7] dark:text-white font-black px-3 py-1 flex items-center gap-2 shadow-[3px_3px_0px_0px_#0284c7] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all text-xs rounded-sm uppercase tracking-wider cursor-pointer';
+          collapseBtn.className = 'bg-white dark:bg-slate-700 border-2 border-[#0284c7] text-[#0284c7] dark:text-white font-black px-3 py-1 flex items-center gap-2 shadow-[3px_3px_0px_0px_#0284c7] hover:shadow-none hover:translate-x-0.5 hover:translate-y-0.5 transition-all text-[10px] rounded-sm uppercase tracking-wider cursor-pointer';
           collapseBtn.innerHTML = '收起 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>';
           collapseWrap.appendChild(collapseBtn);
           el.after(collapseWrap);
@@ -243,7 +243,7 @@
           <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 stroke-[3]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" d="M8.684 10.742l4.137-2.11M8.684 13.258l4.137 2.11M17 14c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2-1.343-2-3-2zm0-8c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2-1.343-2-3-2zm-10 4c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2-1.343-2-3-2z" />
           </svg>
-          <span class="text-xs hidden sm:inline font-bold">分享</span>
+          <span class="text-[10px] hidden sm:inline font-bold">分享</span>
         </button>
 
         <!-- Avatar & Meta Header -->
@@ -259,7 +259,7 @@
                 {/if}
              </div>
              <div class="flex items-center gap-2 mt-1 leading-none">
-                <span class="text-xs text-slate-500 font-mono font-bold">{talk.date}</span>
+                <span class="text-[10px] sm:text-xs text-slate-500 font-mono font-bold">{talk.date}</span>
                 <PageViews path={`/talk/${talk.slug}`} />
              </div>
           </div>
@@ -299,7 +299,7 @@
 
           <!-- Bottom Metadata: Location, Weather, Device -->
           {#if talk.location || talk.weather || talk.device}
-            <div class="mt-4 flex flex-wrap gap-3 items-center text-xs font-bold text-slate-500 dark:text-slate-400 select-none border-t border-dashed border-slate-100 dark:border-slate-700 pt-2.5">
+            <div class="mt-4 flex flex-wrap gap-3 items-center text-[10px] sm:text-xs font-bold text-slate-500 dark:text-slate-400 select-none border-t border-dashed border-slate-100 dark:border-slate-700 pt-2.5">
               {#if talk.location}
                 <span class="flex items-center gap-1 hover:text-[#0284c7] transition-colors"><span>📍</span> {talk.location}</span>
               {/if}
