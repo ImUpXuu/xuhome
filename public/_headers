@@ -1,0 +1,21 @@
+# Netlify 等价配置：镜像 vercel.json 的安全头与缓存策略
+# 全局：浏览器每次回源校验，CDN 长缓存（Netlify 静态资源边缘缓存上限约 1 年，部署即全量刷新）
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: SAMEORIGIN
+  Referrer-Policy: strict-origin-when-cross-origin
+  Cache-Control: public, max-age=0, must-revalidate
+  Netlify-CDN-Cache-Control: public, max-age=315360000, durable, must-revalidate
+
+/images/*
+  Access-Control-Allow-Origin: *
+  Access-Control-Allow-Methods: GET, OPTIONS
+
+/*.xml
+  Access-Control-Allow-Origin: *
+  Content-Type: application/xml; charset=utf-8
+
+# Astro 指纹资源：文件名带哈希，浏览器与 CDN 都长缓存
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+  Netlify-CDN-Cache-Control: public, max-age=31536000, immutable
